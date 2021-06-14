@@ -1,0 +1,74 @@
+{
+  "name": "esbuild-sass-plugin",
+  "version": "1.4.5",
+  "description": "esbuild plugin for sass/scss files supporting both css loader and css result import (lit-element)",
+  "main": "lib/index.js",
+  "keywords": [
+    "esbuild",
+    "plugin",
+    "sass",
+    "scss",
+    "LICENSE",
+    "README.MD",
+    "tsconfig.json"
+  ],
+  "files": [
+    "lib",
+    "src"
+  ],
+  "author": "Gianluca Romeo <glromeo@gmail.com> (https://github.com/glromeo/esbuild-sass-plugin)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/glromeo/esbuild-sass-plugin/issues"
+  },
+  "homepage": "https://github.com/glromeo/esbuild-sass-plugin#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/glromeo/esbuild-sass-plugin.git"
+  },
+  "scripts": {
+    "setup": "cd test/fixture && yarn install && cd ../..",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "test": "nyc mocha **/*.test.ts"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "test/**/*.ts"
+    ],
+    "reporter": [
+      "text"
+    ],
+    "all": false,
+    "cache": true
+  },
+  "mocha": {
+    "require": [
+      "ts-node/register"
+    ]
+  },
+  "dependencies": {
+    "esbuild": "^0.12.4",
+    "picomatch": "^2.3.0",
+    "resolve": "^1.20.0",
+    "sass": "^1.34.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.18",
+    "@types/chai-string": "^1.4.2",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^15.6.1",
+    "@types/resolve": "^1.20.0",
+    "@types/sass": "^1.16.0",
+    "chai": "^4.3.4",
+    "chai-string": "^1.5.0",
+    "mocha": "^8.4.0",
+    "nyc": "^15.1.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.2"
+  }
+}

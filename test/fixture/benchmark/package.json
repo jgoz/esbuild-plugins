@@ -1,0 +1,16 @@
+{
+  "name": "benchmark-fixture",
+  "version": "1.0.0",
+  "main": "src/generated/index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap": "^4.6.0",
+    "lit-element": "^2.4.0"
+  },
+  "scripts": {
+    "serve": "node ../serve benchmark"
+  },
+  "devDependencies": {
+    "node-sass": "^5.0.0"
+  }
+}
