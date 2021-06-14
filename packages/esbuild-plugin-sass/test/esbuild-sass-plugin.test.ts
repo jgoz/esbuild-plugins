@@ -6,8 +6,8 @@ import prettier from 'prettier';
 
 import { sassPlugin } from '../src';
 
-describe('esbuild-plugin-sass', function () {
-  it('react application (css loader)', async function () {
+describe.each(['sass', 'node-sass'])('esbuild-plugin-sass (implementation=%s)', implementation => {
+  it('react application (css loader)', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/react');
     process.chdir(absWorkingDir);
 
@@ -19,7 +19,7 @@ describe('esbuild-plugin-sass', function () {
       sourcemap: true,
       outdir: './out',
       define: { 'process.env.NODE_ENV': '"development"' },
-      plugins: [sassPlugin({})],
+      plugins: [sassPlugin({ implementation })],
     });
 
     const cssBundle = fs.readFileSync('./out/index.css', 'utf-8');
@@ -37,7 +37,7 @@ describe('esbuild-plugin-sass', function () {
     );
   });
 
-  it('open-iconic (dealing with relative paths & data urls)', async function () {
+  it('open-iconic (dealing with relative paths & data urls)', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/open-iconic');
     process.chdir(absWorkingDir);
 
@@ -59,7 +59,7 @@ describe('esbuild-plugin-sass', function () {
         '.svg': 'file',
         '.otf': 'file',
       },
-      plugins: [sassPlugin()],
+      plugins: [sassPlugin({ implementation })],
     });
 
     const outCSS = fs.readFileSync('./out/styles.css', 'utf-8');
@@ -80,7 +80,7 @@ describe('esbuild-plugin-sass', function () {
         '.svg': 'dataurl',
         '.otf': 'dataurl',
       },
-      plugins: [sassPlugin()],
+      plugins: [sassPlugin({ implementation })],
     });
 
     const outFile = fs.readFileSync('./out/bundle.css', 'utf-8');
@@ -89,7 +89,7 @@ describe('esbuild-plugin-sass', function () {
     );
   });
 
-  it('postcss', async function () {
+  it('postcss', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/postcss');
     process.chdir(absWorkingDir);
 
@@ -115,6 +115,7 @@ describe('esbuild-plugin-sass', function () {
       },
       plugins: [
         sassPlugin({
+          implementation,
           async transform(source) {
             const { css } = await postCSS.process(source, { from: undefined });
             return css;
@@ -142,19 +143,70 @@ describe('esbuild-plugin-sass', function () {
     );
   });
 
-  it('watched files', async function () {
+  it('watched files', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/watch');
     process.chdir(absWorkingDir);
 
-    require('./fixture/watch/initial');
+    function writeInitial() {
+      fs.writeFileSync(
+        './src/banner-import.scss',
+        `
+    .banner {
+        font-size: 30px;
+        color: white;
+        background-color: crimson;
+        font-family: "Arial", sans-serif;
+    }
+`,
+      );
+      fs.writeFileSync(
+        './src/alternate-import.css',
+        `
+    .banner {
+        font-size: 20px;
+        color: yellow;
+        background-color: green;
+        font-family: "Roboto", sans-serif;
+    }
+`,
+      );
+    }
+
+    function writeUpdated() {
+      fs.writeFileSync(
+        './src/banner-import.scss',
+        `
+    .banner {
+        font-size: 30px;
+        color: white;
+        background-color: cornflowerblue;
+        font-family: "Times New Roman", serif;
+    }
+`,
+      );
+
+      fs.writeFileSync(
+        './src/alternate-import.css',
+        `
+    .banner {
+        font-size: 20px;
+        color: yellow;
+        background-color: orange;
+        font-family: "Courier New", monospace;
+    }
+`,
+      );
+    }
+
+    writeInitial();
     let count = 0;
 
     const result = await esbuild.build({
       entryPoints: ['./src/index.js'],
       absWorkingDir,
-      outdir: './out',
+      outdir: `./out`,
       bundle: true,
-      plugins: [sassPlugin()],
+      plugins: [sassPlugin({ implementation })],
       watch: {
         onRebuild(error, result) {
           count++;
@@ -162,29 +214,31 @@ describe('esbuild-plugin-sass', function () {
       },
     });
 
-    expect(fs.readFileSync('./out/index.css', 'utf-8')).toMatch(/crimson/);
+    try {
+      expect(fs.readFileSync('./out/index.css', 'utf-8')).toMatch(/crimson/);
 
-    const { mtimeMs } = fs.statSync('./out/index.js');
+      const { mtimeMs } = fs.statSync('./out/index.js');
 
-    await new Promise<void>((resolve, reject) => {
-      const timeout = setTimeout(reject, 10000);
+      await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(reject, 10000);
 
-      setTimeout(function tryAgain() {
-        if (mtimeMs < fs.statSync('./out/index.js').mtimeMs) {
-          clearTimeout(timeout);
-          resolve();
-        } else {
-          setTimeout(tryAgain, 1000);
-        }
-      }, 1000);
+        setTimeout(function tryAgain() {
+          if (mtimeMs < fs.statSync('./out/index.js').mtimeMs) {
+            clearTimeout(timeout);
+            resolve();
+          } else {
+            setTimeout(tryAgain, 1000);
+          }
+        }, 1000);
 
-      require('./fixture/watch/update');
-    });
+        writeUpdated();
+      });
 
-    expect(count).toBe(1);
+      expect(count).toBe(1);
 
-    expect(fs.readFileSync('./out/index.css', 'utf-8')).toMatch(/cornflowerblue/);
-
-    result.stop?.();
+      expect(fs.readFileSync('./out/index.css', 'utf-8')).toMatch(/cornflowerblue/);
+    } finally {
+      result.stop?.();
+    }
   });
 });
