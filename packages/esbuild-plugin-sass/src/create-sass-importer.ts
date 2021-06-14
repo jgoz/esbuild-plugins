@@ -1,65 +1,36 @@
-import { CachedInputFileSystem, Resolver, ResolverFactory } from 'enhanced-resolve';
+import { CachedInputFileSystem, ResolverFactory } from 'enhanced-resolve';
 import fs from 'fs';
-import { basename, dirname, posix } from 'path';
-import { Importer } from 'sass';
+import type sass from 'sass';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+import { getWebpackResolver } from 'sass-loader/dist/utils';
 
-class PrependPlugin {
-  readonly source: string;
-  readonly target: string;
-  readonly prepending: string;
-
-  constructor(source: string, prepending: string, target: string) {
-    this.source = source;
-    this.prepending = prepending;
-    this.target = target;
-  }
-
-  apply(resolver: Resolver) {
-    const target = resolver.ensureHook(this.target);
-    resolver.getHook(this.source).tapAsync('PrependPlugin', (request, resolveContext, callback) => {
-      const obj = {
-        ...request,
-        path:
-          request.path &&
-          posix.join(dirname(request.path), this.prepending + basename(request.path)),
-        relativePath:
-          request.relativePath &&
-          posix.join(
-            dirname(request.relativePath),
-            this.prepending + basename(request.relativePath),
-          ),
+export function createSassImporter(
+  implementation: typeof sass,
+  includePaths: string[] | undefined,
+): sass.Importer {
+  const resolve = getWebpackResolver(
+    (opts: any) => {
+      const resolver = ResolverFactory.createResolver({
+        ...opts,
+        fileSystem: new CachedInputFileSystem(fs, 4000),
+      });
+      return (path: string, request: string, callback: any) => {
+        resolver.resolve({}, path, request, {}, callback);
       };
-      resolver.doResolve(target, obj, this.prepending, resolveContext, callback);
-    });
-  }
-}
+    },
+    implementation,
+    includePaths,
+  );
 
-export function createSassImporter() {
-  const resolver = ResolverFactory.createResolver({
-    conditionNames: ['browser'],
-    extensions: ['.scss', '.sass', '.css'],
-    fileSystem: new CachedInputFileSystem(fs, 4000),
-    mainFields: ['style'],
-    mainFiles: ['index', '_index'],
-    plugins: [new PrependPlugin('raw-file', '_', 'file')],
-    preferRelative: true,
-    useSyncFileSystemCalls: true,
-  });
-
-  const importer: Importer = (url, prev) => {
-    if (url.startsWith('~')) {
-      url = url.slice(1);
-    }
-    try {
-      const pathname = resolver.resolveSync({}, dirname(prev), url);
-      if (!pathname) {
-        return new Error(`Unable to resolve sass import "${url}" from "${prev}"`);
-      }
-      return { file: pathname };
-    } catch (err) {
-      return err;
-    }
+  return (url, prev, done) => {
+    resolve(prev, url, false)
+      .then((result: string) => {
+        done({ file: result.replace(/\.css$/i, '') });
+      })
+      .catch(() => {
+        // Catch all resolving errors, return the original file and pass responsibility back to other custom importers
+        done({ file: url });
+      });
   };
-
-  return importer;
 }

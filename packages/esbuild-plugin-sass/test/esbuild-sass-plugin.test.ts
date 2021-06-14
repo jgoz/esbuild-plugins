@@ -7,7 +7,7 @@ import prettier from 'prettier';
 import { sassPlugin } from '../src';
 
 describe.each(['sass', 'node-sass'])('esbuild-plugin-sass (implementation=%s)', implementation => {
-  it('react application (css loader)', async () => {
+  test('react application (css loader)', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/react');
     process.chdir(absWorkingDir);
 
@@ -37,7 +37,7 @@ describe.each(['sass', 'node-sass'])('esbuild-plugin-sass (implementation=%s)', 
     );
   });
 
-  it('open-iconic (dealing with relative paths & data urls)', async () => {
+  test('open-iconic (dealing with relative paths & data urls)', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/open-iconic');
     process.chdir(absWorkingDir);
 
@@ -89,7 +89,7 @@ describe.each(['sass', 'node-sass'])('esbuild-plugin-sass (implementation=%s)', 
     );
   });
 
-  it('postcss', async () => {
+  test('postcss', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/postcss');
     process.chdir(absWorkingDir);
 
@@ -143,7 +143,7 @@ describe.each(['sass', 'node-sass'])('esbuild-plugin-sass (implementation=%s)', 
     );
   });
 
-  it('watched files', async () => {
+  test('watched files', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/watch');
     process.chdir(absWorkingDir);
 
@@ -240,5 +240,35 @@ describe.each(['sass', 'node-sass'])('esbuild-plugin-sass (implementation=%s)', 
     } finally {
       result.stop?.();
     }
+  });
+
+  test('partials', async () => {
+    const absWorkingDir = path.resolve(__dirname, 'fixture/partials');
+    process.chdir(absWorkingDir);
+
+    await esbuild.build({
+      entryPoints: ['./src/import.scss'],
+      absWorkingDir: absWorkingDir,
+      outdir: './out',
+      bundle: true,
+      format: 'esm',
+      plugins: [sassPlugin({ implementation })],
+    });
+
+    const outCSS = fs.readFileSync('./out/import.css', 'utf-8');
+    expect(outCSS).toEqual(`/* sass:./src/import.scss */
+.index-a {
+  color: red;
+}
+.a {
+  color: white;
+}
+.b {
+  color: yellow;
+}
+.b {
+  color: yellow;
+}
+`);
   });
 });

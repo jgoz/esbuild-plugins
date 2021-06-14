@@ -125,7 +125,7 @@ export function sassPlugin(options: SassPluginOptions = {}): Plugin {
   }
 
   const sass = loadSass(options);
-  const importer = createSassImporter();
+  const importer = createSassImporter(sass, options.includePaths);
 
   function pathResolve({ resolveDir, path, importer }: OnResolveArgs) {
     return resolve(resolveDir || dirname(importer), path);
@@ -144,13 +144,17 @@ export function sassPlugin(options: SassPluginOptions = {}): Plugin {
   }
 
   async function renderSass(file: string) {
-    const {
-      css,
-      stats: { includedFiles },
-    } = sass.renderSync({ importer, ...options, file });
-    return Promise.resolve({
-      css: css.toString('utf-8'),
-      watchFiles: includedFiles,
+    return new Promise<{ css: string; watchFiles: string[] }>((resolve, reject) => {
+      sass.render({ importer, ...options, file }, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            css: result.css.toString('utf-8'),
+            watchFiles: result.stats.includedFiles,
+          });
+        }
+      });
     });
   }
 
