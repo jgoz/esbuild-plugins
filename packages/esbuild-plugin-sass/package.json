@@ -42,6 +42,7 @@
     "node-sass": "^6.0.0",
     "postcss": "^8.3.2",
     "postcss-preset-env": "^6.7.0",
+    "prettier": "^2.3.1",
     "sass": "^1.34.1",
     "typescript": "^4.3.2"
   },
