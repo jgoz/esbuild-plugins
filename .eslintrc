@@ -1,0 +1,4 @@
+{
+  "extends": "@awesome-code-style",
+  "root": true
+}
