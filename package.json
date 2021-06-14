@@ -1,0 +1,27 @@
+{
+  "name": "@jgoz/esbuild-plugins",
+  "private": true,
+  "author": "John Gozde <john@gozde.ca>",
+  "license": "MIT",
+  "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jgoz/esbuild-plugins.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jgoz/esbuild-plugins/issues"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "volta": {
+    "node": "16.3.0",
+    "npm": "7.17.0"
+  },
+  "devDependencies": {
+    "jest": "^27.0.4"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}
