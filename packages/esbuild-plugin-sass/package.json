@@ -18,21 +18,17 @@
     "sass",
     "sass-lang"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "dependencies": {
-    "enhanced-resolve": "^5.8.2",
-    "sass-loader": "^12.1.0"
+    "enhanced-resolve": "^5.8.2"
   },
   "peerDependencies": {
     "esbuild": ">= 0.12.8",
-    "fibers": ">= 5.x",
     "node-sass": ">= 5.x",
     "sass": ">= 1.x"
   },
   "peerDependenciesMeta": {
-    "fibers": {
-      "optional": true
-    },
     "node-sass": {
       "optional": true
     },

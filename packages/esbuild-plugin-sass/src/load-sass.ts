@@ -1,12 +1,12 @@
 import process from 'process';
 import type sass from 'sass';
 
-import type { SassPluginOptions } from './sass-plugin';
+import type { SaasImplementation } from './sass-plugin';
 
-export function loadSass({
-  implementation: module = 'sass',
-  basedir = process.cwd(),
-}: Pick<SassPluginOptions, 'basedir' | 'implementation'>): typeof sass {
+export function loadSass(
+  module: SaasImplementation = 'sass',
+  basedir: string = process.cwd(),
+): typeof sass {
   try {
     return require(require.resolve(module, { paths: [basedir] }));
   } catch (e) {

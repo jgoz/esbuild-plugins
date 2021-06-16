@@ -6,6 +6,8 @@ import { Importer, types } from 'sass';
 import { createSassImporter } from './create-sass-importer';
 import { loadSass } from './load-sass';
 
+export type SaasImplementation = 'sass' | 'node-sass';
+
 export interface SassPluginOptions {
   /**
    * "sass" for dart-sass (compiled to javascript, slow) or "node-sass" (libsass, fast yet deprecated)
@@ -13,7 +15,7 @@ export interface SassPluginOptions {
    *
    * @default "sass"
    */
-  implementation?: 'sass' | 'node-sass' | string;
+  implementation?: SaasImplementation;
 
   /**
    * Directory that paths will be relative to.
@@ -120,12 +122,10 @@ export interface SassPluginOptions {
 }
 
 export function sassPlugin(options: SassPluginOptions = {}): Plugin {
-  if (!options.basedir) {
-    options.basedir = process.cwd();
-  }
+  const { implementation = 'sass', basedir = process.cwd() } = options;
 
-  const sass = loadSass(options);
-  const importer = createSassImporter(sass, options.includePaths);
+  const importer = createSassImporter(implementation, options.includePaths);
+  const sass = loadSass(implementation, basedir);
 
   function pathResolve({ resolveDir, path, importer }: OnResolveArgs) {
     return resolve(resolveDir || dirname(importer), path);
@@ -160,7 +160,7 @@ export function sassPlugin(options: SassPluginOptions = {}): Plugin {
 
   return {
     name: 'sass-plugin',
-    setup: function (build) {
+    setup: build => {
       build.onResolve({ filter: /\.(s[ac]ss|css)$/ }, args => {
         return { path: args.path, namespace: 'sass', pluginData: args };
       });
