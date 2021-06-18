@@ -1,5 +1,8 @@
 {
   "extends": "./tsconfig.base.json",
   "files": [],
-  "references": [{ "path": "./packages/esbuild-plugin-sass" }]
+  "references": [
+    { "path": "./packages/esbuild-plugin-html" },
+    { "path": "./packages/esbuild-plugin-sass" }
+  ]
 }
