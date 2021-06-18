@@ -10,6 +10,13 @@ export type SaasImplementation = 'sass' | 'node-sass';
 
 export interface SassPluginOptions {
   /**
+   * Base directory to use when resolving the sass implementation.
+   *
+   * @default process.cwd()
+   */
+  basedir?: string;
+
+  /**
    * "sass" for dart-sass (compiled to javascript, slow) or "node-sass" (libsass, fast yet deprecated)
    * You can pass the module name of any other implementation as long as it is API compatible
    *
@@ -18,16 +25,28 @@ export interface SassPluginOptions {
   implementation?: SaasImplementation;
 
   /**
-   * Directory that paths will be relative to.
+   * Handles when the @import directive is encountered *inside a Sass file*.
+   * @see {@link https://github.com/sass/node-sass#importer--v200---experimental}
    *
-   * @default process.cwd()
-   */
-  basedir?: string;
-
-  /**
-   * Handles when the @import directive is encountered.
+   * If left undefined, a default importer will be used that closely mimics webpack's
+   * sass-loader resolution algorithm, which itself closely mimic's the default resolution
+   * algorithm of either dart-sass or node-sass.
    *
-   * A custom importer allows extension of the sass engine in both a synchronous and asynchronous manner.
+   * If you want to extend the import algorithm while keeping the default, you can import it
+   * like so:
+   *
+   * @example
+   * import { createSassImporter } from '@jgoz/esbuild-plugin-sass';
+   *
+   * const defaultImporter = createSassImporter(
+   *   'sass', // or 'node-sass' -- should match 'implementation' option
+   *   [], // includePaths
+   *   {}, // aliases
+   * );
+   *
+   * sassPlugin({
+   *   importer: [myImporter, defaultImporter]
+   * })
    *
    * @default undefined
    */
@@ -35,6 +54,7 @@ export interface SassPluginOptions {
 
   /**
    * Holds a collection of custom functions that may be invoked by the sass files being compiled.
+   * @see {@link https://github.com/sass/node-sass#functions--v300---experimental}
    *
    * @default undefined
    */
@@ -45,6 +65,7 @@ export interface SassPluginOptions {
   /**
    * An array of paths that should be looked in to attempt to resolve your @import declarations.
    * When using `data`, it is recommended that you use this.
+   * @see {@link https://github.com/sass/node-sass#includepaths}
    *
    * @default []
    */
@@ -52,6 +73,7 @@ export interface SassPluginOptions {
 
   /**
    * Enable Sass Indented Syntax for parsing the data string or file.
+   * @see {@link https://github.com/sass/node-sass#indentedsyntax}
    *
    * @default false
    */
@@ -59,6 +81,7 @@ export interface SassPluginOptions {
 
   /**
    * Used to determine whether to use space or tab character for indentation.
+   * @see {@link https://github.com/sass/node-sass#indenttype--v300}
    *
    * @default 'space'
    */
@@ -66,6 +89,7 @@ export interface SassPluginOptions {
 
   /**
    * Used to determine the number of spaces or tabs to be used for indentation.
+   * @see {@link https://github.com/sass/node-sass#indentwidth--v300}
    *
    * @default 2
    */
@@ -73,6 +97,7 @@ export interface SassPluginOptions {
 
   /**
    * Used to determine which sequence to use for line breaks.
+   * @see {@link https://github.com/sass/node-sass#linefeed--v300}
    *
    * @default 'lf'
    */
@@ -80,6 +105,7 @@ export interface SassPluginOptions {
 
   /**
    * Determines the output format of the final CSS style.
+   * @see {@link https://github.com/sass/node-sass#outputstyle}
    *
    * @default 'expanded'
    */
@@ -87,6 +113,7 @@ export interface SassPluginOptions {
 
   /**
    * Enables the outputting of a source map.
+   * @see {@link https://github.com/sass/node-sass#sourcemap}
    *
    * @default undefined
    */
@@ -94,6 +121,7 @@ export interface SassPluginOptions {
 
   /**
    * Includes the contents in the source map information.
+   * @see {@link https://github.com/sass/node-sass#sourcemapcontents}
    *
    * @default false
    */
@@ -101,6 +129,7 @@ export interface SassPluginOptions {
 
   /**
    * Embeds the source map as a data URI.
+   * @see {@link https://github.com/sass/node-sass#sourcemapembed}
    *
    * @default false
    */
@@ -108,13 +137,14 @@ export interface SassPluginOptions {
 
   /**
    * The value will be emitted as `sourceRoot` in the source map information.
+   * @see {@link https://github.com/sass/node-sass#sourcemaproot}
    *
    * @default undefined
    */
   sourceMapRoot?: string;
 
   /**
-   * A function which will post process the css file before wrapping it in a module
+   * A function which will post-process the css output before wrapping it in a module.
    *
    * @default undefined
    */
@@ -122,9 +152,12 @@ export interface SassPluginOptions {
 }
 
 export function sassPlugin(options: SassPluginOptions = {}): Plugin {
-  const { implementation = 'sass', basedir = process.cwd() } = options;
+  const {
+    basedir = process.cwd(),
+    implementation = 'sass',
+    importer = createSassImporter(implementation, options.includePaths),
+  } = options;
 
-  const importer = createSassImporter(implementation, options.includePaths);
   const sass = loadSass(implementation, basedir);
 
   function pathResolve({ resolveDir, path, importer }: OnResolveArgs) {
