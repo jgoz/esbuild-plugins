@@ -163,35 +163,6 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
       // which files should be added to the resulting HTML.
       build.initialOptions.metafile = true;
 
-      build.onStart(() => {
-        if (ignoreAssets) return;
-
-        assets = [];
-        document = parse(templateContent);
-        html = findChildElement(document, 'html') ?? addEmptyElement(document, 'html');
-        head = findChildElement(html, 'head') ?? addEmptyElement(html, 'head');
-        body = findChildElement(html, 'body') ?? addEmptyElement(html, 'body');
-
-        const tags = [
-          ...head.childNodes.filter(node => node.nodeName === 'link'),
-          ...head.childNodes.filter(node => node.nodeName === 'script'),
-          ...body.childNodes.filter(node => node.nodeName === 'script'),
-        ];
-
-        for (const tag of tags) {
-          const url = getUrl(tag);
-          if (!url || isAbsoluteOrURL(url.value)) continue;
-          const [inputPath, rebased, outputPath] = rebaseSrcPath(
-            url.value,
-            templatePath,
-            absOutDir,
-            publicPath,
-          );
-          url.value = rebased;
-          assets.push([inputPath, outputPath]);
-        }
-      });
-
       build.onEnd(async result => {
         const { metafile } = result;
         if (!metafile) {
@@ -200,7 +171,32 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
           );
         }
 
-        await Promise.all(assets.map(paths => fsp.copyFile(...paths)));
+        assets = [];
+        document = parse(templateContent);
+        html = findChildElement(document, 'html') ?? addEmptyElement(document, 'html');
+        head = findChildElement(html, 'head') ?? addEmptyElement(html, 'head');
+        body = findChildElement(html, 'body') ?? addEmptyElement(html, 'body');
+
+        if (!ignoreAssets) {
+          const tags = [
+            ...head.childNodes.filter(node => node.nodeName === 'link'),
+            ...head.childNodes.filter(node => node.nodeName === 'script'),
+            ...body.childNodes.filter(node => node.nodeName === 'script'),
+          ];
+
+          for (const tag of tags) {
+            const url = getUrl(tag);
+            if (!url || isAbsoluteOrURL(url.value)) continue;
+            const [inputPath, rebased, outputPath] = rebaseSrcPath(
+              url.value,
+              templatePath,
+              absOutDir,
+              publicPath,
+            );
+            url.value = rebased;
+            assets.push([inputPath, outputPath]);
+          }
+        }
 
         const links: Element[] = [];
         const scripts: Element[] = [];
@@ -215,7 +211,7 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
           if (crossorigin) attrs.push({ name: 'crossorigin', value: crossorigin });
 
           if (output.endsWith('.css')) {
-            attrs.push({ name: 'href', value: url });
+            attrs.push({ name: 'href', value: url }, { name: 'rel', value: 'stylesheet' });
             links.push(createElement(head, 'link', attrs));
           } else if (output.endsWith('.js')) {
             attrs.push({ name: 'src', value: url });
@@ -238,7 +234,13 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
           : scriptParent.childNodes.findIndex(node => isElement(node) && node.tagName === 'script');
         scriptParent.childNodes.splice(scriptIndex + 1, 0, ...scripts);
 
-        await fsp.writeFile(path.resolve(absOutDir, path.basename(template)), serialize(document));
+        await Promise.all(
+          assets
+            .map(paths => fsp.copyFile(...paths))
+            .concat(
+              fsp.writeFile(path.resolve(absOutDir, path.basename(template)), serialize(document)),
+            ),
+        );
       });
     },
   };
