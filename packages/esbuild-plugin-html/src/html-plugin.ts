@@ -1,5 +1,6 @@
+import { createHash } from 'crypto';
 import { Plugin } from 'esbuild';
-import fsp from 'fs/promises';
+import { createReadStream, promises as fsp } from 'fs';
 import { Attribute, ChildNode, Element, ParentNode, parse, serialize } from 'parse5';
 import path from 'path';
 
@@ -130,6 +131,7 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
         crossorigin,
         defer,
         ignoreAssets = false,
+        integrity,
         linkPosition = 'below',
         scriptPlacement = 'head-below',
         template,
@@ -227,27 +229,36 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
         // the HTML
         if (!modified) return;
 
-        const links: Element[] = cssOutput.map(cssPath => {
-          const url = getOutputUrl(cssPath, basedir, publicPath);
-          const attrs: Attribute[] = collect([
-            { name: 'href', value: url },
-            { name: 'rel', value: 'stylesheet' },
-            crossorigin && { name: 'crossorigin', value: crossorigin },
-          ]);
-          return createElement(head, 'link', attrs);
-        });
+        const links: Element[] = await Promise.all(
+          cssOutput.map(filePath =>
+            createLinkElement({
+              basedir,
+              crossorigin,
+              defer,
+              integrity,
+              outputPath: filePath,
+              parentNode: head,
+              publicPath,
+              useModuleType,
+            }),
+          ),
+        );
 
         const scriptParent = scriptPlacement.startsWith('head') ? head : body;
-        const scripts: Element[] = jsOutput.map(jsPath => {
-          const url = getOutputUrl(jsPath, basedir, publicPath);
-          const attrs: Attribute[] = collect([
-            { name: 'src', value: url },
-            useModuleType && { name: 'type', value: 'module' },
-            !useModuleType && defer && { name: 'defer', value: '' },
-            crossorigin && { name: 'crossorigin', value: crossorigin },
-          ]);
-          return createElement(scriptParent, 'script', attrs);
-        });
+        const scripts: Element[] = await Promise.all(
+          jsOutput.map(filePath =>
+            createScriptElement({
+              basedir,
+              crossorigin,
+              defer,
+              integrity,
+              outputPath: filePath,
+              parentNode: scriptParent,
+              publicPath,
+              useModuleType,
+            }),
+          ),
+        );
 
         const linkIndex =
           linkPosition === 'below'
@@ -294,6 +305,66 @@ function createElement(parentNode: ParentNode, tagName: string, attrs: Attribute
   };
 }
 
+interface CreateElementOptions {
+  basedir: string;
+  crossorigin: Crossorigin | undefined;
+  defer: boolean | undefined;
+  integrity: HashAlgorithm | undefined;
+  outputPath: string;
+  parentNode: ParentNode;
+  publicPath: string | undefined;
+  useModuleType: boolean | undefined;
+}
+
+async function createLinkElement({
+  basedir,
+  crossorigin,
+  integrity,
+  outputPath,
+  parentNode,
+  publicPath,
+}: CreateElementOptions): Promise<Element> {
+  const absOutputPath = path.resolve(basedir, outputPath);
+  const filename = path.basename(absOutputPath);
+  const url = publicPath ? path.join(publicPath, filename) : `${filename}`;
+  const attrs: Attribute[] = collect([
+    { name: 'href', value: url },
+    { name: 'rel', value: 'stylesheet' },
+    crossorigin && { name: 'crossorigin', value: crossorigin },
+    integrity && {
+      name: 'integrity',
+      value: await calculateIntegrityHash(absOutputPath, integrity),
+    },
+  ]);
+  return createElement(parentNode, 'link', attrs);
+}
+
+async function createScriptElement({
+  basedir,
+  crossorigin,
+  defer,
+  integrity,
+  outputPath,
+  parentNode,
+  publicPath,
+  useModuleType,
+}: CreateElementOptions): Promise<Element> {
+  const absOutputPath = path.resolve(basedir, outputPath);
+  const filename = path.basename(absOutputPath);
+  const url = publicPath ? path.join(publicPath, filename) : `${filename}`;
+  const attrs: Attribute[] = collect([
+    { name: 'src', value: url },
+    useModuleType && { name: 'type', value: 'module' },
+    !useModuleType && defer && { name: 'defer', value: '' },
+    crossorigin && { name: 'crossorigin', value: crossorigin },
+    integrity && {
+      name: 'integrity',
+      value: await calculateIntegrityHash(absOutputPath, integrity),
+    },
+  ]);
+  return createElement(parentNode, 'script', attrs);
+}
+
 function isElement(node: ChildNode | undefined): node is Element {
   return !!node && node.nodeName !== '#comment' && node.nodeName !== '#text';
 }
@@ -338,14 +409,17 @@ function isAbsoluteOrURL(src: string): boolean {
   return path.isAbsolute(src) || src.includes('://') || src.startsWith('data:');
 }
 
-function getOutputUrl(
-  esbuildOutputPath: string,
-  basedir: string,
-  publicPath: string | undefined,
-): string {
-  const absOutputPath = path.resolve(basedir, esbuildOutputPath);
-  const outputName = path.basename(absOutputPath);
-  return publicPath ? path.join(publicPath, outputName) : `${outputName}`;
+async function calculateIntegrityHash(filePath: string, integrity: HashAlgorithm): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const hash = createHash(integrity);
+    const stream = createReadStream(filePath);
+
+    stream.on('data', d => hash.update(d));
+    stream.on('end', () => {
+      resolve(`${integrity}-${hash.digest('base64')}`);
+    });
+    stream.on('error', reject);
+  });
 }
 
 function collect<T>(values: (T | false | undefined | null)[]): T[] {
