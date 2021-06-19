@@ -1,6 +1,6 @@
 import { Plugin } from 'esbuild';
 import fsp from 'fs/promises';
-import { Attribute, ChildNode, Document, Element, ParentNode, parse, serialize } from 'parse5';
+import { Attribute, ChildNode, Element, ParentNode, parse, serialize } from 'parse5';
 import path from 'path';
 
 /**
@@ -120,6 +120,9 @@ export interface HtmlPluginOptions {
 }
 
 export function htmlPlugin(options: HtmlPluginOptions): Plugin {
+  const copyFile = cachedCopyFile();
+  const outputCache = new Set<string>();
+
   return {
     name: 'html-plugin',
     setup: async build => {
@@ -147,11 +150,6 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
       const templatePath = path.resolve(basedir, template);
 
       let templateContent: string;
-      let assets: [string, string][] = [];
-      let document: Document;
-      let html: Element;
-      let head: Element;
-      let body: Element;
 
       try {
         templateContent = await fsp.readFile(templatePath, { encoding: 'utf-8' });
@@ -171,11 +169,11 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
           );
         }
 
-        assets = [];
-        document = parse(templateContent);
-        html = findChildElement(document, 'html') ?? addEmptyElement(document, 'html');
-        head = findChildElement(html, 'head') ?? addEmptyElement(html, 'head');
-        body = findChildElement(html, 'body') ?? addEmptyElement(html, 'body');
+        const assets: [string, string][] = [];
+        const document = parse(templateContent);
+        const html = findChildElement(document, 'html') ?? addEmptyElement(document, 'html');
+        const head = findChildElement(html, 'head') ?? addEmptyElement(html, 'head');
+        const body = findChildElement(html, 'body') ?? addEmptyElement(html, 'body');
 
         if (!ignoreAssets) {
           const tags = [
@@ -187,62 +185,101 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
           for (const tag of tags) {
             const url = getUrl(tag);
             if (!url || isAbsoluteOrURL(url.value)) continue;
-            const [inputPath, rebased, outputPath] = rebaseSrcPath(
-              url.value,
-              templatePath,
-              absOutDir,
-              publicPath,
-            );
+
+            // The input path (url.value) is relative to the template file, so
+            // rebase it relative to publicPath and determine the output path
+            const inputPath = path.resolve(path.dirname(templatePath), url.value);
+            const basename = path.basename(inputPath);
+            const rebased = publicPath
+              ? publicPath.includes('://')
+                ? new URL(basename, publicPath).href
+                : path.join(publicPath, basename)
+              : `${basename}`;
             url.value = rebased;
+
+            const outputPath = path.resolve(outdir, basename);
             assets.push([inputPath, outputPath]);
           }
         }
 
-        const links: Element[] = [];
-        const scripts: Element[] = [];
-        const scriptParent = scriptPlacement.startsWith('head') ? head : body;
+        const outputs = Object.keys(metafile.outputs);
+        const cssOutput = outputs.filter(o => o.endsWith('.css'));
+        const jsOutput = outputs.filter(o => o.endsWith('.js'));
 
-        for (const output of Object.keys(metafile.outputs)) {
-          const outputPath = path.resolve(basedir, output);
-          const outputName = path.basename(outputPath);
-          const url = publicPath ? path.join(publicPath, outputName) : `/${outputName}`;
-          const attrs: Attribute[] = [];
-
-          if (crossorigin) attrs.push({ name: 'crossorigin', value: crossorigin });
-
-          if (output.endsWith('.css')) {
-            attrs.push({ name: 'href', value: url }, { name: 'rel', value: 'stylesheet' });
-            links.push(createElement(head, 'link', attrs));
-          } else if (output.endsWith('.js')) {
-            attrs.push({ name: 'src', value: url });
-            if (useModuleType) attrs.push({ name: 'type', value: 'module' });
-            if (!useModuleType && defer) attrs.push({ name: 'defer', value: '' });
-            scripts.push(createElement(scriptParent, 'script', attrs));
+        // Check whether any of the output file names have changed since the last
+        // build finished
+        let modified = false;
+        const currentOutputs = new Set([...cssOutput, ...jsOutput]);
+        for (const output of currentOutputs) {
+          if (!outputCache.has(output)) {
+            outputCache.add(output);
+            modified = true;
+          }
+        }
+        for (const output of outputCache) {
+          if (!currentOutputs.has(output)) {
+            outputCache.delete(output);
+            modified = true;
           }
         }
 
+        // If no output filenames have changed, then there is no need to emit
+        // the HTML
+        if (!modified) return;
+
+        const links: Element[] = cssOutput.map(cssPath => {
+          const url = getOutputUrl(cssPath, basedir, publicPath);
+          const attrs: Attribute[] = collect([
+            { name: 'href', value: url },
+            { name: 'rel', value: 'stylesheet' },
+            crossorigin && { name: 'crossorigin', value: crossorigin },
+          ]);
+          return createElement(head, 'link', attrs);
+        });
+
+        const scriptParent = scriptPlacement.startsWith('head') ? head : body;
+        const scripts: Element[] = jsOutput.map(jsPath => {
+          const url = getOutputUrl(jsPath, basedir, publicPath);
+          const attrs: Attribute[] = collect([
+            { name: 'src', value: url },
+            useModuleType && { name: 'type', value: 'module' },
+            !useModuleType && defer && { name: 'defer', value: '' },
+            crossorigin && { name: 'crossorigin', value: crossorigin },
+          ]);
+          return createElement(scriptParent, 'script', attrs);
+        });
+
         const linkIndex =
           linkPosition === 'below'
-            ? findLastChildIndex(head, ['link', 'style'])
-            : head.childNodes.findIndex(
-                node => isElement(node) && ['link', 'style'].includes(node.tagName),
-              );
-        head.childNodes.splice(linkIndex + 1, 0, ...links);
+            ? findLastChildIndex(head, isLinkOrStyle)
+            : head.childNodes.findIndex(isLinkOrStyle);
 
         const scriptIndex = scriptPlacement.endsWith('below')
-          ? findLastChildIndex(scriptParent, ['script']) + 1
-          : scriptParent.childNodes.findIndex(node => isElement(node) && node.tagName === 'script');
+          ? findLastChildIndex(scriptParent, isScript) + 1
+          : scriptParent.childNodes.findIndex(isScript);
+
+        head.childNodes.splice(linkIndex + 1, 0, ...links);
         scriptParent.childNodes.splice(scriptIndex + 1, 0, ...scripts);
 
         await Promise.all(
           assets
-            .map(paths => fsp.copyFile(...paths))
+            .map(paths => copyFile(...paths))
             .concat(
               fsp.writeFile(path.resolve(absOutDir, path.basename(template)), serialize(document)),
             ),
         );
       });
     },
+  };
+}
+
+function cachedCopyFile(): (input: string, output: string) => Promise<void> {
+  const modified = new Map<string, number>();
+  return async (input, output) => {
+    const stat = await fsp.stat(input);
+    if (modified.get(input) === stat.mtimeMs) return;
+    modified.set(input, stat.mtimeMs);
+    await fsp.copyFile(input, output);
   };
 }
 
@@ -261,15 +298,26 @@ function isElement(node: ChildNode | undefined): node is Element {
   return !!node && node.nodeName !== '#comment' && node.nodeName !== '#text';
 }
 
+function isScript(node: ChildNode): boolean {
+  return isElement(node) && node.tagName === 'script';
+}
+
+function isLinkOrStyle(node: ChildNode): boolean {
+  return isElement(node) && (node.tagName === 'style' || node.tagName === 'link');
+}
+
 function findChildElement(parentNode: ParentNode, tagName: string): Element | undefined {
   const found = parentNode.childNodes.find(node => isElement(node) && node.tagName === tagName);
   return found as Element | undefined;
 }
 
-function findLastChildIndex(parentNode: ParentNode, tagNames: string[]): number {
+function findLastChildIndex(
+  parentNode: ParentNode,
+  predicate: (node: ChildNode) => boolean,
+): number {
   for (let i = parentNode.childNodes.length; i >= 0; i--) {
     const el = parentNode.childNodes[i];
-    if (isElement(el) && tagNames.includes(el.tagName)) return i;
+    if (predicate(el)) return i;
   }
   return 0;
 }
@@ -290,19 +338,16 @@ function isAbsoluteOrURL(src: string): boolean {
   return path.isAbsolute(src) || src.includes('://') || src.startsWith('data:');
 }
 
-function rebaseSrcPath(
-  src: string,
-  templatePath: string,
-  outdir: string,
+function getOutputUrl(
+  esbuildOutputPath: string,
+  basedir: string,
   publicPath: string | undefined,
-): [inputPath: string, rebased: string, outputPath: string] {
-  const absolutePath = path.resolve(path.dirname(templatePath), src);
-  const basename = path.basename(absolutePath);
-  const rebased = publicPath
-    ? publicPath.includes('://')
-      ? new URL(basename, publicPath).href
-      : path.join(publicPath, basename)
-    : `/${basename}`;
-  const outputPath = path.resolve(outdir, basename);
-  return [absolutePath, rebased, outputPath];
+): string {
+  const absOutputPath = path.resolve(basedir, esbuildOutputPath);
+  const outputName = path.basename(absOutputPath);
+  return publicPath ? path.join(publicPath, outputName) : `${outputName}`;
+}
+
+function collect<T>(values: (T | false | undefined | null)[]): T[] {
+  return values.filter((v): v is T => !!v);
 }
