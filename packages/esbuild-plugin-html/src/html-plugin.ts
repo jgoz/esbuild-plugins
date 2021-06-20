@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 import { Plugin } from 'esbuild';
 import { createReadStream, promises as fsp } from 'fs';
-import { Attribute, ChildNode, Element, ParentNode, parse, serialize } from 'parse5';
+import { Attribute, ChildNode, Element, ParentNode, parse, serialize, TextNode } from 'parse5';
 import path from 'path';
 
 /**
@@ -56,8 +56,8 @@ export interface HtmlPluginOptions {
   defer?: boolean;
 
   /**
-   * By default, assets (images, manifests, scripts, etc.) referenced by `<link>` and `<script>`
-   * tags in the HTML template will be collected as esbuild assets if their `src` attributes
+   * By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and
+   * `<script>` tags in the HTML template will be collected as esbuild assets if their `src` attributes
    * are specified as relative paths. The asset paths will be resolved relative to the *template file*
    * and will be copied to the output directory, taking `publicPath` into consideration if it has
    * been set.
@@ -171,12 +171,12 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
           );
         }
 
-        const assets: [string, string][] = [];
         const document = parse(templateContent);
         const html = findChildElement(document, 'html') ?? addEmptyElement(document, 'html');
         const head = findChildElement(html, 'head') ?? addEmptyElement(html, 'head');
         const body = findChildElement(html, 'body') ?? addEmptyElement(html, 'body');
 
+        const assets: [string, string][] = [];
         if (!ignoreAssets) {
           const tags = [
             ...head.childNodes.filter(node => node.nodeName === 'link'),
@@ -188,19 +188,31 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
             const url = getUrl(tag);
             if (!url || isAbsoluteOrURL(url.value)) continue;
 
-            // The input path (url.value) is relative to the template file, so
-            // rebase it relative to publicPath and determine the output path
-            const inputPath = path.resolve(path.dirname(templatePath), url.value);
-            const basename = path.basename(inputPath);
-            const rebased = publicPath
-              ? publicPath.includes('://')
-                ? new URL(basename, publicPath).href
-                : path.join(publicPath, basename)
-              : `${basename}`;
-            url.value = rebased;
+            const { basename, inputPath, rebasedURL } = rebaseAssetURL(
+              url.value,
+              templatePath,
+              publicPath,
+            );
 
-            const outputPath = path.resolve(outdir, basename);
-            assets.push([inputPath, outputPath]);
+            url.value = rebasedURL;
+            assets.push([inputPath, path.resolve(absOutDir, basename)]);
+          }
+
+          for (const tag of head.childNodes.filter(node => node.nodeName === 'style')) {
+            const text = isElement(tag) && tag.childNodes.find(isTextNode);
+            if (!text) continue;
+            for (const url of parseURLs(text.value)) {
+              if (!url || isAbsoluteOrURL(url)) continue;
+
+              const { basename, inputPath, rebasedURL } = rebaseAssetURL(
+                url,
+                templatePath,
+                publicPath,
+              );
+
+              text.value = text.value.replace(url, rebasedURL);
+              assets.push([inputPath, path.resolve(absOutDir, basename)]);
+            }
           }
         }
 
@@ -369,6 +381,10 @@ function isElement(node: ChildNode | undefined): node is Element {
   return !!node && node.nodeName !== '#comment' && node.nodeName !== '#text';
 }
 
+function isTextNode(node: ChildNode): node is TextNode {
+  return node.nodeName === '#text';
+}
+
 function isScript(node: ChildNode): boolean {
   return isElement(node) && node.tagName === 'script';
 }
@@ -424,4 +440,91 @@ async function calculateIntegrityHash(filePath: string, integrity: HashAlgorithm
 
 function collect<T>(values: (T | false | undefined | null)[]): T[] {
   return values.filter((v): v is T => !!v);
+}
+
+function rebaseAssetURL(
+  inputURL: string,
+  templatePath: string,
+  publicPath: string | undefined,
+): {
+  basename: string;
+  rebasedURL: string;
+  inputPath: string;
+} {
+  const queryPos = inputURL.indexOf('?');
+  const hashPos = inputURL.indexOf('#');
+  const pathEnd = queryPos < 0 ? hashPos : hashPos < 0 ? queryPos : Math.min(queryPos, hashPos);
+  const url = pathEnd < 0 ? inputURL : inputURL.slice(0, pathEnd);
+
+  // The input URL is relative to the template file, so
+  // rebase it relative to publicPath
+  const basename = path.basename(url);
+  const inputPath = path.resolve(path.dirname(templatePath), url);
+  const rebased = publicPath
+    ? publicPath.includes('://')
+      ? new URL(basename, publicPath).href
+      : path.join(publicPath, basename)
+    : `${basename}`;
+
+  return {
+    rebasedURL: pathEnd < 0 ? rebased : rebased + inputURL.slice(pathEnd),
+    inputPath,
+    basename,
+  };
+}
+
+const closingToken: Record<string, string> = {
+  '(': ')',
+  '"': '"',
+  "'": "'",
+};
+
+function parseURLs(text: string): string[] {
+  const urls: string[] = [];
+  const length = text.length;
+  let index = 0;
+
+  const stack: string[] = [];
+  while ((index = text.indexOf('url', index)) > 0) {
+    // Skip over "url"
+    index += 3;
+    index += skipWhitespace(text, index);
+
+    // Find opening "("
+    if (text[index] !== '(') continue;
+    stack.push(text[index++]);
+    index += skipWhitespace(text, index);
+
+    // Quotes are optional, but need to balance
+    switch (text[index]) {
+      case `'`:
+      case `"`:
+        stack.push(text[index++]);
+        break;
+    }
+    index += skipWhitespace(text, index);
+
+    // Start capturing the actual URL
+    const start = index;
+    let end = index;
+    while (stack.length > 0 && index < length) {
+      if (text[index] === closingToken[stack[stack.length - 1]]) {
+        stack.pop();
+        index += skipWhitespace(text, index);
+      } else {
+        end++;
+      }
+      index++;
+    }
+
+    urls.push(text.slice(start, end).trim());
+  }
+
+  return urls;
+}
+
+function skipWhitespace(text: string, index: number): number {
+  let offset = 0;
+  while (/\s/.test(text[index + offset])) offset++;
+  return offset;
 }
