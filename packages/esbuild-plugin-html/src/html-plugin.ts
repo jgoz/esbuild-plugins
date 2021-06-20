@@ -56,6 +56,15 @@ export interface HtmlPluginOptions {
   defer?: boolean;
 
   /**
+   * Output filename.
+   *
+   * By default, the filename will be the same as the basename of the template file.
+   *
+   * @default undefined
+   */
+  filename?: string;
+
+  /**
    * By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and
    * `<script>` tags in the HTML template will be collected as esbuild assets if their `src` attributes
    * are specified as relative paths. The asset paths will be resolved relative to the *template file*
@@ -130,6 +139,7 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
       const {
         crossorigin,
         defer,
+        filename = path.basename(options.template),
         ignoreAssets = false,
         integrity,
         linkPosition = 'below',
@@ -284,13 +294,10 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
         head.childNodes.splice(linkIndex + 1, 0, ...links);
         scriptParent.childNodes.splice(scriptIndex + 1, 0, ...scripts);
 
-        await Promise.all(
-          assets
-            .map(paths => copyFile(...paths))
-            .concat(
-              fsp.writeFile(path.resolve(absOutDir, path.basename(template)), serialize(document)),
-            ),
-        );
+        await Promise.all([
+          fsp.writeFile(path.resolve(absOutDir, filename), serialize(document)),
+          ...assets.map(paths => copyFile(...paths)),
+        ]);
       });
     },
   };
