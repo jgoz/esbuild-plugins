@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import * as esbuild from 'esbuild';
+import esbuild from 'esbuild';
 import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
 
 import { sassPlugin } from '../src';
+import { SaasImplementation } from '../src/sass-plugin';
 
-describe.each(['sass', 'node-sass'])('esbuild-plugin-sass (implementation=%s)', implementation => {
+const implementations: SaasImplementation[] = ['sass', 'node-sass'];
+
+describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implementation => {
   test('react application (css loader)', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/react');
     process.chdir(absWorkingDir);
