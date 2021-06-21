@@ -230,4 +230,14 @@ describe('eslint-plugin-html', () => {
     );
     expect(output).toMatchSnapshot();
   });
+
+  it('substitutes values from "define" in output HTML', async () => {
+    const output = await buildWithHTML('template-define', {
+      define: {
+        'VERSION': '1.2.3',
+        'process.env.NODE_ENV': 'development',
+      },
+    });
+    expect(output).toMatchSnapshot();
+  });
 });

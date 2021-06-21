@@ -1367,6 +1367,97 @@ import("/static/c-RYJBTEBJ.js").then(({ C }) => {
 
 `;
 
+exports[`eslint-plugin-html substitutes values from "define" in output HTML 1`] = `
+---------------------------------
+template-define.html
+---------------------------------
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="John Gozde" />
+    <meta name="google" value="notranslate" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="http://icons.com/icon.png?development"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Complex Template</title>
+    <style type="text/css" media="screen, print"></style>
+    <link rel="stylesheet" href="https://google.com/fonts?1.2.3" />
+    <link href="template-define.css" rel="stylesheet" />
+    <script>
+      window.global = window;
+      window.version = "1.2.3";
+      window.environment = "development";
+    </script>
+    <script src="template-define.js" type="module"></script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="http://google.com/analytics"></script>
+  </body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-define.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-define.js
+---------------------------------
+// fixture/template-define.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
 exports[`eslint-plugin-html supports "crossorigin": "anonymous" 1`] = `
 ---------------------------------
 template-basic.html

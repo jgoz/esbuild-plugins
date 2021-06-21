@@ -72,6 +72,36 @@ export interface HtmlPluginOptions {
   defer?: boolean;
 
   /**
+   * Values that will be substituted in the HTML output.
+   *
+   * Given the following value for `define`:
+   *
+   * ```
+   * define: {
+   *  FOO: 'foo',
+   *  BAR: 'bar',
+   * }
+   * ```
+   *
+   * The HTML template may use `{{FOO}}` and `{{BAR}}` wherever those
+   * values should be substituted.
+   *
+   * Note that unlike the `define` option in esbuild, strings should not be
+   * wrapped in `JSON.stringify`, since values will be substituted directly into
+   * the output. This means if any values are used in strings inside of inline `<script>`
+   * elements, they should be wrapped in quotes inside of the script. E.g.,
+   *
+   * ```html
+   * <script>
+   *   const foo = "{{FOO}}";
+   * </script>
+   * ```
+   *
+   * @default undefined
+   */
+  define?: Record<string, string>;
+
+  /**
    * Output filename.
    *
    * By default, the filename will be the same as the basename of the template file.
@@ -149,6 +179,7 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
   const {
     crossorigin,
     defer,
+    define,
     filename = path.basename(options.template),
     ignoreAssets = false,
     integrity,
@@ -327,9 +358,17 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
 
         scriptParent.childNodes.splice(scriptIndex, 0, ...scripts);
 
+        let htmlOutput = serialize(document);
+        if (define) {
+          for (const def of Object.keys(define)) {
+            const re = new RegExp(`\\{\\{\\s*${def}\\s*\\}\\}`, 'gi');
+            htmlOutput = htmlOutput.replace(re, define[def]);
+          }
+        }
+
         const writeHTMLOutput = fsp
           .mkdir(absOutDir, { recursive: true })
-          .then(() => fsp.writeFile(path.resolve(absOutDir, filename), serialize(document)));
+          .then(() => fsp.writeFile(path.resolve(absOutDir, filename), htmlOutput));
 
         await Promise.all([writeHTMLOutput, ...assets.map(paths => copyFile(...paths))]);
       });
