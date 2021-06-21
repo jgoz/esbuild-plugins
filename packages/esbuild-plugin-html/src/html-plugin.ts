@@ -102,6 +102,19 @@ export interface HtmlPluginOptions {
   define?: Record<string, string>;
 
   /**
+   * If provided, only the matching entry points will be included as `<script>` or
+   * `<link>` elements in the output HTML.
+   *
+   * The entry points may be specified with or without a `.js` or `.css` file extension.
+   * Not including an extension will match both JS and CSS entry points with the same name.
+   *
+   * By default, all entry points provided to esbuild will be included in the HTML output.
+   *
+   * @default undefined
+   */
+  entryPoints?: string[];
+
+  /**
    * Output filename.
    *
    * By default, the filename will be the same as the basename of the template file.
@@ -180,6 +193,7 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
     crossorigin,
     defer,
     define,
+    entryPoints: includedEntryPoints,
     filename = path.basename(options.template),
     ignoreAssets = false,
     integrity,
@@ -212,9 +226,11 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
       const absOutDir = path.resolve(basedir, outdir);
       const useModuleType = format === 'esm';
       const templatePath = path.resolve(basedir, template);
-      const entries = Array.isArray(entryPoints)
-        ? entryPoints.map(entry => path.basename(entry, path.extname(entry)))
-        : Object.keys(entryPoints).map(entry => path.basename(entry, path.extname(entry)));
+      const entries =
+        includedEntryPoints ??
+        (Array.isArray(entryPoints)
+          ? entryPoints.map(entry => path.basename(entry, path.extname(entry)))
+          : Object.keys(entryPoints).map(entry => path.basename(entry, path.extname(entry))));
 
       let templateContent: string;
 
@@ -353,8 +369,8 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
         head.childNodes.splice(linkIndex, 0, ...links);
 
         const scriptIndex = scriptPlacement.endsWith('below')
-          ? findLastChildIndex(scriptParent, isScript) + 1
-          : scriptParent.childNodes.findIndex(isScript);
+          ? findLastChildIndex(scriptParent, isScriptOrLinkOrStyle) + 1
+          : scriptParent.childNodes.findIndex(isScriptOrLinkOrStyle);
 
         scriptParent.childNodes.splice(scriptIndex, 0, ...scripts);
 
@@ -465,8 +481,11 @@ function isTextNode(node: ChildNode): node is TextNode {
   return node.nodeName === '#text';
 }
 
-function isScript(node: ChildNode): boolean {
-  return isElement(node) && node.tagName === 'script';
+function isScriptOrLinkOrStyle(node: ChildNode): boolean {
+  return (
+    isElement(node) &&
+    (node.tagName === 'style' || node.tagName === 'link' || node.tagName === 'script')
+  );
 }
 
 function isLinkOrStyle(node: ChildNode): boolean {

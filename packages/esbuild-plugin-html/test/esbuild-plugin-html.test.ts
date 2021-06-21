@@ -7,7 +7,7 @@ import { htmlPlugin, HtmlPluginOptions } from '../src';
 
 jest.mock('fs');
 
-async function* walk(dirPath: string) {
+async function* walk(dirPath: string): AsyncIterable<string> {
   for await (const d of await fs.promises.readdir(dirPath, { withFileTypes: true })) {
     const entry = path.join(dirPath, d.name);
     if (d.isDirectory()) yield* walk(entry);
@@ -16,7 +16,7 @@ async function* walk(dirPath: string) {
 }
 
 interface BuildWithHTMLOutput {
-  html: string;
+  html: string[];
   assets: string[];
 }
 
@@ -27,15 +27,17 @@ expect.addSnapshotSerializer({
   serialize: (val: unknown) => {
     const value = val as BuildWithHTMLOutput;
     const output: string[] = [];
-    output.push(SEPARATOR);
-    output.push(path.basename(value.html));
-    output.push(SEPARATOR);
 
-    const html = fs.readFileSync(value.html, 'utf-8');
-    output.push(prettier.format(html, { parser: 'html' }));
+    for (const html of value.html) {
+      output.push(SEPARATOR);
+      output.push(path.basename(html));
+      output.push(SEPARATOR);
+
+      const content = fs.readFileSync(html, 'utf-8');
+      output.push(prettier.format(content, { parser: 'html' }));
+    }
 
     for (const asset of value.assets) {
-      if (asset === value.html) continue;
       output.push(SEPARATOR);
       output.push(path.basename(asset));
       output.push(SEPARATOR);
@@ -67,27 +69,29 @@ async function buildWithHTML(
     format: 'esm',
     splitting: true,
     write: false,
+    plugins: [htmlPlugin(options)],
     ...buildOptionOverrides,
     outdir: path.relative(absWorkingDir, absOutDir),
   };
 
   // First build generates the actual output files, which is necessary because
   // we are using an in-memory FS that esbuild isn't aware of
-  const result = await build(buildOptions);
+  const { plugins, ...buildOptionsWithoutPlugins } = buildOptions;
+  const result = await build(buildOptionsWithoutPlugins);
   for (const file of result.outputFiles!) {
     await fs.promises.writeFile(file.path, file.contents);
   }
 
   // Second build actually produces the HTML output
-  await build({ ...buildOptions, plugins: [htmlPlugin(options)] });
+  await build(buildOptions);
 
   try {
-    const htmlFileName = options.filename ?? `${fixture}.html`;
-    const html = path.resolve(absOutDir, htmlFileName);
-
+    const html: string[] = [];
     const assets: string[] = [];
+
     for await (const entry of walk(absOutDir)) {
-      assets.push(entry);
+      if (entry.endsWith('.html')) html.push(entry);
+      else assets.push(entry);
     }
 
     return { html, assets };
@@ -238,6 +242,51 @@ describe('eslint-plugin-html', () => {
         'process.env.NODE_ENV': 'development',
       },
     });
+    expect(output).toMatchSnapshot();
+  });
+
+  it('can handle multiple entry points', async () => {
+    const output = await buildWithHTML(
+      'template-basic',
+      {},
+      {
+        entryPoints: ['./fixture/template-basic.js', './fixture/template-complex.js'],
+      },
+    );
+    expect(output).toMatchSnapshot();
+  });
+
+  it('can include only some entry points', async () => {
+    const output = await buildWithHTML(
+      'template-basic',
+      {
+        entryPoints: ['template-basic'],
+      },
+      {
+        entryPoints: ['./fixture/template-basic.js', './fixture/template-complex.js'],
+      },
+    );
+    expect(output).toMatchSnapshot();
+  });
+
+  it('can be used multiple times', async () => {
+    const output = await buildWithHTML(
+      'template-basic',
+      {},
+      {
+        entryPoints: ['./fixture/template-basic.js', './fixture/template-complex.js'],
+        plugins: [
+          htmlPlugin({
+            template: './fixture/template-basic.html',
+            entryPoints: ['template-basic'],
+          }),
+          htmlPlugin({
+            template: './fixture/template-complex.html',
+            entryPoints: ['template-complex'],
+          }),
+        ],
+      },
+    );
     expect(output).toMatchSnapshot();
   });
 });
