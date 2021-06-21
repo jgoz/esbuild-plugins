@@ -1,0 +1,1328 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`eslint-plugin-html adds integrity if requested 1`] = `
+---------------------------------
+template-basic.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      href="template-basic.css"
+      rel="stylesheet"
+      integrity="sha256-Q74SycgrBq0ejZ+ml+Itpcffb8CS70NRrTxZTJ027yU="
+    />
+    <script
+      src="template-basic.js"
+      type="module"
+      integrity="sha256-QAamFdBResqMLdiEYs1XFcWxujo9AQQUdb++c8DCQcE="
+    ></script>
+  </head>
+  <body></body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-basic.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-basic.js
+---------------------------------
+// fixture/template-basic.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html adds missing elements if not defined in the template 1`] = `
+---------------------------------
+template-empty.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="template-empty.js" type="module"></script>
+  </head>
+  <body></body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-empty.js
+---------------------------------
+// fixture/template-empty.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html adds scripts and styles to HEAD by default 1`] = `
+---------------------------------
+template-basic.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="template-basic.css" rel="stylesheet" />
+    <script src="template-basic.js" type="module"></script>
+  </head>
+  <body></body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-basic.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-basic.js
+---------------------------------
+// fixture/template-basic.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html can place scripts above existing scripts in BODY 1`] = `
+---------------------------------
+template-complex.html
+---------------------------------
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="John Gozde" />
+    <meta name="google" value="notranslate" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="http://icons.com/icon.png"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Complex Template</title>
+    <style type="text/css" media="screen, print"></style>
+    <link rel="stylesheet" href="https://google.com/fonts" />
+    <link href="template-complex.css" rel="stylesheet" />
+    <script>
+      window.global = window;
+    </script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="template-complex.js" type="module"></script>
+    <script src="http://google.com/analytics"></script>
+  </body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-complex.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-complex.js
+---------------------------------
+// fixture/template-complex.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html can place scripts above existing scripts in HEAD 1`] = `
+---------------------------------
+template-complex.html
+---------------------------------
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="John Gozde" />
+    <meta name="google" value="notranslate" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="http://icons.com/icon.png"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Complex Template</title>
+    <style type="text/css" media="screen, print"></style>
+    <link rel="stylesheet" href="https://google.com/fonts" />
+    <link href="template-complex.css" rel="stylesheet" />
+    <script src="template-complex.js" type="module"></script>
+    <script>
+      window.global = window;
+    </script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="http://google.com/analytics"></script>
+  </body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-complex.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-complex.js
+---------------------------------
+// fixture/template-complex.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html can place scripts below existing scripts in BODY 1`] = `
+---------------------------------
+template-complex.html
+---------------------------------
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="John Gozde" />
+    <meta name="google" value="notranslate" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="http://icons.com/icon.png"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Complex Template</title>
+    <style type="text/css" media="screen, print"></style>
+    <link rel="stylesheet" href="https://google.com/fonts" />
+    <link href="template-complex.css" rel="stylesheet" />
+    <script>
+      window.global = window;
+    </script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="http://google.com/analytics"></script>
+    <script src="template-complex.js" type="module"></script>
+  </body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-complex.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-complex.js
+---------------------------------
+// fixture/template-complex.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html can place styles above existing styles 1`] = `
+---------------------------------
+template-complex.html
+---------------------------------
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="John Gozde" />
+    <meta name="google" value="notranslate" />
+    <link href="template-complex.css" rel="stylesheet" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="http://icons.com/icon.png"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Complex Template</title>
+    <style type="text/css" media="screen, print"></style>
+    <link rel="stylesheet" href="https://google.com/fonts" />
+    <script>
+      window.global = window;
+    </script>
+    <script src="template-complex.js" type="module"></script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="http://google.com/analytics"></script>
+  </body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-complex.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-complex.js
+---------------------------------
+// fixture/template-complex.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html can render scripts in body if requested 1`] = `
+---------------------------------
+template-basic.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="template-basic.css" rel="stylesheet" />
+  </head>
+  <body>
+    <script src="template-basic.js" type="module"></script>
+  </body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-basic.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-basic.js
+---------------------------------
+// fixture/template-basic.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html can render scripts in body with "defer" 1`] = `
+---------------------------------
+template-basic.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="template-basic.css" rel="stylesheet" />
+  </head>
+  <body>
+    <script src="template-basic.js" defer=""></script>
+  </body>
+</html>
+
+---------------------------------
+template-basic.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-basic.js
+---------------------------------
+(() => {
+  var __defProp = Object.defineProperty;
+  var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
+  var __esm = (fn, res) => function __init() {
+    return fn && (res = (0, fn[Object.keys(fn)[0]])(fn = 0)), res;
+  };
+  var __export = (target, all) => {
+    __markAsModule(target);
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+
+  // fixture/deps/a.js
+  var a_exports = {};
+  __export(a_exports, {
+    A: () => A
+  });
+  var A;
+  var init_a = __esm({
+    "fixture/deps/a.js"() {
+      A = "a";
+    }
+  });
+
+  // fixture/deps/b.js
+  var b_exports = {};
+  __export(b_exports, {
+    B: () => B
+  });
+  var B;
+  var init_b = __esm({
+    "fixture/deps/b.js"() {
+      B = "b";
+    }
+  });
+
+  // fixture/deps/c.js
+  var c_exports = {};
+  __export(c_exports, {
+    C: () => C
+  });
+  async function C() {
+    const { A: A2 } = await Promise.resolve().then(() => (init_a(), a_exports));
+    const { B: B2 } = await Promise.resolve().then(() => (init_b(), b_exports));
+    return A2 + B2;
+  }
+  var init_c = __esm({
+    "fixture/deps/c.js"() {
+    }
+  });
+
+  // fixture/template-basic.js
+  Promise.resolve().then(() => (init_c(), c_exports)).then(({ C: C2 }) => {
+    return C2();
+  }).then((output) => {
+    console.log(output);
+  }).catch(() => {
+    console.error("whoops");
+  });
+})();
+
+`;
+
+exports[`eslint-plugin-html copies and rebases assets from "href", "src" and "url" 1`] = `
+---------------------------------
+template-assets.html
+---------------------------------
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="John Gozde" />
+    <meta name="google" value="notranslate" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icon.png" />
+    <link rel="mask-icon" href="/static/mask.svg" color="#5bbad5" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Complex Template</title>
+    <style type="text/css" media="screen, print">
+      @font-face {
+        font-family: "Open Sans";
+        font-weight: 400;
+        font-style: normal;
+        src: url("/static/font.svg#OpenSans") format("svg");
+      }
+      @font-face {
+        font-family: "Open Sans";
+        font-weight: 600;
+        font-style: normal;
+        src: url("/static/font.svg#OpenSans") format("svg");
+      }
+      body {
+        background: url(/static/bg.png);
+      }
+    </style>
+    <link rel="stylesheet" href="https://google.com/fonts" />
+    <link rel="stylesheet" href="/static/custom.css" />
+    <link href="/static/template-assets.css" rel="stylesheet" />
+    <script>
+      window.global = window;
+    </script>
+    <script src="/static/template-assets.js" type="module"></script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="http://google.com/analytics"></script>
+  </body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+bg.png
+---------------------------------
+bg
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("/static/a-LTDY5RBP.js");
+  const { B } = await import("/static/b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+custom.css
+---------------------------------
+body {
+  line-height: 1.4;
+}
+
+---------------------------------
+font.svg
+---------------------------------
+<svg>font</svg>
+
+---------------------------------
+icon.png
+---------------------------------
+icon
+
+---------------------------------
+mask.svg
+---------------------------------
+<svg>mask</svg>
+
+---------------------------------
+template-assets.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-assets.js
+---------------------------------
+// fixture/template-assets.js
+import("/static/c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html ignores "defer" with "esm" output 1`] = `
+---------------------------------
+template-basic.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="template-basic.css" rel="stylesheet" />
+    <script src="template-basic.js" type="module"></script>
+  </head>
+  <body></body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-basic.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-basic.js
+---------------------------------
+// fixture/template-basic.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html places styles and scripts below existing ones by default 1`] = `
+---------------------------------
+template-complex.html
+---------------------------------
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="John Gozde" />
+    <meta name="google" value="notranslate" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="http://icons.com/icon.png"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Complex Template</title>
+    <style type="text/css" media="screen, print"></style>
+    <link rel="stylesheet" href="https://google.com/fonts" />
+    <link href="template-complex.css" rel="stylesheet" />
+    <script>
+      window.global = window;
+    </script>
+    <script src="template-complex.js" type="module"></script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="http://google.com/analytics"></script>
+  </body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-complex.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-complex.js
+---------------------------------
+// fixture/template-complex.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html skips asset rebasing/copying if "ignoreAssets" is set 1`] = `
+---------------------------------
+template-assets.html
+---------------------------------
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="John Gozde" />
+    <meta name="google" value="notranslate" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icon.png" />
+    <link rel="mask-icon" href="./assets/mask.svg" color="#5bbad5" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Complex Template</title>
+    <style type="text/css" media="screen, print">
+      @font-face {
+        font-family: "Open Sans";
+        font-weight: 400;
+        font-style: normal;
+        src: url("./assets/font.svg#OpenSans") format("svg");
+      }
+      @font-face {
+        font-family: "Open Sans";
+        font-weight: 600;
+        font-style: normal;
+        src: url("./assets/font.svg#OpenSans") format("svg");
+      }
+      body {
+        background: url(./assets/bg.png);
+      }
+    </style>
+    <link rel="stylesheet" href="https://google.com/fonts" />
+    <link rel="stylesheet" href="./assets/custom.css" />
+    <link href="/static/template-assets.css" rel="stylesheet" />
+    <script>
+      window.global = window;
+    </script>
+    <script src="/static/template-assets.js" type="module"></script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="http://google.com/analytics"></script>
+  </body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("/static/a-LTDY5RBP.js");
+  const { B } = await import("/static/b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-assets.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-assets.js
+---------------------------------
+// fixture/template-assets.js
+import("/static/c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html supports "crossorigin": "anonymous" 1`] = `
+---------------------------------
+template-basic.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="template-basic.css" rel="stylesheet" crossorigin="anonymous" />
+    <script
+      src="template-basic.js"
+      type="module"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body></body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-basic.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-basic.js
+---------------------------------
+// fixture/template-basic.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html supports "crossorigin": "use-credentials" 1`] = `
+---------------------------------
+template-basic.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      href="template-basic.css"
+      rel="stylesheet"
+      crossorigin="use-credentials"
+    />
+    <script
+      src="template-basic.js"
+      type="module"
+      crossorigin="use-credentials"
+    ></script>
+  </head>
+  <body></body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-basic.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-basic.js
+---------------------------------
+// fixture/template-basic.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html uses "defer" with "iife" output if requested 1`] = `
+---------------------------------
+template-basic.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="template-basic.css" rel="stylesheet" />
+    <script src="template-basic.js" defer=""></script>
+  </head>
+  <body></body>
+</html>
+
+---------------------------------
+template-basic.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-basic.js
+---------------------------------
+(() => {
+  var __defProp = Object.defineProperty;
+  var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
+  var __esm = (fn, res) => function __init() {
+    return fn && (res = (0, fn[Object.keys(fn)[0]])(fn = 0)), res;
+  };
+  var __export = (target, all) => {
+    __markAsModule(target);
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+
+  // fixture/deps/a.js
+  var a_exports = {};
+  __export(a_exports, {
+    A: () => A
+  });
+  var A;
+  var init_a = __esm({
+    "fixture/deps/a.js"() {
+      A = "a";
+    }
+  });
+
+  // fixture/deps/b.js
+  var b_exports = {};
+  __export(b_exports, {
+    B: () => B
+  });
+  var B;
+  var init_b = __esm({
+    "fixture/deps/b.js"() {
+      B = "b";
+    }
+  });
+
+  // fixture/deps/c.js
+  var c_exports = {};
+  __export(c_exports, {
+    C: () => C
+  });
+  async function C() {
+    const { A: A2 } = await Promise.resolve().then(() => (init_a(), a_exports));
+    const { B: B2 } = await Promise.resolve().then(() => (init_b(), b_exports));
+    return A2 + B2;
+  }
+  var init_c = __esm({
+    "fixture/deps/c.js"() {
+    }
+  });
+
+  // fixture/template-basic.js
+  Promise.resolve().then(() => (init_c(), c_exports)).then(({ C: C2 }) => {
+    return C2();
+  }).then((output) => {
+    console.log(output);
+  }).catch(() => {
+    console.error("whoops");
+  });
+})();
+
+`;

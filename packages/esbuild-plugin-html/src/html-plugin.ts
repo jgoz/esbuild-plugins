@@ -1,7 +1,16 @@
 import { createHash } from 'crypto';
 import { Plugin } from 'esbuild';
 import { createReadStream, promises as fsp } from 'fs';
-import { Attribute, ChildNode, Element, ParentNode, parse, serialize, TextNode } from 'parse5';
+import {
+  Attribute,
+  ChildNode,
+  DocumentType,
+  Element,
+  ParentNode,
+  parse,
+  serialize,
+  TextNode,
+} from 'parse5';
 import path from 'path';
 
 /**
@@ -28,6 +37,13 @@ export type HashAlgorithm = 'sha256' | 'sha384' | 'sha512';
  * Defines possible placement options for emitted tags.
  */
 export type TagPlacement = `${EmitTarget}-${EmitPosition}`;
+
+const defaultDoctype: DocumentType = {
+  nodeName: '#documentType',
+  name: 'html',
+  publicId: '',
+  systemId: '',
+};
 
 export interface HtmlPluginOptions {
   /**
@@ -130,6 +146,17 @@ export interface HtmlPluginOptions {
 }
 
 export function htmlPlugin(options: HtmlPluginOptions): Plugin {
+  const {
+    crossorigin,
+    defer,
+    filename = path.basename(options.template),
+    ignoreAssets = false,
+    integrity,
+    linkPosition = 'below',
+    scriptPlacement = 'head-below',
+    template,
+  } = options;
+
   const copyFile = cachedCopyFile();
   const outputCache = new Set<string>();
 
@@ -137,21 +164,15 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
     name: 'html-plugin',
     setup: async build => {
       const {
-        crossorigin,
-        defer,
-        filename = path.basename(options.template),
-        ignoreAssets = false,
-        integrity,
-        linkPosition = 'below',
-        scriptPlacement = 'head-below',
-        template,
-      } = options;
-      const {
         absWorkingDir: basedir = process.cwd(),
+        entryPoints,
         format,
         publicPath,
         outdir,
       } = build.initialOptions;
+
+      // Nothing to do if there are no entry points
+      if (!entryPoints) return;
 
       if (!outdir) {
         throw new Error('html-plugin: "outdir" esbuild build option is required');
@@ -160,6 +181,9 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
       const absOutDir = path.resolve(basedir, outdir);
       const useModuleType = format === 'esm';
       const templatePath = path.resolve(basedir, template);
+      const entries = Array.isArray(entryPoints)
+        ? entryPoints.map(entry => path.basename(entry, path.extname(entry)))
+        : Object.keys(entryPoints).map(entry => path.basename(entry, path.extname(entry)));
 
       let templateContent: string;
 
@@ -185,6 +209,10 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
         const html = findChildElement(document, 'html') ?? addEmptyElement(document, 'html');
         const head = findChildElement(html, 'head') ?? addEmptyElement(html, 'head');
         const body = findChildElement(html, 'body') ?? addEmptyElement(html, 'body');
+
+        // Add a doctype if it's missing
+        const doctype = document.childNodes.find(node => node.nodeName === '#documentType');
+        if (!doctype) (document.childNodes as any[]).unshift(defaultDoctype);
 
         const assets: [string, string][] = [];
         if (!ignoreAssets) {
@@ -226,7 +254,9 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
           }
         }
 
-        const outputs = Object.keys(metafile.outputs);
+        const outputs = Object.keys(metafile.outputs).filter(o =>
+          entries.includes(path.basename(o, path.extname(o))),
+        );
         const cssOutput = outputs.filter(o => o.endsWith('.css'));
         const jsOutput = outputs.filter(o => o.endsWith('.js'));
 
@@ -284,20 +314,22 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
 
         const linkIndex =
           linkPosition === 'below'
-            ? findLastChildIndex(head, isLinkOrStyle)
+            ? findLastChildIndex(head, isLinkOrStyle) + 1
             : head.childNodes.findIndex(isLinkOrStyle);
+
+        head.childNodes.splice(linkIndex, 0, ...links);
 
         const scriptIndex = scriptPlacement.endsWith('below')
           ? findLastChildIndex(scriptParent, isScript) + 1
           : scriptParent.childNodes.findIndex(isScript);
 
-        head.childNodes.splice(linkIndex + 1, 0, ...links);
-        scriptParent.childNodes.splice(scriptIndex + 1, 0, ...scripts);
+        scriptParent.childNodes.splice(scriptIndex, 0, ...scripts);
 
-        await Promise.all([
-          fsp.writeFile(path.resolve(absOutDir, filename), serialize(document)),
-          ...assets.map(paths => copyFile(...paths)),
-        ]);
+        const writeHTMLOutput = fsp
+          .mkdir(absOutDir, { recursive: true })
+          .then(() => fsp.writeFile(path.resolve(absOutDir, filename), serialize(document)));
+
+        await Promise.all([writeHTMLOutput, ...assets.map(paths => copyFile(...paths))]);
       });
     },
   };

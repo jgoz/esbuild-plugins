@@ -31,7 +31,8 @@
     "@babel/preset-typescript": "^7.14.5",
     "@types/jest": "^26.0.23",
     "eslint-plugin-header": "^3.1.1",
-    "jest": "^27.0.4"
+    "jest": "^27.0.4",
+    "prettier": "^2.3.1"
   },
   "scripts": {
     "install": "cd packages/esbuild-plugin-sass/test/fixture && npm ci",
