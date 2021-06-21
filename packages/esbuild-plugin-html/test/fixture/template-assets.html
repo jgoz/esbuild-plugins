@@ -24,10 +24,18 @@
         font-family: 'Open Sans';
         font-weight: 600;
         font-style: normal;
-        src: url('./assets/font.svg#OpenSans') format('svg');
+        src: url(
+          './assets/font.svg?OpenSans'
+          
+          
+          ) format('svg');
       }
       body {
-        background: url(./assets/bg.png);
+        background: url(                       ./assets/bg.png?test#foo
+        
+        
+        );
+        content: 'url';
       }
     </style>
     <link rel="stylesheet" href="https://google.com/fonts" />

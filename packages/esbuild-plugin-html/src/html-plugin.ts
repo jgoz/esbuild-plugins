@@ -206,9 +206,11 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
         }
 
         const document = parse(templateContent);
-        const html = findChildElement(document, 'html') ?? addEmptyElement(document, 'html');
-        const head = findChildElement(html, 'head') ?? addEmptyElement(html, 'head');
-        const body = findChildElement(html, 'body') ?? addEmptyElement(html, 'body');
+
+        // parse5 will create these for us if they're missing
+        const html = findChildElement(document, 'html')!;
+        const head = findChildElement(html, 'head')!;
+        const body = findChildElement(html, 'body')!;
 
         // Add a doctype if it's missing
         const doctype = document.childNodes.find(node => node.nodeName === '#documentType');
@@ -446,12 +448,6 @@ function findLastChildIndex(
     if (predicate(el)) return i;
   }
   return 0;
-}
-
-function addEmptyElement(parentNode: ParentNode, tagName: string): Element {
-  const element = createElement(parentNode, tagName);
-  parentNode.childNodes.push(element);
-  return element;
 }
 
 function getUrl(node: ChildNode): Attribute | undefined {

@@ -74,7 +74,7 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 
 `;
 
-exports[`eslint-plugin-html adds missing elements if not defined in the template 1`] = `
+exports[`eslint-plugin-html adds missing elements if not defined in the template 2`] = `
 ---------------------------------
 template-empty.html
 ---------------------------------
@@ -708,7 +708,7 @@ template-basic.js
 
 `;
 
-exports[`eslint-plugin-html copies and rebases assets from "href", "src" and "url" 1`] = `
+exports[`eslint-plugin-html copies and rebases assets from "href", "src" and "url" (with FS public path) 1`] = `
 ---------------------------------
 template-assets.html
 ---------------------------------
@@ -738,10 +738,11 @@ template-assets.html
         font-family: "Open Sans";
         font-weight: 600;
         font-style: normal;
-        src: url("/static/font.svg#OpenSans") format("svg");
+        src: url("/static/font.svg?OpenSans") format("svg");
       }
       body {
-        background: url(/static/bg.png);
+        background: url(/static/bg.png?test#foo);
+        content: "url";
       }
     </style>
     <link rel="stylesheet" href="https://google.com/fonts" />
@@ -829,6 +830,275 @@ template-assets.js
 ---------------------------------
 // fixture/template-assets.js
 import("/static/c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html copies and rebases assets from "href", "src" and "url" (with URL public path) 1`] = `
+---------------------------------
+template-assets.html
+---------------------------------
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="John Gozde" />
+    <meta name="google" value="notranslate" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="http://test.com/icon.png"
+    />
+    <link rel="mask-icon" href="http://test.com/mask.svg" color="#5bbad5" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Complex Template</title>
+    <style type="text/css" media="screen, print">
+      @font-face {
+        font-family: "Open Sans";
+        font-weight: 400;
+        font-style: normal;
+        src: url("http://test.com/font.svg#OpenSans") format("svg");
+      }
+      @font-face {
+        font-family: "Open Sans";
+        font-weight: 600;
+        font-style: normal;
+        src: url("http://test.com/font.svg?OpenSans") format("svg");
+      }
+      body {
+        background: url(http://test.com/bg.png?test#foo);
+        content: "url";
+      }
+    </style>
+    <link rel="stylesheet" href="https://google.com/fonts" />
+    <link rel="stylesheet" href="http://test.com/custom.css" />
+    <link href="http:/test.com/static/template-assets.css" rel="stylesheet" />
+    <script>
+      window.global = window;
+    </script>
+    <script
+      src="http:/test.com/static/template-assets.js"
+      type="module"
+    ></script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="http://google.com/analytics"></script>
+  </body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+bg.png
+---------------------------------
+bg
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("http://test.com/static/a-LTDY5RBP.js");
+  const { B } = await import("http://test.com/static/b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+custom.css
+---------------------------------
+body {
+  line-height: 1.4;
+}
+
+---------------------------------
+font.svg
+---------------------------------
+<svg>font</svg>
+
+---------------------------------
+icon.png
+---------------------------------
+icon
+
+---------------------------------
+mask.svg
+---------------------------------
+<svg>mask</svg>
+
+---------------------------------
+template-assets.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-assets.js
+---------------------------------
+// fixture/template-assets.js
+import("http://test.com/static/c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+`;
+
+exports[`eslint-plugin-html copies and rebases assets from "href", "src" and "url" (with no public path) 1`] = `
+---------------------------------
+template-assets.html
+---------------------------------
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="John Gozde" />
+    <meta name="google" value="notranslate" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icon.png" />
+    <link rel="mask-icon" href="mask.svg" color="#5bbad5" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Complex Template</title>
+    <style type="text/css" media="screen, print">
+      @font-face {
+        font-family: "Open Sans";
+        font-weight: 400;
+        font-style: normal;
+        src: url("font.svg#OpenSans") format("svg");
+      }
+      @font-face {
+        font-family: "Open Sans";
+        font-weight: 600;
+        font-style: normal;
+        src: url("font.svg?OpenSans") format("svg");
+      }
+      body {
+        background: url(bg.png?test#foo);
+        content: "url";
+      }
+    </style>
+    <link rel="stylesheet" href="https://google.com/fonts" />
+    <link rel="stylesheet" href="custom.css" />
+    <link href="template-assets.css" rel="stylesheet" />
+    <script>
+      window.global = window;
+    </script>
+    <script src="template-assets.js" type="module"></script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="http://google.com/analytics"></script>
+  </body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+bg.png
+---------------------------------
+bg
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+custom.css
+---------------------------------
+body {
+  line-height: 1.4;
+}
+
+---------------------------------
+font.svg
+---------------------------------
+<svg>font</svg>
+
+---------------------------------
+icon.png
+---------------------------------
+icon
+
+---------------------------------
+mask.svg
+---------------------------------
+<svg>mask</svg>
+
+---------------------------------
+template-assets.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-assets.js
+---------------------------------
+// fixture/template-assets.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -1023,10 +1293,11 @@ template-assets.html
         font-family: "Open Sans";
         font-weight: 600;
         font-style: normal;
-        src: url("./assets/font.svg#OpenSans") format("svg");
+        src: url("./assets/font.svg?OpenSans") format("svg");
       }
       body {
-        background: url(./assets/bg.png);
+        background: url(./assets/bg.png?test#foo);
+        content: "url";
       }
     </style>
     <link rel="stylesheet" href="https://google.com/fonts" />

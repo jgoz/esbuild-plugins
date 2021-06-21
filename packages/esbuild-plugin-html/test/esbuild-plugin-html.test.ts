@@ -97,6 +97,34 @@ async function buildWithHTML(
 }
 
 describe('eslint-plugin-html', () => {
+  it('throws if outdir not set', () => {
+    void expect(
+      build({
+        absWorkingDir: __dirname,
+        bundle: true,
+        entryPoints: ['./fixture/template-empty.js'],
+        logLevel: 'silent',
+        plugins: [htmlPlugin({ template: './fixture/template-empty.html' })],
+      }),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                  "Build failed with 1 error:
+                  error: html-plugin: \\"outdir\\" esbuild build option is required"
+              `);
+  });
+
+  it('throws if template not found', () => {
+    void expect(
+      build({
+        absWorkingDir: __dirname,
+        bundle: true,
+        entryPoints: ['./fixture/template-empty.js'],
+        logLevel: 'silent',
+        outdir: 'out',
+        plugins: [htmlPlugin({ template: 'whoops' })],
+      }),
+    ).rejects.toThrowError(/Unable to read template at/);
+  });
+
   it('adds missing elements if not defined in the template', async () => {
     const output = await buildWithHTML('template-empty');
     expect(output).toMatchSnapshot();
@@ -175,8 +203,22 @@ describe('eslint-plugin-html', () => {
     expect(output).toMatchSnapshot();
   });
 
-  it('copies and rebases assets from "href", "src" and "url"', async () => {
+  it('copies and rebases assets from "href", "src" and "url" (with no public path)', async () => {
+    const output = await buildWithHTML('template-assets');
+    expect(output).toMatchSnapshot();
+  });
+
+  it('copies and rebases assets from "href", "src" and "url" (with FS public path)', async () => {
     const output = await buildWithHTML('template-assets', {}, { publicPath: '/static' });
+    expect(output).toMatchSnapshot();
+  });
+
+  it('copies and rebases assets from "href", "src" and "url" (with URL public path)', async () => {
+    const output = await buildWithHTML(
+      'template-assets',
+      {},
+      { publicPath: 'http://test.com/static' },
+    );
     expect(output).toMatchSnapshot();
   });
 
