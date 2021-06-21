@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import esbuild from 'esbuild';
+import { build } from 'esbuild';
 import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
@@ -14,7 +14,7 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
     const absWorkingDir = path.resolve(__dirname, 'fixture/react');
     process.chdir(absWorkingDir);
 
-    await esbuild.build({
+    await build({
       absWorkingDir,
       entryPoints: ['./index.tsx'],
       bundle: true,
@@ -49,7 +49,7 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
       expect.stringContaining("$iconic-font-path: 'open-iconic/font/fonts/';"),
     );
 
-    await esbuild.build({
+    await build({
       entryPoints: ['./src/styles.scss'],
       absWorkingDir: absWorkingDir,
       outdir: './out',
@@ -70,7 +70,7 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
       /url\(\.\/open-iconic-[^.]+\.eot\?#iconic-sm\) format\("embedded-opentype"\)/,
     );
 
-    await esbuild.build({
+    await build({
       entryPoints: ['./src/index.ts'],
       absWorkingDir: absWorkingDir,
       outfile: './out/bundle.js',
@@ -108,7 +108,7 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
 
     const postCSS = postcss([autoprefixer, postcssPresetEnv({ stage: 0 })]);
 
-    await esbuild.build({
+    await build({
       entryPoints: ['./src/app.css'],
       absWorkingDir,
       outdir: './out',
@@ -204,7 +204,7 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
     writeInitial();
     let count = 0;
 
-    const result = await esbuild.build({
+    const result = await build({
       entryPoints: ['./src/index.js'],
       absWorkingDir,
       outdir: `./out`,
@@ -249,7 +249,7 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
     const absWorkingDir = path.resolve(__dirname, 'fixture/partials');
     process.chdir(absWorkingDir);
 
-    await esbuild.build({
+    await build({
       entryPoints: ['./src/import.scss'],
       absWorkingDir: absWorkingDir,
       outdir: './out',
