@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
 
-import { htmlPlugin, HtmlPluginOptions } from '../src';
+import { htmlPlugin, HtmlPluginOptions, MetafileOutput } from '../src';
 
 jest.mock('fs');
 
@@ -65,7 +65,10 @@ async function buildWithHTML(
   const buildOptions: BuildOptions = {
     absWorkingDir: __dirname,
     bundle: true,
-    entryPoints: [`./fixture/${fixture}.js`],
+    entryPoints: {
+      [`${fixture}-script`]: `./fixture/${fixture}.js`,
+      [`${fixture}-style`]: `./fixture/${fixture}.css`,
+    },
     format: 'esm',
     splitting: true,
     write: false,
@@ -250,17 +253,25 @@ describe('eslint-plugin-html', () => {
       'template-basic',
       {},
       {
-        entryPoints: ['./fixture/template-basic.js', './fixture/template-complex.js'],
+        entryPoints: [
+          './fixture/template-basic.js',
+          './fixture/template-assets.css',
+          './fixture/template-complex.js',
+          './fixture/template-define.css',
+        ],
       },
     );
     expect(output).toMatchSnapshot();
   });
 
-  it('can include only some entry points', async () => {
+  it('can filter chunks using a function', async () => {
     const output = await buildWithHTML(
       'template-basic',
       {
-        entryPoints: ['template-basic'],
+        chunks: (o, output) => {
+          expect(output).toBeInstanceOf(Object);
+          return o.includes('template-basic');
+        },
       },
       {
         entryPoints: ['./fixture/template-basic.js', './fixture/template-complex.js'],
@@ -278,11 +289,11 @@ describe('eslint-plugin-html', () => {
         plugins: [
           htmlPlugin({
             template: './fixture/template-basic.html',
-            entryPoints: ['template-basic'],
+            chunks: o => o.includes('template-basic'),
           }),
           htmlPlugin({
             template: './fixture/template-complex.html',
-            entryPoints: ['template-complex'],
+            chunks: o => o.includes('template-complex'),
           }),
         ],
       },

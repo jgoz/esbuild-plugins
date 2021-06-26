@@ -8,12 +8,12 @@ template-basic.html
 <html>
   <head>
     <link
-      href="template-basic.css"
+      href="template-basic-style.css"
       rel="stylesheet"
-      integrity="sha256-Q74SycgrBq0ejZ+ml+Itpcffb8CS70NRrTxZTJ027yU="
+      integrity="sha256-BfR1CuRF/pbXkkgIozp+ci3pdwfrJlfESd8GhuRtW6Q="
     />
     <script
-      src="template-basic.js"
+      src="template-basic-script.js"
       type="module"
       integrity="sha256-QAamFdBResqMLdiEYs1XFcWxujo9AQQUdb++c8DCQcE="
     ></script>
@@ -53,7 +53,7 @@ export {
 };
 
 ---------------------------------
-template-basic.css
+template-basic-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -61,7 +61,7 @@ template-basic.css
 }
 
 ---------------------------------
-template-basic.js
+template-basic-script.js
 ---------------------------------
 // fixture/template-basic.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -71,6 +71,14 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 }).catch(() => {
   console.error("whoops");
 });
+
+---------------------------------
+template-basic-style.css
+---------------------------------
+/* fixture/template-basic.css */
+.basic {
+  color: green;
+}
 
 `;
 
@@ -81,7 +89,8 @@ template-empty.html
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="template-empty.js" type="module"></script>
+    <link href="template-empty-style.css" rel="stylesheet" />
+    <script src="template-empty-script.js" type="module"></script>
   </head>
   <body></body>
 </html>
@@ -118,7 +127,7 @@ export {
 };
 
 ---------------------------------
-template-empty.js
+template-empty-script.js
 ---------------------------------
 // fixture/template-empty.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -129,6 +138,14 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
   console.error("whoops");
 });
 
+---------------------------------
+template-empty-style.css
+---------------------------------
+/* fixture/template-empty.css */
+.define {
+  color: green;
+}
+
 `;
 
 exports[`eslint-plugin-html adds scripts and styles to HEAD by default 1`] = `
@@ -138,8 +155,8 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic.css" rel="stylesheet" />
-    <script src="template-basic.js" type="module"></script>
+    <link href="template-basic-style.css" rel="stylesheet" />
+    <script src="template-basic-script.js" type="module"></script>
   </head>
   <body></body>
 </html>
@@ -176,7 +193,7 @@ export {
 };
 
 ---------------------------------
-template-basic.css
+template-basic-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -184,7 +201,7 @@ template-basic.css
 }
 
 ---------------------------------
-template-basic.js
+template-basic-script.js
 ---------------------------------
 // fixture/template-basic.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -194,6 +211,14 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 }).catch(() => {
   console.error("whoops");
 });
+
+---------------------------------
+template-basic-style.css
+---------------------------------
+/* fixture/template-basic.css */
+.basic {
+  color: green;
+}
 
 `;
 
@@ -326,7 +351,7 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 
 `;
 
-exports[`eslint-plugin-html can handle multiple entry points 1`] = `
+exports[`eslint-plugin-html can filter chunks using a function 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
@@ -334,9 +359,7 @@ template-basic.html
 <html>
   <head>
     <link href="template-basic.css" rel="stylesheet" />
-    <link href="template-complex.css" rel="stylesheet" />
     <script src="template-basic.js" type="module"></script>
-    <script src="template-complex.js" type="module"></script>
   </head>
   <body></body>
 </html>
@@ -422,15 +445,17 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 
 `;
 
-exports[`eslint-plugin-html can include only some entry points 1`] = `
+exports[`eslint-plugin-html can handle multiple entry points 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic.css" rel="stylesheet" />
+    <link href="template-assets.css" rel="stylesheet" />
+    <link href="template-define.css" rel="stylesheet" />
     <script src="template-basic.js" type="module"></script>
+    <script src="template-complex.js" type="module"></script>
   </head>
   <body></body>
 </html>
@@ -469,6 +494,19 @@ export {
 ---------------------------------
 chunk-P5OBPOC4.js
 ---------------------------------
+
+---------------------------------
+template-assets.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+/* fixture/template-assets.css */
+.assets {
+  color: green;
+}
 
 ---------------------------------
 template-basic.css
@@ -513,6 +551,14 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 }).catch(() => {
   console.error("whoops");
 });
+
+---------------------------------
+template-define.css
+---------------------------------
+/* fixture/template-define.css */
+.define {
+  color: green;
+}
 
 `;
 
@@ -540,14 +586,14 @@ template-complex.html
     <title>Complex Template</title>
     <style type="text/css" media="screen, print"></style>
     <link rel="stylesheet" href="https://google.com/fonts" />
-    <link href="template-complex.css" rel="stylesheet" />
+    <link href="template-complex-style.css" rel="stylesheet" />
     <script>
       window.global = window;
     </script>
   </head>
   <body>
     <div class="app-container"></div>
-    <script src="template-complex.js" type="module"></script>
+    <script src="template-complex-script.js" type="module"></script>
     <script src="http://google.com/analytics"></script>
   </body>
 </html>
@@ -584,7 +630,7 @@ export {
 };
 
 ---------------------------------
-template-complex.css
+template-complex-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -592,7 +638,7 @@ template-complex.css
 }
 
 ---------------------------------
-template-complex.js
+template-complex-script.js
 ---------------------------------
 // fixture/template-complex.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -602,6 +648,19 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 }).catch(() => {
   console.error("whoops");
 });
+
+---------------------------------
+template-complex-style.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+/* fixture/template-complex.css */
+.complex {
+  color: green;
+}
 
 `;
 
@@ -616,7 +675,7 @@ template-complex.html
     <meta name="description" content="Description" />
     <meta name="author" content="John Gozde" />
     <meta name="google" value="notranslate" />
-    <script src="template-complex.js" type="module"></script>
+    <script src="template-complex-script.js" type="module"></script>
     <link
       rel="apple-touch-icon"
       sizes="180x180"
@@ -630,7 +689,7 @@ template-complex.html
     <title>Complex Template</title>
     <style type="text/css" media="screen, print"></style>
     <link rel="stylesheet" href="https://google.com/fonts" />
-    <link href="template-complex.css" rel="stylesheet" />
+    <link href="template-complex-style.css" rel="stylesheet" />
     <script>
       window.global = window;
     </script>
@@ -673,7 +732,7 @@ export {
 };
 
 ---------------------------------
-template-complex.css
+template-complex-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -681,7 +740,7 @@ template-complex.css
 }
 
 ---------------------------------
-template-complex.js
+template-complex-script.js
 ---------------------------------
 // fixture/template-complex.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -691,6 +750,19 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 }).catch(() => {
   console.error("whoops");
 });
+
+---------------------------------
+template-complex-style.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+/* fixture/template-complex.css */
+.complex {
+  color: green;
+}
 
 `;
 
@@ -718,7 +790,7 @@ template-complex.html
     <title>Complex Template</title>
     <style type="text/css" media="screen, print"></style>
     <link rel="stylesheet" href="https://google.com/fonts" />
-    <link href="template-complex.css" rel="stylesheet" />
+    <link href="template-complex-style.css" rel="stylesheet" />
     <script>
       window.global = window;
     </script>
@@ -726,7 +798,7 @@ template-complex.html
   <body>
     <div class="app-container"></div>
     <script src="http://google.com/analytics"></script>
-    <script src="template-complex.js" type="module"></script>
+    <script src="template-complex-script.js" type="module"></script>
   </body>
 </html>
 
@@ -762,7 +834,7 @@ export {
 };
 
 ---------------------------------
-template-complex.css
+template-complex-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -770,7 +842,7 @@ template-complex.css
 }
 
 ---------------------------------
-template-complex.js
+template-complex-script.js
 ---------------------------------
 // fixture/template-complex.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -780,6 +852,19 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 }).catch(() => {
   console.error("whoops");
 });
+
+---------------------------------
+template-complex-style.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+/* fixture/template-complex.css */
+.complex {
+  color: green;
+}
 
 `;
 
@@ -794,7 +879,7 @@ template-complex.html
     <meta name="description" content="Description" />
     <meta name="author" content="John Gozde" />
     <meta name="google" value="notranslate" />
-    <link href="template-complex.css" rel="stylesheet" />
+    <link href="template-complex-style.css" rel="stylesheet" />
     <link
       rel="apple-touch-icon"
       sizes="180x180"
@@ -811,7 +896,7 @@ template-complex.html
     <script>
       window.global = window;
     </script>
-    <script src="template-complex.js" type="module"></script>
+    <script src="template-complex-script.js" type="module"></script>
   </head>
   <body>
     <div class="app-container"></div>
@@ -851,7 +936,7 @@ export {
 };
 
 ---------------------------------
-template-complex.css
+template-complex-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -859,7 +944,7 @@ template-complex.css
 }
 
 ---------------------------------
-template-complex.js
+template-complex-script.js
 ---------------------------------
 // fixture/template-complex.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -870,6 +955,19 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
   console.error("whoops");
 });
 
+---------------------------------
+template-complex-style.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+/* fixture/template-complex.css */
+.complex {
+  color: green;
+}
+
 `;
 
 exports[`eslint-plugin-html can render scripts in body if requested 1`] = `
@@ -879,10 +977,10 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic.css" rel="stylesheet" />
+    <link href="template-basic-style.css" rel="stylesheet" />
   </head>
   <body>
-    <script src="template-basic.js" type="module"></script>
+    <script src="template-basic-script.js" type="module"></script>
   </body>
 </html>
 
@@ -918,7 +1016,7 @@ export {
 };
 
 ---------------------------------
-template-basic.css
+template-basic-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -926,7 +1024,7 @@ template-basic.css
 }
 
 ---------------------------------
-template-basic.js
+template-basic-script.js
 ---------------------------------
 // fixture/template-basic.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -937,6 +1035,14 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
   console.error("whoops");
 });
 
+---------------------------------
+template-basic-style.css
+---------------------------------
+/* fixture/template-basic.css */
+.basic {
+  color: green;
+}
+
 `;
 
 exports[`eslint-plugin-html can render scripts in body with "defer" 1`] = `
@@ -946,15 +1052,15 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic.css" rel="stylesheet" />
+    <link href="template-basic-style.css" rel="stylesheet" />
   </head>
   <body>
-    <script src="template-basic.js" defer=""></script>
+    <script src="template-basic-script.js" defer=""></script>
   </body>
 </html>
 
 ---------------------------------
-template-basic.css
+template-basic-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -962,7 +1068,7 @@ template-basic.css
 }
 
 ---------------------------------
-template-basic.js
+template-basic-script.js
 ---------------------------------
 (() => {
   var __defProp = Object.defineProperty;
@@ -1025,6 +1131,14 @@ template-basic.js
   });
 })();
 
+---------------------------------
+template-basic-style.css
+---------------------------------
+/* fixture/template-basic.css */
+.basic {
+  color: green;
+}
+
 `;
 
 exports[`eslint-plugin-html copies and rebases assets from "href", "src" and "url" (with FS public path) 1`] = `
@@ -1066,11 +1180,11 @@ template-assets.html
     </style>
     <link rel="stylesheet" href="https://google.com/fonts" />
     <link rel="stylesheet" href="/static/custom.css" />
-    <link href="/static/template-assets.css" rel="stylesheet" />
+    <link href="/static/template-assets-style.css" rel="stylesheet" />
     <script>
       window.global = window;
     </script>
-    <script src="/static/template-assets.js" type="module"></script>
+    <script src="/static/template-assets-script.js" type="module"></script>
   </head>
   <body>
     <div class="app-container"></div>
@@ -1137,15 +1251,7 @@ mask.svg
 <svg>mask</svg>
 
 ---------------------------------
-template-assets.css
----------------------------------
-/* fixture/deps/z.css */
-.z {
-  background-color: black;
-}
-
----------------------------------
-template-assets.js
+template-assets-script.js
 ---------------------------------
 // fixture/template-assets.js
 import("/static/c-RYJBTEBJ.js").then(({ C }) => {
@@ -1155,6 +1261,19 @@ import("/static/c-RYJBTEBJ.js").then(({ C }) => {
 }).catch(() => {
   console.error("whoops");
 });
+
+---------------------------------
+template-assets-style.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+/* fixture/template-assets.css */
+.assets {
+  color: green;
+}
 
 `;
 
@@ -1201,12 +1320,15 @@ template-assets.html
     </style>
     <link rel="stylesheet" href="https://google.com/fonts" />
     <link rel="stylesheet" href="http://test.com/custom.css" />
-    <link href="http:/test.com/static/template-assets.css" rel="stylesheet" />
+    <link
+      href="http:/test.com/static/template-assets-style.css"
+      rel="stylesheet"
+    />
     <script>
       window.global = window;
     </script>
     <script
-      src="http:/test.com/static/template-assets.js"
+      src="http:/test.com/static/template-assets-script.js"
       type="module"
     ></script>
   </head>
@@ -1275,15 +1397,7 @@ mask.svg
 <svg>mask</svg>
 
 ---------------------------------
-template-assets.css
----------------------------------
-/* fixture/deps/z.css */
-.z {
-  background-color: black;
-}
-
----------------------------------
-template-assets.js
+template-assets-script.js
 ---------------------------------
 // fixture/template-assets.js
 import("http://test.com/static/c-RYJBTEBJ.js").then(({ C }) => {
@@ -1293,6 +1407,19 @@ import("http://test.com/static/c-RYJBTEBJ.js").then(({ C }) => {
 }).catch(() => {
   console.error("whoops");
 });
+
+---------------------------------
+template-assets-style.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+/* fixture/template-assets.css */
+.assets {
+  color: green;
+}
 
 `;
 
@@ -1335,11 +1462,11 @@ template-assets.html
     </style>
     <link rel="stylesheet" href="https://google.com/fonts" />
     <link rel="stylesheet" href="custom.css" />
-    <link href="template-assets.css" rel="stylesheet" />
+    <link href="template-assets-style.css" rel="stylesheet" />
     <script>
       window.global = window;
     </script>
-    <script src="template-assets.js" type="module"></script>
+    <script src="template-assets-script.js" type="module"></script>
   </head>
   <body>
     <div class="app-container"></div>
@@ -1406,15 +1533,7 @@ mask.svg
 <svg>mask</svg>
 
 ---------------------------------
-template-assets.css
----------------------------------
-/* fixture/deps/z.css */
-.z {
-  background-color: black;
-}
-
----------------------------------
-template-assets.js
+template-assets-script.js
 ---------------------------------
 // fixture/template-assets.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -1425,6 +1544,19 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
   console.error("whoops");
 });
 
+---------------------------------
+template-assets-style.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+/* fixture/template-assets.css */
+.assets {
+  color: green;
+}
+
 `;
 
 exports[`eslint-plugin-html ignores "defer" with "esm" output 1`] = `
@@ -1434,8 +1566,8 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic.css" rel="stylesheet" />
-    <script src="template-basic.js" type="module"></script>
+    <link href="template-basic-style.css" rel="stylesheet" />
+    <script src="template-basic-script.js" type="module"></script>
   </head>
   <body></body>
 </html>
@@ -1472,7 +1604,7 @@ export {
 };
 
 ---------------------------------
-template-basic.css
+template-basic-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -1480,7 +1612,7 @@ template-basic.css
 }
 
 ---------------------------------
-template-basic.js
+template-basic-script.js
 ---------------------------------
 // fixture/template-basic.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -1490,6 +1622,14 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 }).catch(() => {
   console.error("whoops");
 });
+
+---------------------------------
+template-basic-style.css
+---------------------------------
+/* fixture/template-basic.css */
+.basic {
+  color: green;
+}
 
 `;
 
@@ -1517,11 +1657,11 @@ template-complex.html
     <title>Complex Template</title>
     <style type="text/css" media="screen, print"></style>
     <link rel="stylesheet" href="https://google.com/fonts" />
-    <link href="template-complex.css" rel="stylesheet" />
+    <link href="template-complex-style.css" rel="stylesheet" />
     <script>
       window.global = window;
     </script>
-    <script src="template-complex.js" type="module"></script>
+    <script src="template-complex-script.js" type="module"></script>
   </head>
   <body>
     <div class="app-container"></div>
@@ -1561,7 +1701,7 @@ export {
 };
 
 ---------------------------------
-template-complex.css
+template-complex-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -1569,7 +1709,7 @@ template-complex.css
 }
 
 ---------------------------------
-template-complex.js
+template-complex-script.js
 ---------------------------------
 // fixture/template-complex.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -1579,6 +1719,19 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 }).catch(() => {
   console.error("whoops");
 });
+
+---------------------------------
+template-complex-style.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+/* fixture/template-complex.css */
+.complex {
+  color: green;
+}
 
 `;
 
@@ -1621,11 +1774,11 @@ template-assets.html
     </style>
     <link rel="stylesheet" href="https://google.com/fonts" />
     <link rel="stylesheet" href="./assets/custom.css" />
-    <link href="/static/template-assets.css" rel="stylesheet" />
+    <link href="/static/template-assets-style.css" rel="stylesheet" />
     <script>
       window.global = window;
     </script>
-    <script src="/static/template-assets.js" type="module"></script>
+    <script src="/static/template-assets-script.js" type="module"></script>
   </head>
   <body>
     <div class="app-container"></div>
@@ -1665,15 +1818,7 @@ export {
 };
 
 ---------------------------------
-template-assets.css
----------------------------------
-/* fixture/deps/z.css */
-.z {
-  background-color: black;
-}
-
----------------------------------
-template-assets.js
+template-assets-script.js
 ---------------------------------
 // fixture/template-assets.js
 import("/static/c-RYJBTEBJ.js").then(({ C }) => {
@@ -1683,6 +1828,19 @@ import("/static/c-RYJBTEBJ.js").then(({ C }) => {
 }).catch(() => {
   console.error("whoops");
 });
+
+---------------------------------
+template-assets-style.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+/* fixture/template-assets.css */
+.assets {
+  color: green;
+}
 
 `;
 
@@ -1710,13 +1868,13 @@ template-define.html
     <title>Complex Template</title>
     <style type="text/css" media="screen, print"></style>
     <link rel="stylesheet" href="https://google.com/fonts?1.2.3" />
-    <link href="template-define.css" rel="stylesheet" />
+    <link href="template-define-style.css" rel="stylesheet" />
     <script>
       window.global = window;
       window.version = "1.2.3";
       window.environment = "development";
     </script>
-    <script src="template-define.js" type="module"></script>
+    <script src="template-define-script.js" type="module"></script>
   </head>
   <body>
     <div class="app-container"></div>
@@ -1756,7 +1914,7 @@ export {
 };
 
 ---------------------------------
-template-define.css
+template-define-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -1764,7 +1922,7 @@ template-define.css
 }
 
 ---------------------------------
-template-define.js
+template-define-script.js
 ---------------------------------
 // fixture/template-define.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -1775,6 +1933,14 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
   console.error("whoops");
 });
 
+---------------------------------
+template-define-style.css
+---------------------------------
+/* fixture/template-define.css */
+.define {
+  color: green;
+}
+
 `;
 
 exports[`eslint-plugin-html supports "crossorigin": "anonymous" 1`] = `
@@ -1784,9 +1950,13 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic.css" rel="stylesheet" crossorigin="anonymous" />
+    <link
+      href="template-basic-style.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
     <script
-      src="template-basic.js"
+      src="template-basic-script.js"
       type="module"
       crossorigin="anonymous"
     ></script>
@@ -1826,7 +1996,7 @@ export {
 };
 
 ---------------------------------
-template-basic.css
+template-basic-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -1834,7 +2004,7 @@ template-basic.css
 }
 
 ---------------------------------
-template-basic.js
+template-basic-script.js
 ---------------------------------
 // fixture/template-basic.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -1844,6 +2014,14 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 }).catch(() => {
   console.error("whoops");
 });
+
+---------------------------------
+template-basic-style.css
+---------------------------------
+/* fixture/template-basic.css */
+.basic {
+  color: green;
+}
 
 `;
 
@@ -1855,12 +2033,12 @@ template-basic.html
 <html>
   <head>
     <link
-      href="template-basic.css"
+      href="template-basic-style.css"
       rel="stylesheet"
       crossorigin="use-credentials"
     />
     <script
-      src="template-basic.js"
+      src="template-basic-script.js"
       type="module"
       crossorigin="use-credentials"
     ></script>
@@ -1900,7 +2078,7 @@ export {
 };
 
 ---------------------------------
-template-basic.css
+template-basic-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -1908,7 +2086,7 @@ template-basic.css
 }
 
 ---------------------------------
-template-basic.js
+template-basic-script.js
 ---------------------------------
 // fixture/template-basic.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -1919,6 +2097,14 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
   console.error("whoops");
 });
 
+---------------------------------
+template-basic-style.css
+---------------------------------
+/* fixture/template-basic.css */
+.basic {
+  color: green;
+}
+
 `;
 
 exports[`eslint-plugin-html uses "defer" with "iife" output if requested 1`] = `
@@ -1928,14 +2114,14 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic.css" rel="stylesheet" />
-    <script src="template-basic.js" defer=""></script>
+    <link href="template-basic-style.css" rel="stylesheet" />
+    <script src="template-basic-script.js" defer=""></script>
   </head>
   <body></body>
 </html>
 
 ---------------------------------
-template-basic.css
+template-basic-script.css
 ---------------------------------
 /* fixture/deps/z.css */
 .z {
@@ -1943,7 +2129,7 @@ template-basic.css
 }
 
 ---------------------------------
-template-basic.js
+template-basic-script.js
 ---------------------------------
 (() => {
   var __defProp = Object.defineProperty;
@@ -2005,5 +2191,13 @@ template-basic.js
     console.error("whoops");
   });
 })();
+
+---------------------------------
+template-basic-style.css
+---------------------------------
+/* fixture/template-basic.css */
+.basic {
+  color: green;
+}
 
 `;

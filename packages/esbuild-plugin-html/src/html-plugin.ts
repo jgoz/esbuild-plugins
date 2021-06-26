@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { Plugin } from 'esbuild';
+import { Metafile, Plugin } from 'esbuild';
 import { createReadStream, promises as fsp } from 'fs';
 import {
   Attribute,
@@ -38,6 +38,11 @@ export type HashAlgorithm = 'sha256' | 'sha384' | 'sha512';
  */
 export type TagPlacement = `${EmitTarget}-${EmitPosition}`;
 
+/**
+ * Output file metadata from esbuiid.
+ */
+export type MetafileOutput = Metafile['outputs'][string];
+
 const defaultDoctype: DocumentType = {
   nodeName: '#documentType',
   name: 'html',
@@ -46,6 +51,23 @@ const defaultDoctype: DocumentType = {
 };
 
 export interface HtmlPluginOptions {
+  /**
+   * Filters chunks that should be included as `<link>` or `<script>` tags in the HTML
+   * output.
+   *
+   * If the string "entry" is given (default), all entry points defined in esbuild
+   * options will be included. Note that CSS entry points will only be included if they
+   * are specified explicitly in esbuild options; being dependencies of a JS entry point
+   * is not sufficient.
+   *
+   * "chunks" may also be provided as a function that receives all outputs, not just
+   * entry points. Returning true will include a reference to the chunk in HTML, false
+   * will exclude it.
+   *
+   * @default "entry"
+   */
+  chunks?: 'entry' | ((outputPath: string, output: MetafileOutput) => boolean);
+
   /**
    * Defines how generated `<link>` and `<script>` tags handle cross-origin requests.
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin}
@@ -100,19 +122,6 @@ export interface HtmlPluginOptions {
    * @default undefined
    */
   define?: Record<string, string>;
-
-  /**
-   * If provided, only the matching entry points will be included as `<script>` or
-   * `<link>` elements in the output HTML.
-   *
-   * The entry points may be specified with or without a `.js` or `.css` file extension.
-   * Not including an extension will match both JS and CSS entry points with the same name.
-   *
-   * By default, all entry points provided to esbuild will be included in the HTML output.
-   *
-   * @default undefined
-   */
-  entryPoints?: string[];
 
   /**
    * Output filename.
@@ -190,10 +199,10 @@ export interface HtmlPluginOptions {
 
 export function htmlPlugin(options: HtmlPluginOptions): Plugin {
   const {
+    chunks = 'entry',
     crossorigin,
     defer,
     define,
-    entryPoints: includedEntryPoints,
     filename = path.basename(options.template),
     ignoreAssets = false,
     integrity,
@@ -226,11 +235,9 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
       const absOutDir = path.resolve(basedir, outdir);
       const useModuleType = format === 'esm';
       const templatePath = path.resolve(basedir, template);
-      const entries =
-        includedEntryPoints ??
-        (Array.isArray(entryPoints)
-          ? entryPoints.map(entry => path.basename(entry, path.extname(entry)))
-          : Object.keys(entryPoints).map(entry => path.basename(entry, path.extname(entry))));
+      const entries = Array.isArray(entryPoints)
+        ? entryPoints.map(entry => path.resolve(basedir, entry))
+        : Object.keys(entryPoints).map(entry => path.resolve(basedir, entryPoints[entry]));
 
       let templateContent: string;
 
@@ -303,9 +310,12 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
           }
         }
 
-        const outputs = Object.keys(metafile.outputs).filter(o =>
-          entries.includes(path.basename(o, path.extname(o))),
-        );
+        const outputs = Object.keys(metafile.outputs).filter(o => {
+          const output = metafile.outputs[o];
+          return chunks === 'entry'
+            ? output.entryPoint && entries.includes(path.resolve(basedir, output.entryPoint))
+            : chunks(o, output);
+        });
         const cssOutput = outputs.filter(o => o.endsWith('.css'));
         const jsOutput = outputs.filter(o => o.endsWith('.js'));
 
