@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Error Overlay demo</title>
+    <script defer src="../dist/overlay.js"></script>
+    <script>
+      function onUncaughtError(error) {
+        ErrorOverlay.overlay({ error });
+      }
+      window.addEventListener('error', e => onUncaughtError(e.error));
+    </script>
+  </head>
+  <body>
+    <h1>This is my app that will die</h1>
+    <button id="die">Die</button>
+
+    <script>
+      const die = document.querySelector('#die');
+      die.addEventListener('click', () => {
+        const badCode = 'const s;';
+        eval(badCode);
+      });
+    </script>
+  </body>
+</html>

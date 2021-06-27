@@ -1,0 +1,48 @@
+{
+  "name": "@jgoz/error-overlay",
+  "version": "1.0.0",
+  "author": "John Gozde <john@gozde.ca>",
+  "description": "Browser error overlay",
+  "license": "MIT",
+  "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jgoz/esbuild-plugins.git",
+    "directory": "packages/error-overlay"
+  },
+  "bugs": {
+    "url": "https://github.com/jgoz/esbuild-plugins/issues"
+  },
+  "keywords": [
+    "esbuild-plugin",
+    "esbuild",
+    "livereload"
+  ],
+  "main": "dist/overlay.js",
+  "types": "dist/overlay.d.ts",
+  "dependencies": {},
+  "peerDependencies": {},
+  "peerDependenciesMeta": {},
+  "devDependencies": {
+    "@tsconfig/svelte": "^2.0.1",
+    "esbuild": "^0.12.8",
+    "esbuild-svelte": "^0.5.1",
+    "prettier": "^2.3.1",
+    "serve": "^12.0.0",
+    "svelte": "^3.38.3",
+    "svelte-check": "^2.2.0",
+    "svelte-preprocess": "^4.7.3",
+    "tslib": "^2.0.0",
+    "typescript": "^4.3.4"
+  },
+  "jest": {
+    "testTimeout": 5000,
+    "maxWorkers": 1
+  },
+  "scripts": {
+    "test": "jest",
+    "prepublishOnly": "npm run check && ./build.mjs && tsc --emitDeclarationOnly",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "serve": "serve"
+  }
+}

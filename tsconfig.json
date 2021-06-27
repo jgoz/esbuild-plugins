@@ -2,6 +2,7 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
+    { "path": "./packages/error-overlay" },
     { "path": "./packages/esbuild-plugin-html" },
     { "path": "./packages/esbuild-plugin-sass" }
   ]
