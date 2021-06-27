@@ -445,6 +445,80 @@ import("./c-RYJBTEBJ.js").then(({ C }) => {
 
 `;
 
+exports[`eslint-plugin-html can handle different entry names 1`] = `
+---------------------------------
+template-basic.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="template-basic-style-LCZ4I64V.css" rel="stylesheet" />
+    <script src="template-basic-script-EXALUX7T.js" type="module"></script>
+  </head>
+  <body></body>
+</html>
+
+---------------------------------
+a-LTDY5RBP.js
+---------------------------------
+// fixture/deps/a.js
+var A = "a";
+export {
+  A
+};
+
+---------------------------------
+b-HIJ6EZP3.js
+---------------------------------
+// fixture/deps/b.js
+var B = "b";
+export {
+  B
+};
+
+---------------------------------
+c-RYJBTEBJ.js
+---------------------------------
+// fixture/deps/c.js
+async function C() {
+  const { A } = await import("./a-LTDY5RBP.js");
+  const { B } = await import("./b-HIJ6EZP3.js");
+  return A + B;
+}
+export {
+  C
+};
+
+---------------------------------
+template-basic-script-EOY7FBT3.css
+---------------------------------
+/* fixture/deps/z.css */
+.z {
+  background-color: black;
+}
+
+---------------------------------
+template-basic-script-EXALUX7T.js
+---------------------------------
+// fixture/template-basic.js
+import("./c-RYJBTEBJ.js").then(({ C }) => {
+  return C();
+}).then((output) => {
+  console.log(output);
+}).catch(() => {
+  console.error("whoops");
+});
+
+---------------------------------
+template-basic-style-LCZ4I64V.css
+---------------------------------
+/* fixture/template-basic.css */
+.basic {
+  color: green;
+}
+
+`;
+
 exports[`eslint-plugin-html can handle multiple entry points 1`] = `
 ---------------------------------
 template-basic.html

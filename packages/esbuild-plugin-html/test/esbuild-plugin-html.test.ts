@@ -300,4 +300,9 @@ describe('eslint-plugin-html', () => {
     );
     expect(output).toMatchSnapshot();
   });
+
+  it('can handle different entry names', async () => {
+    const output = await buildWithHTML('template-basic', {}, { entryNames: '[name]-[hash]' });
+    expect(output).toMatchSnapshot();
+  });
 });
