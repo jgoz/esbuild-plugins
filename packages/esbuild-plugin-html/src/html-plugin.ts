@@ -232,6 +232,12 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
         throw new Error('html-plugin: "outdir" esbuild build option is required');
       }
 
+      // We need metadata on build results in order to determine
+      // which files should be added to the resulting HTML.
+      if (!build.initialOptions.metafile) {
+        throw new Error('html-plugin: "metafile" esbuild option must be set to "true"');
+      }
+
       const absOutDir = path.resolve(basedir, outdir);
       const useModuleType = format === 'esm';
       const templatePath = path.resolve(basedir, template);
@@ -247,16 +253,11 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
         throw new Error(`html-plugin: Unable to read template at ${templatePath}`);
       }
 
-      // We need metadata on build results in order to determine
-      // which files should be added to the resulting HTML.
-      build.initialOptions.metafile = true;
-
       build.onEnd(async result => {
         const { metafile } = result;
         if (!metafile) {
-          throw new Error(
-            'html-plugin: Expected "metafile" to be defined on build result. Did another esbuild plugin set metafile: false?',
-          );
+          // The build failed for some reason unrelated to this plugin, so we can't continue
+          return;
         }
 
         const document = parse(templateContent);
