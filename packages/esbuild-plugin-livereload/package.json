@@ -21,7 +21,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@jgoz/error-overlay": "^1.0.0",
+    "@jgoz/esbuild-overlay": "^1.0.0",
     "open-editor": "^3.0.0"
   },
   "peerDependencies": {

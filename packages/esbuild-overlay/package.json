@@ -1,14 +1,14 @@
 {
-  "name": "@jgoz/error-overlay",
+  "name": "@jgoz/esbuild-overlay",
   "version": "1.0.0",
   "author": "John Gozde <john@gozde.ca>",
-  "description": "Browser error overlay",
+  "description": "Browser overlay for esbuild errors and warnings",
   "license": "MIT",
   "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jgoz/esbuild-plugins.git",
-    "directory": "packages/error-overlay"
+    "directory": "packages/esbuild-overlay"
   },
   "bugs": {
     "url": "https://github.com/jgoz/esbuild-plugins/issues"

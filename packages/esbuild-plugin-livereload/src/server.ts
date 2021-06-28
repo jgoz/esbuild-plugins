@@ -12,7 +12,7 @@ interface ServerOptions {
 
 export function createLivereloadServer(options: ServerOptions): void {
   const { port, onSSE, basedir } = options;
-  const overlayPath = require.resolve('@jgoz/error-overlay');
+  const overlayPath = require.resolve('@jgoz/esbuild-overlay');
 
   createServer((req, res) => {
     if (!req.url) return;

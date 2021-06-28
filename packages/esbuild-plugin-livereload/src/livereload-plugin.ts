@@ -1,7 +1,6 @@
-import { BuildResult, Plugin } from 'esbuild';
+import { Plugin } from 'esbuild';
 import { promises as fsp } from 'fs';
 import type { ServerResponse } from 'http';
-import path from 'path';
 
 import { createLivereloadServer } from './server';
 
