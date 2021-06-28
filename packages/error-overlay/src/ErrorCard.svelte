@@ -4,7 +4,6 @@
   import StackEntry from './StackEntry.svelte';
 
   export let errors: Message[];
-  export let onStackEntryClick: (loc: Location) => void;
 
   const type = (errors.length > 0 && errors[0].detail?.type) || 'Error';
 </script>
@@ -18,7 +17,7 @@
   </div>
   <div class="error-stack">
     {#each errors as error}
-      <StackEntry {error} onClick={onStackEntryClick} />
+      <StackEntry {error} />
     {/each}
   </div>
 </div>

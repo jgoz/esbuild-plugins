@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Location, Message } from 'esbuild';
+  import { getContext } from 'svelte';
 
   import HighlightedLine from './HighlightedLine.svelte';
 
@@ -14,18 +15,28 @@
   };
 
   export let error: Message;
-  export let onClick: (entry: Location) => void;
 
   const location = error.location ?? NULL_LOCATION;
-  const { detail, text } = error;
+  const { text } = error;
   const { column, line, length, lineText, file } = location;
 
   const lineNumberWidth = String(line).length;
+  const openFileURL: string | undefined = getContext('openFileURL');
+
+  function onClick() {
+    if (!openFileURL) return;
+
+    const url = new URL(openFileURL);
+    url.searchParams.append('file', location.file);
+    url.searchParams.append('line', String(location.line));
+    url.searchParams.append('column', String(location.column));
+    fetch(url.toString());
+  }
 </script>
 
-<div class="stack-entry" on:click={() => onClick(location)}>
+<div class="stack-entry" on:click={onClick}>
   <div class="file">
-    <strong>{detail.fileRelative ?? file}</strong>
+    <strong>{file}</strong>
   </div>
   <div class="error">{text}</div>
   <div class="lines">

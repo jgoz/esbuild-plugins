@@ -28,7 +28,6 @@
     "esbuild": "^0.12.8",
     "esbuild-svelte": "^0.5.1",
     "prettier": "^2.3.1",
-    "serve": "^12.0.0",
     "svelte": "^3.38.3",
     "svelte-check": "^2.2.0",
     "svelte-preprocess": "^4.7.3",
@@ -42,7 +41,6 @@
   "scripts": {
     "test": "jest",
     "prepublishOnly": "npm run check && ./build.mjs && tsc --emitDeclarationOnly",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "serve": "serve"
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   }
 }

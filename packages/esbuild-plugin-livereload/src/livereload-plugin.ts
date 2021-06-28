@@ -1,8 +1,7 @@
-import { BuildFailure, BuildResult, Message, Plugin } from 'esbuild';
+import { BuildResult, Plugin } from 'esbuild';
 import { promises as fsp } from 'fs';
 import type { ServerResponse } from 'http';
 import path from 'path';
-import { serializeError } from 'serialize-error';
 
 import { createLivereloadServer } from './server';
 
@@ -28,7 +27,7 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
       const baseUrl = `http://127.0.0.1:${port}`;
       const banner = jsBanner.replace(/{baseUrl}/g, baseUrl);
 
-      createLivereloadServer(port, res => clients.add(res));
+      createLivereloadServer({ basedir, port, onSSE: res => clients.add(res) });
 
       build.initialOptions.banner ??= {};
       if (build.initialOptions.banner.js) {
@@ -46,31 +45,13 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
           });
           clients.clear();
         } else {
-          const data = `data: ${JSON.stringify(applyBasedir(result, basedir))}\n\n`;
+          const data = `data: ${JSON.stringify(result)}\n\n`;
           clients.forEach(res => {
-            res.write('event: build-error\n');
+            res.write('event: build-result\n');
             res.write(data);
           });
         }
       });
     },
   };
-}
-
-function applyBasedir(result: BuildResult, basedir: string): BuildResult {
-  for (const error of result.errors) {
-    if (error.location) {
-      error.detail ??= {};
-      error.detail.fileRelative = error.location.file;
-      error.location.file = path.resolve(basedir, error.location.file);
-    }
-  }
-  for (const warning of result.warnings) {
-    if (warning.location) {
-      warning.detail ??= {};
-      warning.detail.fileRelative = warning.location.file;
-      warning.location.file = path.resolve(basedir, warning.location.file);
-    }
-  }
-  return result;
 }

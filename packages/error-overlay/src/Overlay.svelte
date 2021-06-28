@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { Message, Location } from 'esbuild';
+  import type { Message } from 'esbuild';
+  import { setContext } from 'svelte';
 
   import ErrorCard from './ErrorCard.svelte';
 
   export let errors: Message[];
+  export let openFileURL: string | undefined;
   export let onClose: () => void;
 
-  export let stackEntryClicked = (loc: Location) => {
-    window.location.assign(`vscode://file/${loc.file}:${loc.line}:${loc.column}`);
-  };
+  setContext('openFileURL', openFileURL);
 </script>
 
 <div class="modal">
@@ -16,7 +16,7 @@
     Oops :( <button class="close" on:click={onClose}>×</button>
   </h1>
   <div class="errors">
-    <ErrorCard {errors} onStackEntryClick={stackEntryClicked} />
+    <ErrorCard {errors} />
   </div>
 </div>
 

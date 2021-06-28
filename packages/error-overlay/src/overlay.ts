@@ -4,6 +4,7 @@ import Overlay from './Overlay.svelte';
 
 export interface OverlayProps {
   errors: Message[];
+  openFileURL?: string;
 }
 
 export function overlay(props: OverlayProps) {

@@ -8,19 +8,27 @@ function init() {
   document.head.appendChild(script);
 
   const evt = new EventSource('{baseUrl}/esbuild');
+
   evt.addEventListener('reload', () => {
+    console.log('esbuild-plugin-livereload: reloading...');
     location.reload();
   });
 
-  evt.addEventListener('build-error', e => {
+  evt.addEventListener('build-result', e => {
     const result = JSON.parse(e.data);
     if (result.warnings) {
       for (const warning of result.warnings) {
-        console.warn(`esbuild: ${warning.text}`);
+        if (!warning.location) {
+          console.warn(`WARN: ${warning.text}`);
+        } else {
+          const { file, line, column } = warning.location;
+          const pluginText = e.pluginName ? `[plugin: ${e.pluginName}] ` : '';
+          console.warn(`WARN: ${file}:${line}:${column}: warning: ${pluginText}${warning.text}`);
+        }
       }
     }
     if (result.errors) {
-      ErrorOverlay.overlay({ errors: result.errors });
+      ErrorOverlay.overlay({ errors: result.errors, openFileURL: '{baseUrl}/open-editor' });
     }
   });
 
