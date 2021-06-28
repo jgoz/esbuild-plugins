@@ -2,13 +2,15 @@
   import type { Message } from 'esbuild';
   import { setContext } from 'svelte';
 
-  import ErrorCard from './ErrorCard.svelte';
+  import StackEntry from './StackEntry.svelte';
 
   export let errors: Message[];
   export let openFileURL: string | undefined;
   export let onClose: () => void;
 
   setContext('openFileURL', openFileURL);
+
+  const type = (errors.length > 0 && errors[0].detail?.type) || 'Error';
 </script>
 
 <div class="modal">
@@ -16,7 +18,19 @@
     Oops :( <button class="close" on:click={onClose}>×</button>
   </h1>
   <div class="errors">
-    <ErrorCard {errors} />
+    <div class="error">
+      <div class="error-title">
+        <span class="error-type">{type} <span class="error-counter">{errors.length}</span></span>
+        <span class="error-message"
+          >Build failed with {errors.length} error{errors.length > 1 ? 's' : ''}</span
+        >
+      </div>
+      <div class="error-stack">
+        {#each errors as error}
+          <StackEntry {error} />
+        {/each}
+      </div>
+    </div>
   </div>
 </div>
 
@@ -69,6 +83,43 @@
   .close:hover {
     transform: scale(1.5);
     opacity: 0.25;
+  }
+  .error {
+    margin: 1em 0 3em 0;
+    left: 0;
+  }
+  .error-title {
+    display: flex;
+    align-items: stretch;
+    padding-right: 50px;
+  }
+  .error-type {
+    min-height: 2.8em;
+    display: flex !important;
+    align-items: center;
+    padding: 0 1em;
+    background: rgb(255, 0, 64);
+    color: white;
+    margin-right: 2em;
+    padding-left: var(--left-pad);
+    white-space: nowrap;
+  }
+  .error-counter {
+    color: white;
+    opacity: 0.3;
+    position: absolute;
+    left: 0.8em;
+  }
+  .error-message {
+    display: flex !important;
+    align-items: center;
+    font-weight: 400;
+    line-height: 1em;
+  }
+  .error-stack {
+    margin-top: 2em;
+    white-space: pre;
+    padding-left: var(--left-pad);
   }
 
   @media only screen and (max-width: 640px) {
