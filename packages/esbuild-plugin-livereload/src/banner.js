@@ -1,5 +1,18 @@
 /* global ErrorOverlay */
 
+function writeWarnings(result) {
+  if (!result.warnings) return;
+  for (const warning of result.warnings) {
+    if (!warning.location) {
+      console.warn(`WARN: ${warning.text}`);
+    } else {
+      const { file, line, column } = warning.location;
+      const pluginText = warning.pluginName ? `[plugin: ${warning.pluginName}] ` : '';
+      console.warn(`WARN: ${file}:${line}:${column}: warning: ${pluginText}${warning.text}`);
+    }
+  }
+}
+
 function init() {
   if (window.__ESBUILD_LR_PLUGIN__) return;
 
@@ -9,24 +22,15 @@ function init() {
 
   const evt = new EventSource('{baseUrl}/esbuild');
 
-  evt.addEventListener('reload', () => {
+  evt.addEventListener('reload', e => {
+    writeWarnings(JSON.parse(e.data));
     console.log('esbuild-plugin-livereload: reloading...');
     location.reload();
   });
 
   evt.addEventListener('build-result', e => {
     const result = JSON.parse(e.data);
-    if (result.warnings) {
-      for (const warning of result.warnings) {
-        if (!warning.location) {
-          console.warn(`WARN: ${warning.text}`);
-        } else {
-          const { file, line, column } = warning.location;
-          const pluginText = e.pluginName ? `[plugin: ${e.pluginName}] ` : '';
-          console.warn(`WARN: ${file}:${line}:${column}: warning: ${pluginText}${warning.text}`);
-        }
-      }
-    }
+    writeWarnings(result);
     if (result.errors) {
       ErrorOverlay.overlay({ errors: result.errors, openFileURL: '{baseUrl}/open-editor' });
     }
