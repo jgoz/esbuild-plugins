@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
 
-import { htmlPlugin, HtmlPluginOptions, MetafileOutput } from '../src';
+import { htmlPlugin, HtmlPluginOptions } from '../src';
 
 jest.mock('fs');
 

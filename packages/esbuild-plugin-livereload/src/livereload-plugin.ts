@@ -1,4 +1,4 @@
-import { Plugin } from 'esbuild';
+import type { Plugin } from 'esbuild';
 import { promises as fsp } from 'fs';
 import type { ServerResponse } from 'http';
 
@@ -15,16 +15,15 @@ export interface LivereloadPluginOptions {
 
 export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin {
   const { port = 53099 } = options;
+  const baseUrl = `http://127.0.0.1:${port}`;
   const clients = new Set<ServerResponse>();
 
   return {
     name: 'livereload-plugin',
     async setup(build) {
       const { absWorkingDir: basedir = process.cwd() } = build.initialOptions;
-      const jsBanner = await fsp.readFile(__dirname + '/banner.js', 'utf-8');
-
-      const baseUrl = `http://127.0.0.1:${port}`;
-      const banner = jsBanner.replace(/{baseUrl}/g, baseUrl);
+      const bannerTemplate = await fsp.readFile(__dirname + '/banner.js', 'utf-8');
+      const banner = bannerTemplate.replace(/{baseUrl}/g, baseUrl);
 
       createLivereloadServer({ basedir, port, onSSE: res => clients.add(res) });
 
