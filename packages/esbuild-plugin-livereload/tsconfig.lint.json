@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.json",
   "include": ["src", "test"],
-  "files": [".eslintrc.js", "build.mjs"]
+  "files": [".eslintrc.js", "build.mjs", "playwright.config.ts", "test/global-setup.ts"]
 }
