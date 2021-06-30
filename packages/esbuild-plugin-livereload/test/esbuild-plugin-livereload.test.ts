@@ -10,6 +10,10 @@ test('page reloads as content changes', async ({ context, page, port, writeFile 
   await page.waitForSelector('text=Oops :(');
   await page.screenshot({ path: __dirname + '/screenshots/oops.png' });
 
+  await page.click('button.close');
+
+  test.expect(await page.textContent('h1')).toContain('Page One');
+
   await writeFile('3'); // fixed
 
   const msg = await page.waitForEvent('console');
