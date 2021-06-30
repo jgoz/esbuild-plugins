@@ -14,7 +14,8 @@ export function overlay(props: OverlayProps) {
   const component = new Overlay({
     target,
     props: {
-      ...props,
+      errors: props.errors,
+      openFileURL: props.openFileURL,
       onClose: () => {
         component.$destroy();
         document.body.removeChild(target);

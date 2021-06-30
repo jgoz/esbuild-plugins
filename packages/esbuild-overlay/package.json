@@ -22,7 +22,9 @@
   "module": "dist/overlay.js",
   "types": "types/overlay.d.ts",
   "dependencies": {},
-  "peerDependencies": {},
+  "peerDependencies": {
+    "esbuild": ">= 0.12.8"
+  },
   "peerDependenciesMeta": {},
   "devDependencies": {
     "@tsconfig/svelte": "^2.0.1",
@@ -40,8 +42,8 @@
     "maxWorkers": 1
   },
   "scripts": {
-    "test": "jest",
-    "prepublishOnly": "npm run check && ./build.mjs && tsc --emitDeclarationOnly",
+    "prepare": "tsc --emitDeclarationOnly",
+    "prepublishOnly": "npm run check && ./build.mjs",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   }
 }

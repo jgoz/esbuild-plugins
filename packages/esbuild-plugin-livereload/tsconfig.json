@@ -4,7 +4,5 @@
     "outDir": "dist",
     "rootDir": "src"
   },
-  "include": ["src"],
-  "exclude": ["src/banner.js"],
-  "references": [{ "path": "../esbuild-overlay" }]
+  "include": ["src"]
 }

@@ -1,9 +1,10 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
-    "composite": true,
     "declaration": true,
     "declarationMap": true,
+    "declarationDir": "types",
+    "emitDeclarationOnly": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -19,6 +20,5 @@
     "target": "es2018",
     "types": ["svelte"]
   },
-  "include": ["src/**/*", "src/node_modules", "typings"],
-  "exclude": ["node_modules/*", "__sapper__/*"]
+  "include": ["src"]
 }

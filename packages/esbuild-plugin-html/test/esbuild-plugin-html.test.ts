@@ -70,6 +70,7 @@ async function buildWithHTML(
       [`${fixture}-style`]: `./fixture/${fixture}.css`,
     },
     format: 'esm',
+    metafile: true,
     splitting: true,
     write: false,
     plugins: [htmlPlugin(options)],
@@ -119,6 +120,19 @@ describe('eslint-plugin-html', () => {
               `);
   });
 
+  it('throws if metafile not set', () => {
+    void expect(
+      build({
+        absWorkingDir: __dirname,
+        bundle: true,
+        entryPoints: ['./fixture/template-empty.js'],
+        logLevel: 'silent',
+        outdir: 'out',
+        plugins: [htmlPlugin({ template: './fixture/template-empty.html' })],
+      }),
+    ).rejects.toThrowError(/"metafile" esbuild option must be set to "true"/);
+  });
+
   it('throws if template not found', () => {
     void expect(
       build({
@@ -126,6 +140,7 @@ describe('eslint-plugin-html', () => {
         bundle: true,
         entryPoints: ['./fixture/template-empty.js'],
         logLevel: 'silent',
+        metafile: true,
         outdir: 'out',
         plugins: [htmlPlugin({ template: 'whoops' })],
       }),

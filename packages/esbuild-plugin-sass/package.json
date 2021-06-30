@@ -53,6 +53,7 @@
     "maxWorkers": 1
   },
   "scripts": {
+    "pretest": "cd test/fixture && npm ci",
     "test": "jest"
   }
 }

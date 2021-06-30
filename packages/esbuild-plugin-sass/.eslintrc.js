@@ -5,4 +5,5 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: './tsconfig.lint.json',
   },
+  overrides: [{ files: '*.js', env: { node: true } }],
 };
