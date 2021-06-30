@@ -22,7 +22,7 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
     name: 'livereload-plugin',
     async setup(build) {
       const { absWorkingDir: basedir = process.cwd() } = build.initialOptions;
-      const bannerTemplate = await fsp.readFile(__dirname + '/banner.js', 'utf-8');
+      const bannerTemplate = await fsp.readFile(require.resolve('../banner.js'), 'utf-8');
       const banner = bannerTemplate.replace(/{baseUrl}/g, baseUrl);
 
       createLivereloadServer({ basedir, port, onSSE: res => clients.add(res) });

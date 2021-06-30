@@ -1,11 +1,13 @@
 /* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
 import { build, serve, ServeResult } from 'esbuild';
+import esbuildSvelte from 'esbuild-svelte';
 import { promises as fsp } from 'fs';
 import getPort from 'get-port';
 import path from 'path';
+import sveltePreprocess from 'svelte-preprocess';
 
-import { livereloadPlugin } from '../src/livereload-plugin';
+import { livereloadPlugin } from '../dist';
 
 interface ServerTestFixtures {}
 
@@ -17,19 +19,15 @@ interface ServerWorkerFixtures {
 }
 
 const files = {
-  '1': '1-initial.tsx',
-  '2': '2-error.tsx',
-  '3': '3-fixed.tsx',
+  '1': '1-initial.svelte',
+  '2': '2-error.svelte',
+  '3': '3-fixed.svelte',
 };
 
 const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
   absWorkingDir: [
     async ({}, use, workerInfo) => {
       const dir = await fsp.mkdtemp(path.join(workerInfo.config.rootDir, 'test/fixture/out-'));
-      await fsp.copyFile(
-        path.join(__dirname, 'fixture', 'tsconfig.json'),
-        path.join(dir, 'tsconfig.json'),
-      );
       await fsp.copyFile(
         path.join(__dirname, 'fixture', 'index.html'),
         path.join(dir, 'index.html'),
@@ -41,10 +39,10 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
 
   writeFile: [
     async ({ absWorkingDir }, use) => {
-      async function writeFile(index: string) {
+      async function writeFile(index: '1' | '2' | '3') {
         await fsp.copyFile(
           path.join(__dirname, 'fixture', files[index]),
-          path.join(absWorkingDir, 'entry.tsx'),
+          path.join(absWorkingDir, 'entry.svelte'),
         );
       }
       await writeFile('1');
@@ -62,7 +60,6 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
     { scope: 'worker' },
   ],
 
-  // "express" fixture starts automatically for every worker - we pass "auto" for that.
   server: [
     async ({ port, absWorkingDir, writeFile }, use, workerInfo) => {
       const lrPort = (await getPort()) + workerInfo.workerIndex;
@@ -74,10 +71,16 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
       const watcher = await build({
         absWorkingDir,
         bundle: true,
-        entryPoints: ['entry.tsx'],
-        format: 'iife',
+        entryPoints: ['entry.svelte'],
+        format: 'esm',
         outdir: 'js',
-        plugins: [livereloadPlugin({ port: lrPort })],
+        plugins: [
+          esbuildSvelte({
+            compileOptions: { css: true },
+            preprocess: sveltePreprocess(),
+          }),
+          livereloadPlugin({ port: lrPort }),
+        ],
         watch: true,
         write: true,
       });
@@ -92,7 +95,7 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
       // Cleanup.
       console.log('Stopping server...');
       server.stop();
-      watcher.stop();
+      watcher.stop?.();
       console.log('Server stopped');
 
       await fsp.rm(absWorkingDir, { recursive: true, force: true });

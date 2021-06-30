@@ -12,7 +12,6 @@ interface ServerOptions {
 
 export function createLivereloadServer(options: ServerOptions): void {
   const { port, onSSE, basedir } = options;
-  const overlayPath = require.resolve('@jgoz/esbuild-overlay');
 
   createServer((req, res) => {
     if (!req.url) return;
@@ -29,8 +28,11 @@ export function createLivereloadServer(options: ServerOptions): void {
       );
       return;
     }
-    if (url.pathname === '/overlay.js') {
-      fs.createReadStream(overlayPath).pipe(res);
+    if (url.pathname.endsWith('.js')) {
+      const sourcePath = require.resolve(`.${url.pathname}`);
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Content-Type', 'text/javascript');
+      fs.createReadStream(sourcePath).pipe(res);
       return;
     }
     if (url.pathname === '/open-editor') {

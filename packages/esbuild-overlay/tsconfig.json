@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
+    "composite": true,
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
@@ -11,6 +12,7 @@
     "outDir": "build",
     "preserveConstEnums": true,
     "removeComments": true,
+    "rootDir": "src",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,

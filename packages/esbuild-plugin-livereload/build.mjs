@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import esbuild from 'esbuild';
+import { build } from 'esbuild';
 
-esbuild
-  .build({
-    entryPoints: ['./src/banner.js'],
-    bundle: true,
-    format: 'iife',
-    outdir: './dist',
-    minify: true,
-  })
-  .catch(() => process.exit(1));
+build({
+  entryPoints: {
+    'livereload-event-source': './src/event-source.ts',
+  },
+  bundle: true,
+  format: 'esm',
+  outdir: './dist',
+  splitting: true,
+}).catch(() => process.exit(1));

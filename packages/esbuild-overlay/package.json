@@ -19,7 +19,8 @@
     "livereload"
   ],
   "main": "dist/overlay.js",
-  "types": "dist/overlay.d.ts",
+  "module": "dist/overlay.js",
+  "types": "types/overlay.d.ts",
   "dependencies": {},
   "peerDependencies": {},
   "peerDependenciesMeta": {},

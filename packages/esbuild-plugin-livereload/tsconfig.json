@@ -1,8 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "rootDir": "src"
   },
   "include": ["src"],
-  "exclude": ["src/banner.js"]
+  "exclude": ["src/banner.js"],
+  "references": [{ "path": "../esbuild-overlay" }]
 }
