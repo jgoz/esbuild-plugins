@@ -28,7 +28,7 @@
   "peerDependenciesMeta": {},
   "devDependencies": {
     "@tsconfig/svelte": "^2.0.1",
-    "esbuild": "^0.12.8",
+    "esbuild": "^0.12.12",
     "esbuild-svelte": "^0.5.1",
     "prettier": "^2.3.1",
     "svelte": "^3.38.3",
