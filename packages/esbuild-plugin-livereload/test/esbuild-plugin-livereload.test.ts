@@ -1,6 +1,6 @@
 import test from './serve-test';
 
-test('page reloads as content changes', async ({ context, page, port, writeFile }) => {
+test('page reloads as content changes', async ({ page, port, writeFile }) => {
   await page.goto(`http://127.0.0.1:${port}/`);
 
   test.expect(await page.textContent('h1')).toContain('Page One');
