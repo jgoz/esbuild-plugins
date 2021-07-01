@@ -1,14 +1,11 @@
 <script lang="ts">
   import type { Message } from 'esbuild';
-  import { setContext } from 'svelte';
 
   import StackEntry from './StackEntry.svelte';
 
   export let errors: Message[];
   export let openFileURL: string | undefined;
   export let onClose: () => void;
-
-  setContext('openFileURL', openFileURL);
 
   const type = (errors.length > 0 && errors[0].detail?.type) || 'Error';
 </script>
@@ -27,7 +24,7 @@
       </div>
       <div class="error-stack">
         {#each errors as error}
-          <StackEntry {error} />
+          <StackEntry {error} {openFileURL} />
         {/each}
       </div>
     </div>

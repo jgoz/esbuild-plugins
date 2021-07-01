@@ -8,7 +8,7 @@ test('page reloads as content changes', async ({ page, port, writeFile }) => {
   await writeFile('2'); // error
 
   await page.waitForSelector('text=Oops :(');
-  await page.screenshot({ path: __dirname + '/screenshots/oops.png' });
+  test.expect(await page.screenshot()).toMatchSnapshot('oops.png');
 
   await page.click('button.close');
 

@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Location, Message } from 'esbuild';
-  import { getContext } from 'svelte';
 
   import HighlightedLine from './HighlightedLine.svelte';
 
@@ -15,13 +14,16 @@
   };
 
   export let error: Message;
+  export let openFileURL: string | undefined;
 
   const location = error.location ?? NULL_LOCATION;
   const { text } = error;
   const { column, line, length, lineText, file } = location;
 
   const lineNumberWidth = String(line).length;
-  const openFileURL: string | undefined = getContext('openFileURL');
+  const lines = lineText.split(/\r?\n/g);
+  const linesWithNumbers =
+    lines.length > 1 ? lines.map(l => [0, l] as const) : [[line, lineText] as const];
 
   function onClick() {
     if (!openFileURL) return;
@@ -40,10 +42,18 @@
   </div>
   <div class="error">{text}</div>
   <div class="lines">
-    <div class="line">
-      <span class="line-number">{String(line).padStart(lineNumberWidth, '  ')}</span>
-      <HighlightedLine text={lineText} {column} {length} />
-    </div>
+    {#each linesWithNumbers as [l, lineText]}
+      <div class="line">
+        {#if l > 0}
+          <span class="line-number">{String(l).padStart(lineNumberWidth, '  ')}</span>
+        {/if}
+        {#if l == line}
+          <HighlightedLine text={lineText} {column} {length} />
+        {:else}
+          {lineText}
+        {/if}
+      </div>
+    {/each}
   </div>
 </div>
 
