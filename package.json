@@ -11,24 +11,36 @@
   "bugs": {
     "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "volta": {
     "node": "16.3.0",
-    "npm": "7.17.0"
+    "yarn": "1.22.10"
   },
   "prettier": "@awesome-code-style/prettier-config",
   "devDependencies": {
     "@awesome-code-style/eslint-config": "^3.1.0",
     "@awesome-code-style/prettier-config": "^3.0.0",
+    "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.5",
     "@babel/preset-typescript": "^7.14.5",
     "@types/jest": "^26.0.23",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
+    "esbuild": "^0.12.14",
+    "eslint": "^7.29.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-header": "^3.1.1",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-unicorn": "^30.0.0",
     "jest": "^27.0.4",
     "prettier": "^2.3.1",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.5"
   },
   "scripts": {
     "prepare": "tsc -b && npm run -ws --if-present prepare",

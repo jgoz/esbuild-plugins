@@ -21,11 +21,9 @@
   "main": "dist/overlay.js",
   "module": "dist/overlay.js",
   "types": "types/overlay.d.ts",
-  "dependencies": {},
   "peerDependencies": {
     "esbuild": ">= 0.12.8"
   },
-  "peerDependenciesMeta": {},
   "devDependencies": {
     "@tsconfig/svelte": "^2.0.1",
     "esbuild": "^0.12.12",

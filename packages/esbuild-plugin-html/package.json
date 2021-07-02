@@ -26,7 +26,6 @@
   "peerDependencies": {
     "esbuild": ">= 0.12.8"
   },
-  "peerDependenciesMeta": {},
   "devDependencies": {
     "@types/parse5": "^6.0.0",
     "esbuild": "^0.12.12",
