@@ -11,11 +11,9 @@
   "bugs": {
     "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
+  "workspaces": [
+    "packages/**"
+  ],
   "volta": {
     "node": "16.3.0",
     "yarn": "1.22.10"

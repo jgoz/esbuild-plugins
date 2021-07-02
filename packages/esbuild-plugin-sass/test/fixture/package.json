@@ -8,5 +8,8 @@
     "postcss",
     "react",
     "watch"
-  ]
+  ],
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  }
 }

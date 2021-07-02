@@ -41,6 +41,6 @@
     "typescript": "^4.3.4"
   },
   "scripts": {
-    "test": "../../node_modules/.bin/playwright test"
+    "test": "playwright test"
   }
 }
