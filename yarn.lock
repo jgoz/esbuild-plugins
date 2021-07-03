@@ -1747,6 +1747,7 @@ __metadata:
     "@babel/core": ^7.14.6
     "@babel/preset-env": ^7.14.7
     "@babel/preset-typescript": ^7.14.5
+    "@tsconfig/node14": ^1.0.1
     "@types/jest": ^26.0.23
     "@typescript-eslint/eslint-plugin": ^4.28.1
     "@typescript-eslint/parser": ^4.28.1
@@ -1871,6 +1872,13 @@ __metadata:
   version: 1.1.2
   resolution: "@tootallnate/once@npm:1.1.2"
   checksum: e1fb1bbbc12089a0cb9433dc290f97bddd062deadb6178ce9bcb93bb7c1aecde5e60184bc7065aec42fe1663622a213493c48bbd4972d931aae48315f18e1be9
+  languageName: node
+  linkType: hard
+
+"@tsconfig/node14@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@tsconfig/node14@npm:1.0.1"
+  checksum: 976345e896c0f059867f94f8d0f6ddb8b1844fb62bf36b727de8a9a68f024857e5db97ed51d3325e23e0616a5e48c034ff51a8d595b3fe7e955f3587540489be
   languageName: node
   linkType: hard
 

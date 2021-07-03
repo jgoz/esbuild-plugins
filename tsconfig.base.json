@@ -1,11 +1,10 @@
 {
+  "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
     "allowJs": true,
     "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "esModuleInterop": true,
-    "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
     "noImplicitThis": true,
@@ -13,9 +12,6 @@
     "noUnusedParameters": true,
     "preserveConstEnums": true,
     "removeComments": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "strict": true,
-    "target": "es2018"
+    "sourceMap": true
   }
 }
