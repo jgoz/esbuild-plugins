@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src", "overlay", "test"],
+  "files": [".eslintrc.js", "babel.config.js", "build.mjs"]
+}

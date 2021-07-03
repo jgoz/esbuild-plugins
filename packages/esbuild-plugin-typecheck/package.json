@@ -1,0 +1,37 @@
+{
+  "name": "@jgoz/esbuild-plugin-typecheck",
+  "version": "1.0.0",
+  "author": "John Gozde <john@gozde.ca>",
+  "description": "TypeScript type-checking plugin for esbuild",
+  "license": "MIT",
+  "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jgoz/esbuild-plugins.git",
+    "directory": "packages/esbuild-plugin-typecheck"
+  },
+  "bugs": {
+    "url": "https://github.com/jgoz/esbuild-plugins/issues"
+  },
+  "keywords": [
+    "esbuild-plugin",
+    "esbuild",
+    "typescript",
+    "checking",
+    "diagnostics"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "peerDependencies": {
+    "typescript": ">= 3.5"
+  },
+  "devDependencies": {
+    "esbuild": "^0.12.14",
+    "prettier": "^2.3.2",
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.5"
+  },
+  "scripts": {
+    "test": "playwright test"
+  }
+}
