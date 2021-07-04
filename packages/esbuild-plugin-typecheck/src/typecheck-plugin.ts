@@ -1,10 +1,10 @@
 import type { Plugin } from 'esbuild';
+import { enabled as colorEnabled } from 'kleur';
 import path from 'path';
 import ts from 'typescript';
+import { Worker } from 'worker_threads';
 
-import { BuilderOptions } from './builder';
-import { compileBuilder } from './compile-builder';
-import { solutionBuilder } from './solution-builder';
+import { BuilderOptions, DoneMessage, PostedDiagnosticMessage } from './builder';
 
 export interface TypecheckPluginOptions {
   build?: boolean | ts.BuildOptions;
@@ -42,12 +42,33 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
       };
 
       const buildMode = options.build ?? commandLine.options.composite;
+      const workerScript = path.resolve(
+        __dirname,
+        buildMode ? './solution-builder.js' : './compile-builder.js',
+      );
+      const worker = new Worker(workerScript, {
+        env: {
+          ...process.env,
+          FORCE_COLOR: colorEnabled ? '1' : undefined,
+        },
+        workerData: builderOptions,
+      });
 
-      if (buildMode) {
-        solutionBuilder(builderOptions);
-      } else {
-        compileBuilder(builderOptions);
-      }
+      worker.on('message', (msg: PostedDiagnosticMessage | DoneMessage) => {
+        // TODO: emit message to livereload
+
+        if (msg.type === 'done' && msg.errorCount > 0) {
+          process.exitCode = 1;
+        }
+      });
+
+      worker.on('error', () => {
+        process.exitCode = 1;
+      });
+
+      worker.on('exit', code => {
+        if (code !== 0) process.exitCode = code;
+      });
     },
   };
 }

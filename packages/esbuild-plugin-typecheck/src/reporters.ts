@@ -1,4 +1,4 @@
-import { bold } from 'kleur';
+import { bold, cyan, green } from 'kleur';
 import ts from 'typescript';
 
 const SUCCESS = process.platform === 'win32' ? '√' : '✔';
@@ -6,16 +6,19 @@ const SUCCESS = process.platform === 'win32' ? '√' : '✔';
 const ERROR = process.platform === 'win32' ? '×' : '✖';
 const INFO = process.platform === 'win32' ? 'i' : 'ℹ';
 
-export function logTypecheckStarted() {
-  console.info(bold().cyan(INFO) + bold(' Typecheck started…'));
+export function logTypecheckStarted({ build = false, watch = false } = {}) {
+  const opts = [build && 'build', watch && 'watch'].filter(Boolean).join(', ');
+  const optStr = opts ? cyan(` (${opts})`) : '';
+
+  console.info(bold(INFO) + `  Typecheck started…` + optStr);
 }
 
 export function logTypecheckPassed() {
-  console.info(bold().green(SUCCESS) + bold(' Typecheck passed'));
+  console.info(bold(SUCCESS) + green('  Typecheck passed'));
 }
 
 export function logTypecheckFailed(numErrors: string) {
-  console.error(bold().red(ERROR) + bold(' Typecheck failed with ' + numErrors));
+  console.error(bold().red(ERROR) + '  Typecheck failed with ' + bold(numErrors));
 }
 
 const formatHost: ts.FormatDiagnosticsHost = {
