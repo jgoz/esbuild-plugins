@@ -4,6 +4,7 @@
   "references": [
     { "path": "./packages/esbuild-plugin-html" },
     { "path": "./packages/esbuild-plugin-livereload" },
-    { "path": "./packages/esbuild-plugin-sass" }
+    { "path": "./packages/esbuild-plugin-sass" },
+    { "path": "./packages/esbuild-plugin-typecheck" }
   ]
 }

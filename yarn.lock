@@ -1642,7 +1642,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jgoz/esbuild-overlay@^1.0.0, @jgoz/esbuild-overlay@workspace:packages/esbuild-overlay":
+"@jgoz/esbuild-overlay@workspace:*, @jgoz/esbuild-overlay@workspace:packages/esbuild-overlay":
   version: 0.0.0-use.local
   resolution: "@jgoz/esbuild-overlay@workspace:packages/esbuild-overlay"
   dependencies:
@@ -1680,7 +1680,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jgoz/esbuild-plugin-livereload@workspace:packages/esbuild-plugin-livereload"
   dependencies:
-    "@jgoz/esbuild-overlay": ^1.0.0
+    "@jgoz/esbuild-overlay": "workspace:*"
+    "@jgoz/esbuild-plugin-typecheck": "workspace:*"
     "@playwright/test": ^1.12.3
     esbuild: ^0.12.14
     esbuild-svelte: ^0.5.2
@@ -1725,11 +1726,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jgoz/esbuild-plugin-typecheck@workspace:packages/esbuild-plugin-typecheck":
+"@jgoz/esbuild-plugin-typecheck@workspace:*, @jgoz/esbuild-plugin-typecheck@workspace:packages/esbuild-plugin-typecheck":
   version: 0.0.0-use.local
   resolution: "@jgoz/esbuild-plugin-typecheck@workspace:packages/esbuild-plugin-typecheck"
   dependencies:
     esbuild: ^0.12.14
+    kleur: ^4.1.4
     prettier: ^2.3.2
     tslib: ^2.3.0
     typescript: ^4.3.5
@@ -5752,6 +5754,13 @@ __metadata:
   version: 3.0.3
   resolution: "kleur@npm:3.0.3"
   checksum: df82cd1e172f957bae9c536286265a5cdbd5eeca487cb0a3b2a7b41ef959fc61f8e7c0e9aeea9c114ccf2c166b6a8dd45a46fd619c1c569d210ecd2765ad5169
+  languageName: node
+  linkType: hard
+
+"kleur@npm:^4.1.4":
+  version: 4.1.4
+  resolution: "kleur@npm:4.1.4"
+  checksum: 7f6db36e378045dec14acd3cbf0b1e59130c09e984ee8b8ce56dd2d2257cfff90389c1e8f8b19bd09dd5d241080566a814b4ccd99fdcef91f59ef93ec33c8a44
   languageName: node
   linkType: hard
 

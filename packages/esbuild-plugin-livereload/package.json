@@ -21,13 +21,14 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@jgoz/esbuild-overlay": "^1.0.0",
+    "@jgoz/esbuild-overlay": "workspace:*",
     "open-editor": "^3.0.0"
   },
   "peerDependencies": {
     "esbuild": ">= 0.12.8"
   },
   "devDependencies": {
+    "@jgoz/esbuild-plugin-typecheck": "workspace:*",
     "@playwright/test": "^1.12.3",
     "esbuild": "^0.12.14",
     "esbuild-svelte": "^0.5.2",
