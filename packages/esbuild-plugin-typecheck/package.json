@@ -26,9 +26,16 @@
     "kleur": "^4.1.4"
   },
   "peerDependencies": {
+    "@jgoz/esbuild-plugin-livereload": ">= 1",
     "typescript": ">= 3.5"
   },
+  "peerDependenciesMeta": {
+    "@jgoz/esbuild-plugin-livereload": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@jgoz/esbuild-plugin-livereload": "workspace:*",
     "esbuild": "^0.12.14",
     "prettier": "^2.3.2",
     "tslib": "^2.3.0",

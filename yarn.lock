@@ -1676,7 +1676,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jgoz/esbuild-plugin-livereload@workspace:packages/esbuild-plugin-livereload":
+"@jgoz/esbuild-plugin-livereload@workspace:*, @jgoz/esbuild-plugin-livereload@workspace:packages/esbuild-plugin-livereload":
   version: 0.0.0-use.local
   resolution: "@jgoz/esbuild-plugin-livereload@workspace:packages/esbuild-plugin-livereload"
   dependencies:
@@ -1729,13 +1729,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jgoz/esbuild-plugin-typecheck@workspace:packages/esbuild-plugin-typecheck"
   dependencies:
+    "@jgoz/esbuild-plugin-livereload": "workspace:*"
     esbuild: ^0.12.14
     kleur: ^4.1.4
     prettier: ^2.3.2
     tslib: ^2.3.0
     typescript: ^4.3.5
   peerDependencies:
+    "@jgoz/esbuild-plugin-livereload": ">= 1"
     typescript: ">= 3.5"
+  peerDependenciesMeta:
+    "@jgoz/esbuild-plugin-livereload":
+      optional: true
   languageName: unknown
   linkType: soft
 
