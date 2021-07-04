@@ -23,6 +23,7 @@ async function init() {
   const { overlay } = await import('@jgoz/esbuild-overlay');
 
   const evt = new EventSource(window.__ESBUILD_LR_PLUGIN__ + '/esbuild');
+  let removeOverlay: (() => void) | undefined;
 
   evt.addEventListener('reload', e => {
     writeWarnings(JSON.parse((e as MessageEvent)?.data ?? '{}'));
@@ -33,8 +34,12 @@ async function init() {
   evt.addEventListener('build-result', e => {
     const result = JSON.parse((e as MessageEvent)?.data ?? '{}');
     writeWarnings(result);
-    if (result.errors) {
-      overlay({
+    if (removeOverlay && !result.errors.length) {
+      removeOverlay();
+      removeOverlay = undefined;
+    }
+    if (result.errors?.length) {
+      removeOverlay = overlay({
         errors: result.errors,
         openFileURL: window.__ESBUILD_LR_PLUGIN__ + '/open-editor',
       });

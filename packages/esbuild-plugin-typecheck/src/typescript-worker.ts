@@ -1,11 +1,17 @@
+import type { Message } from 'esbuild';
 import ts from 'typescript';
 import { isMainThread, parentPort, workerData } from 'worker_threads';
 
 import { Reporter } from './reporter';
 
+export interface EsbuildDiagnosticMessage {
+  type: 'error' | 'warning';
+  message: Message;
+}
+
 export interface WorkerDiagnosticsMessage {
   type: 'diagnostic' | 'summary';
-  diagnostics: readonly ts.Diagnostic[];
+  diagnostics: readonly EsbuildDiagnosticMessage[];
 }
 
 export interface WorkerStartMessage {
@@ -90,9 +96,9 @@ function buildRun(configFile: string, buildOptions: ts.BuildOptions, reporter: R
 }
 
 function startWorker(options: TypescriptWorkerOptions, postMessage: (msg: WorkerMessage) => void) {
-  const { build, configFile, commandLine, watch } = options;
+  const { basedir, build, configFile, commandLine, watch } = options;
 
-  const reporter = new Reporter(postMessage);
+  const reporter = new Reporter(basedir, postMessage);
   reporter.reportBuildStart({ build: !!build, watch });
 
   if (build) {

@@ -1,8 +1,16 @@
-import type { Plugin } from 'esbuild';
+import type { Message, Plugin } from 'esbuild';
 import { promises as fsp } from 'fs';
 import type { ServerResponse } from 'http';
 
 import { createLivereloadServer } from './server';
+
+interface ClientMessage {
+  warnings?: readonly Message[];
+  errors?: readonly Message[];
+}
+
+const clients = new Set<ServerResponse>();
+const errorSources = new Map<string, ClientMessage>();
 
 export interface LivereloadPluginOptions {
   /**
@@ -16,7 +24,6 @@ export interface LivereloadPluginOptions {
 export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin {
   const { port = 53099 } = options;
   const baseUrl = `http://127.0.0.1:${port}`;
-  const clients = new Set<ServerResponse>();
 
   return {
     name: 'livereload-plugin',
@@ -35,21 +42,36 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
       }
 
       build.onEnd(result => {
-        if (result.errors.length === 0) {
-          const data = `data: ${JSON.stringify({ warnings: result.warnings })}\n\n`;
-          clients.forEach(res => {
-            res.write('event: reload\n');
-            res.write(data);
-          });
-          clients.clear();
-        } else {
-          const data = `data: ${JSON.stringify(result)}\n\n`;
-          clients.forEach(res => {
-            res.write('event: build-result\n');
-            res.write(data);
-          });
-        }
+        notify('esbuild', { warnings: result.warnings, errors: result.errors });
       });
     },
   };
+}
+
+/**
+ * Notifies connected clients that errors or warnings occurred from
+ * a given source. If there are no errors and the notification originates
+ * from esbuild, the page will be sent a reload request.
+ *
+ * @param errorSource - Identifier for the errors and warnings. Previous
+ *                      results will be overwritten for the same errorSource.
+ * @param msg - Object containing errors and warnings from the given source
+ */
+export function notify(errorSource: string, msg: ClientMessage) {
+  errorSources.set(errorSource, msg);
+
+  const values = Array.from(errorSources.values());
+  const errors = values.flatMap(v => v.errors ?? []);
+  const warnings = values.flatMap(v => v.warnings ?? []);
+
+  const isReload = errorSource === 'esbuild' && errors.length === 0;
+  const event = isReload ? 'event: reload\n' : 'event: build-result\n';
+  const data = `data: ${JSON.stringify({ warnings, errors })}\n\n`;
+
+  clients.forEach(res => {
+    res.write(event);
+    res.write(data);
+  });
+
+  if (isReload) clients.clear();
 }

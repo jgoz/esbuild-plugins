@@ -1,10 +1,17 @@
-import type { Plugin } from 'esbuild';
+import type { notify as lrNotify } from '@jgoz/esbuild-plugin-livereload';
+import type { Message, Plugin } from 'esbuild';
 import { enabled as colorEnabled } from 'kleur';
 import path from 'path';
 import ts from 'typescript';
 import { Worker } from 'worker_threads';
 
 import type { TypescriptWorkerOptions, WorkerMessage } from './typescript-worker';
+
+let notify: typeof lrNotify = () => {};
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  notify = require('@jgoz/esbuild-plugin-livereload').notify;
+} catch {}
 
 export interface TypecheckPluginOptions {
   build?: boolean | ts.BuildOptions;
@@ -41,6 +48,7 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
         configFile,
         watch: !!watch,
       };
+
       const worker = new Worker(path.resolve(__dirname, './typescript-worker.js'), {
         env: {
           ...process.env,
@@ -49,11 +57,21 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
         workerData: workerOptions,
       });
 
-      worker.on('message', (msg: WorkerMessage) => {
-        // TODO: emit message to livereload
+      let errors: Message[] = [];
+      let warnings: Message[] = [];
 
-        if (msg.type === 'done' && msg.errorCount > 0) {
-          process.exitCode = 1;
+      worker.on('message', (msg: WorkerMessage) => {
+        if (msg.type === 'start') {
+          errors = [];
+          warnings = [];
+        }
+        if (msg.type === 'diagnostic') {
+          errors.push(...msg.diagnostics.filter(d => d.type === 'error').map(d => d.message));
+          warnings.push(...msg.diagnostics.filter(d => d.type === 'warning').map(d => d.message));
+        }
+        if (msg.type === 'done') {
+          if (msg.errorCount > 0) process.exitCode = 1;
+          notify('typecheck-plugin', { errors, warnings });
         }
       });
 
