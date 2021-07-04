@@ -4,7 +4,8 @@ import path from 'path';
 import ts from 'typescript';
 import { Worker } from 'worker_threads';
 
-import { BuilderOptions, DoneMessage, PostedDiagnosticMessage } from './builder';
+import type { WorkerMessage } from './reporter';
+import type { TypescriptWorkerOptions } from './typescript-worker';
 
 export interface TypecheckPluginOptions {
   build?: boolean | ts.BuildOptions;
@@ -34,27 +35,22 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
       config.compilerOptions = { ...config.compilerOptions, ...compilerOptions };
 
       const commandLine = ts.parseJsonConfigFileContent(config, ts.sys, basedir);
-      const builderOptions: BuilderOptions = {
+      const workerOptions: TypescriptWorkerOptions = {
         basedir,
+        build: options.build ?? commandLine.options.composite ?? false,
         commandLine,
         configFile,
         watch: !!watch,
       };
-
-      const buildMode = options.build ?? commandLine.options.composite;
-      const workerScript = path.resolve(
-        __dirname,
-        buildMode ? './solution-builder.js' : './compile-builder.js',
-      );
-      const worker = new Worker(workerScript, {
+      const worker = new Worker(path.resolve(__dirname, './typescript-worker.js'), {
         env: {
           ...process.env,
           FORCE_COLOR: colorEnabled ? '1' : undefined,
         },
-        workerData: builderOptions,
+        workerData: workerOptions,
       });
 
-      worker.on('message', (msg: PostedDiagnosticMessage | DoneMessage) => {
+      worker.on('message', (msg: WorkerMessage) => {
         // TODO: emit message to livereload
 
         if (msg.type === 'done' && msg.errorCount > 0) {
