@@ -28,7 +28,6 @@
     "esbuild": ">= 0.12.8"
   },
   "devDependencies": {
-    "@jgoz/esbuild-plugin-typecheck": "workspace:*",
     "@playwright/test": "^1.12.3",
     "esbuild": "^0.12.14",
     "esbuild-svelte": "^0.5.2",

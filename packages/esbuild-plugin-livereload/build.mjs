@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import { typecheckPlugin } from '@jgoz/esbuild-plugin-typecheck';
 import { build } from 'esbuild';
 
 build({
@@ -11,5 +10,4 @@ build({
   format: 'esm',
   outdir: './dist',
   splitting: true,
-  plugins: [typecheckPlugin()],
 }).catch(() => process.exit(1));

@@ -1681,7 +1681,6 @@ __metadata:
   resolution: "@jgoz/esbuild-plugin-livereload@workspace:packages/esbuild-plugin-livereload"
   dependencies:
     "@jgoz/esbuild-overlay": "workspace:*"
-    "@jgoz/esbuild-plugin-typecheck": "workspace:*"
     "@playwright/test": ^1.12.3
     esbuild: ^0.12.14
     esbuild-svelte: ^0.5.2
@@ -1726,7 +1725,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jgoz/esbuild-plugin-typecheck@workspace:*, @jgoz/esbuild-plugin-typecheck@workspace:packages/esbuild-plugin-typecheck":
+"@jgoz/esbuild-plugin-typecheck@workspace:packages/esbuild-plugin-typecheck":
   version: 0.0.0-use.local
   resolution: "@jgoz/esbuild-plugin-typecheck@workspace:packages/esbuild-plugin-typecheck"
   dependencies:
