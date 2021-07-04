@@ -4,8 +4,7 @@ import path from 'path';
 import ts from 'typescript';
 import { Worker } from 'worker_threads';
 
-import type { WorkerMessage } from './reporter';
-import type { TypescriptWorkerOptions } from './typescript-worker';
+import type { TypescriptWorkerOptions, WorkerMessage } from './typescript-worker';
 
 export interface TypecheckPluginOptions {
   build?: boolean | ts.BuildOptions;

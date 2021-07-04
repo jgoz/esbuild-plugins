@@ -1,7 +1,23 @@
 import ts from 'typescript';
 import { isMainThread, parentPort, workerData } from 'worker_threads';
 
-import { Reporter, WorkerMessage } from './reporter';
+import { Reporter } from './reporter';
+
+export interface WorkerDiagnosticsMessage {
+  type: 'diagnostic' | 'summary';
+  diagnostics: readonly ts.Diagnostic[];
+}
+
+export interface WorkerStartMessage {
+  type: 'start';
+}
+
+export interface WorkerDoneMessage {
+  type: 'done';
+  errorCount: number;
+}
+
+export type WorkerMessage = WorkerDiagnosticsMessage | WorkerStartMessage | WorkerDoneMessage;
 
 export interface TypescriptWorkerOptions {
   basedir: string;
@@ -45,7 +61,7 @@ function compileWatch(configFile: string, commandLine: ts.ParsedCommandLine, rep
   );
 }
 
-function buildWatch(configFile: string, build: ts.BuildOptions, reporter: Reporter) {
+function buildWatch(configFile: string, buildOptions: ts.BuildOptions, reporter: Reporter) {
   ts.createSolutionBuilderWithWatch(
     ts.createSolutionBuilderWithWatchHost(
       ts.sys,
@@ -55,11 +71,11 @@ function buildWatch(configFile: string, build: ts.BuildOptions, reporter: Report
       reporter.reportSummaryDiagnostic,
     ),
     [configFile],
-    { incremental: true, ...build },
+    { incremental: true, ...buildOptions },
   ).buildReferences(configFile);
 }
 
-function buildRun(configFile: string, build: ts.BuildOptions, reporter: Reporter) {
+function buildRun(configFile: string, buildOptions: ts.BuildOptions, reporter: Reporter) {
   ts.createSolutionBuilder(
     ts.createSolutionBuilderHost(
       ts.sys,
@@ -69,18 +85,15 @@ function buildRun(configFile: string, build: ts.BuildOptions, reporter: Reporter
       reporter.reportSingleRunResults,
     ),
     [configFile],
-    build,
+    buildOptions,
   ).buildReferences(configFile);
 }
 
-function startWorker(
-  builderOptions: TypescriptWorkerOptions,
-  postMessage: (msg: WorkerMessage) => void,
-) {
-  const { build, configFile, commandLine, watch } = builderOptions;
+function startWorker(options: TypescriptWorkerOptions, postMessage: (msg: WorkerMessage) => void) {
+  const { build, configFile, commandLine, watch } = options;
 
   const reporter = new Reporter(postMessage);
-  reporter.logStarted({ build: !!build, watch });
+  reporter.reportBuildStart({ build: !!build, watch });
 
   if (build) {
     const buildOptions = typeof build === 'boolean' ? {} : build;
