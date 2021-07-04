@@ -72,7 +72,7 @@ function buildWatch(configFile: string, buildOptions: ts.BuildOptions, reporter:
     ),
     [configFile],
     { incremental: true, ...buildOptions },
-  ).buildReferences(configFile);
+  ).build(configFile);
 }
 
 function buildRun(configFile: string, buildOptions: ts.BuildOptions, reporter: Reporter) {
@@ -86,7 +86,7 @@ function buildRun(configFile: string, buildOptions: ts.BuildOptions, reporter: R
     ),
     [configFile],
     buildOptions,
-  ).buildReferences(configFile);
+  ).build(configFile);
 }
 
 function startWorker(options: TypescriptWorkerOptions, postMessage: (msg: WorkerMessage) => void) {
