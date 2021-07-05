@@ -4,6 +4,11 @@ import { isMainThread, MessagePort, parentPort, workerData } from 'worker_thread
 
 import { Reporter } from './reporter';
 
+export interface EsbuildDiagnosticOutput {
+  pretty: string;
+  standard: string;
+}
+
 export interface EsbuildDiagnosticMessage {
   type: 'error' | 'warning';
   message: Message;
@@ -12,6 +17,11 @@ export interface EsbuildDiagnosticMessage {
 export interface WorkerDiagnosticsMessage {
   type: 'diagnostic' | 'summary';
   diagnostics: readonly EsbuildDiagnosticMessage[];
+  output: EsbuildDiagnosticOutput;
+}
+
+export interface WorkerBuildMessage {
+  type: 'build';
 }
 
 export interface WorkerStartMessage {
@@ -21,9 +31,14 @@ export interface WorkerStartMessage {
 export interface WorkerDoneMessage {
   type: 'done';
   errorCount: number;
+  duration: number;
 }
 
-export type WorkerMessage = WorkerDiagnosticsMessage | WorkerStartMessage | WorkerDoneMessage;
+export type WorkerMessage =
+  | WorkerDiagnosticsMessage
+  | WorkerBuildMessage
+  | WorkerStartMessage
+  | WorkerDoneMessage;
 
 export interface TypescriptWorkerOptions {
   basedir: string;
@@ -59,7 +74,7 @@ function runCompiler(
   reporter.reportDiagnostics(diagnostics);
 
   const errorCount = diagnostics.filter(d => d.category === ts.DiagnosticCategory.Error).length;
-  reporter.reportSingleRunResults(errorCount);
+  reporter.reportBuildDone(errorCount);
 
   return program;
 }
@@ -91,11 +106,12 @@ function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
     let firstRun = true;
 
     listen('message', (msg: WorkerMessage) => {
-      if (msg.type === 'start') {
+      if (msg.type === 'build') {
         if (firstRun) {
-          reporter.reportBuildStart({ build: true, watch });
+          reporter.reportBuildStart();
           firstRun = false;
         }
+        reporter.markBuildStart();
         builder.build(configFile);
       }
     });
@@ -104,8 +120,9 @@ function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
     const compilerHost = ts.createIncrementalCompilerHost(compilerOptions, ts.sys);
 
     listen('message', (msg: WorkerMessage) => {
-      if (msg.type === 'start') {
-        reporter.reportBuildStart({ build: false, watch });
+      if (msg.type === 'build') {
+        reporter.reportBuildStart();
+        reporter.markBuildStart();
         builderProgram = runCompiler(commandLine, compilerHost, reporter, builderProgram);
       }
     });
