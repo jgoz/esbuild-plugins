@@ -1,7 +1,7 @@
 import type { notify as lrNotify } from '@jgoz/esbuild-plugin-livereload';
 import type { Message, Plugin } from 'esbuild';
 import { EventEmitter } from 'events';
-import { enabled as colorEnabled } from 'kleur';
+import kleur from 'kleur';
 import path from 'path';
 import ts from 'typescript';
 import { Worker } from 'worker_threads';
@@ -58,7 +58,7 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
       const worker = new Worker(path.resolve(__dirname, './typescript-worker.js'), {
         env: {
           ...process.env,
-          FORCE_COLOR: colorEnabled ? '1' : undefined,
+          FORCE_COLOR: kleur.enabled ? '1' : undefined,
         },
         workerData: workerOptions,
       });

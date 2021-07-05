@@ -2,8 +2,10 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "lib": ["dom", "es2020"],
-    "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "outDir": "build",
+    "declarationDir": "types"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [{ "path": "../esbuild-overlay" }]
 }

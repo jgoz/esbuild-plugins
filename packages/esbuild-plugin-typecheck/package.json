@@ -20,11 +20,8 @@
     "checking",
     "diagnostics"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "dependencies": {
-    "kleur": "^4.1.4"
-  },
+  "main": "dist/plugin-typecheck.js",
+  "types": "types/index.d.ts",
   "peerDependencies": {
     "@jgoz/esbuild-plugin-livereload": ">= 1",
     "typescript": ">= 3.5"
@@ -37,11 +34,14 @@
   "devDependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
     "esbuild": "^0.12.14",
+    "esbuild-node-externals": "^1.3.0",
+    "kleur": "^4.1.4",
     "prettier": "^2.3.2",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5"
   },
   "scripts": {
+    "prepack": "./build.mjs",
     "test": "playwright test"
   }
 }

@@ -1,24 +1,26 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
+    "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "declarationDir": "types",
     "emitDeclarationOnly": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "outDir": "build",
     "preserveConstEnums": true,
     "removeComments": true,
-    "rootDir": "src",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "es2018",
-    "types": ["svelte"]
+    "types": ["svelte"],
+
+    "rootDir": "src",
+    "outDir": "build",
+    "declarationDir": "types"
   },
   "include": ["src"]
 }

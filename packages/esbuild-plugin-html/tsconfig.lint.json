@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.json",
   "include": ["src", "test"],
-  "files": [".eslintrc.js", "babel.config.js"]
+  "files": [".eslintrc.js", "babel.config.js", "build.mjs"]
 }

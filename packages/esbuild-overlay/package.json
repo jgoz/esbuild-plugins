@@ -40,8 +40,8 @@
     "maxWorkers": 1
   },
   "scripts": {
-    "prepare": "tsc --emitDeclarationOnly",
-    "prepublishOnly": "yarn check && ./build.mjs",
+    "prepublish": "yarn check",
+    "prepack": "./build.mjs",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   }
 }

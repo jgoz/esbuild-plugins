@@ -19,11 +19,8 @@
     "sass",
     "sass-lang"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "dependencies": {
-    "enhanced-resolve": "^5.8.2"
-  },
+  "main": "dist/plugin-sass.js",
+  "types": "types/index.d.ts",
   "peerDependencies": {
     "esbuild": ">= 0.12.8",
     "node-sass": ">= 5.x",
@@ -40,7 +37,9 @@
   "devDependencies": {
     "@types/sass": "^1.16.0",
     "autoprefixer": "^10.2.6",
+    "enhanced-resolve": "^5.8.2",
     "esbuild": "^0.12.14",
+    "esbuild-node-externals": "^1.3.0",
     "jest": "^27.0.6",
     "node-sass": "^6.0.1",
     "postcss": "^8.3.5",
@@ -54,6 +53,7 @@
     "maxWorkers": 1
   },
   "scripts": {
+    "prepack": "./build.mjs",
     "test": "yarn run jest"
   }
 }

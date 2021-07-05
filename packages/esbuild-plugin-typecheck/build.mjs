@@ -7,34 +7,34 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const externals = nodeExternalsPlugin({
+  dependencies: false,
+  devDependencies: false,
+  peerDependencies: true,
+  packagePath: ['./package.json', '../../package.json'],
+});
+
 Promise.all([
   build({
     absWorkingDir: __dirname,
     entryPoints: {
-      'livereload-event-source': './src/event-source.ts',
+      'plugin-typecheck': './src/index.ts',
     },
     bundle: true,
-    format: 'esm',
+    platform: 'node',
     outdir: './dist',
-    splitting: true,
+    plugins: [externals],
+    target: 'node14',
   }),
   build({
     absWorkingDir: __dirname,
     entryPoints: {
-      'plugin-livereload': './src/index.ts',
+      'typescript-worker': './src/typescript-worker.ts',
     },
     bundle: true,
-    external: ['./banner.js'],
     platform: 'node',
     outdir: './dist',
-    plugins: [
-      nodeExternalsPlugin({
-        dependencies: false,
-        devDependencies: false,
-        peerDependencies: true,
-        packagePath: ['./package.json', '../../package.json'],
-      }),
-    ],
+    plugins: [externals],
     target: 'node14',
   }),
 ]).catch(() => process.exit(1));

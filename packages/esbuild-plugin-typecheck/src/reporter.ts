@@ -1,5 +1,5 @@
 import type { Message } from 'esbuild';
-import { bold, cyan, gray, green } from 'kleur';
+import K from 'kleur';
 import path from 'path';
 import ts from 'typescript';
 
@@ -73,22 +73,22 @@ export class Reporter {
 
   private logStarted({ build = false, watch = false } = {}) {
     const opts = [build && 'build', watch && 'watch'].filter(Boolean).join(', ');
-    const optStr = opts ? cyan(` (${opts})`) : '';
+    const optStr = opts ? K.cyan(` (${opts})`) : '';
 
-    console.info(bold(INFO) + `  Typecheck started…` + optStr);
+    console.info(K.bold(INFO) + `  Typecheck started…` + optStr);
     this.start = Date.now();
   }
 
   private logPassed() {
     const duration = Date.now() - this.start;
-    console.info(bold(SUCCESS) + green('  Typecheck passed'));
-    console.info(bold(INFO) + gray(`  Typecheck finished in ${duration.toFixed(0)}ms`));
+    console.info(K.bold(SUCCESS) + K.green('  Typecheck passed'));
+    console.info(K.bold(INFO) + K.gray(`  Typecheck finished in ${duration.toFixed(0)}ms`));
   }
 
   private logFailed(numErrors: string) {
     const duration = Date.now() - this.start;
-    console.error(bold().red(ERROR) + '  Typecheck failed with ' + bold(numErrors));
-    console.error(bold(INFO) + gray(`  Typecheck finished in ${duration.toFixed(0)}ms`));
+    console.error(K.bold().red(ERROR) + '  Typecheck failed with ' + K.bold(numErrors));
+    console.error(K.bold(INFO) + K.gray(`  Typecheck finished in ${duration.toFixed(0)}ms`));
   }
 
   private static readonly formatHost: ts.FormatDiagnosticsHost = {
