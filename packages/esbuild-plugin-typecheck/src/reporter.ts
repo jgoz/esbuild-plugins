@@ -1,5 +1,5 @@
 import type { Message } from 'esbuild';
-import { bold, cyan, green } from 'kleur';
+import { bold, cyan, gray, green } from 'kleur';
 import path from 'path';
 import ts from 'typescript';
 
@@ -11,6 +11,8 @@ const ERROR = process.platform === 'win32' ? '×' : '✖';
 const INFO = process.platform === 'win32' ? 'i' : 'ℹ';
 
 export class Reporter {
+  private start = Date.now();
+
   constructor(
     private readonly basedir: string,
     private readonly postMessage: (msg: WorkerMessage) => void = () => {},
@@ -74,14 +76,19 @@ export class Reporter {
     const optStr = opts ? cyan(` (${opts})`) : '';
 
     console.info(bold(INFO) + `  Typecheck started…` + optStr);
+    this.start = Date.now();
   }
 
   private logPassed() {
+    const duration = Date.now() - this.start;
     console.info(bold(SUCCESS) + green('  Typecheck passed'));
+    console.info(bold(INFO) + gray(`  Typecheck finished in ${duration.toFixed(0)}ms`));
   }
 
   private logFailed(numErrors: string) {
+    const duration = Date.now() - this.start;
     console.error(bold().red(ERROR) + '  Typecheck failed with ' + bold(numErrors));
+    console.error(bold(INFO) + gray(`  Typecheck finished in ${duration.toFixed(0)}ms`));
   }
 
   private static readonly formatHost: ts.FormatDiagnosticsHost = {

@@ -1,11 +1,14 @@
 import type { notify as lrNotify } from '@jgoz/esbuild-plugin-livereload';
 import type { Message, Plugin } from 'esbuild';
+import { EventEmitter } from 'events';
 import { enabled as colorEnabled } from 'kleur';
 import path from 'path';
 import ts from 'typescript';
 import { Worker } from 'worker_threads';
 
 import type { TypescriptWorkerOptions, WorkerMessage } from './typescript-worker';
+
+const START_MSG: WorkerMessage = { type: 'start' };
 
 let notify: typeof lrNotify = () => {};
 try {
@@ -17,9 +20,12 @@ export interface TypecheckPluginOptions {
   build?: boolean | ts.BuildOptions;
   compilerOptions?: ts.CompilerOptions;
   configFile?: string;
+  syncWithEsbuild?: boolean;
 }
 
 export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
+  const sync = new EventEmitter();
+
   return {
     name: 'typecheck-plugin',
     setup(build) {
@@ -72,6 +78,7 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
         if (msg.type === 'done') {
           if (msg.errorCount > 0) process.exitCode = 1;
           notify('typecheck-plugin', { errors, warnings });
+          sync.emit('done');
         }
       });
 
@@ -82,6 +89,18 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
       worker.on('exit', code => {
         if (code !== 0) process.exitCode = code;
       });
+
+      build.onStart(() => {
+        worker.postMessage(START_MSG);
+      });
+
+      if (options.syncWithEsbuild) {
+        build.onEnd(async () => {
+          await new Promise(resolve => {
+            sync.once('done', resolve);
+          });
+        });
+      }
     },
   };
 }

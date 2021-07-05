@@ -1,6 +1,6 @@
 import type { Message } from 'esbuild';
 import ts from 'typescript';
-import { isMainThread, parentPort, workerData } from 'worker_threads';
+import { isMainThread, MessagePort, parentPort, workerData } from 'worker_threads';
 
 import { Reporter } from './reporter';
 
@@ -33,87 +33,82 @@ export interface TypescriptWorkerOptions {
   watch: boolean;
 }
 
-function compileRun(commandLine: ts.ParsedCommandLine, reporter: Reporter) {
-  const { options: compilerOptions, fileNames, errors } = commandLine;
-  if (compilerOptions.noEmit === undefined) compilerOptions.noEmit = true;
+function runCompiler(
+  commandLine: ts.ParsedCommandLine,
+  host: ts.CompilerHost,
+  reporter: Reporter,
+  oldProgram: ts.EmitAndSemanticDiagnosticsBuilderProgram | undefined,
+) {
+  const { options: compilerOptions, fileNames, errors, projectReferences } = commandLine;
 
-  const program = ts.createProgram({
-    options: compilerOptions,
-    rootNames: fileNames,
-    configFileParsingDiagnostics: errors,
-  });
+  const program = ts.createEmitAndSemanticDiagnosticsBuilderProgram(
+    fileNames,
+    compilerOptions,
+    host,
+    oldProgram,
+    errors,
+    projectReferences,
+  );
 
-  const { diagnostics } = program.emit();
-  const allDiagnostics = ts.getPreEmitDiagnostics(program).concat(diagnostics, errors);
-  const errorCount = allDiagnostics.filter(d => d.category === ts.DiagnosticCategory.Error).length;
+  const diagnostics = [
+    ...program.getConfigFileParsingDiagnostics(),
+    ...program.getSyntacticDiagnostics(),
+    ...program.getOptionsDiagnostics(),
+    ...program.getSemanticDiagnostics(),
+  ];
+  reporter.reportDiagnostics(diagnostics);
 
-  reporter.reportDiagnostics(allDiagnostics);
+  const errorCount = diagnostics.filter(d => d.category === ts.DiagnosticCategory.Error).length;
   reporter.reportSingleRunResults(errorCount);
+
+  return program;
 }
 
-function compileWatch(configFile: string, commandLine: ts.ParsedCommandLine, reporter: Reporter) {
+function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
+  const { basedir, build, configFile, commandLine, watch } = options;
+  const reporter = new Reporter(basedir, msg => port.postMessage(msg));
+
   const { options: compilerOptions } = commandLine;
   if (compilerOptions.noEmit === undefined) compilerOptions.noEmit = true;
 
-  ts.createWatchProgram(
-    ts.createWatchCompilerHost(
-      configFile,
-      compilerOptions,
-      ts.sys,
-      ts.createSemanticDiagnosticsBuilderProgram,
-      reporter.reportDiagnostic,
-      reporter.reportSummaryDiagnostic,
-    ),
-  );
-}
-
-function buildWatch(configFile: string, buildOptions: ts.BuildOptions, reporter: Reporter) {
-  ts.createSolutionBuilderWithWatch(
-    ts.createSolutionBuilderWithWatchHost(
-      ts.sys,
-      ts.createSemanticDiagnosticsBuilderProgram,
-      reporter.reportDiagnostic,
-      reporter.reportSummaryDiagnostic,
-      reporter.reportSummaryDiagnostic,
-    ),
-    [configFile],
-    { incremental: true, ...buildOptions },
-  ).build(configFile);
-}
-
-function buildRun(configFile: string, buildOptions: ts.BuildOptions, reporter: Reporter) {
-  ts.createSolutionBuilder(
-    ts.createSolutionBuilderHost(
-      ts.sys,
-      ts.createSemanticDiagnosticsBuilderProgram,
-      reporter.reportDiagnostic,
-      reporter.reportSummaryDiagnostic,
-      reporter.reportSingleRunResults,
-    ),
-    [configFile],
-    buildOptions,
-  ).build(configFile);
-}
-
-function startWorker(options: TypescriptWorkerOptions, postMessage: (msg: WorkerMessage) => void) {
-  const { basedir, build, configFile, commandLine, watch } = options;
-
-  const reporter = new Reporter(basedir, postMessage);
-  reporter.reportBuildStart({ build: !!build, watch });
+  const listen = watch ? port.on.bind(port) : port.once.bind(port);
 
   if (build) {
+    const builderHost = ts.createSolutionBuilderWithWatchHost(
+      ts.sys,
+      ts.createSemanticDiagnosticsBuilderProgram,
+      reporter.reportDiagnostic,
+      reporter.reportSummaryDiagnostic,
+      reporter.reportSummaryDiagnostic,
+    );
+
     const buildOptions = typeof build === 'boolean' ? {} : build;
-    if (watch) {
-      buildWatch(configFile, buildOptions, reporter);
-    } else {
-      buildRun(configFile, buildOptions, reporter);
-    }
+    const builder = ts.createSolutionBuilderWithWatch(builderHost, [configFile], {
+      incremental: true,
+      ...buildOptions,
+    });
+
+    let firstRun = true;
+
+    listen('message', (msg: WorkerMessage) => {
+      if (msg.type === 'start') {
+        if (firstRun) {
+          reporter.reportBuildStart({ build: true, watch });
+          firstRun = false;
+        }
+        builder.build(configFile);
+      }
+    });
   } else {
-    if (watch) {
-      compileWatch(configFile, commandLine, reporter);
-    } else {
-      compileRun(commandLine, reporter);
-    }
+    let builderProgram: ts.EmitAndSemanticDiagnosticsBuilderProgram | undefined;
+    const compilerHost = ts.createIncrementalCompilerHost(compilerOptions, ts.sys);
+
+    listen('message', (msg: WorkerMessage) => {
+      if (msg.type === 'start') {
+        reporter.reportBuildStart({ build: false, watch });
+        builderProgram = runCompiler(commandLine, compilerHost, reporter, builderProgram);
+      }
+    });
   }
 }
 
@@ -127,5 +122,5 @@ if (!isMainThread && parentPort) {
     );
   }
 
-  startWorker(workerOptions, msg => parentPort?.postMessage(msg));
+  startWorker(workerOptions, parentPort);
 }
