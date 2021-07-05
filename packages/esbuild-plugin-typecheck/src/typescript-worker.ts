@@ -48,6 +48,37 @@ export interface TypescriptWorkerOptions {
   watch: boolean;
 }
 
+function createBuilder(configFile: string, buildOptions: ts.BuildOptions, reporter: Reporter) {
+  const builderHost = ts.createSolutionBuilderHost(
+    ts.sys,
+    ts.createSemanticDiagnosticsBuilderProgram,
+    reporter.reportDiagnostic,
+    reporter.reportSummaryDiagnostic,
+    reporter.reportBuildDone,
+  );
+
+  const builder = ts.createSolutionBuilder(builderHost, [configFile], buildOptions);
+
+  return builder;
+}
+
+function createWatchBuilder(configFile: string, buildOptions: ts.BuildOptions, reporter: Reporter) {
+  const builderHost = ts.createSolutionBuilderWithWatchHost(
+    ts.sys,
+    ts.createSemanticDiagnosticsBuilderProgram,
+    reporter.reportDiagnostic,
+    reporter.reportSummaryDiagnostic,
+    reporter.reportSummaryDiagnostic,
+  );
+
+  const builder = ts.createSolutionBuilderWithWatch(builderHost, [configFile], {
+    incremental: true,
+    ...buildOptions,
+  });
+
+  return builder;
+}
+
 function runCompiler(
   commandLine: ts.ParsedCommandLine,
   host: ts.CompilerHost,
@@ -81,27 +112,18 @@ function runCompiler(
 
 function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
   const { basedir, build, configFile, commandLine, watch } = options;
-  const reporter = new Reporter(basedir, msg => port.postMessage(msg));
-
   const { options: compilerOptions } = commandLine;
+
   if (compilerOptions.noEmit === undefined) compilerOptions.noEmit = true;
 
+  const reporter = new Reporter(basedir, msg => port.postMessage(msg));
   const listen = watch ? port.on.bind(port) : port.once.bind(port);
 
   if (build) {
-    const builderHost = ts.createSolutionBuilderWithWatchHost(
-      ts.sys,
-      ts.createSemanticDiagnosticsBuilderProgram,
-      reporter.reportDiagnostic,
-      reporter.reportSummaryDiagnostic,
-      reporter.reportSummaryDiagnostic,
-    );
-
     const buildOptions = typeof build === 'boolean' ? {} : build;
-    const builder = ts.createSolutionBuilderWithWatch(builderHost, [configFile], {
-      incremental: true,
-      ...buildOptions,
-    });
+    const builder = watch
+      ? createWatchBuilder(configFile, buildOptions, reporter)
+      : createBuilder(configFile, buildOptions, reporter);
 
     let firstRun = true;
 
@@ -117,7 +139,9 @@ function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
     });
   } else {
     let builderProgram: ts.EmitAndSemanticDiagnosticsBuilderProgram | undefined;
-    const compilerHost = ts.createIncrementalCompilerHost(compilerOptions, ts.sys);
+    const compilerHost = watch
+      ? ts.createCompilerHost(compilerOptions)
+      : ts.createIncrementalCompilerHost(compilerOptions, ts.sys);
 
     listen('message', (msg: WorkerMessage) => {
       if (msg.type === 'build') {
