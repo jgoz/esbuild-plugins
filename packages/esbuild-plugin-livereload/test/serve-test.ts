@@ -7,22 +7,16 @@ import getPort from 'get-port';
 import path from 'path';
 import sveltePreprocess from 'svelte-preprocess';
 
-import { livereloadPlugin } from '../dist';
+import { livereloadPlugin } from '../';
 
 interface ServerTestFixtures {}
 
 interface ServerWorkerFixtures {
   absWorkingDir: string;
-  writeFile(index: string): Promise<void>;
+  writeFile(fixture: [input: string, output: string]): Promise<void>;
   port: number;
   server: ServeResult;
 }
-
-const files = {
-  '1': '1-initial.svelte',
-  '2': '2-error.svelte',
-  '3': '3-fixed.svelte',
-};
 
 const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
   absWorkingDir: [
@@ -40,13 +34,12 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
 
   writeFile: [
     async ({ absWorkingDir }, use) => {
-      async function writeFile(index: '1' | '2' | '3') {
+      async function writeFile(fixture: [input: string, output: string]) {
         await fsp.copyFile(
-          path.join(__dirname, 'fixture', files[index]),
-          path.join(absWorkingDir, 'entry.svelte'),
+          path.join(__dirname, 'fixture', fixture[0]),
+          path.join(absWorkingDir, fixture[1]),
         );
       }
-      await writeFile('1');
       await use(writeFile);
     },
     { scope: 'worker' },
@@ -67,13 +60,15 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
 
       console.log(`Starting server (LR port: ${lrPort})...`);
 
-      await writeFile('1');
+      await writeFile(['1-initial.svelte', 'entry.svelte']);
+      await writeFile(['style-1.css', 'style.css']);
 
       const watcher = await build({
         absWorkingDir,
         bundle: true,
-        entryPoints: ['entry.svelte'],
+        entryPoints: ['entry.svelte', 'style.css'],
         format: 'esm',
+        metafile: true,
         outdir: 'js',
         plugins: [
           esbuildSvelte({

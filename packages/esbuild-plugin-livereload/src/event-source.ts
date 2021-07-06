@@ -31,6 +31,24 @@ async function init() {
     location.reload();
   });
 
+  evt.addEventListener('reload-css', e => {
+    const result = JSON.parse((e as MessageEvent)?.data ?? '{}');
+
+    writeWarnings(result);
+    console.log('esbuild-plugin-livereload: reloading CSS...');
+
+    const links = document.getElementsByTagName('link');
+    for (let i = 0; i < links.length; i++) {
+      const link = links.item(i);
+      if (!link || link.rel !== 'stylesheet' || !link.href) continue;
+
+      const url = new URL(link.href);
+      url.searchParams.set('_hash', Date.now().toString());
+
+      link.href = url.href;
+    }
+  });
+
   evt.addEventListener('build-result', e => {
     const result = JSON.parse((e as MessageEvent)?.data ?? '{}');
     writeWarnings(result);

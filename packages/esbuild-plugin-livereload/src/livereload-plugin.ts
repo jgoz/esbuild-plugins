@@ -1,18 +1,29 @@
+import { createHash } from 'crypto';
 import type { Message, Plugin } from 'esbuild';
-import { promises as fsp } from 'fs';
+import { createReadStream, promises as fsp } from 'fs';
 import type { ServerResponse } from 'http';
+import path from 'path';
 
 import { createLivereloadServer } from './server';
 
 interface ClientMessage {
   warnings?: readonly Message[];
   errors?: readonly Message[];
+  cssUpdate?: boolean;
 }
 
 const clients = new Set<ServerResponse>();
 const errorSources = new Map<string, ClientMessage>();
+const outputHashes = new Map<string, string>();
 
 export interface LivereloadPluginOptions {
+  /**
+   * Instead of hot-reloading CSS files, trigger a full page reload when CSS is updated.
+   *
+   * @default false
+   */
+  fullReloadOnCssUpdates?: boolean;
+
   /**
    * Port that the livereload server will run on.
    *
@@ -41,8 +52,32 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
         build.initialOptions.banner.js = banner;
       }
 
-      build.onEnd(result => {
-        notify('esbuild', { warnings: result.warnings, errors: result.errors });
+      if (!build.initialOptions.metafile) {
+        console.warn(
+          '[esbuild-plugin-livereload]: "metafile" option is disabled, so CSS updates will trigger a full reload',
+        );
+      }
+
+      build.onEnd(async result => {
+        let cssUpdate = false;
+        if (result.metafile && !options.fullReloadOnCssUpdates) {
+          const outputs = Object.keys(result.metafile.outputs).map(o => path.resolve(basedir, o));
+
+          for (const outputFile of outputs.filter(o => o.endsWith('.css'))) {
+            const prevHash = outputHashes.get(outputFile);
+            const hash = await calculateHash(outputFile);
+            if (prevHash !== hash) {
+              outputHashes.set(outputFile, hash);
+              cssUpdate = true;
+            }
+          }
+        }
+
+        notify('esbuild', {
+          warnings: result.warnings,
+          errors: result.errors,
+          cssUpdate,
+        });
       });
     },
   };
@@ -64,8 +99,13 @@ export function notify(errorSource: string, msg: ClientMessage) {
   const errors = values.flatMap(v => v.errors ?? []);
   const warnings = values.flatMap(v => v.warnings ?? []);
 
-  const isReload = errorSource === 'esbuild' && errors.length === 0;
-  const event = isReload ? 'event: reload\n' : 'event: build-result\n';
+  const reloadCss = msg.cssUpdate;
+  const reloadPage = !reloadCss && errorSource === 'esbuild' && errors.length === 0;
+  const event = reloadCss
+    ? 'event: reload-css\n'
+    : reloadPage
+    ? 'event: reload\n'
+    : 'event: build-result\n';
   const data = `data: ${JSON.stringify({ warnings, errors })}\n\n`;
 
   clients.forEach(res => {
@@ -73,5 +113,18 @@ export function notify(errorSource: string, msg: ClientMessage) {
     res.write(data);
   });
 
-  if (isReload) clients.clear();
+  if (reloadPage) clients.clear();
+}
+
+async function calculateHash(filePath: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const hash = createHash('md5');
+    const stream = createReadStream(filePath);
+
+    stream.on('data', d => hash.update(d));
+    stream.on('end', () => {
+      resolve(hash.digest('base64'));
+    });
+    stream.on('error', reject);
+  });
 }
