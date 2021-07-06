@@ -191,6 +191,19 @@ export function sassPlugin(options: SassPluginOptions = {}): Plugin {
     });
   }
 
+  async function transform(path: string): Promise<OnLoadResult> {
+    let { css, watchFiles } = await (path.endsWith('.css') ? readCssFile(path) : renderSass(path));
+    if (options.transform) {
+      css = await options.transform(css, dirname(path));
+    }
+    return {
+      contents: css,
+      loader: 'css' as Loader,
+      resolveDir: dirname(path),
+      watchFiles,
+    };
+  }
+
   return {
     name: 'sass-plugin',
     setup: build => {
@@ -198,27 +211,13 @@ export function sassPlugin(options: SassPluginOptions = {}): Plugin {
         return { path: args.path, namespace: 'sass', pluginData: args };
       });
 
-      async function transform(path: string): Promise<OnLoadResult> {
-        let { css, watchFiles } = await (path.endsWith('.css')
-          ? readCssFile(path)
-          : renderSass(path));
-        if (options.transform) {
-          css = await options.transform(css, dirname(path));
-        }
-        return {
-          contents: css,
-          loader: 'css' as Loader,
-          resolveDir: dirname(path),
-          watchFiles,
-        };
-      }
-
       build.onLoad(
         { filter: /^\.\.?\//, namespace: 'sass' },
         ({ pluginData: args }: OnLoadArgs) => {
           return transform(pathResolve(args));
         },
       );
+
       build.onLoad(
         { filter: /^([^.]|\.\.?[^/])/, namespace: 'sass' },
         ({ pluginData: args }: OnLoadArgs) => {
