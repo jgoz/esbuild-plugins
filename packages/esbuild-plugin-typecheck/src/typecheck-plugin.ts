@@ -1,6 +1,5 @@
 import type { notify as lrNotify } from '@jgoz/esbuild-plugin-livereload';
 import type { Message, Plugin } from 'esbuild';
-import { EventEmitter } from 'events';
 import K from 'kleur';
 import path from 'path';
 import ts from 'typescript';
@@ -22,15 +21,35 @@ try {
 } catch {}
 
 export interface TypecheckPluginOptions {
+  /**
+   * Run the compiler in build mode, equivalent to passing the "--build"
+   * argument. Normally, this will be inferred if "tsconfig.json" sets
+   * "composite: true" but it can be overridden by this option.
+   *
+   * This option also accepts an object, which implicitly turns build mode
+   * on. The object accepts build-mode-specific options that will be passed
+   * to the TypeScript compiler API.
+   *
+   * @default undefined
+   */
   build?: boolean | ts.BuildOptions;
+
+  /**
+   * TypeScript compiler option overrides that will be merged into the options
+   * in "tsconfig.json".
+   */
   compilerOptions?: ts.CompilerOptions;
+
+  /**
+   * Path to "tsconfig.json". If not specified, this will use ESBuild's "tsconfig"
+   * option, finally falling back to TypeScripts config file resolution algorithm.
+   *
+   * @default undefined
+   */
   configFile?: string;
-  syncWithEsbuild?: boolean;
 }
 
 export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
-  const sync = new EventEmitter();
-
   return {
     name: 'typecheck-plugin',
     setup(build) {
@@ -71,14 +90,6 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
         worker.postMessage(BUILD_MSG);
       });
 
-      if (options.syncWithEsbuild) {
-        build.onEnd(async () => {
-          await new Promise(resolve => {
-            sync.once('done', resolve);
-          });
-        });
-      }
-
       worker.on('message', (msg: WorkerMessage) => {
         switch (msg.type) {
           case 'start': {
@@ -95,7 +106,6 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
             break;
           }
           case 'done': {
-            sync.emit('done');
             notify('typecheck-plugin', { errors, warnings });
 
             if (msg.errorCount) {
@@ -106,6 +116,7 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
               process.exitCode = 1;
             } else {
               logPassed(msg.duration);
+              process.exitCode = 0;
             }
 
             break;
