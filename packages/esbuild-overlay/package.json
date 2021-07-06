@@ -42,6 +42,7 @@
   "scripts": {
     "prepublish": "yarn check",
     "prepack": "./build.mjs",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "watch": "./build.mjs -w"
   }
 }

@@ -10,23 +10,24 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 Promise.all([
   build({
     absWorkingDir: __dirname,
+    bundle: true,
     entryPoints: {
       'livereload-event-source': './src/event-source.ts',
     },
-    bundle: true,
     format: 'esm',
     outdir: './dist',
     splitting: true,
+    watch: process.argv.includes('-w') || process.argv.includes('--watch'),
   }),
   build({
     absWorkingDir: __dirname,
+    bundle: true,
     entryPoints: {
       'plugin-livereload': './src/index.ts',
     },
-    bundle: true,
     external: ['./banner.js'],
-    platform: 'node',
     outdir: './dist',
+    platform: 'node',
     plugins: [
       nodeExternalsPlugin({
         dependencies: false,
@@ -36,5 +37,6 @@ Promise.all([
       }),
     ],
     target: 'node14',
+    watch: process.argv.includes('-w') || process.argv.includes('--watch'),
   }),
 ]).catch(() => process.exit(1));

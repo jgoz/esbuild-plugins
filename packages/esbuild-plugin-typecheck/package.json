@@ -42,6 +42,7 @@
   },
   "scripts": {
     "prepack": "./build.mjs",
-    "test": "playwright test"
+    "test": "playwright test",
+    "watch": "./build.mjs -w"
   }
 }

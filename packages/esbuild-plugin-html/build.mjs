@@ -24,4 +24,5 @@ build({
     }),
   ],
   target: 'node14',
+  watch: process.argv.includes('-w') || process.argv.includes('--watch'),
 }).catch(() => process.exit(1));

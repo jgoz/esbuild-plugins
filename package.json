@@ -43,6 +43,7 @@
   },
   "scripts": {
     "build": "tsc -b && yarn workspaces foreach run prepack",
-    "test": "yarn workspaces foreach --interlaced --no-private run test"
+    "test": "yarn workspaces foreach --interlaced --no-private run test",
+    "watch": "yarn workspaces foreach -p run watch"
   }
 }

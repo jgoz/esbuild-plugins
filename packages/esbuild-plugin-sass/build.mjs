@@ -9,13 +9,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 build({
   absWorkingDir: __dirname,
+  bundle: true,
   entryPoints: {
     'plugin-sass': './src/index.ts',
   },
-  bundle: true,
   external: ['pnpapi'],
-  platform: 'node',
   outdir: './dist',
+  platform: 'node',
   plugins: [
     nodeExternalsPlugin({
       dependencies: false,
@@ -25,4 +25,5 @@ build({
     }),
   ],
   target: 'node14',
+  watch: process.argv.includes('-w') || process.argv.includes('--watch'),
 }).catch(() => process.exit(1));
