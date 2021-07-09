@@ -14,6 +14,7 @@ build({
     'plugin-typecheck': './src/index.ts',
     'typescript-worker': './src/typescript-worker.ts',
   },
+  logLevel: 'info',
   outdir: './dist',
   platform: 'node',
   plugins: [

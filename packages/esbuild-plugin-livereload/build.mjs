@@ -15,6 +15,7 @@ Promise.all([
       'livereload-event-source': './src/event-source.ts',
     },
     format: 'esm',
+    logLevel: 'info',
     outdir: './dist',
     splitting: true,
     watch: process.argv.includes('-w') || process.argv.includes('--watch'),
@@ -26,6 +27,7 @@ Promise.all([
       'plugin-livereload': './src/index.ts',
     },
     external: ['./banner.js'],
+    logLevel: 'info',
     outdir: './dist',
     platform: 'node',
     plugins: [

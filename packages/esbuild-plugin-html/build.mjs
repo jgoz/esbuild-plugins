@@ -13,8 +13,9 @@ build({
   entryPoints: {
     'plugin-html': './src/index.ts',
   },
-  platform: 'node',
+  logLevel: 'info',
   outdir: './dist',
+  platform: 'node',
   plugins: [
     nodeExternalsPlugin({
       dependencies: false,

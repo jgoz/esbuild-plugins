@@ -9,6 +9,7 @@ build({
   bundle: true,
   format: 'esm',
   minify: true,
+  logLevel: 'info',
   outdir: './dist',
   plugins: [
     esbuildSvelte({
