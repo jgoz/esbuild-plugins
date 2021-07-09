@@ -2,7 +2,7 @@ import type { notify as lrNotify } from '@jgoz/esbuild-plugin-livereload';
 import type { Message, Plugin } from 'esbuild';
 import K from 'kleur';
 import path from 'path';
-import ts from 'typescript';
+import type ts from 'typescript';
 import { Worker } from 'worker_threads';
 
 import type { TypescriptWorkerOptions, WorkerMessage } from './typescript-worker';
@@ -35,8 +35,36 @@ export interface TypecheckPluginOptions {
   build?: boolean | ts.BuildOptions;
 
   /**
+   * Changes the behavior of build mode with respect to program output (JavaScript,
+   * type definitions, sourcemaps, and .tsbuildinfo files).
+   *
+   * - `readonly` (default) &mdash; output files will be written to an in-memory
+   *   file system and discared after esbuild exits
+   * - `write-output` &mdash; output files will be written to disk as though you
+   *   had invoked `tsc --build`
+   *
+   * There are tradeoffs between the two modes. In `readonly` mode, the initial
+   * typecheck may be slower, especially if the output/.tsbuildinfo files do not
+   * match the sources. However, subsequent incremental typechecks may be slightly
+   * faster since no I/O is involved. This mode is also the least surprising because
+   * typechecking implies a different intent than compilation, but TypeScript's build
+   * mode needs to produce output in order to remain fast for incremental compilation.
+   *
+   * In `write-output` mode, the output files will always be in sync with the input
+   * files, so the initial compilation may be slightly faster. However, subsequent
+   * incremental typechecks might be slightly slower due to I/O overhead. This mode
+   * would be appropriate to enable as an alternative to invoking `tsc --build` manually,
+   * e.g., in the case where the TypeScript output itself may be used outside of esbuild.
+   *
+   * @default "readonly"
+   */
+  buildMode?: 'readonly' | 'write-output';
+
+  /**
    * TypeScript compiler option overrides that will be merged into the options
    * in "tsconfig.json".
+   *
+   * @default {}
    */
   compilerOptions?: ts.CompilerOptions;
 
@@ -54,37 +82,27 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
     name: 'typecheck-plugin',
     setup(build) {
       const { absWorkingDir: basedir = process.cwd(), tsconfig, watch } = build.initialOptions;
-      const { compilerOptions } = options;
 
       const inputConfigFile = options.configFile ?? tsconfig;
       const configFile = inputConfigFile
         ? path.isAbsolute(inputConfigFile)
           ? inputConfigFile
           : path.resolve(basedir, inputConfigFile)
-        : ts.findConfigFile(basedir, ts.sys.fileExists, 'tsconfig.json');
+        : undefined;
 
-      if (!configFile) {
-        throw new Error(`Could not find a valid "tsconfig.json" (searching in "${basedir}").`);
-      }
-
-      const { config } = ts.readConfigFile(configFile, ts.sys.readFile);
-      config.compilerOptions = { ...config.compilerOptions, ...compilerOptions };
-
-      const commandLine = ts.parseJsonConfigFileContent(config, ts.sys, basedir);
-      const workerOptions: TypescriptWorkerOptions = {
+      const workerData: TypescriptWorkerOptions = {
+        ...options,
         basedir,
-        build: options.build ?? commandLine.options.composite ?? false,
-        commandLine,
         configFile,
         watch: !!watch,
       };
 
-      const worker = new Worker(path.resolve(__dirname, './typescript-worker.js'), {
-        workerData: workerOptions,
-      });
+      const worker = new Worker(path.resolve(__dirname, './typescript-worker.js'), { workerData });
 
       let errors: Message[] = [];
       let warnings: Message[] = [];
+      let isBuilding: boolean | undefined;
+      let isWatching: boolean | undefined;
 
       build.onStart(() => {
         worker.postMessage(BUILD_MSG);
@@ -95,7 +113,9 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
           case 'start': {
             errors = [];
             warnings = [];
-            logStarted({ build: !!workerOptions.build, watch: workerOptions.watch });
+            isBuilding ??= msg.build;
+            isWatching ??= msg.watch;
+            logStarted({ build: isBuilding, watch: isWatching });
             break;
           }
           case 'summary':
@@ -126,7 +146,8 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
         }
       });
 
-      worker.on('error', () => {
+      worker.on('error', e => {
+        console.error(e);
         process.exitCode = 1;
       });
 

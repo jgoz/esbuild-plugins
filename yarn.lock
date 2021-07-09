@@ -1736,9 +1736,11 @@ __metadata:
     esbuild: ^0.12.14
     esbuild-node-externals: ^1.3.0
     kleur: ^4.1.4
+    memfs: ^3.2.2
     prettier: ^2.3.2
     tslib: ^2.3.0
     typescript: ^4.3.5
+    unionfs: ^4.4.0
   peerDependencies:
     "@jgoz/esbuild-plugin-livereload": ">= 1"
     typescript: ">= 3.5"
@@ -4254,7 +4256,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-monkey@npm:1.0.3":
+"fs-monkey@npm:1.0.3, fs-monkey@npm:^1.0.0":
   version: 1.0.3
   resolution: "fs-monkey@npm:1.0.3"
   checksum: cf50804833f9b88a476911ae911fe50f61a98d986df52f890bd97e7262796d023698cb2309fa9b74fdd8974f04315b648748a0a8ee059e7d5257b293bfc409c0
@@ -9396,6 +9398,15 @@ __metadata:
   version: 1.1.0
   resolution: "unicode-property-aliases-ecmascript@npm:1.1.0"
   checksum: 1a96dc462d251bb1c5237f7bc77956b29f01cefce7f3e7448430742930961557c3d1515a9669715ebb06209bf01072e2f78ba1627247017daa84346414bc02f1
+  languageName: node
+  linkType: hard
+
+"unionfs@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "unionfs@npm:4.4.0"
+  dependencies:
+    fs-monkey: ^1.0.0
+  checksum: fe1d88256dd070a50ed01539f2e69020b5b7aa419c03eae86de31a13f680d618fc9a0c061e9493ca6b06b1bf7337388a07bc01ed156d04d787731982ec86efcb
   languageName: node
   linkType: hard
 

@@ -20,8 +20,8 @@ export class Reporter {
     this.start = Date.now();
   }
 
-  public reportBuildStart = () => {
-    this.postMessage({ type: 'start' });
+  public reportBuildStart = ({ build = false, watch = false } = {}) => {
+    this.postMessage({ type: 'start', build, watch });
   };
 
   public reportBuildDone = (errorCount: number) => {
