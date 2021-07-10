@@ -122,7 +122,7 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
           case 'diagnostic': {
             errors.push(...msg.diagnostics.filter(d => d.type === 'error').map(d => d.message));
             warnings.push(...msg.diagnostics.filter(d => d.type === 'warning').map(d => d.message));
-            console.error(msg.output.pretty);
+            console.error(K.enabled ? msg.output.pretty : msg.output.standard);
             break;
           }
           case 'done': {

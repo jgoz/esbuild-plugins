@@ -21,6 +21,7 @@
     "diagnostics"
   ],
   "main": "dist/plugin-typecheck.js",
+  "module": "dist/plugin-typecheck.js",
   "types": "types/index.d.ts",
   "peerDependencies": {
     "@jgoz/esbuild-plugin-livereload": ">= 1",
@@ -35,6 +36,7 @@
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
     "esbuild": "^0.12.14",
     "esbuild-node-externals": "^1.3.0",
+    "jest": "^27.0.6",
     "kleur": "^4.1.4",
     "memfs": "^3.2.2",
     "prettier": "^2.3.2",
@@ -42,9 +44,21 @@
     "typescript": "^4.3.5",
     "unionfs": "^4.4.0"
   },
+  "jest": {
+    "testTimeout": 10000,
+    "maxWorkers": 1,
+    "transform": {
+      "^.+\\.ts$": "babel-jest",
+      "^.+\\.mjs$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(zx)/)"
+    ]
+  },
   "scripts": {
-    "prepack": "./build.mjs",
-    "test": "playwright test",
+    "build": "./build.mjs",
+    "prepack": "yarn build",
+    "test": "jest",
     "watch": "./build.mjs -w"
   }
 }

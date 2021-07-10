@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
+import { typecheckPlugin } from '@jgoz/esbuild-plugin-typecheck';
 import { build } from 'esbuild';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-import { typecheckPlugin } from '../../../dist/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -17,5 +16,12 @@ build({
   platform: 'node',
   splitting: true,
   plugins: [typecheckPlugin()],
-  watch: process.argv.includes('-w') || process.argv.includes('--watch'),
-}).catch(() => process.exit(1));
+  watch: process.argv.includes('-w'),
+  write: false,
+})
+  .then(res => {
+    for (const err of res.errors) {
+      console.error(err.text);
+    }
+  })
+  .catch(() => process.exit(1));

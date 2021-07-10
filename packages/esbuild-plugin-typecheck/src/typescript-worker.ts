@@ -231,9 +231,7 @@ function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
     });
   } else {
     let builderProgram: ts.EmitAndSemanticDiagnosticsBuilderProgram | undefined;
-    const compilerHost = watch
-      ? ts.createCompilerHost(compilerOptions)
-      : ts.createIncrementalCompilerHost(compilerOptions, ts.sys);
+    const compilerHost = ts.createIncrementalCompilerHost(compilerOptions, ts.sys);
 
     listen('message', (msg: WorkerMessage) => {
       if (msg.type === 'build') {
@@ -247,7 +245,7 @@ function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
 
 if (!isMainThread && parentPort) {
   const workerOptions = workerData as TypescriptWorkerOptions;
-  if (!workerOptions || !workerOptions.basedir || !workerOptions.configFile) {
+  if (!workerOptions || !workerOptions.basedir) {
     throw new Error(
       `compiler-builder (worker) expected valid builder options as workerData, got "${JSON.stringify(
         workerData,
