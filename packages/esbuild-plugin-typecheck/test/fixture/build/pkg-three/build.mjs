@@ -9,12 +9,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 build({
   absWorkingDir: __dirname,
-  entryPoints: ['./src/index.ts'],
+  entryPoints: ['./three.ts'],
   bundle: true,
   format: 'esm',
   outdir: './dist',
   platform: 'node',
-  plugins: [typecheckPlugin()],
+  plugins: [
+    typecheckPlugin({
+      buildMode: process.env.BUILD_MODE,
+    }),
+  ],
   watch: !!process.env.WATCH,
   write: false,
 }).catch(() => process.exit(1));

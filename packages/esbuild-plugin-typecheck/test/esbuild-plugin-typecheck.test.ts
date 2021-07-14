@@ -3,58 +3,80 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
+async function* walk(dirPath: string): AsyncIterable<string> {
+  for await (const d of await fs.promises.readdir(dirPath, { withFileTypes: true })) {
+    const entry = path.join(dirPath, d.name);
+    if (d.isDirectory()) yield* walk(entry);
+    else if (d.isFile()) yield entry;
+  }
+}
+
+interface RunOptions {
+  buildMode?: 'readonly' | 'write-output';
+  watch?: boolean;
+}
+
 function setup(fixtureDirSrc: string, fixtureDirOut: string) {
-  function copySrcFile(src: string) {
-    fs.copyFileSync(path.join(fixtureDirSrc, src), path.join(fixtureDirOut, 'src/index.ts'));
+  function copySrcFile(src: string, out: string) {
+    fs.copyFileSync(path.join(fixtureDirSrc, src), path.join(fixtureDirOut, out));
   }
 
   async function init() {
-    await fs.promises.mkdir(path.join(fixtureDirOut, 'src'), { recursive: true });
-    await Promise.all([
-      fs.promises.copyFile(
-        path.join(fixtureDirSrc, 'build.mjs'),
-        path.join(fixtureDirOut, 'build.mjs'),
-      ),
-      fs.promises.copyFile(
-        path.join(fixtureDirSrc, 'tsconfig.json'),
-        path.join(fixtureDirOut, 'tsconfig.json'),
-      ),
-    ]);
+    for await (const src of walk(fixtureDirSrc)) {
+      const out = path.join(fixtureDirOut, path.relative(fixtureDirSrc, src));
+      await fs.promises.mkdir(path.dirname(out), { recursive: true });
+      await fs.promises.copyFile(src, out);
+    }
   }
 
   async function cleanup() {
     await fs.promises.rm(fixtureDirOut, { recursive: true });
   }
 
-  async function run(args: string[], copyQueue: string[], killOnQueueEnd = false) {
+  async function run(
+    script: string,
+    copyQueue: [string, string][],
+    { buildMode, watch }: RunOptions = {},
+  ) {
     const queue = [...copyQueue];
 
-    const file = queue.shift();
-    if (!file) throw new Error('At least one file should be in the queue');
-    copySrcFile(file);
+    if (!watch) {
+      for (const [from, to] of queue) {
+        copySrcFile(from, to);
+      }
+    }
 
-    const abort = new AbortController();
-    const proc = spawn('node', [`${fixtureDirOut}/build.mjs`, ...args], {
-      env: { ...process.env, FORCE_COLOR: '0' },
-      signal: abort.signal,
+    const scriptPath = path.join(fixtureDirOut, script);
+    const proc = spawn('node', [scriptPath], {
+      cwd: path.dirname(scriptPath),
+      env: {
+        ...process.env,
+        FORCE_COLOR: '0',
+        BUILD_MODE: buildMode,
+        WATCH: watch ? 'true' : undefined,
+      },
     });
     const output: string[] = [];
 
     function processOutput(txt: string, prefix: string) {
-      const trimmed = txt.trim();
-      if (!trimmed) return;
-      const lines = trimmed.split(os.EOL);
+      const lines = txt
+        .split(os.EOL)
+        .map(line => line.trimEnd())
+        .filter(Boolean);
+
+      if (!lines.length) return;
+
       output.push(
         ...lines
-          .map(l => (/Typecheck finished in/.exec(l) ? 'ℹ  Typecheck finished in TIME' : l))
+          .map(l => l.replace(/Typecheck finished in (\d+ms)/, 'Typecheck finished in TIME'))
           .map(l => `${prefix} ${l}`),
       );
 
-      if (lines.some(l => /Typecheck finished in/.exec(l))) {
-        const file = queue.shift();
-        if (file) {
-          copySrcFile(file);
-        } else if (killOnQueueEnd) {
+      if (watch && lines.some(l => /Typecheck finished in/.exec(l))) {
+        const files = queue.shift();
+        if (files) {
+          copySrcFile(...files);
+        } else {
           proc.kill('SIGINT');
         }
       }
@@ -73,7 +95,19 @@ function setup(fixtureDirSrc: string, fixtureDirOut: string) {
     return { code: code ?? proc.exitCode, output };
   }
 
-  return { copySrcFile, cleanup, init, run };
+  async function findTSOutput() {
+    const tsOutput: string[] = [];
+    for await (const file of walk(fixtureDirOut)) {
+      const rel = path.relative(fixtureDirOut, file);
+      const parts = rel.split(path.sep);
+      if (parts.includes('types') || parts.includes('build')) {
+        tsOutput.push(rel);
+      }
+    }
+    return tsOutput;
+  }
+
+  return { copySrcFile, cleanup, init, run, findTSOutput };
 }
 
 describe('eslint-plugin-typecheck', () => {
@@ -87,7 +121,7 @@ describe('eslint-plugin-typecheck', () => {
     afterEach(build.cleanup);
 
     it('completes successfully', async () => {
-      const { code, output } = await build.run([], ['src/success.ts']);
+      const { code, output } = await build.run('build.mjs', [['src/index.ts', 'src/index.ts']]);
       expect(code).toBe(0);
       expect(output).toEqual([
         'OUT ℹ  Typecheck started…',
@@ -97,12 +131,14 @@ describe('eslint-plugin-typecheck', () => {
     });
 
     it('reports errors', async () => {
-      const { code, output } = await build.run([], ['src/error.ts']);
+      const { code, output } = await build.run('build.mjs', [
+        ['src/index-error.ts', 'src/index.ts'],
+      ]);
       expect(code).toBe(1);
       expect(output).toEqual([
         'OUT ℹ  Typecheck started…',
-        "ERR test/fixture/compile/run/src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
-        "ERR test/fixture/compile/run/src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
+        "ERR src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
+        "ERR src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
         'ERR ✖  Typecheck failed with 2 errors',
         'ERR ℹ  Typecheck finished in TIME',
       ]);
@@ -120,9 +156,13 @@ describe('eslint-plugin-typecheck', () => {
 
     it('watches for changes', async () => {
       const { output } = await build.run(
-        ['-w'],
-        ['src/success.ts', 'src/error.ts', 'src/success.ts', 'src/error.ts'],
-        true,
+        'build.mjs',
+        [
+          ['src/index-error.ts', 'src/index.ts'],
+          ['src/index.ts', 'src/index.ts'],
+          ['src/index-error.ts', 'src/index.ts'],
+        ],
+        { watch: true },
       );
 
       expect(output).toEqual([
@@ -130,18 +170,197 @@ describe('eslint-plugin-typecheck', () => {
         'OUT ✔  Typecheck passed',
         'OUT ℹ  Typecheck finished in TIME',
         'OUT ℹ  Typecheck started…',
-        "ERR test/fixture/compile/watch/src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
-        "ERR test/fixture/compile/watch/src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
+        "ERR src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
+        "ERR src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
         'ERR ✖  Typecheck failed with 2 errors',
         'ERR ℹ  Typecheck finished in TIME',
         'OUT ℹ  Typecheck started…',
         'OUT ✔  Typecheck passed',
         'OUT ℹ  Typecheck finished in TIME',
         'OUT ℹ  Typecheck started…',
-        "ERR test/fixture/compile/watch/src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
-        "ERR test/fixture/compile/watch/src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
+        "ERR src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
+        "ERR src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
         'ERR ✖  Typecheck failed with 2 errors',
         'ERR ℹ  Typecheck finished in TIME',
+      ]);
+    });
+  });
+
+  describe('build, once', () => {
+    const build = setup(
+      path.join(__dirname, 'fixture', 'build'),
+      path.join(__dirname, 'fixture', 'build', 'run'),
+    );
+
+    beforeEach(build.init);
+    afterEach(build.cleanup);
+
+    it('produces no output by default', async () => {
+      const { code, output } = await build.run('pkg-three/build.mjs', []);
+      expect(code).toBe(0);
+      expect(output).toEqual([
+        'OUT ℹ  Typecheck started…',
+        'OUT ✔  Typecheck passed',
+        'OUT ℹ  Typecheck finished in TIME',
+      ]);
+
+      await expect(build.findTSOutput()).resolves.toEqual([]);
+    });
+
+    it('reports errors across all dependencies', async () => {
+      const { code, output } = await build.run('pkg-three/build.mjs', [
+        ['pkg-one/one-error.ts', 'pkg-one/one.ts'],
+        ['pkg-two/two-error.ts', 'pkg-two/two.ts'],
+      ]);
+
+      expect(code).toBe(1);
+      expect(output).toEqual([
+        'OUT ℹ  Typecheck started…',
+        "ERR ../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        "ERR ../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        'ERR ✖  Typecheck failed with 2 errors',
+        'ERR ℹ  Typecheck finished in TIME',
+      ]);
+
+      await expect(build.findTSOutput()).resolves.toEqual([]);
+    });
+
+    it('reports errors in entry point', async () => {
+      const { code, output } = await build.run('pkg-three/build.mjs', [
+        ['pkg-three/three-error.ts', 'pkg-three/three.ts'],
+      ]);
+
+      expect(code).toBe(1);
+      expect(output).toEqual([
+        'OUT ℹ  Typecheck started…',
+        "ERR three.ts(13,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
+        "ERR   Type 'undefined' is not assignable to type 'boolean'.",
+        "ERR three.ts(18,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
+        'ERR ✖  Typecheck failed with 2 errors',
+        'ERR ℹ  Typecheck finished in TIME',
+      ]);
+
+      await expect(build.findTSOutput()).resolves.toEqual([]);
+    });
+
+    it('writes output when buildMode is write-output', async () => {
+      const { code, output } = await build.run('pkg-three/build.mjs', [], {
+        buildMode: 'write-output',
+      });
+
+      expect(code).toBe(0);
+      expect(output).toEqual([
+        'OUT ℹ  Typecheck started…',
+        'OUT ✔  Typecheck passed',
+        'OUT ℹ  Typecheck finished in TIME',
+      ]);
+
+      await expect(build.findTSOutput()).resolves.toEqual([
+        'pkg-one/build/one.js',
+        'pkg-one/build/tsconfig.tsbuildinfo',
+        'pkg-one/types/one.d.ts',
+        'pkg-three/build/three.js',
+        'pkg-three/build/tsconfig.tsbuildinfo',
+        'pkg-three/types/three.d.ts',
+        'pkg-two/build/tsconfig.tsbuildinfo',
+        'pkg-two/build/two.js',
+        'pkg-two/types/two.d.ts',
+      ]);
+    });
+  });
+
+  describe('build, watch', () => {
+    const build = setup(
+      path.join(__dirname, 'fixture', 'build'),
+      path.join(__dirname, 'fixture', 'build', 'watch'),
+    );
+
+    beforeEach(build.init);
+    afterEach(build.cleanup);
+
+    it('produces no output by default', async () => {
+      const { output } = await build.run('pkg-three/build.mjs', [], { watch: true });
+      expect(output).toEqual([
+        'OUT ℹ  Typecheck started…',
+        'OUT ✔  Typecheck passed',
+        'OUT ℹ  Typecheck finished in TIME',
+      ]);
+
+      await expect(build.findTSOutput()).resolves.toEqual([]);
+    });
+
+    it('reports errors across all dependencies', async () => {
+      const { output } = await build.run(
+        'pkg-three/build.mjs',
+        [
+          ['pkg-one/one-error.ts', 'pkg-one/one.ts'],
+          ['pkg-two/two-error.ts', 'pkg-two/two.ts'],
+          ['pkg-three/three-error.ts', 'pkg-three/three.ts'],
+          ['pkg-one/one.ts', 'pkg-one/one.ts'],
+          ['pkg-two/two.ts', 'pkg-two/two.ts'],
+          ['pkg-three/three.ts', 'pkg-three/three.ts'],
+        ],
+        { watch: true },
+      );
+
+      expect(output).toEqual([
+        'OUT ℹ  Typecheck started…',
+        'OUT ✔  Typecheck passed',
+        'OUT ℹ  Typecheck finished in TIME',
+        'OUT ℹ  Typecheck started…',
+        "ERR ../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        'ERR ✖  Typecheck failed with 1 error',
+        'ERR ℹ  Typecheck finished in TIME',
+        'OUT ℹ  Typecheck started…',
+        "ERR ../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        "ERR ../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        'ERR ✖  Typecheck failed with 2 errors',
+        'ERR ℹ  Typecheck finished in TIME',
+        'OUT ℹ  Typecheck started…',
+        "ERR ../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        "ERR ../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        'ERR ✖  Typecheck failed with 2 errors',
+        'ERR ℹ  Typecheck finished in TIME',
+        'OUT ℹ  Typecheck started…',
+        "ERR ../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        'ERR ✖  Typecheck failed with 1 error',
+        'ERR ℹ  Typecheck finished in TIME',
+        'OUT ℹ  Typecheck started…',
+        "ERR three.ts(13,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
+        "ERR   Type 'undefined' is not assignable to type 'boolean'.",
+        "ERR three.ts(18,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
+        'ERR ✖  Typecheck failed with 2 errors',
+        'ERR ℹ  Typecheck finished in TIME',
+        'OUT ℹ  Typecheck started…',
+        'OUT ✔  Typecheck passed',
+        'OUT ℹ  Typecheck finished in TIME',
+      ]);
+
+      await expect(build.findTSOutput()).resolves.toEqual([]);
+    }, 20000);
+
+    it('writes output when buildMode is write-output', async () => {
+      const { output } = await build.run('pkg-three/build.mjs', [], {
+        buildMode: 'write-output',
+        watch: true,
+      });
+
+      expect(output).toEqual([
+        'OUT ℹ  Typecheck started…',
+        'OUT ✔  Typecheck passed',
+        'OUT ℹ  Typecheck finished in TIME',
+      ]);
+
+      await expect(build.findTSOutput()).resolves.toEqual([
+        'pkg-one/build/one.js',
+        'pkg-one/build/tsconfig.tsbuildinfo',
+        'pkg-one/types/one.d.ts',
+        'pkg-three/build/three.js',
+        'pkg-three/build/tsconfig.tsbuildinfo',
+        'pkg-three/types/three.d.ts',
+        'pkg-two/build/tsconfig.tsbuildinfo',
+        'pkg-two/build/two.js',
+        'pkg-two/types/two.d.ts',
       ]);
     });
   });

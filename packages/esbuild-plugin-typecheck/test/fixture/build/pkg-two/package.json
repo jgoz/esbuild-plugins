@@ -1,0 +1,6 @@
+{
+  "name": "typecheck-fixture-two",
+  "private": true,
+  "main": "./dist/two.js",
+  "types": "./types/two.d.ts"
+}

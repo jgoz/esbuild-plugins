@@ -1,0 +1,15 @@
+{
+  "extends": "@tsconfig/node14/tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "build",
+    "declarationDir": "types",
+    "baseUrl": ".",
+    "paths": {
+      "typecheck-fixture-one": ["../pkg-one/one.ts"],
+      "typecheck-fixture-two": ["../pkg-two/two.ts"]
+    }
+  },
+  "files": ["./three.ts"],
+  "references": [{ "path": "../pkg-one" }, { "path": "../pkg-two" }]
+}

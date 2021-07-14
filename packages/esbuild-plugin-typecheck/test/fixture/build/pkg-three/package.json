@@ -1,0 +1,10 @@
+{
+  "name": "typecheck-fixture-three",
+  "private": true,
+  "main": "./dist/three.js",
+  "types": "./types/three.d.ts",
+  "dependencies": {
+    "typecheck-fixture-one": "workspace:*",
+    "typecheck-fixture-two": "workspace:*"
+  }
+}
