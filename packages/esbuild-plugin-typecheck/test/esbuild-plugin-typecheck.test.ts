@@ -114,7 +114,7 @@ describe('eslint-plugin-typecheck', () => {
   describe('compile, once', () => {
     const build = setup(
       path.join(__dirname, 'fixture', 'compile'),
-      path.join(__dirname, 'fixture', 'compile', 'run'),
+      path.join(__dirname, 'fixture', 'compile-out'),
     );
 
     beforeEach(build.init);
@@ -148,7 +148,7 @@ describe('eslint-plugin-typecheck', () => {
   describe('compile, watch', () => {
     const build = setup(
       path.join(__dirname, 'fixture', 'compile'),
-      path.join(__dirname, 'fixture', 'compile', 'watch'),
+      path.join(__dirname, 'fixture', 'compile-out'),
     );
 
     beforeEach(build.init);
@@ -189,7 +189,7 @@ describe('eslint-plugin-typecheck', () => {
   describe('build, once', () => {
     const build = setup(
       path.join(__dirname, 'fixture', 'build'),
-      path.join(__dirname, 'fixture', 'build', 'run'),
+      path.join(__dirname, 'fixture', 'build-out'),
     );
 
     beforeEach(build.init);
@@ -272,7 +272,7 @@ describe('eslint-plugin-typecheck', () => {
   describe('build, watch', () => {
     const build = setup(
       path.join(__dirname, 'fixture', 'build'),
-      path.join(__dirname, 'fixture', 'build', 'watch'),
+      path.join(__dirname, 'fixture', 'build-out'),
     );
 
     beforeEach(build.init);
