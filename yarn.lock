@@ -9330,29 +9330,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typecheck-fixture-one@workspace:*, typecheck-fixture-one@workspace:packages/esbuild-plugin-typecheck/test/fixture/build/pkg-one":
-  version: 0.0.0-use.local
-  resolution: "typecheck-fixture-one@workspace:packages/esbuild-plugin-typecheck/test/fixture/build/pkg-one"
-  languageName: unknown
-  linkType: soft
-
-"typecheck-fixture-three@workspace:packages/esbuild-plugin-typecheck/test/fixture/build/pkg-three":
-  version: 0.0.0-use.local
-  resolution: "typecheck-fixture-three@workspace:packages/esbuild-plugin-typecheck/test/fixture/build/pkg-three"
-  dependencies:
-    typecheck-fixture-one: "workspace:*"
-    typecheck-fixture-two: "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"typecheck-fixture-two@workspace:*, typecheck-fixture-two@workspace:packages/esbuild-plugin-typecheck/test/fixture/build/pkg-two":
-  version: 0.0.0-use.local
-  resolution: "typecheck-fixture-two@workspace:packages/esbuild-plugin-typecheck/test/fixture/build/pkg-two"
-  dependencies:
-    typecheck-fixture-one: "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "typedarray-to-buffer@npm:^3.1.5":
   version: 3.1.5
   resolution: "typedarray-to-buffer@npm:3.1.5"

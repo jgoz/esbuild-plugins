@@ -39,7 +39,7 @@
   },
   "scripts": {
     "prepack": "./build.mjs",
-    "test": "yarn run jest",
+    "test": "jest",
     "watch": "./build.mjs -w"
   }
 }

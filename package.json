@@ -12,7 +12,8 @@
     "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
   "workspaces": [
-    "packages/**"
+    "packages/**",
+    "!packages/esbuild-plugin-typecheck/test/**"
   ],
   "volta": {
     "node": "16.3.0",

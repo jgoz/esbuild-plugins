@@ -50,10 +50,7 @@
     "transform": {
       "^.+\\.ts$": "babel-jest",
       "^.+\\.mjs$": "babel-jest"
-    },
-    "transformIgnorePatterns": [
-      "node_modules/(?!(zx)/)"
-    ]
+    }
   },
   "scripts": {
     "build": "./build.mjs",
