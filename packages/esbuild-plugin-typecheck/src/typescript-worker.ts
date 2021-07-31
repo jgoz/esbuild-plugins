@@ -147,10 +147,15 @@ function createWatchBuilder(
     reporter.reportSummaryDiagnostic,
   );
 
-  const builder = ts.createSolutionBuilderWithWatch(builderHost, [configFile], {
-    incremental: true,
-    ...buildOptions,
-  });
+  const builder = ts.createSolutionBuilderWithWatch(
+    builderHost,
+    [configFile],
+    {
+      incremental: true,
+      ...buildOptions,
+    },
+    { excludeDirectories: ['node_modules'] },
+  );
 
   return builder;
 }

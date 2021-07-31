@@ -1,0 +1,5 @@
+packages:
+  - 'packages/**'
+  - '1packages/esbuild-plugin-typecheck/test/**'
+
+prefer-workspace-packages: true

@@ -40,7 +40,7 @@
     "maxWorkers": 1
   },
   "scripts": {
-    "prepublish": "yarn check",
+    "prepublish": "pnpm check",
     "prepack": "./build.mjs",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "watch": "./build.mjs -w"

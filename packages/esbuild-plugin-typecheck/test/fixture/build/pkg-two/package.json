@@ -1,5 +1,5 @@
 {
-  "name": "typecheck-fixture-two",
+  "name": "pkg-two",
   "private": true,
   "main": "./dist/two.js",
   "types": "./types/two.d.ts"

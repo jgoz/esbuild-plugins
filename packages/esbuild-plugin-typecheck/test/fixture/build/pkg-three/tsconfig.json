@@ -6,8 +6,8 @@
     "declarationDir": "types",
     "baseUrl": ".",
     "paths": {
-      "typecheck-fixture-one": ["../pkg-one/one.ts"],
-      "typecheck-fixture-two": ["../pkg-two/two.ts"]
+      "pkg-one": ["../pkg-one/one.ts"],
+      "pkg-two": ["../pkg-two/two.ts"]
     }
   },
   "files": ["./three.ts"],

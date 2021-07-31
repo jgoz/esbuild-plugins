@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import { node } from 'execa';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -17,8 +17,8 @@ interface RunOptions {
 }
 
 function setup(fixtureDirSrc: string, fixtureDirOut: string) {
-  function copySrcFile(src: string, out: string) {
-    fs.copyFileSync(path.join(fixtureDirSrc, src), path.join(fixtureDirOut, out));
+  async function copySrcFile(src: string, out: string) {
+    fs.promises.copyFile(path.join(fixtureDirSrc, src), path.join(fixtureDirOut, out));
   }
 
   async function init() {
@@ -41,13 +41,14 @@ function setup(fixtureDirSrc: string, fixtureDirOut: string) {
     const queue = [...copyQueue];
 
     if (!watch) {
-      for (const [from, to] of queue) {
-        copySrcFile(from, to);
-      }
+      await Promise.all(queue.map(files => copySrcFile(...files)));
     }
 
     const scriptPath = path.join(fixtureDirOut, script);
-    const proc = spawn('node', [scriptPath], {
+    const proc = node(scriptPath, {
+      all: true,
+      encoding: 'utf8',
+      reject: false,
       cwd: path.dirname(scriptPath),
       env: {
         ...process.env,
@@ -56,43 +57,31 @@ function setup(fixtureDirSrc: string, fixtureDirOut: string) {
         WATCH: watch ? 'true' : undefined,
       },
     });
-    const output: string[] = [];
 
-    function processOutput(txt: string, prefix: string) {
-      const lines = txt
-        .split(os.EOL)
-        .map(line => line.trimEnd())
-        .filter(Boolean);
-
-      if (!lines.length) return;
-
-      output.push(
-        ...lines
-          .map(l => l.replace(/Typecheck finished in (\d+ms)/, 'Typecheck finished in TIME'))
-          .map(l => `${prefix} ${l}`),
-      );
-
-      if (watch && lines.some(l => /Typecheck finished in/.exec(l))) {
-        const files = queue.shift();
-        if (files) {
-          copySrcFile(...files);
-        } else {
-          proc.kill('SIGINT');
+    if (watch) {
+      proc.all!.on('data', async (chunk: Buffer) => {
+        const str = chunk.toString();
+        if (/Typecheck finished in/.exec(str)) {
+          const files = queue.shift();
+          if (files) {
+            await copySrcFile(...files);
+          } else {
+            proc.cancel();
+          }
         }
-      }
+      });
     }
 
-    proc.stdout.setEncoding('utf-8');
-    proc.stderr.setEncoding('utf-8');
+    const { exitCode, all = '' } = await proc;
 
-    proc.stdout.on('data', o => processOutput(o, 'OUT'));
-    proc.stderr.on('data', o => processOutput(o, 'ERR'));
+    const output = all
+      .split(os.EOL)
+      .map(line => line.trimEnd())
+      .filter(Boolean)
+      .filter(l => !l.includes('Typecheck started'))
+      .map(l => l.replace(/Typecheck finished in (\d+ms)/, 'Typecheck finished in TIME'));
 
-    const code = await new Promise<number>(resolve => {
-      proc.on('exit', resolve);
-    });
-
-    return { code: code ?? proc.exitCode, output };
+    return { code: exitCode, output };
   }
 
   async function findTSOutput() {
@@ -107,7 +96,7 @@ function setup(fixtureDirSrc: string, fixtureDirOut: string) {
     return tsOutput;
   }
 
-  return { copySrcFile, cleanup, init, run, findTSOutput };
+  return { cleanup, init, run, findTSOutput };
 }
 
 describe('eslint-plugin-typecheck', () => {
@@ -117,17 +106,13 @@ describe('eslint-plugin-typecheck', () => {
       path.join(__dirname, 'fixture', 'compile-out'),
     );
 
-    beforeEach(build.init);
-    afterEach(build.cleanup);
+    beforeEach(async () => await build.init());
+    afterEach(async () => await build.cleanup());
 
     it('completes successfully', async () => {
       const { code, output } = await build.run('build.mjs', [['src/index.ts', 'src/index.ts']]);
       expect(code).toBe(0);
-      expect(output).toEqual([
-        'OUT ℹ  Typecheck started…',
-        'OUT ✔  Typecheck passed',
-        'OUT ℹ  Typecheck finished in TIME',
-      ]);
+      expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
     });
 
     it('reports errors', async () => {
@@ -136,11 +121,10 @@ describe('eslint-plugin-typecheck', () => {
       ]);
       expect(code).toBe(1);
       expect(output).toEqual([
-        'OUT ℹ  Typecheck started…',
-        "ERR src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
-        "ERR src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
-        'ERR ✖  Typecheck failed with 2 errors',
-        'ERR ℹ  Typecheck finished in TIME',
+        "src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
+        "src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
+        '✖  Typecheck failed with 2 errors',
+        'ℹ  Typecheck finished in TIME',
       ]);
     });
   });
@@ -151,8 +135,8 @@ describe('eslint-plugin-typecheck', () => {
       path.join(__dirname, 'fixture', 'compile-out'),
     );
 
-    beforeEach(build.init);
-    afterEach(build.cleanup);
+    beforeEach(async () => await build.init());
+    afterEach(async () => await build.cleanup());
 
     it('watches for changes', async () => {
       const { output } = await build.run(
@@ -166,22 +150,18 @@ describe('eslint-plugin-typecheck', () => {
       );
 
       expect(output).toEqual([
-        'OUT ℹ  Typecheck started…',
-        'OUT ✔  Typecheck passed',
-        'OUT ℹ  Typecheck finished in TIME',
-        'OUT ℹ  Typecheck started…',
-        "ERR src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
-        "ERR src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
-        'ERR ✖  Typecheck failed with 2 errors',
-        'ERR ℹ  Typecheck finished in TIME',
-        'OUT ℹ  Typecheck started…',
-        'OUT ✔  Typecheck passed',
-        'OUT ℹ  Typecheck finished in TIME',
-        'OUT ℹ  Typecheck started…',
-        "ERR src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
-        "ERR src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
-        'ERR ✖  Typecheck failed with 2 errors',
-        'ERR ℹ  Typecheck finished in TIME',
+        '✔  Typecheck passed',
+        'ℹ  Typecheck finished in TIME',
+        "src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
+        "src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
+        '✖  Typecheck failed with 2 errors',
+        'ℹ  Typecheck finished in TIME',
+        '✔  Typecheck passed',
+        'ℹ  Typecheck finished in TIME',
+        "src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
+        "src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
+        '✖  Typecheck failed with 2 errors',
+        'ℹ  Typecheck finished in TIME',
       ]);
     });
   });
@@ -192,17 +172,13 @@ describe('eslint-plugin-typecheck', () => {
       path.join(__dirname, 'fixture', 'build-out'),
     );
 
-    beforeEach(build.init);
-    afterEach(build.cleanup);
+    beforeEach(async () => await build.init());
+    afterEach(async () => await build.cleanup());
 
     it('produces no output by default', async () => {
       const { code, output } = await build.run('pkg-three/build.mjs', []);
       expect(code).toBe(0);
-      expect(output).toEqual([
-        'OUT ℹ  Typecheck started…',
-        'OUT ✔  Typecheck passed',
-        'OUT ℹ  Typecheck finished in TIME',
-      ]);
+      expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
 
       await expect(build.findTSOutput()).resolves.toEqual([]);
     });
@@ -215,11 +191,10 @@ describe('eslint-plugin-typecheck', () => {
 
       expect(code).toBe(1);
       expect(output).toEqual([
-        'OUT ℹ  Typecheck started…',
-        "ERR ../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        "ERR ../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        'ERR ✖  Typecheck failed with 2 errors',
-        'ERR ℹ  Typecheck finished in TIME',
+        "../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        "../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        '✖  Typecheck failed with 2 errors',
+        'ℹ  Typecheck finished in TIME',
       ]);
 
       await expect(build.findTSOutput()).resolves.toEqual([]);
@@ -232,12 +207,11 @@ describe('eslint-plugin-typecheck', () => {
 
       expect(code).toBe(1);
       expect(output).toEqual([
-        'OUT ℹ  Typecheck started…',
-        "ERR three.ts(13,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
-        "ERR   Type 'undefined' is not assignable to type 'boolean'.",
-        "ERR three.ts(18,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
-        'ERR ✖  Typecheck failed with 2 errors',
-        'ERR ℹ  Typecheck finished in TIME',
+        "three.ts(13,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
+        "  Type 'undefined' is not assignable to type 'boolean'.",
+        "three.ts(18,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
+        '✖  Typecheck failed with 2 errors',
+        'ℹ  Typecheck finished in TIME',
       ]);
 
       await expect(build.findTSOutput()).resolves.toEqual([]);
@@ -249,11 +223,7 @@ describe('eslint-plugin-typecheck', () => {
       });
 
       expect(code).toBe(0);
-      expect(output).toEqual([
-        'OUT ℹ  Typecheck started…',
-        'OUT ✔  Typecheck passed',
-        'OUT ℹ  Typecheck finished in TIME',
-      ]);
+      expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
 
       await expect(build.findTSOutput()).resolves.toEqual([
         'pkg-one/build/one.js',
@@ -275,16 +245,12 @@ describe('eslint-plugin-typecheck', () => {
       path.join(__dirname, 'fixture', 'build-out'),
     );
 
-    beforeEach(build.init);
-    afterEach(build.cleanup);
+    beforeEach(async () => await build.init());
+    afterEach(async () => await build.cleanup());
 
     it('produces no output by default', async () => {
       const { output } = await build.run('pkg-three/build.mjs', [], { watch: true });
-      expect(output).toEqual([
-        'OUT ℹ  Typecheck started…',
-        'OUT ✔  Typecheck passed',
-        'OUT ℹ  Typecheck finished in TIME',
-      ]);
+      expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
 
       await expect(build.findTSOutput()).resolves.toEqual([]);
     });
@@ -304,36 +270,29 @@ describe('eslint-plugin-typecheck', () => {
       );
 
       expect(output).toEqual([
-        'OUT ℹ  Typecheck started…',
-        'OUT ✔  Typecheck passed',
-        'OUT ℹ  Typecheck finished in TIME',
-        'OUT ℹ  Typecheck started…',
-        "ERR ../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        'ERR ✖  Typecheck failed with 1 error',
-        'ERR ℹ  Typecheck finished in TIME',
-        'OUT ℹ  Typecheck started…',
-        "ERR ../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        "ERR ../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        'ERR ✖  Typecheck failed with 2 errors',
-        'ERR ℹ  Typecheck finished in TIME',
-        'OUT ℹ  Typecheck started…',
-        "ERR ../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        "ERR ../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        'ERR ✖  Typecheck failed with 2 errors',
-        'ERR ℹ  Typecheck finished in TIME',
-        'OUT ℹ  Typecheck started…',
-        "ERR ../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        'ERR ✖  Typecheck failed with 1 error',
-        'ERR ℹ  Typecheck finished in TIME',
-        'OUT ℹ  Typecheck started…',
-        "ERR three.ts(13,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
-        "ERR   Type 'undefined' is not assignable to type 'boolean'.",
-        "ERR three.ts(18,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
-        'ERR ✖  Typecheck failed with 2 errors',
-        'ERR ℹ  Typecheck finished in TIME',
-        'OUT ℹ  Typecheck started…',
-        'OUT ✔  Typecheck passed',
-        'OUT ℹ  Typecheck finished in TIME',
+        '✔  Typecheck passed',
+        'ℹ  Typecheck finished in TIME',
+        "../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        '✖  Typecheck failed with 1 error',
+        'ℹ  Typecheck finished in TIME',
+        "../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        "../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        '✖  Typecheck failed with 2 errors',
+        'ℹ  Typecheck finished in TIME',
+        "../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        "../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        '✖  Typecheck failed with 2 errors',
+        'ℹ  Typecheck finished in TIME',
+        "../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
+        '✖  Typecheck failed with 1 error',
+        'ℹ  Typecheck finished in TIME',
+        "three.ts(13,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
+        "  Type 'undefined' is not assignable to type 'boolean'.",
+        "three.ts(18,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
+        '✖  Typecheck failed with 2 errors',
+        'ℹ  Typecheck finished in TIME',
+        '✔  Typecheck passed',
+        'ℹ  Typecheck finished in TIME',
       ]);
 
       await expect(build.findTSOutput()).resolves.toEqual([]);
@@ -345,11 +304,7 @@ describe('eslint-plugin-typecheck', () => {
         watch: true,
       });
 
-      expect(output).toEqual([
-        'OUT ℹ  Typecheck started…',
-        'OUT ✔  Typecheck passed',
-        'OUT ℹ  Typecheck finished in TIME',
-      ]);
+      expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
 
       await expect(build.findTSOutput()).resolves.toEqual([
         'pkg-one/build/one.js',

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { typecheckPlugin } from '@jgoz/esbuild-plugin-typecheck';
+import { typecheckPlugin } from '../../../../dist/plugin-typecheck.js';
 import { build } from 'esbuild';
 import path from 'path';
 import { fileURLToPath } from 'url';

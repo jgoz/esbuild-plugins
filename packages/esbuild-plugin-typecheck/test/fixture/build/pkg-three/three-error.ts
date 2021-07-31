@@ -1,5 +1,5 @@
-import { walk } from 'typecheck-fixture-one';
-import { moonWalk } from 'typecheck-fixture-two';
+import { walk } from 'pkg-one';
+import { moonWalk } from 'pkg-two';
 
 export async function* multiWalk(dirPath: string) {
   const earth = walk(dirPath);

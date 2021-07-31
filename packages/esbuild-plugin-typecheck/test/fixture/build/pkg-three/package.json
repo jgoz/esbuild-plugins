@@ -4,7 +4,7 @@
   "main": "./dist/three.js",
   "types": "./types/three.d.ts",
   "dependencies": {
-    "typecheck-fixture-one": "link:../pkg-one",
-    "typecheck-fixture-two": "link:../pkg-two"
+    "pkg-one": "link:../pkg-one",
+    "pkg-two": "link:../pkg-two"
   }
 }
