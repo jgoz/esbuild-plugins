@@ -32,6 +32,7 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-unicorn": "^30.0.0",
+    "eslint-plugin-unused-imports": "^1.1.2",
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
     "tslib": "^2.3.0",

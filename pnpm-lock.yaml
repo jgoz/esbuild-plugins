@@ -20,12 +20,13 @@ importers:
       eslint-plugin-import: ^2.23.4
       eslint-plugin-simple-import-sort: ^7.0.0
       eslint-plugin-unicorn: ^30.0.0
+      eslint-plugin-unused-imports: ^1.1.2
       jest: ^27.0.6
       prettier: ^2.3.2
       tslib: ^2.3.0
       typescript: ^4.3.5
     devDependencies:
-      '@awesome-code-style/eslint-config': 3.2.0_f4d4d66ee9a3110a66dcc6c64e52fb26
+      '@awesome-code-style/eslint-config': 3.2.0_b23a342cb6d2d9fe4caaa1ec4ac3c7f4
       '@awesome-code-style/prettier-config': 3.0.0_prettier@2.3.2
       '@babel/core': 7.14.8
       '@babel/preset-env': 7.14.8_@babel+core@7.14.8
@@ -41,10 +42,35 @@ importers:
       eslint-plugin-import: 2.23.4_eslint@7.32.0
       eslint-plugin-simple-import-sort: 7.0.0_eslint@7.32.0
       eslint-plugin-unicorn: 30.0.0_eslint@7.32.0
+      eslint-plugin-unused-imports: 1.1.2
       jest: 27.0.6
       prettier: 2.3.2
       tslib: 2.3.0
       typescript: 4.3.5
+
+  packages/esb:
+    specifiers:
+      '@jgoz/esbuild-plugin-livereload': workspace:*
+      esbuild: ^0.12.17
+      esbuild-node-externals: ^1.3.0
+      jest: ^27.0.6
+      kleur: ^4.1.4
+      memfs: ^3.2.2
+      prettier: ^2.3.2
+      tslib: ^2.3.0
+      typescript: ^4.3.5
+      unionfs: ^4.4.0
+    devDependencies:
+      '@jgoz/esbuild-plugin-livereload': link:../esbuild-plugin-livereload
+      esbuild: 0.12.17
+      esbuild-node-externals: 1.3.0_esbuild@0.12.17
+      jest: 27.0.6
+      kleur: 4.1.4
+      memfs: 3.2.2
+      prettier: 2.3.2
+      tslib: 2.3.0
+      typescript: 4.3.5
+      unionfs: 4.4.0
 
   packages/esbuild-overlay:
     specifiers:
@@ -263,7 +289,7 @@ packages:
       resize-observer-polyfill: 1.5.1
     dev: false
 
-  /@awesome-code-style/eslint-config/3.2.0_f4d4d66ee9a3110a66dcc6c64e52fb26:
+  /@awesome-code-style/eslint-config/3.2.0_b23a342cb6d2d9fe4caaa1ec4ac3c7f4:
     resolution: {integrity: sha512-IKozmD4O0nmw6kQQCk/FvM8KQZIU0HECfL4oiEdORC5tGh4OeSloKMuyvmuRSbnrYYDtnRVSb+zg+HUMTL1hOw==}
     peerDependencies:
       '@typescript-eslint/eslint-plugin': ^4.22.0
@@ -288,6 +314,7 @@ packages:
       eslint-plugin-import: 2.23.4_eslint@7.32.0
       eslint-plugin-simple-import-sort: 7.0.0_eslint@7.32.0
       eslint-plugin-unicorn: 30.0.0_eslint@7.32.0
+      eslint-plugin-unused-imports: 1.1.2
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -3184,6 +3211,18 @@ packages:
       semver: 7.3.5
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /eslint-plugin-unused-imports/1.1.2:
+    resolution: {integrity: sha512-dfiCZiv/lSkOp6/JIjP+ASIs1vxLgiN1NISM+oxcO799+FEZQXy0Se1CaAHQt4BCInBOJ9LK0ILCe1lMMI+YGA==}
+    engines: {node: '>=0.10.0'}
+    dependencies:
+      eslint-rule-composer: 0.3.0
+    dev: true
+
+  /eslint-rule-composer/0.3.0:
+    resolution: {integrity: sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==}
+    engines: {node: '>=4.0.0'}
     dev: true
 
   /eslint-scope/5.1.1:
