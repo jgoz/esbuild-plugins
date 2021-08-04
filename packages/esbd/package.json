@@ -1,0 +1,58 @@
+{
+  "name": "esbd",
+  "version": "1.0.0",
+  "author": "John Gozde <john@gozde.ca>",
+  "description": "CLI wrapper for esbuild in dev and prod",
+  "license": "MIT",
+  "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jgoz/esbuild-plugins.git",
+    "directory": "packages/esb"
+  },
+  "bugs": {
+    "url": "https://github.com/jgoz/esbuild-plugins/issues"
+  },
+  "keywords": [
+    "esbuild",
+    "esbuild-cli"
+  ],
+  "bin": "bin/esbd.js",
+  "dependencies": {
+    "@jgoz/esbuild-plugin-livereload": "workspace:*"
+  },
+  "peerDependencies": {
+    "esbuild": ">= 0.12.17"
+  },
+  "devDependencies": {
+    "@types/pretty-time": "^1.1.1",
+    "chokidar": "^3.5.2",
+    "commander": "^8.1.0",
+    "fastify": "^3.20.0",
+    "esbuild": "^0.12.17",
+    "esbuild-node-externals": "^1.3.0",
+    "io-spin": "^0.4.1",
+    "jest": "^27.0.6",
+    "kleur": "^4.1.4",
+    "memfs": "^3.2.2",
+    "parse5": "^6.0.1",
+    "prettier": "^2.3.2",
+    "pretty-time": "^1.1.0",
+    "send-stream": "^2.5.3",
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.5"
+  },
+  "jest": {
+    "testTimeout": 10000,
+    "maxWorkers": 1,
+    "transform": {
+      "^.+\\.ts$": "babel-jest",
+      "^.+\\.mjs$": "babel-jest"
+    }
+  },
+  "scripts": {
+    "prepack": "./build.mjs",
+    "test": "jest",
+    "watch": "./build.mjs -w"
+  }
+}

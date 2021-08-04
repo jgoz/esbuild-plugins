@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src", "test", "typings"],
+  "exclude": ["**/test/fixutre"],
+  "files": [".eslintrc.js", "babel.config.js", "build.mjs"]
+}
