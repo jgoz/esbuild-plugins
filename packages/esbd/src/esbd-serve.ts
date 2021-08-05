@@ -1,6 +1,4 @@
-import { watch } from 'chokidar';
-import { build, BuildOptions, BuildResult, Plugin } from 'esbuild';
-import { EventEmitter } from 'events';
+import { build, BuildOptions, BuildResult } from 'esbuild';
 import fastify from 'fastify';
 import K from 'kleur';
 import { createFsFromVolume, Volume } from 'memfs';
@@ -10,30 +8,9 @@ import { FileSystemStorage, GenericFSModule } from 'send-stream';
 import type { BuildMode, EsbdConfig } from './config';
 import { readTemplate } from './html-entry-point';
 import { writeTemplate } from './html-entry-point/write-template';
-import { logger, TimedSpinner } from './log';
-
-function timingPlugin(): Plugin {
-  let spinner: TimedSpinner;
-  return {
-    name: 'timing',
-    setup(build) {
-      build.onStart(() => {
-        spinner = logger.spin('Building…');
-      });
-      build.onEnd(result => {
-        const [time] = spinner.stop();
-        const numErrors = result.errors.length;
-        const numWarnings = result.warnings.length;
-        const log = numErrors ? logger.error : numWarnings ? logger.warn : logger.success;
-        log(
-          `Finished with ${K.white(numErrors)} error(s) and ${K.white(
-            numWarnings,
-          )} warning(s) in ${K.gray(time)}`,
-        );
-      });
-    },
-  };
-}
+import { incrementalBuilder } from './incremental-builder';
+import { logger } from './log';
+import { timingPlugin } from './timing-plugin';
 
 interface EsbdServeConfig {
   mode: BuildMode;
@@ -73,76 +50,6 @@ export default async function esbServe(
     }
   }
 
-  const watchedInputs = new Set<string>();
-  const watchedModules = new Set<string>();
-
-  const inputWatcher = watch([], {
-    cwd: basedir,
-    disableGlobbing: true,
-    ignored: ['**/node_modules/**'],
-  });
-
-  const moduleWatcher = watch([], {
-    cwd: basedir,
-    depth: 2,
-    disableGlobbing: true,
-    interval: 2000,
-    usePolling: true,
-  });
-
-  const evt = new EventEmitter();
-  let running = false;
-
-  function waitForBuildToFinish(): Promise<void> {
-    if (!running) return Promise.resolve();
-    return new Promise(resolve => {
-      evt.once('end', resolve);
-    });
-  }
-
-  const esbPlugin: Plugin = {
-    name: 'esb-internal-plugin',
-    setup: build => {
-      build.onStart(() => {
-        running = true;
-      });
-      build.onEnd(result => {
-        const inputs = Object.keys(result.metafile!.inputs);
-
-        const addedInputs = new Set<string>();
-        const addedModules = new Set<string>();
-        const removedInputs: string[] = [];
-        const removedModules: string[] = [];
-
-        for (const input of inputs) {
-          const index = input.indexOf('node_modules');
-          if (index >= 0) {
-            const mod = input.slice(0, index + 'node_modules'.length);
-            if (!watchedModules.has(mod)) addedModules.add(mod);
-          } else {
-            if (!watchedInputs.has(input)) addedInputs.add(input);
-          }
-        }
-
-        watchedInputs.forEach(input => {
-          if (!addedInputs.has(input)) removedInputs.push(input);
-        });
-        watchedModules.forEach(mod => {
-          if (!addedModules.has(mod)) removedModules.push(mod);
-        });
-
-        inputWatcher.unwatch(removedInputs);
-        moduleWatcher.unwatch(removedModules);
-
-        inputWatcher.add(Array.from(addedInputs));
-        moduleWatcher.add(Array.from(addedModules));
-
-        evt.emit('end');
-        running = false;
-      });
-    },
-  };
-
   const [entryPoints, writeOptions] = await readTemplate(absEntryPath, {
     basedir,
     define,
@@ -150,7 +57,7 @@ export default async function esbServe(
     integrity: config.integrity,
   });
 
-  const buildOptions: BuildOptions & { write: false } = {
+  const buildOptions: BuildOptions & { incremental: true } = {
     ...config.esbuild,
     absWorkingDir: basedir,
     bundle: config.esbuild?.bundle ?? true,
@@ -160,7 +67,7 @@ export default async function esbServe(
     inject: config.esbuild?.inject,
     minify: mode === 'production',
     outdir,
-    plugins: [esbPlugin, ...(config.esbuild?.plugins ?? []), timingPlugin()],
+    plugins: [...(config.esbuild?.plugins ?? []), timingPlugin()],
     metafile: true,
     publicPath,
     target: config.esbuild?.target ?? 'es2017',
@@ -176,28 +83,23 @@ export default async function esbServe(
     });
   }
 
-  const result = await build(buildOptions);
+  const incremental = incrementalBuilder({
+    basedir,
+    onBuildResult: async result => {
+      if (!result.outputFiles) throw new Error('"write" option must be "false"');
 
-  await Promise.all(
-    result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
-  );
+      const writeAllOutput = result.outputFiles
+        .map(file => fs.promises.writeFile(file.path, file.contents))
+        .concat(writeHTMLOutput(result));
 
-  await writeHTMLOutput(result);
+      await Promise.all(writeAllOutput);
+    },
+    onWatchEvent: (event: string, path: string) => {
+      logger.info(K.gray(`${path} ${event}, rebuilding`));
+    },
+  });
 
-  function onWatchEvent(event: string, path: string) {
-    if (running) return;
-    logger.info(K.gray(`${path} ${event}, rebuilding`));
-    result.rebuild!()
-      .then(writeHTMLOutput)
-      .catch(e => {
-        console.error(e);
-      });
-  }
-
-  inputWatcher.on('all', onWatchEvent);
-  moduleWatcher.on('change', path => onWatchEvent('change', path));
-
-  const app = fastify({ exposeHeadRoutes: true });
+  await incremental.build(() => build(buildOptions));
 
   const buildOutput = new FileSystemStorage(outdir, {
     dynamicCompression: true,
@@ -218,8 +120,11 @@ export default async function esbServe(
     ? `${publicPath.endsWith('/') ? publicPath.slice(0, -1) : publicPath}/*`
     : '*';
 
+  const app = fastify({ exposeHeadRoutes: true });
+
   app.addHook('onRequest', (_req, _reply, done) => {
-    waitForBuildToFinish()
+    incremental
+      .wait()
       .then(() => done())
       .catch(err => done(err));
   });
