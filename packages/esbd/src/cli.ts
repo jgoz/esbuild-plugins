@@ -11,7 +11,7 @@ interface ServeOptions {
   host?: string;
   port?: string;
   servedir?: string;
-  spa: boolean;
+  rewrite: boolean;
 }
 
 export default function init() {
@@ -24,14 +24,14 @@ export default function init() {
 
   program
     .command('serve <entry>')
-    .alias('s')
-    .description('Development server')
+    .description('Single page application development server')
     .option('-d --servedir <path>', 'Directory of static assets to serve')
     .option('-h --host <host>', 'IP/host name to use when serving requests', '0.0.0.0')
     .option('-p --port <port>', 'Port to use', '8000')
-    .option('-s --spa', 'Rewrite all not-found requests to "index.html"', false)
+    .option('--rewrite', 'Rewrite all not-found requests to "index.html" (SPA mode)', true)
+    .option('--no-rewrite', 'Disable request rewriting')
     .action(async (entry: string, options: ServeOptions) => {
-      const { host = '0.0.0.0', port = '8000', servedir, spa } = options;
+      const { host = '0.0.0.0', port = '8000', servedir, rewrite } = options;
 
       const absEntryPath = path.resolve(process.cwd(), entry);
       const maybeConfigPath = program.opts().config;
@@ -52,7 +52,7 @@ export default function init() {
           host,
           port: Number(port),
           servedir: servedir ? path.resolve(process.cwd(), servedir) : undefined,
-          spa,
+          rewrite,
         },
         config,
       );

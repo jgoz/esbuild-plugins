@@ -40,12 +40,12 @@ interface EsbdServeConfig {
   host?: string;
   port?: number;
   servedir?: string;
-  spa?: boolean;
+  rewrite: boolean;
 }
 
 export default async function esbServe(
   entry: string,
-  { mode, host = '0.0.0.0', port = 8000, servedir, spa = false }: EsbdServeConfig,
+  { mode, host = '0.0.0.0', port = 8000, servedir, rewrite }: EsbdServeConfig,
   config: EsbdConfig,
 ) {
   const vol = new Volume();
@@ -164,6 +164,7 @@ export default async function esbServe(
     metafile: true,
     publicPath,
     target: config.esbuild?.target ?? 'es2017',
+    sourcemap: config.esbuild?.sourcemap ?? (mode === 'development' ? 'inline' : undefined),
     write: false,
     watch: false,
   };
@@ -229,9 +230,8 @@ export default async function esbServe(
       result = await fallback.prepareResponse(request.url, request.raw);
     }
     if (result.statusCode === 404) {
-      if (spa) {
+      if (rewrite) {
         await buildOutput.send('/index.html', request.raw, reply.raw);
-        // await reply.redirect(200, '/index.html');
       } else {
         reply.callNotFound();
       }
