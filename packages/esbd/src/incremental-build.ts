@@ -1,21 +1,50 @@
 import { watch } from 'chokidar';
-import type { BuildIncremental, BuildResult } from 'esbuild';
+import {
+  build,
+  BuildIncremental,
+  BuildInvalidate,
+  BuildOptions,
+  BuildResult,
+  Metafile,
+  OutputFile,
+} from 'esbuild';
 import { EventEmitter } from 'events';
 
-interface IncrementalBuilderOptions {
-  basedir: string;
-  onBuildResult: (result: BuildResult) => void | Promise<void>;
+interface BuildIncrementalResult extends BuildIncremental {
+  metafile: Metafile;
+  outputFiles: OutputFile[];
+}
+
+function validateResult(result: BuildResult): asserts result is BuildIncrementalResult {
+  if (!result.metafile) throw new Error('incrementalBuild: "metafile" option must be "true"');
+  if (!result.outputFiles) throw new Error('incrementalBuild: "write" option must be "false"');
+  if (!result.rebuild) throw new Error('incrementalBuild: "incremental" option must be "true"');
+}
+
+type BuildIncrementalOptions = BuildOptions & { incremental: true; metafile: true; write: false };
+
+interface IncrementalBuildOptions extends BuildIncrementalOptions {
+  absWorkingDir: string;
+  onBuildResult: (
+    result: BuildIncrementalResult,
+    options: BuildIncrementalOptions,
+  ) => void | Promise<void>;
   onWatchEvent: (event: string, path: string) => void;
 }
 
-export function incrementalBuilder({
-  basedir,
+interface IncrementalBuildResult extends BuildIncrementalResult {
+  wait(): Promise<void>;
+}
+
+export async function incrementalBuild({
   onBuildResult,
   onWatchEvent,
-}: IncrementalBuilderOptions) {
-  let rebuild: (() => Promise<BuildIncremental>) | undefined;
+  ...options
+}: IncrementalBuildOptions): Promise<IncrementalBuildResult> {
+  let rebuild = (() => build(options)) as BuildInvalidate;
   let running = false;
 
+  const basedir = options.absWorkingDir;
   const evt = new EventEmitter();
   const watchedInputs = new Set<string>();
   const watchedModules = new Set<string>();
@@ -36,34 +65,32 @@ export function incrementalBuilder({
 
   function onInputEvent(event: string, path: string) {
     if (running) return;
-    void triggerBuild();
     onWatchEvent(event, path);
+    void triggerBuild();
   }
 
   function onModuleEvent(path: string) {
     if (running) return;
-    void triggerBuild();
     onWatchEvent('change', path);
+    void triggerBuild();
   }
 
-  async function triggerBuild(build = rebuild) {
-    if (!build) throw new Error('Build or rebuild function is required');
-
+  async function triggerBuild() {
     running = true;
-    inputWatcher.removeAllListeners();
-    moduleWatcher.removeAllListeners();
+    await inputWatcher.close();
+    await moduleWatcher.close();
 
-    const result = await build();
-    await onBuildResult(result);
+    const result = await rebuild();
+    validateResult(result);
 
-    if (!result.metafile) throw new Error('"metafile" option must be set');
-    const inputs = Object.keys(result.metafile.inputs);
+    await onBuildResult(result, options);
 
     const addedInputs = new Set<string>();
     const addedModules = new Set<string>();
     const removedInputs: string[] = [];
     const removedModules: string[] = [];
 
+    const inputs = Object.keys(result.metafile.inputs);
     for (const input of inputs) {
       const index = input.indexOf('node_modules');
       if (index >= 0) {
@@ -101,6 +128,12 @@ export function incrementalBuilder({
     return result;
   }
 
+  triggerBuild.dispose = async () => {
+    rebuild.dispose();
+    await inputWatcher.close();
+    await moduleWatcher.close();
+  };
+
   function wait(): Promise<void> {
     if (!running) return Promise.resolve();
     return new Promise(resolve => {
@@ -108,5 +141,8 @@ export function incrementalBuilder({
     });
   }
 
-  return { build: triggerBuild, wait };
+  const initialResult = await triggerBuild();
+  validateResult(initialResult);
+
+  return { ...initialResult, rebuild: triggerBuild, wait };
 }

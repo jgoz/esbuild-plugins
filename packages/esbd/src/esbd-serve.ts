@@ -1,4 +1,3 @@
-import { build, BuildOptions, BuildResult } from 'esbuild';
 import fastify from 'fastify';
 import K from 'kleur';
 import { createFsFromVolume, Volume } from 'memfs';
@@ -8,7 +7,7 @@ import { FileSystemStorage, GenericFSModule } from 'send-stream';
 import type { BuildMode, EsbdConfig } from './config';
 import { readTemplate } from './html-entry-point';
 import { writeTemplate } from './html-entry-point/write-template';
-import { incrementalBuilder } from './incremental-builder';
+import { incrementalBuild } from './incremental-build';
 import { logger } from './log';
 import { timingPlugin } from './timing-plugin';
 
@@ -57,7 +56,7 @@ export default async function esbServe(
     integrity: config.integrity,
   });
 
-  const buildOptions: BuildOptions & { incremental: true } = {
+  const build = await incrementalBuild({
     ...config.esbuild,
     absWorkingDir: basedir,
     bundle: config.esbuild?.bundle ?? true,
@@ -74,32 +73,19 @@ export default async function esbServe(
     sourcemap: config.esbuild?.sourcemap ?? (mode === 'development' ? 'inline' : undefined),
     write: false,
     watch: false,
-  };
-
-  function writeHTMLOutput(buildResult: BuildResult) {
-    return writeTemplate(buildResult, buildOptions, writeOptions, {
-      copyFile: fs.promises.copyFile,
-      writeFile: fs.promises.writeFile as any,
-    });
-  }
-
-  const incremental = incrementalBuilder({
-    basedir,
-    onBuildResult: async result => {
-      if (!result.outputFiles) throw new Error('"write" option must be "false"');
-
-      const writeAllOutput = result.outputFiles
-        .map(file => fs.promises.writeFile(file.path, file.contents))
-        .concat(writeHTMLOutput(result));
-
-      await Promise.all(writeAllOutput);
+    onBuildResult: async (result, options) => {
+      await Promise.all([
+        writeTemplate(result, options, writeOptions, {
+          copyFile: fs.promises.copyFile,
+          writeFile: fs.promises.writeFile as any,
+        }),
+        ...result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
+      ]);
     },
     onWatchEvent: (event: string, path: string) => {
       logger.info(K.gray(`${path} ${event}, rebuilding`));
     },
   });
-
-  await incremental.build(() => build(buildOptions));
 
   const buildOutput = new FileSystemStorage(outdir, {
     dynamicCompression: true,
@@ -123,7 +109,7 @@ export default async function esbServe(
   const app = fastify({ exposeHeadRoutes: true });
 
   app.addHook('onRequest', (_req, _reply, done) => {
-    incremental
+    build
       .wait()
       .then(() => done())
       .catch(err => done(err));
