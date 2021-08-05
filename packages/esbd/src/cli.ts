@@ -14,6 +14,25 @@ interface ServeOptions {
   rewrite: boolean;
 }
 
+async function getConfigAndMode(
+  program: Command,
+  entryPath: string,
+): Promise<[EsbdConfig, BuildMode]> {
+  const absEntryPath = path.resolve(process.cwd(), entryPath);
+  const maybeConfigPath = program.opts().config;
+  const mode: BuildMode = program.opts().mode ?? 'development';
+
+  const configPath = maybeConfigPath
+    ? path.resolve(process.cwd(), maybeConfigPath)
+    : await findConfigFile(path.dirname(absEntryPath));
+
+  const config: EsbdConfig = configPath
+    ? await readConfig(path.resolve(process.cwd(), configPath), mode)
+    : {};
+
+  return [config, mode];
+}
+
 export default function init() {
   const program = new Command();
   program
@@ -32,30 +51,15 @@ export default function init() {
     .option('--no-rewrite', 'Disable request rewriting')
     .action(async (entry: string, options: ServeOptions) => {
       const { host = '0.0.0.0', port = '8000', servedir, rewrite } = options;
+      const [config, mode] = await getConfigAndMode(program, entry);
 
-      const absEntryPath = path.resolve(process.cwd(), entry);
-      const maybeConfigPath = program.opts().config;
-      const mode: BuildMode = program.opts().mode ?? 'development';
-
-      const configPath = maybeConfigPath
-        ? path.resolve(process.cwd(), maybeConfigPath)
-        : await findConfigFile(path.dirname(absEntryPath));
-
-      const config: EsbdConfig = configPath
-        ? await readConfig(path.resolve(process.cwd(), configPath), mode)
-        : {};
-
-      await serve(
-        entry,
-        {
-          mode,
-          host,
-          port: Number(port),
-          servedir: servedir ? path.resolve(process.cwd(), servedir) : undefined,
-          rewrite,
-        },
-        config,
-      );
+      await serve(entry, config, {
+        mode,
+        host,
+        port: Number(port),
+        servedir: servedir ? path.resolve(process.cwd(), servedir) : undefined,
+        rewrite,
+      });
     });
 
   program.parse(process.argv);

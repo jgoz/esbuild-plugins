@@ -21,8 +21,8 @@ interface EsbdServeConfig {
 
 export default async function esbdServe(
   entry: string,
-  { mode, host = '0.0.0.0', port = 8000, servedir, rewrite }: EsbdServeConfig,
   config: EsbdConfig,
+  { mode, host = '0.0.0.0', port = 8000, servedir, rewrite }: EsbdServeConfig,
 ) {
   const vol = new Volume();
   const fs = createFsFromVolume(vol);
