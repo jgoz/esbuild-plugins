@@ -19,7 +19,7 @@ interface EsbdServeConfig {
   rewrite: boolean;
 }
 
-export default async function esbServe(
+export default async function esbdServe(
   entry: string,
   { mode, host = '0.0.0.0', port = 8000, servedir, rewrite }: EsbdServeConfig,
   config: EsbdConfig,
