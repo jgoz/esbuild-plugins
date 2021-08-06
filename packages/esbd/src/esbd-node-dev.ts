@@ -27,8 +27,8 @@ export default async function esbdNodeDev(
   let keepAliveCount = 0;
   let keepAliveTimeout: NodeJS.Timeout;
 
-  const absEntryPath = path.resolve(config.basedir ?? process.cwd(), entryPath);
-  const basedir = config.basedir ?? path.dirname(absEntryPath);
+  const absEntryPath = path.resolve(config.absWorkingDir ?? process.cwd(), entryPath);
+  const basedir = config.absWorkingDir ?? path.dirname(absEntryPath);
   const defaultTarget = `node${process.versions.node}`;
 
   async function handleExit(exitCode = 0) {
@@ -73,17 +73,17 @@ export default async function esbdNodeDev(
   }
 
   const build = await incrementalBuild({
-    ...config.esbuild,
+    ...config,
     absWorkingDir: basedir,
-    bundle: config.esbuild?.bundle ?? true,
+    bundle: config.bundle ?? true,
     entryPoints: entryName ? { [entryName]: entryPath } : [entryPath],
     incremental: true,
     minify: mode === 'production',
-    plugins: [...(config.esbuild?.plugins ?? []), timingPlugin()],
+    plugins: [...(config.plugins ?? []), timingPlugin()],
     metafile: true,
     platform: 'node',
-    target: config.esbuild?.target ?? defaultTarget,
-    sourcemap: config.esbuild?.sourcemap ?? (mode === 'development' ? true : undefined),
+    target: config.target ?? defaultTarget,
+    sourcemap: config.sourcemap ?? (mode === 'development' ? true : undefined),
     write: false,
     watch: false,
     onBuildResult: async result => {

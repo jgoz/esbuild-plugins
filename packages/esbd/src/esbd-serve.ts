@@ -30,12 +30,12 @@ export default async function esbdServe(
 
   // Not required for "serve" because we're writing to memory
   const outdir = '/';
-  const publicPath = config.esbuild?.publicPath ?? '';
+  const publicPath = config.publicPath ?? '';
 
-  const absEntryPath = path.resolve(config.basedir ?? process.cwd(), entry);
-  const basedir = config.basedir ?? path.dirname(absEntryPath);
+  const absEntryPath = path.resolve(config.absWorkingDir ?? process.cwd(), entry);
+  const basedir = config.absWorkingDir ?? path.dirname(absEntryPath);
 
-  const esbuildDefine = config.esbuild?.define ?? {};
+  const esbuildDefine = config.define ?? {};
   const define: Record<string, any> = {};
   for (const key of Object.keys(esbuildDefine)) {
     const value = esbuildDefine[key];
@@ -58,20 +58,19 @@ export default async function esbdServe(
   });
 
   const build = await incrementalBuild({
-    ...config.esbuild,
+    ...config,
     absWorkingDir: basedir,
-    bundle: config.esbuild?.bundle ?? true,
+    bundle: config.bundle ?? true,
     entryPoints,
-    format: config.esbuild?.format ?? 'esm',
+    format: config.format ?? 'esm',
     incremental: true,
-    inject: config.esbuild?.inject,
     minify: mode === 'production',
     outdir,
-    plugins: [...(config.esbuild?.plugins ?? []), timingPlugin()],
+    plugins: [...(config.plugins ?? []), timingPlugin()],
     metafile: true,
     publicPath,
-    target: config.esbuild?.target ?? 'es2017',
-    sourcemap: config.esbuild?.sourcemap ?? (mode === 'development' ? 'inline' : undefined),
+    target: config.target ?? 'es2017',
+    sourcemap: config.sourcemap ?? (mode === 'development' ? 'inline' : undefined),
     write: false,
     watch: false,
     onBuildResult: async (result, options) => {

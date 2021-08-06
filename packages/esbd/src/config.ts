@@ -9,20 +9,13 @@ import type { HashAlgorithm } from './html-entry-point';
 
 export type BuildMode = 'development' | 'production';
 
-export interface EsbdConfig {
+export interface EsbdConfig extends BuildOptions {
   /**
    * Base directory used for resolving entry points specified as relative paths.
    *
    * @default "process.cwd()"
    */
-  basedir?: string;
-
-  /**
-   * Build options that will be merged with the generated esbuild config. Note that changing
-   * some options will have no effect, such as "metafile" which always needs to be set
-   * for esbd.
-   */
-  esbuild?: BuildOptions;
+  absWorkingDir?: string;
 
   /**
    * By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and
@@ -111,23 +104,5 @@ export async function readConfig(configPath: string, mode: BuildMode): Promise<E
     throw new Error(`Config file at "${configPath}" did not produce a valid configuration object.`);
   }
 
-  const result: EsbdConfig = {
-    basedir: configObj.basedir,
-    esbuild: configObj.esbuild,
-    ignoreAssets: configObj.ignoreAssets,
-    integrity: configObj.integrity,
-  };
-
-  const resultKeys = new Set(Object.keys(result));
-  const extraKeys = Object.keys(configObj).filter(key => !resultKeys.has(key));
-
-  if (extraKeys.length) {
-    console.warn(
-      K.yellow(
-        `Configuration has unknown keys "${extraKeys.join('", "')}". These will be ignored.`,
-      ),
-    );
-  }
-
-  return result;
+  return configObj;
 }
