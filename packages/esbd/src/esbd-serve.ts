@@ -1,6 +1,7 @@
 import fastify from 'fastify';
 import K from 'kleur';
 import { createFsFromVolume, Volume } from 'memfs';
+import Graceful from 'node-graceful';
 import path from 'path';
 import { FileSystemStorage, GenericFSModule } from 'send-stream';
 
@@ -28,7 +29,7 @@ export default async function esbdServe(
   const fs = createFsFromVolume(vol);
 
   // Not required for "serve" because we're writing to memory
-  const outdir = config.esbuild?.outdir ?? '/';
+  const outdir = '/';
   const publicPath = config.esbuild?.publicPath ?? '';
 
   const absEntryPath = path.resolve(config.basedir ?? process.cwd(), entry);
@@ -140,4 +141,14 @@ export default async function esbdServe(
     .catch(err => {
       logger.error(err);
     });
+
+  async function shutdown(exitCode = 0) {
+    logger.info('Shutting down…');
+    await app.close();
+    if (build) build.stop?.();
+    if (build) build.rebuild.dispose();
+    process.exitCode = exitCode;
+  }
+
+  Graceful.on('exit', async () => await shutdown());
 }

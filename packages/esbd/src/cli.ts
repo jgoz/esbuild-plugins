@@ -2,6 +2,7 @@ import { Command, Option } from 'commander';
 import path from 'path';
 
 import { BuildMode, EsbdConfig, findConfigFile, readConfig } from './config';
+import nodeDev from './esbd-node-dev';
 import serve from './esbd-serve';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -12,6 +13,15 @@ interface ServeOptions {
   port?: string;
   servedir?: string;
   rewrite: boolean;
+}
+
+interface NodeDevOptions {
+  respawn?: boolean;
+}
+
+function getEntryNameAndPath(entry: string): [entryPath: string, entryName: string | undefined] {
+  const [entryName, entryPath] = entry.split(':');
+  return entryPath ? [entryPath, entryName] : [entryName, undefined];
 }
 
 async function getConfigAndMode(
@@ -35,18 +45,37 @@ async function getConfigAndMode(
 
 export default function init() {
   const program = new Command();
+
   program
     .version(version)
-    .option('-c --config <path>', 'Path to configuration file')
-    .option('-n --name <name>', 'Name of the current build', 'build')
+    .option('-c, --config <path>', 'Path to configuration file')
+    .option('-n, --name <name>', 'Name of the current build', 'build')
     .addOption(new Option('-m --mode <mode>', 'Build mode').choices(['development', 'production']));
+
+  program
+    .command('node-dev <entry>')
+    .description('Node application development host')
+    .option('-r, --respawn', 'Restart program on exit/error (but quit after 3 restarts within 5s)')
+    .addHelpText(
+      'after',
+      '\nArguments that appear after a special -- argument will be passed to the node program.' +
+        '\n\nExample:' +
+        '\n\tnode-dev path/to/entry.ts -- --port 8080 --config my-config.json',
+    )
+    .action(async (entry: string, options: NodeDevOptions, command: Command) => {
+      const { respawn } = options;
+      const [entryPath, entryName] = getEntryNameAndPath(entry);
+      const [config, mode] = await getConfigAndMode(program, entryPath);
+
+      await nodeDev([entryPath, entryName], config, { args: command.args, mode, respawn });
+    });
 
   program
     .command('serve <entry>')
     .description('Single page application development server')
-    .option('-d --servedir <path>', 'Directory of static assets to serve')
-    .option('-h --host <host>', 'IP/host name to use when serving requests', '0.0.0.0')
-    .option('-p --port <port>', 'Port to use', '8000')
+    .option('-d, --servedir <path>', 'Directory of static assets to serve')
+    .option('-h, --host <host>', 'IP/host name to use when serving requests', '0.0.0.0')
+    .option('-p, --port <port>', 'Port to use', '8000')
     .option('--rewrite', 'Rewrite all not-found requests to "index.html" (SPA mode)', true)
     .option('--no-rewrite', 'Disable request rewriting')
     .action(async (entry: string, options: ServeOptions) => {

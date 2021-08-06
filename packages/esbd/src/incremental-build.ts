@@ -28,8 +28,8 @@ interface IncrementalBuildOptions extends BuildIncrementalOptions {
   onBuildResult: (
     result: BuildIncrementalResult,
     options: BuildIncrementalOptions,
-  ) => void | Promise<void>;
-  onWatchEvent: (event: string, path: string) => void;
+  ) => Promise<void> | void;
+  onWatchEvent: (event: string, path: string) => Promise<void> | void;
 }
 
 interface IncrementalBuildResult extends BuildIncrementalResult {
@@ -65,14 +65,16 @@ export async function incrementalBuild({
 
   function onInputEvent(event: string, path: string) {
     if (running) return;
-    onWatchEvent(event, path);
-    void triggerBuild();
+    Promise.resolve(onWatchEvent(event, path))
+      .then(triggerBuild)
+      .catch(e => console.error(e));
   }
 
   function onModuleEvent(path: string) {
     if (running) return;
-    onWatchEvent('change', path);
-    void triggerBuild();
+    Promise.resolve(onWatchEvent('change', path))
+      .then(triggerBuild)
+      .catch(e => console.error(e));
   }
 
   async function triggerBuild() {
