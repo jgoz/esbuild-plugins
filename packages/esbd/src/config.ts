@@ -1,4 +1,5 @@
 import { BuildOptions, transform } from 'esbuild';
+import findUp from 'find-up';
 import fs from 'fs';
 import K from 'kleur';
 import { createRequire, Module } from 'module';
@@ -43,23 +44,8 @@ export interface EsbdConfig extends BuildOptions {
   integrity?: HashAlgorithm;
 }
 
-async function fileExists(configPath: string): Promise<boolean> {
-  try {
-    await fs.promises.access(configPath, fs.constants.R_OK);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 export async function findConfigFile(basedir: string): Promise<string | undefined> {
-  const jsConfigPath = path.resolve(basedir, 'esbd.config.js');
-  const tsConfigPath = path.resolve(basedir, 'esbd.config.ts');
-  return (await fileExists(jsConfigPath))
-    ? jsConfigPath
-    : (await fileExists(tsConfigPath))
-    ? tsConfigPath
-    : undefined;
+  return await findUp(['esbd.config.js', 'esbd.config.ts'], { cwd: basedir });
 }
 
 export async function readConfig(configPath: string, mode: BuildMode): Promise<EsbdConfig> {
