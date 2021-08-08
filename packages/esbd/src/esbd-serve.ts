@@ -1,12 +1,12 @@
 import { createLivereloadServer, notify } from '@jgoz/esbuild-plugin-livereload';
 import { createHash } from 'crypto';
-import fastify from 'fastify';
-import fastifyStatic from 'fastify-static';
 import fs from 'fs';
-import type { Server, ServerResponse } from 'http';
+import { createServer, Server, ServerResponse } from 'http';
 import K from 'kleur';
 import Graceful from 'node-graceful';
 import path from 'path';
+import serveStatic from 'serve-static';
+import { URL } from 'url';
 
 import type { BuildMode, EsbdConfigWithPlugins } from './config';
 import { readTemplate } from './html-entry-point';
@@ -126,38 +126,58 @@ export default async function esbdServe(
     },
   });
 
-  const app = fastify({ exposeHeadRoutes: true, logger: { level: 'error' } });
+  const outputHandler = serveStatic(absOutDir, { fallthrough: false });
+  const servedirHandler = servedir ? serveStatic(servedir, { fallthrough: true }) : undefined;
 
-  app.addHook('onRequest', (_req, _reply, done) => {
-    build
-      .wait()
-      .then(() => done())
-      .catch(err => done(err));
+  const staticHandler: ReturnType<typeof serveStatic> = servedirHandler
+    ? (req, res, next) => servedirHandler(req, res, () => outputHandler(req, res, next))
+    : (req, res, next) => outputHandler(req, res, next);
+
+  const rootUrl = `http://${host}:${port}`;
+  const server = createServer((req, res) => {
+    if (!req.url) return;
+    const url = new URL(req.url, rootUrl);
+
+    async function handleRequest() {
+      await build.wait();
+
+      if (
+        url.pathname === '/' ||
+        (url.pathname.startsWith(publicPath) && !!path.extname(url.pathname))
+      ) {
+        // serve static assets for index requests and for requests that have file extensions
+        staticHandler(req, res, () => {
+          res.writeHead(404).end();
+        });
+        return;
+      }
+      if (rewrite) {
+        // rewrite extensionless requests to the index file if requested (SPA mode)
+        fs.createReadStream(path.resolve(absOutDir, writeOptions.template.outputPath)).pipe(
+          res.setHeader('Content-Type', 'text/html'),
+        );
+        return;
+      }
+    }
+
+    handleRequest().catch(err => {
+      logger.error(err, err.stack);
+      res.writeHead(500).write(err.toString());
+    });
   });
 
-  await app.register(fastifyStatic, {
-    root: servedir ? [absOutDir, servedir] : absOutDir,
-    prefix: publicPath,
-    wildcard: true,
-  });
-
-  app.get('*', async (_request, reply) => {
-    if (!rewrite) reply.callNotFound();
-    return reply.sendFile(path.resolve(absOutDir, writeOptions.template.outputPath));
-  });
-
-  app.listen(port, host, () => {
+  server.listen(port, host, () => {
     const url = K.cyan(`http://${host}:${port}`);
     logger.info(`Listening on ${url}`);
   });
 
-  async function shutdown(exitCode = 0) {
+  function shutdown(exitCode = 0) {
     logger.info('Shutting down…');
     lrserver?.close();
     clients.forEach(res => {
       res.end();
     });
-    await app.close();
+    server.close();
     if (build) build.stop?.();
     if (build) build.rebuild.dispose();
     process.exitCode = exitCode;
