@@ -57,7 +57,7 @@ export async function readTemplate(
     if (!url || isAbsoluteOrURL(url.value)) continue;
 
     const entryName = path.basename(url.value, path.extname(url.value));
-    entryPoints[entryName] = path.resolve(absTemplateDir, url.value);
+    entryPoints[entryName] = path.relative(basedir, path.resolve(absTemplateDir, url.value));
   }
 
   const assets: [TextNode, string][] = [];

@@ -1,4 +1,4 @@
-import { Loader, OnLoadArgs, OnLoadResult, OnResolveArgs, Plugin } from 'esbuild';
+import { OnLoadArgs, OnLoadResult, OnResolveArgs, Plugin } from 'esbuild';
 import { promises as fsp } from 'fs';
 import { dirname, resolve } from 'path';
 import { Importer, types } from 'sass';
@@ -198,7 +198,7 @@ export function sassPlugin(options: SassPluginOptions = {}): Plugin {
     }
     return {
       contents: css,
-      loader: 'css' as Loader,
+      loader: 'css',
       resolveDir: dirname(path),
       watchFiles,
     };

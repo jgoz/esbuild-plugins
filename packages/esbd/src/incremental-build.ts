@@ -115,12 +115,21 @@ export async function incrementalBuild({
     const removedModules: string[] = [];
 
     const inputs = Object.keys(result.metafile.inputs);
-    for (const input of inputs) {
+    for (const inputKey of inputs) {
+      const input = inputKey.includes(':') ? inputKey.split(':')[1] : inputKey;
+
       const index = input.indexOf('node_modules');
       if (index >= 0) {
-        const mod = input.slice(0, index + 'node_modules'.length);
-        if (!watchedModules.has(mod)) addedModules.add(mod);
+        // For paths in node_modules, we don't want to watch each file individually,
+        // so try to find the first level of depth after the first "node_modules/".
+        // E.g., "../node_modules/some-library/"
+        const modIndex = input.indexOf('/', index + 'node_modules'.length + 1);
+        if (modIndex > 0) {
+          const mod = input.slice(0, modIndex);
+          if (!watchedModules.has(mod)) addedModules.add(mod);
+        }
       } else {
+        // For source files, watch each file individually
         if (!watchedInputs.has(input)) addedInputs.add(input);
       }
     }

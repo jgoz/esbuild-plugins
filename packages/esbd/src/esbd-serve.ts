@@ -7,6 +7,7 @@ import Graceful from 'node-graceful';
 import path from 'path';
 import serveStatic from 'serve-static';
 import { URL } from 'url';
+import { promisify } from 'util';
 
 import type { BuildMode, EsbdConfigWithPlugins } from './config';
 import { readTemplate } from './html-entry-point';
@@ -171,15 +172,16 @@ export default async function esbdServe(
     logger.info(`Listening on ${url}`);
   });
 
-  function shutdown(exitCode = 0) {
+  async function shutdown(exitCode = 0) {
     logger.info('Shutting down…');
-    lrserver?.close();
+
+    await promisify(server.close)();
+    if (lrserver) await promisify(lrserver.close)();
+    if (build) build.stop?.();
+    if (build) build.rebuild.dispose();
     clients.forEach(res => {
       res.end();
     });
-    server.close();
-    if (build) build.stop?.();
-    if (build) build.rebuild.dispose();
     process.exitCode = exitCode;
   }
 
