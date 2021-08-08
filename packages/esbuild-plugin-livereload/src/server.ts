@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { createServer, ServerResponse } from 'http';
+import { createServer, Server, ServerResponse } from 'http';
 import openEditor from 'open-editor';
 import path from 'path';
 import { URL } from 'url';
@@ -10,10 +10,10 @@ interface ServerOptions {
   onSSE: (res: ServerResponse) => void;
 }
 
-export function createLivereloadServer(options: ServerOptions): void {
+export function createLivereloadServer(options: ServerOptions): Server {
   const { port, onSSE, basedir } = options;
 
-  createServer((req, res) => {
+  return createServer((req, res) => {
     if (!req.url) return;
     const url = new URL(req.url, `http://127.0.0.1:${port}`);
 

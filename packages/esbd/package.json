@@ -20,7 +20,8 @@
   "bin": "bin/esbd.js",
   "types": "types/index.d.ts",
   "dependencies": {
-    "@jgoz/esbuild-plugin-livereload": "workspace:*"
+    "@jgoz/esbuild-plugin-livereload": "workspace:*",
+    "@jgoz/esbuild-plugin-typecheck": "workspace:*"
   },
   "peerDependencies": {
     "esbuild": ">= 0.12.17"
@@ -29,11 +30,12 @@
     "@types/pretty-time": "^1.1.1",
     "chokidar": "^3.5.2",
     "commander": "^8.1.0",
-    "fastify": "^3.20.0",
-    "find-up": "^5.0.0",
     "esbuild": "^0.12.17",
     "esbuild-node-externals": "^1.3.0",
     "execa": "^5.1.1",
+    "fastify": "^3.20.1",
+    "fastify-static": "^4.2.3",
+    "find-up": "^5.0.0",
     "io-spin": "^0.4.1",
     "jest": "^27.0.6",
     "kleur": "^4.1.4",
@@ -42,7 +44,6 @@
     "parse5": "^6.0.1",
     "prettier": "^2.3.2",
     "pretty-time": "^1.1.0",
-    "send-stream": "^2.5.3",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5"
   },

@@ -1,7 +1,14 @@
+import { typecheckPlugin } from '@jgoz/esbuild-plugin-typecheck';
 import { Command, Option } from 'commander';
 import path from 'path';
 
-import { BuildMode, EsbdConfig, findConfigFile, readConfig } from './config';
+import {
+  BuildMode,
+  CommandName,
+  EsbdConfigWithPlugins,
+  findConfigFile,
+  readConfig,
+} from './config';
 import nodeDev from './esbd-node-dev';
 import serve from './esbd-serve';
 
@@ -11,6 +18,7 @@ const { version } = require('../package.json');
 interface ServeOptions {
   host?: string;
   port?: string;
+  livereload?: boolean;
   servedir?: string;
   rewrite: boolean;
 }
@@ -25,9 +33,10 @@ function getEntryNameAndPath(entry: string): [entryPath: string, entryName: stri
 }
 
 async function getConfigAndMode(
+  commandName: CommandName,
   program: Command,
   entryPath: string,
-): Promise<[EsbdConfig, BuildMode]> {
+): Promise<[EsbdConfigWithPlugins, BuildMode]> {
   const absEntryPath = path.resolve(process.cwd(), entryPath);
   const maybeConfigPath = program.opts().config;
   const mode: BuildMode = program.opts().mode ?? 'development';
@@ -36,9 +45,23 @@ async function getConfigAndMode(
     ? path.resolve(process.cwd(), maybeConfigPath)
     : await findConfigFile(path.dirname(absEntryPath));
 
-  const config: EsbdConfig = configPath
-    ? await readConfig(path.resolve(process.cwd(), configPath), mode)
-    : {};
+  const config = (
+    configPath ? await readConfig(path.resolve(process.cwd(), configPath), mode, commandName) : {}
+  ) as EsbdConfigWithPlugins;
+
+  config.outdir ??= program.opts().outdir;
+  config.plugins ??= [];
+
+  if (program.opts().check) {
+    const buildMode = program.opts().tsBuildMode;
+    config.plugins.push(
+      typecheckPlugin({
+        configFile: config.tsconfig,
+        build: buildMode ? true : undefined,
+        buildMode,
+      }),
+    );
+  }
 
   return [config, mode];
 }
@@ -48,14 +71,22 @@ export default function init() {
 
   program
     .version(version)
-    .option('-c, --config <path>', 'Path to configuration file')
-    .option('-n, --name <name>', 'Name of the current build', 'build')
-    .addOption(new Option('-m --mode <mode>', 'Build mode').choices(['development', 'production']));
+    .option('-c, --config <path>', 'path to configuration file')
+    .addOption(
+      new Option('-m, --mode <mode>', 'output build mode').choices(['development', 'production']),
+    )
+    .option('-o, --outdir <path>', 'path to output directory')
+    .option('-t, --check', 'check types asynchronously with the TypeScript compiler')
+    .addOption(
+      new Option('--ts-build-mode <mode>', 'TypeScript "build" mode behavior')
+        .choices(['readonly', 'write-output'])
+        .default('write-output'),
+    );
 
   program
     .command('node-dev <entry>')
     .description('Node application development host')
-    .option('-r, --respawn', 'Restart program on exit/error (but quit after 3 restarts within 5s)')
+    .option('-r, --respawn', 'restart program on exit/error (but quit after 3 restarts within 5s)')
     .addHelpText(
       'after',
       '\nArguments that appear after a special -- argument will be passed to the node program.' +
@@ -65,7 +96,7 @@ export default function init() {
     .action(async (entry: string, options: NodeDevOptions, command: Command) => {
       const { respawn } = options;
       const [entryPath, entryName] = getEntryNameAndPath(entry);
-      const [config, mode] = await getConfigAndMode(program, entryPath);
+      const [config, mode] = await getConfigAndMode('node-dev', program, entryPath);
 
       await nodeDev([entryPath, entryName], config, { args: command.args, mode, respawn });
     });
@@ -73,19 +104,21 @@ export default function init() {
   program
     .command('serve <entry>')
     .description('Single page application development server')
-    .option('-d, --servedir <path>', 'Directory of static assets to serve')
+    .option('-d, --servedir <path>', 'directory of additional static assets to serve')
+    .option('-l, --livereload', 'reload page on rebuild')
     .option('-h, --host <host>', 'IP/host name to use when serving requests', '0.0.0.0')
-    .option('-p, --port <port>', 'Port to use', '8000')
-    .option('--rewrite', 'Rewrite all not-found requests to "index.html" (SPA mode)', true)
-    .option('--no-rewrite', 'Disable request rewriting')
+    .option('-p, --port <port>', 'port to use', '8000')
+    .option('--rewrite', 'rewrite all not-found requests to "index.html" (SPA mode)', true)
+    .option('--no-rewrite', 'disable request rewriting')
     .action(async (entry: string, options: ServeOptions) => {
-      const { host = '0.0.0.0', port = '8000', servedir, rewrite } = options;
-      const [config, mode] = await getConfigAndMode(program, entry);
+      const { host = '0.0.0.0', port = '8000', livereload, servedir, rewrite } = options;
+      const [config, mode] = await getConfigAndMode('serve', program, entry);
 
       await serve(entry, config, {
         mode,
         host,
         port: Number(port),
+        livereload,
         servedir: servedir ? path.resolve(process.cwd(), servedir) : undefined,
         rewrite,
       });

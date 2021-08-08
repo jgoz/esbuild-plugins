@@ -1,4 +1,4 @@
-import { BuildOptions, transform } from 'esbuild';
+import { BuildOptions, Plugin, transform } from 'esbuild';
 import findUp from 'find-up';
 import fs from 'fs';
 import K from 'kleur';
@@ -9,6 +9,9 @@ import vm from 'vm';
 import type { HashAlgorithm } from './html-entry-point';
 
 export type BuildMode = 'development' | 'production';
+export type CommandName = 'build' | 'node-dev' | 'serve';
+
+export type ConfigFn = (mode: BuildMode, command: CommandName) => EsbdConfig | Promise<EsbdConfig>;
 
 export interface EsbdConfig extends BuildOptions {
   /**
@@ -44,11 +47,17 @@ export interface EsbdConfig extends BuildOptions {
   integrity?: HashAlgorithm;
 }
 
+export type EsbdConfigWithPlugins = EsbdConfig & { plugins: Plugin[] };
+
 export async function findConfigFile(basedir: string): Promise<string | undefined> {
   return await findUp(['esbd.config.js', 'esbd.config.ts'], { cwd: basedir });
 }
 
-export async function readConfig(configPath: string, mode: BuildMode): Promise<EsbdConfig> {
+export async function readConfig(
+  configPath: string,
+  mode: BuildMode,
+  commandName: CommandName,
+): Promise<EsbdConfig> {
   const loader = path.extname(configPath) === '.ts' ? 'ts' : undefined;
   const configSource = await fs.promises.readFile(configPath, 'utf-8');
   const configJs = await transform(configSource, { format: 'cjs', loader, target: 'node14' });
@@ -81,7 +90,7 @@ export async function readConfig(configPath: string, mode: BuildMode): Promise<E
 
   let configObj: Record<string, any> | undefined;
   if (typeof output === 'function') {
-    configObj = await output(mode);
+    configObj = await output(mode, commandName);
   } else if (typeof output === 'object' && !!output) {
     configObj = output;
   }

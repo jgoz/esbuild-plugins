@@ -36,6 +36,13 @@ interface IncrementalBuildResult extends BuildIncrementalResult {
   wait(): Promise<void>;
 }
 
+const NULL_RESULT: Omit<BuildIncrementalResult, 'rebuild'> = {
+  errors: [],
+  warnings: [],
+  metafile: { inputs: {}, outputs: {} },
+  outputFiles: [],
+};
+
 export async function incrementalBuild({
   onBuildResult,
   onWatchEvent,
@@ -52,7 +59,7 @@ export async function incrementalBuild({
   const inputWatcher = watch([], {
     cwd: basedir,
     disableGlobbing: true,
-    ignored: ['**/node_modules/**'],
+    ignored: ['**/node_modules/**', '*.tsbuildinfo'],
   });
 
   const moduleWatcher = watch([], {
@@ -77,15 +84,30 @@ export async function incrementalBuild({
       .catch(e => console.error(e));
   }
 
+  function startWatchers() {
+    setTimeout(() => {
+      if (running) return;
+      inputWatcher.once('all', onInputEvent);
+      moduleWatcher.once('change', onModuleEvent);
+    }, 100);
+  }
+
   async function triggerBuild() {
     running = true;
     await inputWatcher.close();
     await moduleWatcher.close();
 
-    const result = await rebuild();
-    validateResult(result);
-
-    await onBuildResult(result, options);
+    let result: BuildIncremental;
+    try {
+      result = await rebuild();
+      validateResult(result);
+      await onBuildResult(result, options);
+    } catch {
+      evt.emit('end');
+      running = false;
+      startWatchers();
+      return { ...NULL_RESULT, rebuild };
+    }
 
     const addedInputs = new Set<string>();
     const addedModules = new Set<string>();
@@ -120,12 +142,7 @@ export async function incrementalBuild({
 
     running = false;
     rebuild = result.rebuild;
-
-    setTimeout(() => {
-      if (running) return;
-      inputWatcher.once('all', onInputEvent);
-      moduleWatcher.once('change', onModuleEvent);
-    }, 100);
+    startWatchers();
 
     return result;
   }

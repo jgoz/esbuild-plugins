@@ -19,7 +19,7 @@ build({
   platform: 'node',
   plugins: [
     nodeExternalsPlugin({
-      dependencies: false,
+      dependencies: true,
       devDependencies: false,
       peerDependencies: true,
       packagePath: ['./package.json', '../../package.json'],

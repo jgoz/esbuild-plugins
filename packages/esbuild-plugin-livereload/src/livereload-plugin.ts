@@ -52,15 +52,24 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
         build.initialOptions.banner.js = banner;
       }
 
-      if (!build.initialOptions.metafile) {
+      let fullReloadOnCssUpdates = options.fullReloadOnCssUpdates;
+
+      if (!build.initialOptions.metafile && !options.fullReloadOnCssUpdates) {
         console.warn(
           '[esbuild-plugin-livereload]: "metafile" option is disabled, so CSS updates will trigger a full reload',
         );
+        fullReloadOnCssUpdates = true;
+      }
+      if (!build.initialOptions.write && !options.fullReloadOnCssUpdates) {
+        console.warn(
+          '[esbuild-plugin-livereload]: "write" option is disabled, so CSS updates will trigger a full reload',
+        );
+        fullReloadOnCssUpdates = true;
       }
 
       build.onEnd(async result => {
         let cssUpdate = false;
-        if (result.metafile && !options.fullReloadOnCssUpdates) {
+        if (result.metafile && !fullReloadOnCssUpdates) {
           const outputs = Object.keys(result.metafile.outputs).map(o => path.resolve(basedir, o));
 
           for (const outputFile of outputs.filter(o => o.endsWith('.css'))) {
@@ -91,8 +100,16 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
  * @param errorSource - Identifier for the errors and warnings. Previous
  *                      results will be overwritten for the same errorSource.
  * @param msg - Object containing errors and warnings from the given source
+ * @param connectedClients - Set of long-lived server responses representing
+ *                           clients currently connected to the livereload
+ *                           server. Only required if you are implementing your
+ *                           own livereload server.
  */
-export function notify(errorSource: string, msg: ClientMessage) {
+export function notify(
+  errorSource: string,
+  msg: ClientMessage,
+  connectedClients: Set<ServerResponse> = clients,
+) {
   errorSources.set(errorSource, msg);
 
   const values = Array.from(errorSources.values());
@@ -108,12 +125,12 @@ export function notify(errorSource: string, msg: ClientMessage) {
     : 'event: build-result\n';
   const data = `data: ${JSON.stringify({ warnings, errors })}\n\n`;
 
-  clients.forEach(res => {
+  connectedClients.forEach(res => {
     res.write(event);
     res.write(data);
   });
 
-  if (reloadPage) clients.clear();
+  if (reloadPage) connectedClients.clear();
 }
 
 async function calculateHash(filePath: string): Promise<string> {
