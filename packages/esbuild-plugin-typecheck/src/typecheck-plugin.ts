@@ -8,7 +8,7 @@ import { Worker } from 'worker_threads';
 import type { TypescriptWorkerOptions, WorkerMessage } from './typescript-worker';
 
 const SUCCESS = process.platform === 'win32' ? '√' : '✔';
-// const WARNING = process.platform === 'win32' ? '‼' : '⚠';
+const WARNING = process.platform === 'win32' ? '‼' : '⚠';
 const ERROR = process.platform === 'win32' ? '×' : '✖';
 const INFO = process.platform === 'win32' ? 'i' : 'ℹ';
 
@@ -19,6 +19,13 @@ try {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   notify = require('@jgoz/esbuild-plugin-livereload').notify;
 } catch {}
+
+interface Logger {
+  info: (message: string) => void;
+  warn: (message: string) => void;
+  error: (message: string) => void;
+  success: (message: string) => void;
+}
 
 export interface TypecheckPluginOptions {
   /**
@@ -75,9 +82,17 @@ export interface TypecheckPluginOptions {
    * @default undefined
    */
   configFile?: string;
+
+  /**
+   * Logger to use instead of the default.
+   */
+  logger?: Logger;
 }
 
-export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
+export function typecheckPlugin({
+  logger = DEFAULT_LOGGER,
+  ...options
+}: TypecheckPluginOptions = {}): Plugin {
   return {
     name: 'typecheck-plugin',
     setup(build) {
@@ -115,7 +130,7 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
             warnings = [];
             isBuilding ??= msg.build;
             isWatching ??= msg.watch;
-            logStarted({ build: isBuilding, watch: isWatching });
+            logStarted(logger, { build: isBuilding, watch: isWatching });
             break;
           }
           case 'summary':
@@ -130,12 +145,13 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
 
             if (msg.errorCount) {
               logFailed(
+                logger,
                 msg.errorCount === 1 ? '1 error' : `${msg.errorCount} errors`,
                 msg.duration,
               );
               process.exitCode = 1;
             } else {
-              logPassed(msg.duration);
+              logPassed(logger, msg.duration);
               process.exitCode = 0;
             }
 
@@ -158,19 +174,34 @@ export function typecheckPlugin(options: TypecheckPluginOptions = {}): Plugin {
   };
 }
 
-function logStarted({ build = false, watch = false } = {}) {
+const DEFAULT_LOGGER: Logger = {
+  info(message) {
+    console.info(K.bold(INFO) + '  ' + message);
+  },
+  warn(message) {
+    console.warn(K.bold().yellow(WARNING) + '  ' + message);
+  },
+  error(message) {
+    console.error(K.bold().red(ERROR) + '  ' + message);
+  },
+  success(message) {
+    console.info(K.bold(SUCCESS) + '  ' + K.green(message));
+  },
+};
+
+function logStarted(logger: Logger, { build = false, watch = false } = {}) {
   const opts = [build && 'build', watch && 'watch'].filter(Boolean).join(', ');
   const optStr = opts ? K.cyan(` (${opts})`) : '';
 
-  console.info(K.bold(INFO) + `  Typecheck started…` + optStr);
+  logger.info('Typecheck started…' + optStr);
 }
 
-function logPassed(duration: number) {
-  console.info(K.bold(SUCCESS) + K.green('  Typecheck passed'));
-  console.info(K.bold(INFO) + K.gray(`  Typecheck finished in ${duration.toFixed(0)}ms`));
+function logPassed(logger: Logger, duration: number) {
+  logger.success('Typecheck passed');
+  logger.info(K.gray(`Typecheck finished in ${duration.toFixed(0)}ms`));
 }
 
-function logFailed(numErrors: string, duration: number) {
-  console.error(K.bold().red(ERROR) + '  Typecheck failed with ' + K.bold(numErrors));
-  console.error(K.bold(INFO) + K.gray(`  Typecheck finished in ${duration.toFixed(0)}ms`));
+function logFailed(logger: Logger, numErrors: string, duration: number) {
+  logger.error(`Typecheck failed with ${K.bold(numErrors)}`);
+  logger.info(K.gray(`Typecheck finished in ${duration.toFixed(0)}ms`));
 }

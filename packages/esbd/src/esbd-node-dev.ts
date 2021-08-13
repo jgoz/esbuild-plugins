@@ -7,13 +7,14 @@ import path from 'path';
 
 import { BuildMode, EsbdConfigWithPlugins } from './config';
 import { incrementalBuild } from './incremental-build';
-import { logger } from './log';
+import { Logger } from './log';
 import { timingPlugin } from './timing-plugin';
 
 interface EsbdNodeDevConfig {
   args: string[];
-  respawn?: boolean;
+  logger: Logger;
   mode: BuildMode;
+  respawn?: boolean;
 }
 
 const MAX_RETRIES = 3;
@@ -21,7 +22,7 @@ const MAX_RETRIES = 3;
 export default async function esbdNodeDev(
   [entryPath, entryName]: [entryPath: string, entryName: string | undefined],
   config: EsbdConfigWithPlugins,
-  { args, respawn, mode }: EsbdNodeDevConfig,
+  { args, logger, mode, respawn }: EsbdNodeDevConfig,
 ) {
   let child: ChildProcess & ExecaChildPromise<string>;
   let keepAliveCount = 0;
@@ -79,7 +80,7 @@ export default async function esbdNodeDev(
     entryPoints: entryName ? { [entryName]: entryPath } : [entryPath],
     incremental: true,
     minify: mode === 'production',
-    plugins: [...config.plugins, timingPlugin()],
+    plugins: [...config.plugins, timingPlugin(logger)],
     metafile: true,
     platform: 'node',
     target: config.target ?? defaultTarget,

@@ -11,6 +11,7 @@ import {
 } from './config';
 import nodeDev from './esbd-node-dev';
 import serve from './esbd-serve';
+import { createLogger, Logger } from './log';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');
@@ -36,6 +37,7 @@ async function getConfigAndMode(
   commandName: CommandName,
   program: Command,
   entryPath: string,
+  logger: Logger,
 ): Promise<[EsbdConfigWithPlugins, BuildMode]> {
   const absEntryPath = path.resolve(process.cwd(), entryPath);
   const maybeConfigPath = program.opts().config;
@@ -59,6 +61,7 @@ async function getConfigAndMode(
         configFile: config.tsconfig,
         build: buildMode ? true : undefined,
         buildMode,
+        logger,
       }),
     );
   }
@@ -95,10 +98,11 @@ export default function init() {
     )
     .action(async (entry: string, options: NodeDevOptions, command: Command) => {
       const { respawn } = options;
+      const logger = createLogger();
       const [entryPath, entryName] = getEntryNameAndPath(entry);
-      const [config, mode] = await getConfigAndMode('node-dev', program, entryPath);
+      const [config, mode] = await getConfigAndMode('node-dev', program, entryPath, logger);
 
-      await nodeDev([entryPath, entryName], config, { args: command.args, mode, respawn });
+      await nodeDev([entryPath, entryName], config, { args: command.args, logger, mode, respawn });
     });
 
   program
@@ -112,13 +116,15 @@ export default function init() {
     .option('--no-rewrite', 'disable request rewriting')
     .action(async (entry: string, options: ServeOptions) => {
       const { host = '0.0.0.0', port = '8000', livereload, servedir, rewrite } = options;
-      const [config, mode] = await getConfigAndMode('serve', program, entry);
+      const logger = createLogger();
+      const [config, mode] = await getConfigAndMode('serve', program, entry, logger);
 
       await serve(entry, config, {
         mode,
         host,
         port: Number(port),
         livereload,
+        logger,
         servedir: servedir ? path.resolve(process.cwd(), servedir) : undefined,
         rewrite,
       });

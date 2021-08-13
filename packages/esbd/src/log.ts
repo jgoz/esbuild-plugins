@@ -11,33 +11,68 @@ export interface TimedSpinner extends Omit<Spinner, 'stop'> {
   stop(): [string, [number, number]];
 }
 
-export const logger = {
-  info(message: any, ...args: any[]) {
-    console.info(K.bold(INFO) + '  ' + String(message), ...args);
-  },
-  warn(message: any, ...args: any[]) {
-    console.warn(K.bold().yellow(WARNING) + '  ' + K.yellow(message), ...args);
-  },
-  error(message: any, ...args: any[]) {
-    console.warn(K.bold().red(ERROR) + '  ' + K.red(message), ...args);
-  },
-  success(message: any, ...args: any[]) {
-    console.info(K.bold().green(SUCCESS) + '  ' + K.green(message), ...args);
-  },
+export interface Logger {
+  info(message: any, ...args: any[]): void;
+  warn(message: any, ...args: any[]): void;
+  error(message: any, ...args: any[]): void;
+  success(message: any, ...args: any[]): void;
+  spin(message: string): TimedSpinner;
+}
 
-  spin(message: string): TimedSpinner {
-    const spinner = spin(K.cyan(message), 'Box7').start();
-    const startTime = process.hrtime();
-    return {
-      start: spinner.start,
-      stop() {
-        spinner.stop();
-        const endTime = process.hrtime(startTime);
-        return [prettyTime(endTime, 'ms'), endTime];
-      },
-      update(updatedMessage) {
-        return spinner.update(K.cyan(updatedMessage));
-      },
-    };
-  },
-};
+export function createLogger(): Logger {
+  let busy = false;
+  const queue: (() => void)[] = [];
+
+  function enqueueOrFlush(fn: () => void) {
+    if (busy) {
+      queue.push(fn);
+    } else {
+      fn();
+    }
+  }
+
+  return {
+    info(message: any, ...args: any[]) {
+      enqueueOrFlush(() => {
+        console.info(K.bold(INFO) + '  ' + String(message), ...args);
+      });
+    },
+    warn(message: any, ...args: any[]) {
+      enqueueOrFlush(() => {
+        console.warn(K.bold().yellow(WARNING) + '  ' + K.yellow(message), ...args);
+      });
+    },
+    error(message: any, ...args: any[]) {
+      enqueueOrFlush(() => {
+        console.warn(K.bold().red(ERROR) + '  ' + K.red(message), ...args);
+      });
+    },
+    success(message: any, ...args: any[]) {
+      enqueueOrFlush(() => {
+        console.info(K.bold().green(SUCCESS) + '  ' + K.green(message), ...args);
+      });
+    },
+
+    spin(message: string): TimedSpinner {
+      busy = true;
+      const spinner = spin(K.cyan(message), 'Box7').start();
+      const startTime = process.hrtime();
+      return {
+        start: spinner.start,
+        stop() {
+          busy = false;
+          spinner.stop();
+          while (queue.length) {
+            const fn = queue.shift();
+            fn?.();
+          }
+          const endTime = process.hrtime(startTime);
+          return [prettyTime(endTime, 'ms'), endTime];
+        },
+        update(updatedMessage) {
+          return spinner.update(K.cyan(updatedMessage));
+        },
+      };
+    },
+  };
+}

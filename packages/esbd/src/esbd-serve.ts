@@ -13,7 +13,7 @@ import type { BuildMode, EsbdConfigWithPlugins } from './config';
 import { readTemplate } from './html-entry-point';
 import { writeTemplate } from './html-entry-point/write-template';
 import { incrementalBuild } from './incremental-build';
-import { logger } from './log';
+import { Logger } from './log';
 import { timingPlugin } from './timing-plugin';
 
 interface EsbdServeConfig {
@@ -21,6 +21,7 @@ interface EsbdServeConfig {
   host?: string;
   port?: number;
   livereload?: boolean;
+  logger: Logger;
   servedir?: string;
   rewrite: boolean;
 }
@@ -34,7 +35,7 @@ function calculateHash(contents: Uint8Array): string {
 export default async function esbdServe(
   entry: string,
   config: EsbdConfigWithPlugins,
-  { mode, host = '0.0.0.0', port = 8000, livereload, servedir, rewrite }: EsbdServeConfig,
+  { mode, host = '0.0.0.0', port = 8000, livereload, logger, servedir, rewrite }: EsbdServeConfig,
 ) {
   const outdir = config.outdir;
   if (!outdir) throw new Error('serve: "outdir" option must be set');
@@ -93,7 +94,7 @@ export default async function esbdServe(
     incremental: true,
     minify: mode === 'production',
     outdir,
-    plugins: [...config.plugins, timingPlugin()],
+    plugins: [...config.plugins, timingPlugin(logger)],
     metafile: true,
     publicPath,
     target: config.target ?? 'es2017',
