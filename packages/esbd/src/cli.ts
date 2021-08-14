@@ -72,11 +72,9 @@ async function getConfigAndMode(
   return [config, mode];
 }
 
-export default function init() {
-  const program = new Command();
-
-  program
-    .version(version)
+function commandWithGlobalOpts(program: Command, command: string) {
+  return program
+    .command(command)
     .option('-c, --config <path>', 'path to configuration file')
     .addOption(
       new Option('-m, --mode <mode>', 'output build mode').choices(['development', 'production']),
@@ -88,9 +86,12 @@ export default function init() {
         .choices(['readonly', 'write-output'])
         .default('write-output'),
     );
+}
 
-  program
-    .command('node-dev <entry>')
+export default function init() {
+  const program = new Command('esbd').version(version);
+
+  commandWithGlobalOpts(program, 'node-dev <entry>')
     .description('Node application development host')
     .option('-r, --respawn', 'restart program on exit/error (but quit after 3 restarts within 5s)')
     .addHelpText(
@@ -108,8 +109,7 @@ export default function init() {
       await nodeDev([entryPath, entryName], config, { args: command.args, logger, mode, respawn });
     });
 
-  program
-    .command('serve <entry>')
+  commandWithGlobalOpts(program, 'serve <entry>')
     .description('Single page application development server')
     .option('-d, --servedir <path>', 'directory of additional static assets to serve')
     .option('-l, --livereload', 'reload page on rebuild')
