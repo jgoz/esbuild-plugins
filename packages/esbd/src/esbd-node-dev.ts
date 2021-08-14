@@ -104,8 +104,8 @@ export default async function esbdNodeDev(
       logger.info(`Starting ${K.cyan(entryOutputFile.path)} ${K.gray(args.slice(1).join(' '))}`);
       runProgram(entryOutputFile.path, args);
     },
-    onWatchEvent: (event: string, path: string) => {
-      logger.info(K.gray(`${path} ${event}, rebuilding and restarting`));
+    onWatchEvent: (event: string, filePath: string) => {
+      logger.info(K.gray(`${filePath} ${event}, rebuilding and restarting`));
       child.removeAllListeners();
       child.cancel();
     },

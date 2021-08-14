@@ -123,8 +123,8 @@ export default async function esbdServe(
         notify('esbuild', { cssUpdate, errors: result.errors, warnings: result.warnings }, clients);
       }
     },
-    onWatchEvent: (event: string, path: string) => {
-      logger.info(K.gray(`${path} ${event}, rebuilding`));
+    onWatchEvent: (event: string, filePath: string) => {
+      logger.info(K.gray(`${filePath} ${event}, rebuilding`));
     },
   });
 

@@ -38,6 +38,7 @@ async function getConfigAndMode(
   program: Command,
   entryPath: string,
   logger: Logger,
+  watch?: boolean,
 ): Promise<[EsbdConfigWithPlugins, BuildMode]> {
   const absEntryPath = path.resolve(process.cwd(), entryPath);
   const maybeConfigPath = program.opts().config;
@@ -62,6 +63,8 @@ async function getConfigAndMode(
         build: buildMode ? true : undefined,
         buildMode,
         logger,
+        omitStartLog: true,
+        watch,
       }),
     );
   }
@@ -100,7 +103,7 @@ export default function init() {
       const { respawn } = options;
       const logger = createLogger();
       const [entryPath, entryName] = getEntryNameAndPath(entry);
-      const [config, mode] = await getConfigAndMode('node-dev', program, entryPath, logger);
+      const [config, mode] = await getConfigAndMode('node-dev', program, entryPath, logger, true);
 
       await nodeDev([entryPath, entryName], config, { args: command.args, logger, mode, respawn });
     });
@@ -117,7 +120,7 @@ export default function init() {
     .action(async (entry: string, options: ServeOptions) => {
       const { host = '0.0.0.0', port = '8000', livereload, servedir, rewrite } = options;
       const logger = createLogger();
-      const [config, mode] = await getConfigAndMode('serve', program, entry, logger);
+      const [config, mode] = await getConfigAndMode('serve', program, entry, logger, true);
 
       await serve(entry, config, {
         mode,

@@ -87,10 +87,26 @@ export interface TypecheckPluginOptions {
    * Logger to use instead of the default.
    */
   logger?: Logger;
+
+  /**
+   * Omit "Typecheck started" messages.
+   *
+   * @default false
+   */
+  omitStartLog?: boolean;
+
+  /**
+   * Force operation in watch mode.
+   *
+   * @default false
+   */
+  watch?: boolean;
 }
 
 export function typecheckPlugin({
   logger = DEFAULT_LOGGER,
+  omitStartLog,
+  watch: forceWatch,
   ...options
 }: TypecheckPluginOptions = {}): Plugin {
   return {
@@ -109,7 +125,7 @@ export function typecheckPlugin({
         ...options,
         basedir,
         configFile,
-        watch: !!watch,
+        watch: !!forceWatch || !!watch,
       };
 
       const worker = new Worker(path.resolve(__dirname, './typescript-worker.js'), { workerData });
@@ -130,7 +146,7 @@ export function typecheckPlugin({
             warnings = [];
             isBuilding ??= msg.build;
             isWatching ??= msg.watch;
-            logStarted(logger, { build: isBuilding, watch: isWatching });
+            if (!omitStartLog) logStarted(logger, { build: isBuilding, watch: isWatching });
             break;
           }
           case 'summary':
@@ -158,7 +174,7 @@ export function typecheckPlugin({
             break;
           }
           case 'build':
-            break; // should not be sent
+            throw new Error('Unexpected message from worker: ' + JSON.stringify(msg));
         }
       });
 
