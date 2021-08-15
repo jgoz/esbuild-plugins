@@ -12,6 +12,8 @@ export function timingPlugin(logger: Logger, progressMessage = 'Building…'): P
         spinner = logger.spin(progressMessage);
       });
       build.onEnd(result => {
+        if (!spinner) return;
+
         const [time] = spinner.stop();
         const numErrors = result.errors.length;
         const numWarnings = result.warnings.length;

@@ -9,12 +9,17 @@ import {
   findConfigFile,
   readConfig,
 } from './config';
+import esbdBuild from './esbd-build';
 import nodeDev from './esbd-node-dev';
 import serve from './esbd-serve';
 import { createLogger, Logger } from './log';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');
+
+interface BuildOptions {
+  watch?: boolean;
+}
 
 interface ServeOptions {
   host?: string;
@@ -91,6 +96,18 @@ function commandWithGlobalOpts(program: Command, command: string) {
 export default function init() {
   const program = new Command('esbd').version(version);
 
+  commandWithGlobalOpts(program, 'build <entry>')
+    .description('Entry point bundler powered by esbuild')
+    .option('-w, --watch', 'watch for changes and rebuild')
+    .action(async (entry: string, options: BuildOptions, command: Command) => {
+      const { watch = false } = options;
+      const logger = createLogger();
+      const [entryPath, entryName] = getEntryNameAndPath(entry);
+      const [config, mode] = await getConfigAndMode('build', command, entryPath, logger, watch);
+
+      await esbdBuild([entryPath, entryName], config, { mode, logger, watch });
+    });
+
   commandWithGlobalOpts(program, 'node-dev <entry>')
     .description('Node application development host')
     .option('-r, --respawn', 'restart program on exit/error (but quit after 3 restarts within 5s)')
@@ -104,7 +121,7 @@ export default function init() {
       const { respawn } = options;
       const logger = createLogger();
       const [entryPath, entryName] = getEntryNameAndPath(entry);
-      const [config, mode] = await getConfigAndMode('node-dev', program, entryPath, logger, true);
+      const [config, mode] = await getConfigAndMode('node-dev', command, entryPath, logger, true);
 
       await nodeDev([entryPath, entryName], config, { args: command.args, logger, mode, respawn });
     });
@@ -117,12 +134,13 @@ export default function init() {
     .option('-p, --port <port>', 'port to use', '8000')
     .option('--rewrite', 'rewrite all not-found requests to "index.html" (SPA mode)', true)
     .option('--no-rewrite', 'disable request rewriting')
-    .action(async (entry: string, options: ServeOptions) => {
+    .action(async (entry: string, options: ServeOptions, command: Command) => {
       const { host = '0.0.0.0', port = '8000', livereload, servedir, rewrite } = options;
       const logger = createLogger();
-      const [config, mode] = await getConfigAndMode('serve', program, entry, logger, true);
+      const [entryPath, entryName] = getEntryNameAndPath(entry);
+      const [config, mode] = await getConfigAndMode('serve', command, entryPath, logger, true);
 
-      await serve(entry, config, {
+      await serve([entryPath, entryName], config, {
         mode,
         host,
         port: Number(port),

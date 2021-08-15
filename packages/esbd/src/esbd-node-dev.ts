@@ -6,6 +6,7 @@ import Graceful from 'node-graceful';
 import path from 'path';
 
 import { BuildMode, EsbdConfigWithPlugins } from './config';
+import { getBuildOptions } from './get-build-options';
 import { incrementalBuild } from './incremental-build';
 import { Logger } from './log';
 import { timingPlugin } from './timing-plugin';
@@ -28,8 +29,8 @@ export default async function esbdNodeDev(
   let keepAliveCount = 0;
   let keepAliveTimeout: NodeJS.Timeout;
 
-  const absEntryPath = path.resolve(config.absWorkingDir ?? process.cwd(), entryPath);
-  const basedir = config.absWorkingDir ?? path.dirname(absEntryPath);
+  const buildOptions = getBuildOptions([entryPath, entryName], mode, config);
+  const basedir = buildOptions.absWorkingDir;
   const defaultTarget = `node${process.versions.node}`;
 
   async function handleExit(exitCode = 0) {
@@ -74,18 +75,12 @@ export default async function esbdNodeDev(
   }
 
   const build = await incrementalBuild({
-    ...config,
-    absWorkingDir: basedir,
-    bundle: config.bundle ?? true,
-    entryPoints: entryName ? { [entryName]: entryPath } : [entryPath],
+    ...buildOptions,
     incremental: true,
     minify: mode === 'production',
     plugins: [...config.plugins, timingPlugin(logger)],
-    metafile: true,
     platform: 'node',
     target: config.target ?? defaultTarget,
-    sourcemap: config.sourcemap ?? (mode === 'development' ? true : undefined),
-    write: false,
     watch: false,
     onBuildResult: async result => {
       const entryOutputPath = Object.keys(result.metafile.outputs).find(

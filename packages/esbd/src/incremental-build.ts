@@ -46,6 +46,7 @@ const NULL_RESULT: Omit<BuildIncrementalResult, 'rebuild'> = {
 export async function incrementalBuild({
   onBuildResult,
   onWatchEvent,
+  watch: watchForChanges,
   ...options
 }: IncrementalBuildOptions): Promise<IncrementalBuildResult> {
   let rebuild = (() => build(options)) as BuildInvalidate;
@@ -105,9 +106,14 @@ export async function incrementalBuild({
     } catch {
       evt.emit('end');
       running = false;
-      startWatchers();
+      if (watchForChanges) startWatchers();
       return { ...NULL_RESULT, rebuild };
     }
+
+    running = false;
+    rebuild = result.rebuild;
+
+    if (!watchForChanges) return result;
 
     const addedInputs = new Set<string>();
     const addedModules = new Set<string>();
@@ -148,16 +154,13 @@ export async function incrementalBuild({
     moduleWatcher.add(Array.from(addedModules));
 
     evt.emit('end');
-
-    running = false;
-    rebuild = result.rebuild;
     startWatchers();
 
     return result;
   }
 
   triggerBuild.dispose = async () => {
-    rebuild.dispose();
+    if (rebuild?.dispose) rebuild.dispose();
     await inputWatcher.close();
     await moduleWatcher.close();
   };

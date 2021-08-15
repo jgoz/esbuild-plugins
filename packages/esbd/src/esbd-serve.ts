@@ -10,7 +10,7 @@ import { URL } from 'url';
 import { promisify } from 'util';
 
 import type { BuildMode, EsbdConfigWithPlugins } from './config';
-import { readTemplate } from './html-entry-point';
+import { getHtmlBuildOptions } from './get-build-options';
 import { writeTemplate } from './html-entry-point/write-template';
 import { incrementalBuild } from './incremental-build';
 import { Logger } from './log';
@@ -33,33 +33,19 @@ function calculateHash(contents: Uint8Array): string {
 }
 
 export default async function esbdServe(
-  entry: string,
+  [entryPath, entryName]: [string, string | undefined],
   config: EsbdConfigWithPlugins,
   { mode, host = '0.0.0.0', port = 8000, livereload, logger, servedir, rewrite }: EsbdServeConfig,
 ) {
-  const outdir = config.outdir;
-  if (!outdir) throw new Error('serve: "outdir" option must be set');
+  const [buildOptions, writeOptions] = await getHtmlBuildOptions(
+    [entryPath, entryName],
+    mode,
+    config,
+  );
 
-  const publicPath = config.publicPath ?? '';
-
-  const absEntryPath = path.resolve(process.cwd(), entry);
-  const basedir = config.absWorkingDir ?? path.dirname(absEntryPath);
-  const absOutDir = path.resolve(basedir, outdir);
-
-  const esbuildDefine = config.define ?? {};
-  const define: Record<string, any> = {};
-  for (const key of Object.keys(esbuildDefine)) {
-    const value = esbuildDefine[key];
-    if (typeof value === 'string') {
-      try {
-        define[key] = JSON.parse(value);
-      } catch {
-        define[key] = value;
-      }
-    } else {
-      define[key] = value;
-    }
-  }
+  const publicPath = buildOptions.publicPath ?? '';
+  const basedir = buildOptions.absWorkingDir;
+  const absOutDir = path.resolve(basedir, buildOptions.outdir);
 
   const clients = new Set<ServerResponse>();
   const outputHashes = new Map<string, string>();
@@ -75,32 +61,13 @@ export default async function esbdServe(
     lrserver = createLivereloadServer({ basedir, onSSE: res => clients.add(res), port: 53099 });
   }
 
-  const [entryPoints, writeOptions] = await readTemplate(absEntryPath, {
-    basedir,
-    define,
-    ignoreAssets: config.ignoreAssets,
-    integrity: config.integrity,
-  });
-
   const build = await incrementalBuild({
-    ...config,
-    absWorkingDir: basedir,
+    ...buildOptions,
     banner: banner
       ? { ...config.banner, js: `${config.banner?.js ?? ''};${banner}` }
       : config.banner,
-    bundle: config.bundle ?? true,
-    entryPoints,
-    format: config.format ?? 'esm',
     incremental: true,
-    minify: mode === 'production',
-    outdir,
     plugins: [...config.plugins, timingPlugin(logger)],
-    metafile: true,
-    publicPath,
-    target: config.target ?? 'es2017',
-    sourcemap: config.sourcemap ?? (mode === 'development' ? 'inline' : undefined),
-    write: false,
-    watch: false,
     onBuildResult: async (result, options) => {
       await Promise.all([
         writeTemplate(result, options, writeOptions, {
