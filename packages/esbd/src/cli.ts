@@ -62,16 +62,13 @@ async function getConfigAndMode(
 
     if (Array.isArray(config)) {
       config = config.find(c => {
-        const { absWorkingDir = process.cwd(), entryPoints } = c;
-        const absEntryPaths = (
-          Array.isArray(entryPoints) ? entryPoints : Object.values(entryPoints)
-        ).map(e => path.resolve(absWorkingDir, e));
-        return absEntryPaths.includes(absEntryPath);
+        const { absWorkingDir = process.cwd(), entryPoint } = c;
+        return absEntryPath === path.resolve(absWorkingDir, entryPoint);
       });
 
       if (!config) {
         throw new Error(
-          'When configuration is defined as an array, at least one config object must contain an entry point matching the CLI argument.',
+          'When configuration is defined as an array, each config must define an "entryPoint" that matches the CLI entry point argument.',
         );
       }
     }

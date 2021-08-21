@@ -11,7 +11,7 @@ import type { HashAlgorithm } from './html-entry-point';
 export type BuildMode = 'development' | 'production';
 export type CommandName = 'build' | 'node-dev' | 'serve';
 
-export interface EsbdConfig extends BuildOptions {
+export interface EsbdConfig extends Omit<BuildOptions, 'entryPoints'> {
   /**
    * Base directory used for resolving entry points specified as relative paths.
    *
@@ -45,12 +45,20 @@ export interface EsbdConfig extends BuildOptions {
   integrity?: HashAlgorithm;
 }
 
+export interface EsbdConfigWithEntryPoint extends EsbdConfig {
+  /**
+   * Entry point associated with this configuration.
+   *
+   * This is only required if multiple configurations are defined
+   * in a single file.
+   */
+  entryPoint: string;
+}
+
 /**
  * Configuration export or the return value of a configuration function.
  */
-export type EsbdConfigResult =
-  | EsbdConfig
-  | (EsbdConfig & Required<Pick<EsbdConfig, 'entryPoints'>>)[];
+export type EsbdConfigResult = EsbdConfig | EsbdConfigWithEntryPoint[];
 
 /**
  * Function that returns a configuration export or an array of configuration exports.
