@@ -60,6 +60,8 @@ async function getConfigAndMode(
   config.outdir ??= program.opts().outdir;
   config.plugins ??= [];
 
+  if (program.opts().node) config.platform = 'node';
+
   if (program.opts().check) {
     const buildMode = program.opts().tsBuildMode;
     config.plugins.push(
@@ -84,6 +86,7 @@ function commandWithGlobalOpts(program: Command, command: string) {
     .addOption(
       new Option('-m, --mode <mode>', 'output build mode').choices(['development', 'production']),
     )
+    .option('--node', 'generate code for Node instead of the browser')
     .option('-o, --outdir <path>', 'path to output directory')
     .option('-t, --check', 'check types asynchronously with the TypeScript compiler')
     .addOption(
