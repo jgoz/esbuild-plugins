@@ -11,8 +11,6 @@ import type { HashAlgorithm } from './html-entry-point';
 export type BuildMode = 'development' | 'production';
 export type CommandName = 'build' | 'node-dev' | 'serve';
 
-export type ConfigFn = (mode: BuildMode, command: CommandName) => EsbdConfig | Promise<EsbdConfig>;
-
 export interface EsbdConfig extends BuildOptions {
   /**
    * Base directory used for resolving entry points specified as relative paths.
@@ -47,6 +45,21 @@ export interface EsbdConfig extends BuildOptions {
   integrity?: HashAlgorithm;
 }
 
+/**
+ * Configuration export or the return value of a configuration function.
+ */
+export type EsbdConfigResult =
+  | EsbdConfig
+  | (EsbdConfig & Required<Pick<EsbdConfig, 'entryPoints'>>)[];
+
+/**
+ * Function that returns a configuration export or an array of configuration exports.
+ */
+export type ConfigFn = (
+  mode: BuildMode,
+  command: CommandName,
+) => EsbdConfigResult | Promise<EsbdConfigResult>;
+
 export type EsbdConfigWithPlugins = EsbdConfig & { plugins: Plugin[] };
 
 export async function findConfigFile(basedir: string): Promise<string | undefined> {
@@ -57,7 +70,7 @@ export async function readConfig(
   configPath: string,
   mode: BuildMode,
   commandName: CommandName,
-): Promise<EsbdConfig> {
+): Promise<EsbdConfigResult> {
   const loader = path.extname(configPath) === '.ts' ? 'ts' : undefined;
   const configSource = await fs.promises.readFile(configPath, 'utf-8');
   const configJs = await transform(configSource, { format: 'cjs', loader, target: 'node14' });
@@ -91,11 +104,11 @@ export async function readConfig(
   let configObj: Record<string, any> | undefined;
   if (typeof output === 'function') {
     configObj = await output(mode, commandName);
-  } else if (typeof output === 'object' && !!output) {
+  } else if (output) {
     configObj = output;
   }
 
-  if (!configObj || typeof configObj !== 'object') {
+  if (!configObj || (typeof configObj !== 'object' && !Array.isArray(configObj))) {
     throw new Error(`Config file at "${configPath}" did not produce a valid configuration object.`);
   }
 

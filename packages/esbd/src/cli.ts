@@ -5,6 +5,7 @@ import path from 'path';
 import {
   BuildMode,
   CommandName,
+  EsbdConfigResult,
   EsbdConfigWithPlugins,
   findConfigFile,
   readConfig,
@@ -53,9 +54,31 @@ async function getConfigAndMode(
     ? path.resolve(process.cwd(), maybeConfigPath)
     : await findConfigFile(path.dirname(absEntryPath));
 
-  const config = (
-    configPath ? await readConfig(path.resolve(process.cwd(), configPath), mode, commandName) : {}
-  ) as EsbdConfigWithPlugins;
+  let config: EsbdConfigResult | undefined;
+  try {
+    config = configPath
+      ? await readConfig(path.resolve(process.cwd(), configPath), mode, commandName)
+      : {};
+
+    if (Array.isArray(config)) {
+      config = config.find(c => {
+        const { absWorkingDir = process.cwd(), entryPoints } = c;
+        const absEntryPaths = (
+          Array.isArray(entryPoints) ? entryPoints : Object.values(entryPoints)
+        ).map(e => path.resolve(absWorkingDir, e));
+        return absEntryPaths.includes(absEntryPath);
+      });
+
+      if (!config) {
+        throw new Error(
+          'When configuration is defined as an array, at least one config object must contain an entry point matching the CLI argument.',
+        );
+      }
+    }
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
 
   config.outdir ??= program.opts().outdir;
   config.plugins ??= [];
@@ -76,7 +99,7 @@ async function getConfigAndMode(
     );
   }
 
-  return [config, mode];
+  return [config as EsbdConfigWithPlugins, mode];
 }
 
 function commandWithGlobalOpts(program: Command, command: string) {
