@@ -129,7 +129,7 @@ function createBuilder(
 
   const builder = ts.createSolutionBuilder(builderHost, [configFile], buildOptions);
 
-  return builder;
+  return [builder, system] as const;
 }
 
 function createWatchBuilder(
@@ -157,7 +157,7 @@ function createWatchBuilder(
     { excludeDirectories: ['node_modules'] },
   );
 
-  return builder;
+  return [builder, system] as const;
 }
 
 function runCompiler(
@@ -218,7 +218,7 @@ function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
 
   if (build) {
     const buildOptions = typeof build === 'boolean' ? {} : build;
-    const builder = watch
+    const [builder, system] = watch
       ? createWatchBuilder(configFile, buildOptions, buildMode, reporter)
       : createBuilder(configFile, buildOptions, buildMode, reporter);
 
@@ -231,7 +231,7 @@ function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
           firstRun = false;
         }
         reporter.markBuildStart();
-        builder.build(configFile);
+        builder.build(configFile, undefined, system.writeFile);
       }
     });
   } else {
