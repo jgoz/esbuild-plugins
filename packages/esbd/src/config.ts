@@ -117,7 +117,7 @@ export async function readConfig(
   }
 
   if (!configObj || (typeof configObj !== 'object' && !Array.isArray(configObj))) {
-    throw new Error(`Config file at "${configPath}" did not produce a valid configuration object.`);
+    throw new Error(`Config file at "${configPath}" did not export a valid esbd configuration.`);
   }
 
   return configObj;
