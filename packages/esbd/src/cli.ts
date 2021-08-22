@@ -54,7 +54,7 @@ async function getConfigAndMode(
     ? path.resolve(process.cwd(), maybeConfigPath)
     : await findConfigFile(path.dirname(absEntryPath));
 
-  let config: EsbdConfigResult | undefined;
+  let config: (EsbdConfigResult & { entryPoint?: string }) | undefined;
   try {
     config = configPath
       ? await readConfig(path.resolve(process.cwd(), configPath), mode, commandName)
@@ -71,6 +71,8 @@ async function getConfigAndMode(
           'When configuration is defined as an array, each config must define an "entryPoint" that matches the CLI entry point argument.',
         );
       }
+
+      delete config.entryPoint;
     }
   } catch (e) {
     console.error(e.message);
