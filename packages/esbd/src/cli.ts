@@ -177,4 +177,10 @@ export default function init() {
     });
 
   program.parse(process.argv);
+
+  process.on('unhandledRejection', (reason: Error) => {
+    console.error('An error occurred that caused esbd to shut down.');
+    console.error(reason.stack ?? reason);
+    process.exit(1);
+  });
 }
