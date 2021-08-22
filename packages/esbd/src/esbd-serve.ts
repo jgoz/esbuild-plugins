@@ -68,6 +68,7 @@ export default async function esbdServe(
       : config.banner,
     incremental: true,
     plugins: [...config.plugins, timingPlugin(logger)],
+    watch: true,
     onBuildResult: async (result, options) => {
       await Promise.all([
         writeTemplate(result, options, writeOptions, {

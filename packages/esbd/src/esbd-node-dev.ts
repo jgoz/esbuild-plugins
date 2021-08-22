@@ -81,7 +81,7 @@ export default async function esbdNodeDev(
     plugins: [...config.plugins, timingPlugin(logger)],
     platform: 'node',
     target: config.target ?? defaultTarget,
-    watch: false,
+    watch: true,
     onBuildResult: async result => {
       const entryOutputPath = Object.keys(result.metafile.outputs).find(
         out => result.metafile.outputs[out].entryPoint,
