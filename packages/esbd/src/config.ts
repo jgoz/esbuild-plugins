@@ -20,6 +20,23 @@ export interface EsbdConfig extends Omit<BuildOptions, 'entryPoints'> {
   absWorkingDir?: string;
 
   /**
+   * Files to copy to the output directory during the build.
+   *
+   * Each entry is a tuple representing the source file path to copy
+   * and, optionally, the destination file path.
+   *
+   * Source paths may be absolute or relative to `absWorkingDir`. Destination
+   * paths may be absolute or relative to `outdir`. If no destination path is
+   * provided, the source file will be copied to `outdir` with the same name.
+   *
+   * If `esbd` is started in a watch mode (serve, node-dev, or build --watch),
+   * source files will be watched and copied whenever they change.
+   *
+   * Note that `copy` does not support glob patterns.
+   */
+  copy?: [from: string, to?: string][];
+
+  /**
    * By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and
    * `<script>` tags in the HTML template will be collected as esbuild assets if their `src` attributes
    * are specified as relative paths. The asset paths will be resolved relative to the *template file*

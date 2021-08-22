@@ -40,6 +40,7 @@ async function esbdBuildHtml(
   const build = await incrementalBuild({
     ...buildOptions,
     incremental: true,
+    logger,
     plugins: [...config.plugins, timingPlugin(logger)],
     watch,
     write: false,
@@ -71,6 +72,7 @@ async function esbdBuildSource(
   const build = await incrementalBuild({
     ...buildOptions,
     incremental: true,
+    logger,
     plugins: [...config.plugins, timingPlugin(logger)],
     watch,
     write: false,

@@ -9,6 +9,10 @@ import {
   OutputFile,
 } from 'esbuild';
 import { EventEmitter } from 'events';
+import { copyFile } from 'fs/promises';
+import path from 'path';
+
+import { Logger } from './log';
 
 interface BuildIncrementalResult extends BuildIncremental {
   metafile: Metafile;
@@ -25,6 +29,8 @@ type BuildIncrementalOptions = BuildOptions & { incremental: true; metafile: tru
 
 interface IncrementalBuildOptions extends BuildIncrementalOptions {
   absWorkingDir: string;
+  copy?: [from: string, to?: string][];
+  logger: Logger;
   onBuildResult: (
     result: BuildIncrementalResult,
     options: BuildIncrementalOptions,
@@ -44,6 +50,8 @@ const NULL_RESULT: Omit<BuildIncrementalResult, 'rebuild'> = {
 };
 
 export async function incrementalBuild({
+  copy,
+  logger,
   onBuildResult,
   onWatchEvent,
   watch: watchForChanges,
@@ -56,6 +64,22 @@ export async function incrementalBuild({
   const evt = new EventEmitter();
   const watchedInputs = new Set<string>();
   const watchedModules = new Set<string>();
+
+  const normalizedCopy: [string, string][] = [];
+  if (copy) {
+    const outdir = options.outdir;
+    if (!outdir) {
+      logger.warn('"outdir" is required when "copy" is provided');
+    } else {
+      const absOutDir = path.resolve(basedir, outdir);
+      for (const [from, to] of copy) {
+        normalizedCopy.push([
+          path.resolve(basedir, from),
+          path.resolve(absOutDir, to ?? (path.isAbsolute(from) ? path.basename(from) : from)),
+        ]);
+      }
+    }
+  }
 
   const inputWatcher = watch([], {
     cwd: basedir,
@@ -71,18 +95,46 @@ export async function incrementalBuild({
     usePolling: true,
   });
 
+  const assetWatcher = watch([], {
+    disableGlobbing: true,
+  });
+
   function onInputEvent(event: string, path: string) {
     if (running) return;
     Promise.resolve(onWatchEvent(event, path))
       .then(triggerBuild)
-      .catch(e => console.error(e));
+      .catch(e => logger.error(e));
   }
 
   function onModuleEvent(path: string) {
     if (running) return;
     Promise.resolve(onWatchEvent('change', path))
       .then(triggerBuild)
-      .catch(e => console.error(e));
+      .catch(e => logger.error(e));
+  }
+
+  function onAssetEvent(event: string, path: string) {
+    if (running) return;
+    console.log(event, path);
+    if (event === 'unlink') {
+      assetWatcher.unwatch(path);
+      return;
+    }
+    if (event === 'add') {
+      assetWatcher.add(path);
+    }
+    copyAssets(path).catch(e => logger.error(e));
+  }
+
+  function copyAssets(fromPath?: string) {
+    return Promise.all(
+      normalizedCopy
+        .filter(([from]) => !fromPath || fromPath === from)
+        .map(([from, to]) => {
+          logger.info(`Copying ${from} to ${to}`);
+          return copyFile(from, to);
+        }),
+    );
   }
 
   function startWatchers() {
@@ -90,6 +142,7 @@ export async function incrementalBuild({
       if (running) return;
       inputWatcher.once('all', onInputEvent);
       moduleWatcher.once('change', onModuleEvent);
+      assetWatcher.on('all', onAssetEvent);
     }, 100);
   }
 
@@ -97,11 +150,13 @@ export async function incrementalBuild({
     running = true;
     await inputWatcher.close();
     await moduleWatcher.close();
+    await assetWatcher.close();
 
     let result: BuildIncremental;
     try {
       result = await rebuild();
       validateResult(result);
+      await copyAssets();
       await onBuildResult(result, options);
     } catch {
       evt.emit('end');
@@ -152,6 +207,7 @@ export async function incrementalBuild({
 
     inputWatcher.add(Array.from(addedInputs));
     moduleWatcher.add(Array.from(addedModules));
+    assetWatcher.add(normalizedCopy.map(c => c[0]));
 
     evt.emit('end');
     startWatchers();
@@ -163,6 +219,7 @@ export async function incrementalBuild({
     if (rebuild?.dispose) rebuild.dispose();
     await inputWatcher.close();
     await moduleWatcher.close();
+    await assetWatcher.close();
   };
 
   function wait(): Promise<void> {

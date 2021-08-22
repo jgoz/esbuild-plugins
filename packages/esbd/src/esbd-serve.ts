@@ -67,6 +67,7 @@ export default async function esbdServe(
       ? { ...config.banner, js: `${config.banner?.js ?? ''};${banner}` }
       : config.banner,
     incremental: true,
+    logger,
     plugins: [...config.plugins, timingPlugin(logger)],
     watch: true,
     onBuildResult: async (result, options) => {

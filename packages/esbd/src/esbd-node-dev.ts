@@ -77,6 +77,7 @@ export default async function esbdNodeDev(
   const build = await incrementalBuild({
     ...buildOptions,
     incremental: true,
+    logger,
     minify: mode === 'production',
     plugins: [...config.plugins, timingPlugin(logger)],
     platform: 'node',
