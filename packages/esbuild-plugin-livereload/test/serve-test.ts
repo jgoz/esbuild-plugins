@@ -22,7 +22,7 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
   absWorkingDir: [
     async ({}, use, workerInfo) => {
       const dir = path.join(workerInfo.config.rootDir, 'test/fixture/out');
-      await fsp.mkdir(dir);
+      await fsp.mkdir(dir, { recursive: true });
       await fsp.copyFile(
         path.join(__dirname, 'fixture', 'index.html'),
         path.join(dir, 'index.html'),

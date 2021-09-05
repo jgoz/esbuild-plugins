@@ -97,9 +97,6 @@ function createPartialMemoryBackedSystem(): ts.System {
       if (!unionfs.existsSync(path)) return undefined;
       return unionfs.readFileSync(path, { encoding: encoding as BufferEncoding });
     },
-    realpath(path) {
-      return unionfs.realpathSync(path);
-    },
     setModifiedTime(path, time) {
       memfs.utimesSync(path, time, time);
     },

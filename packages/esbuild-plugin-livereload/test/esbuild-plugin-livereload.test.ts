@@ -10,7 +10,7 @@ test('page reloads as content changes', async ({ page, port, writeFile }) => {
   await page.waitForSelector('text=Oops :(');
   test.expect(await page.screenshot()).toMatchSnapshot('oops.png');
 
-  await page.click('button.close');
+  await page.click('button.close', { force: true, strict: true });
 
   test.expect(await page.textContent('h1')).toContain('Page One');
 

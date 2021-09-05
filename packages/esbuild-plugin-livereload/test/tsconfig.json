@@ -2,5 +2,8 @@
   "extends": "../../../tsconfig.base.json",
   "include": ["serve-test.ts", "*.test.ts"],
   "exclude": ["fixture/**"],
+  "compilerOptions": {
+    "lib": ["DOM", "esnext"]
+  },
   "references": [{ "path": "../" }]
 }

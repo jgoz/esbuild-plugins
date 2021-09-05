@@ -18,7 +18,7 @@ interface RunOptions {
 
 function setup(fixtureDirSrc: string, fixtureDirOut: string) {
   async function copySrcFile(src: string, out: string) {
-    fs.promises.copyFile(path.join(fixtureDirSrc, src), path.join(fixtureDirOut, out));
+    await fs.promises.copyFile(path.join(fixtureDirSrc, src), path.join(fixtureDirOut, out));
   }
 
   async function init() {
@@ -59,6 +59,7 @@ function setup(fixtureDirSrc: string, fixtureDirOut: string) {
     });
 
     if (watch) {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       proc.all!.on('data', async (chunk: Buffer) => {
         const str = chunk.toString();
         if (/Typecheck finished in/.exec(str)) {
