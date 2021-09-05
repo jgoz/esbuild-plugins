@@ -25,13 +25,13 @@
   },
   "devDependencies": {
     "@types/parse5": "^6.0.0",
-    "esbuild": "^0.12.14",
+    "esbuild": "^0.12.25",
     "esbuild-node-externals": "^1.3.0",
-    "jest": "^27.0.6",
+    "jest": "^27.1.0",
     "memfs": "^3.2.2",
     "parse5": "^6.0.1",
     "prettier": "^2.3.2",
-    "typescript": "^4.3.5"
+    "typescript": "^4.4.2"
   },
   "jest": {
     "testTimeout": 5000,
