@@ -75,7 +75,7 @@ async function getConfigAndMode(
       delete config.entryPoint;
     }
   } catch (e) {
-    console.error(e.message);
+    console.error(e instanceof Error ? e.message : String(e));
     process.exit(1);
   }
 

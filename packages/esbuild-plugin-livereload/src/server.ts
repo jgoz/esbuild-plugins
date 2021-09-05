@@ -44,7 +44,7 @@ export function createLivereloadServer(options: ServerOptions): Server {
         try {
           openEditor([{ file: absfile, column, line }]);
         } catch (e) {
-          console.warn(e.message);
+          console.warn(e instanceof Error ? e.message : String(e));
         }
       }
       return;
