@@ -1,5 +1,5 @@
 import { BuildOptions, Plugin, transform } from 'esbuild';
-import findUp from 'find-up';
+import { findUp } from 'find-up';
 import fs from 'fs';
 import K from 'kleur';
 import { createRequire, Module } from 'module';
