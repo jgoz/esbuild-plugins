@@ -12,7 +12,7 @@
     "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
   "volta": {
-    "node": "16.3.0"
+    "node": "16.13.0"
   },
   "prettier": "@awesome-code-style/prettier-config",
   "devDependencies": {
