@@ -27,6 +27,7 @@
     "esbuild": ">= 0.12.17"
   },
   "devDependencies": {
+    "@types/mkdirp": "^1.0.2",
     "@types/pretty-time": "^1.1.1",
     "@types/serve-static": "^1.13.10",
     "chokidar": "^3.5.2",
@@ -39,6 +40,7 @@
     "jest": "^27.1.0",
     "kleur": "^4.1.4",
     "memfs": "^3.2.2",
+    "mkdirp": "^1.0.4",
     "node-graceful": "^3.0.1",
     "parse5": "^6.0.1",
     "prettier": "^2.3.2",

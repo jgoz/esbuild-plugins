@@ -54,6 +54,7 @@ importers:
     specifiers:
       '@jgoz/esbuild-plugin-livereload': workspace:*
       '@jgoz/esbuild-plugin-typecheck': workspace:*
+      '@types/mkdirp': ^1.0.2
       '@types/pretty-time': ^1.1.1
       '@types/serve-static': ^1.13.10
       chokidar: ^3.5.2
@@ -66,6 +67,7 @@ importers:
       jest: ^27.1.0
       kleur: ^4.1.4
       memfs: ^3.2.2
+      mkdirp: ^1.0.4
       node-graceful: ^3.0.1
       parse5: ^6.0.1
       prettier: ^2.3.2
@@ -77,6 +79,7 @@ importers:
       '@jgoz/esbuild-plugin-livereload': link:../esbuild-plugin-livereload
       '@jgoz/esbuild-plugin-typecheck': link:../esbuild-plugin-typecheck
     devDependencies:
+      '@types/mkdirp': 1.0.2
       '@types/pretty-time': 1.1.1
       '@types/serve-static': 1.13.10
       chokidar: 3.5.2
@@ -89,6 +92,7 @@ importers:
       jest: 27.1.0
       kleur: 4.1.4
       memfs: 3.2.2
+      mkdirp: 1.0.4
       node-graceful: 3.0.1
       parse5: 6.0.1
       prettier: 2.3.2
@@ -2455,6 +2459,12 @@ packages:
 
   /@types/minimist/1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
+    dev: true
+
+  /@types/mkdirp/1.0.2:
+    resolution: {integrity: sha512-o0K1tSO0Dx5X6xlU5F1D6625FawhC3dU3iqr25lluNv/+/QIVH8RLNEiVokgIZo+mz+87w/3Mkg/VvQS+J51fQ==}
+    dependencies:
+      '@types/node': 16.7.10
     dev: true
 
   /@types/mri/1.1.1:

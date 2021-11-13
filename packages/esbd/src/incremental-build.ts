@@ -10,6 +10,7 @@ import {
 } from 'esbuild';
 import { EventEmitter } from 'events';
 import { copyFile } from 'fs/promises';
+import mkdirp from 'mkdirp';
 import path from 'path';
 
 import { Logger } from './log';
@@ -64,14 +65,14 @@ export async function incrementalBuild({
   const evt = new EventEmitter();
   const watchedInputs = new Set<string>();
   const watchedModules = new Set<string>();
+  const outdir = options.outdir;
+  const absOutDir = outdir ? path.resolve(basedir, outdir) : undefined;
 
   const normalizedCopy: [string, string][] = [];
   if (copy) {
-    const outdir = options.outdir;
-    if (!outdir) {
+    if (!absOutDir) {
       logger.warn('"outdir" is required when "copy" is provided');
     } else {
-      const absOutDir = path.resolve(basedir, outdir);
       for (const [from, to] of copy) {
         normalizedCopy.push([
           path.resolve(basedir, from),
@@ -156,6 +157,7 @@ export async function incrementalBuild({
     try {
       result = await rebuild();
       validateResult(result);
+      if (absOutDir) await mkdirp(absOutDir);
       await copyAssets();
       await onBuildResult(result, options);
     } catch {
