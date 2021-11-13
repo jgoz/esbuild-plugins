@@ -268,20 +268,6 @@ importers:
       typescript: 4.4.4
       unionfs: 4.4.0
 
-  packages/esbuild-plugin-typecheck/test/fixture/build/pkg-one:
-    specifiers: {}
-
-  packages/esbuild-plugin-typecheck/test/fixture/build/pkg-three:
-    specifiers:
-      pkg-one: link:../pkg-one
-      pkg-two: link:../pkg-two
-    dependencies:
-      pkg-one: link:../pkg-one
-      pkg-two: link:../pkg-two
-
-  packages/esbuild-plugin-typecheck/test/fixture/build/pkg-two:
-    specifiers: {}
-
 packages:
 
   /@ant-design/colors/6.0.0:
