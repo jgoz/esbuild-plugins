@@ -60,6 +60,24 @@ export interface EsbdConfig extends Omit<BuildOptions, 'entryPoints'> {
    * @default undefined
    */
   integrity?: HashAlgorithm;
+
+  /**
+   * React 17 introduced a new JSX transform that enables some internal performance
+   * optimmizations and obviates having to import 'React' in every module. The details
+   * can be read {@link here https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html}.
+   *
+   * Though esbuild does not support this new transform natively, setting this option to
+   * `automatic` will add a load plugin (powered by SWC) for ".jsx" and ".tsx" files so
+   * they use the new tranform as expected.
+   *
+   * If you are using TypeScript, note that you should set the "jsx" tsconfig option to
+   * "react-jsx" so that your editor does not require the "React" import. esbd does not
+   * currently read this option from tsconfig.json, so "jsxRuntime" must be set to "automatic"
+   * explicitly for the new transform to be used.
+   *
+   * @default "classic"
+   */
+  jsxRuntime?: 'automatic' | 'classic';
 }
 
 export interface EsbdConfigWithEntryPoint extends EsbdConfig {

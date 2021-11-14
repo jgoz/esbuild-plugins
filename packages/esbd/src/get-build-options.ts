@@ -19,7 +19,17 @@ export async function getHtmlBuildOptions(
   const outdir = config.outdir;
   if (!outdir) throw new Error('"outdir" option must be set');
 
-  const publicPath = config.publicPath ?? '';
+  const {
+    bundle = true,
+    copy: _,
+    format = 'esm',
+    jsxRuntime: __,
+    integrity,
+    ignoreAssets,
+    publicPath = '',
+    target = 'es2017',
+    ...options
+  } = config;
 
   const absEntryPath = path.resolve(process.cwd(), entryPath);
   const basedir = config.absWorkingDir ?? path.dirname(absEntryPath);
@@ -43,22 +53,22 @@ export async function getHtmlBuildOptions(
     basedir,
     define,
     filename: entryName,
-    ignoreAssets: config.ignoreAssets,
-    integrity: config.integrity,
+    ignoreAssets,
+    integrity,
   });
 
   return [
     {
-      ...config,
+      ...options,
       absWorkingDir: basedir,
-      bundle: config.bundle ?? true,
+      bundle,
       entryPoints,
-      format: config.format ?? 'esm',
+      format,
       minify: mode === 'production',
       outdir,
       metafile: true,
       publicPath,
-      target: config.target ?? 'es2017',
+      target,
       sourcemap: config.sourcemap ?? (mode === 'development' ? 'inline' : undefined),
       write: false,
     },
@@ -74,18 +84,26 @@ export function getBuildOptions(
   const outdir = config.outdir;
   if (!outdir) throw new Error('"outdir" option must be set');
 
+  const {
+    bundle = true,
+    copy: _,
+    jsxRuntime: __,
+    integrity: ___,
+    ignoreAssets: ____,
+    ...options
+  } = config;
+
   const absEntryPath = path.resolve(config.absWorkingDir ?? process.cwd(), entryPath);
   const basedir = config.absWorkingDir ?? path.dirname(absEntryPath);
 
   return {
-    ...config,
+    ...options,
     absWorkingDir: basedir,
-    bundle: config.bundle ?? true,
+    bundle,
     entryPoints: entryName ? { [entryName]: entryPath } : [entryPath],
     minify: mode === 'production',
     metafile: true,
     outdir,
-    target: config.target,
     sourcemap: config.sourcemap ?? (mode === 'development' ? true : undefined),
     write: false,
   };
