@@ -72,6 +72,7 @@ async function esbdBuildSource(
 
   const build = await incrementalBuild({
     ...buildOptions,
+    copy: config.copy,
     incremental: true,
     logger,
     plugins: [...config.plugins, swcPlugin(config.jsxRuntime), timingPlugin(logger)],

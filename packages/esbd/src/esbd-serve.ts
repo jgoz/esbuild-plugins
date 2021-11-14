@@ -67,6 +67,7 @@ export default async function esbdServe(
     banner: banner
       ? { ...config.banner, js: `${config.banner?.js ?? ''};${banner}` }
       : config.banner,
+    copy: config.copy,
     incremental: true,
     logger,
     plugins: [...config.plugins, swcPlugin(config.jsxRuntime), timingPlugin(logger)],
