@@ -35,7 +35,7 @@ function calculateHash(contents: Uint8Array): string {
 export default async function esbdServe(
   [entryPath, entryName]: [string, string | undefined],
   config: EsbdConfigWithPlugins,
-  { mode, host = '0.0.0.0', port = 8000, livereload, logger, servedir, rewrite }: EsbdServeConfig,
+  { mode, host = 'localhost', port = 8000, livereload, logger, servedir, rewrite }: EsbdServeConfig,
 ) {
   const [buildOptions, writeOptions] = await getHtmlBuildOptions(
     [entryPath, entryName],

@@ -155,12 +155,12 @@ export default function init() {
     .description('Single page application development server')
     .option('-d, --servedir <path>', 'directory of additional static assets to serve')
     .option('-l, --livereload', 'reload page on rebuild')
-    .option('-h, --host <host>', 'IP/host name to use when serving requests', '0.0.0.0')
+    .option('-h, --host <host>', 'IP/host name to use when serving requests', 'localhost')
     .option('-p, --port <port>', 'port to use', '8000')
     .option('--rewrite', 'rewrite all not-found requests to "index.html" (SPA mode)', true)
     .option('--no-rewrite', 'disable request rewriting')
     .action(async (entry: string, options: ServeOptions, command: Command) => {
-      const { host = '0.0.0.0', port = '8000', livereload, servedir, rewrite } = options;
+      const { host, port = '8000', livereload, servedir, rewrite } = options;
       const logger = createLogger();
       const [entryPath, entryName] = getEntryNameAndPath(entry);
       const [config, mode] = await getConfigAndMode('serve', command, entryPath, logger, true);
