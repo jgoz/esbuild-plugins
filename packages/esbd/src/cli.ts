@@ -118,7 +118,7 @@ function commandWithGlobalOpts(program: Command, command: string) {
     );
 }
 
-export default function init() {
+export default function init(mode: BuildMode, configResult: EsbdConfigResult) {
   const program = new Command('esbd').version(version);
 
   commandWithGlobalOpts(program, 'build <entry>')

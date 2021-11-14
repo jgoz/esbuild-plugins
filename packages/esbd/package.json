@@ -17,7 +17,6 @@
     "esbuild",
     "esbuild-cli"
   ],
-  "bin": "bin/esbd.js",
   "types": "types/index.d.ts",
   "dependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
