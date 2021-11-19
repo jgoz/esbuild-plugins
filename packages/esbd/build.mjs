@@ -11,7 +11,7 @@ build({
   absWorkingDir: __dirname,
   bundle: true,
   entryPoints: {
-    cli: './src/cli.ts',
+    index: './src/index.ts',
   },
   external: ['fsevents'],
   logLevel: 'info',

@@ -5,7 +5,7 @@ import K from 'kleur';
 import Graceful from 'node-graceful';
 import path from 'path';
 
-import { BuildMode, EsbdConfigWithPlugins } from './config';
+import { BuildMode, ResolvedEsbdConfig } from './config';
 import { getBuildOptions } from './get-build-options';
 import { incrementalBuild } from './incremental-build';
 import { Logger } from './log';
@@ -21,15 +21,18 @@ interface EsbdNodeDevConfig {
 const MAX_RETRIES = 3;
 
 export default async function esbdNodeDev(
-  [entryPath, entryName]: [entryPath: string, entryName: string | undefined],
-  config: EsbdConfigWithPlugins,
+  config: ResolvedEsbdConfig,
   { args, logger, mode, respawn }: EsbdNodeDevConfig,
 ) {
   let child: ChildProcess & ExecaChildPromise<string>;
   let keepAliveCount = 0;
   let keepAliveTimeout: NodeJS.Timeout;
 
-  const buildOptions = getBuildOptions([entryPath, entryName], mode, config);
+  const entries = Array.isArray(config.entryPoints)
+    ? config.entryPoints.map(entry => [entry, entry] as const)
+    : Object.entries(config.entryPoints);
+
+  const buildOptions = getBuildOptions(entries, mode, config);
   const basedir = buildOptions.absWorkingDir;
   const defaultTarget = `node${process.versions.node}`;
 

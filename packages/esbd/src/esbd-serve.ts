@@ -9,7 +9,7 @@ import serveStatic from 'serve-static';
 import { URL } from 'url';
 import { promisify } from 'util';
 
-import type { BuildMode, EsbdConfigWithPlugins } from './config';
+import type { BuildMode, ResolvedEsbdConfig } from './config';
 import { getHtmlBuildOptions } from './get-build-options';
 import { writeTemplate } from './html-entry-point/write-template';
 import { incrementalBuild } from './incremental-build';
@@ -34,15 +34,14 @@ function calculateHash(contents: Uint8Array): string {
 }
 
 export default async function esbdServe(
-  [entryPath, entryName]: [string, string | undefined],
-  config: EsbdConfigWithPlugins,
+  config: ResolvedEsbdConfig,
   { mode, host = 'localhost', port = 8000, livereload, logger, servedir, rewrite }: EsbdServeConfig,
 ) {
-  const [buildOptions, writeOptions] = await getHtmlBuildOptions(
-    [entryPath, entryName],
-    mode,
-    config,
-  );
+  const entries = Array.isArray(config.entryPoints)
+    ? config.entryPoints.map(entry => [entry, entry] as const)
+    : Object.entries(config.entryPoints);
+
+  const [buildOptions, allWriteOptions] = await getHtmlBuildOptions(entries, mode, config);
 
   const publicPath = buildOptions.publicPath ?? '';
   const basedir = buildOptions.absWorkingDir;
@@ -74,10 +73,12 @@ export default async function esbdServe(
     watch: true,
     onBuildResult: async (result, options) => {
       await Promise.all([
-        writeTemplate(result, options, writeOptions, {
-          copyFile: fs.promises.copyFile,
-          writeFile: fs.promises.writeFile,
-        }),
+        ...allWriteOptions.map(writeOptions =>
+          writeTemplate(result, options, writeOptions, {
+            copyFile: fs.promises.copyFile,
+            writeFile: fs.promises.writeFile,
+          }),
+        ),
         ...result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
       ]);
 
@@ -126,7 +127,8 @@ export default async function esbdServe(
       }
       if (rewrite) {
         // rewrite extensionless requests to the index file if requested (SPA mode)
-        fs.createReadStream(path.resolve(absOutDir, writeOptions.template.outputPath)).pipe(
+        // TODO: how do we handle multiple HTML files here?
+        fs.createReadStream(path.resolve(absOutDir, allWriteOptions[0].template.outputPath)).pipe(
           res.setHeader('Content-Type', 'text/html'),
         );
         return;

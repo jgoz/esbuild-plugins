@@ -17,6 +17,8 @@
     "esbuild",
     "esbuild-cli"
   ],
+  "main": "dist/index.js",
+  "module": "build/index.js",
   "types": "types/index.d.ts",
   "dependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",

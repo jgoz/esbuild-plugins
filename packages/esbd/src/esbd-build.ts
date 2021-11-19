@@ -1,7 +1,8 @@
 import fs from 'fs';
 import K from 'kleur';
+import { basename } from 'path';
 
-import { BuildMode, EsbdConfigWithPlugins } from './config';
+import { BuildMode, ResolvedEsbdConfig } from './config';
 import { getBuildOptions, getHtmlBuildOptions } from './get-build-options';
 import { writeTemplate } from './html-entry-point';
 import { incrementalBuild } from './incremental-build';
@@ -15,25 +16,29 @@ interface EsbdBuildOptions {
   watch: boolean;
 }
 
-export default async function esbdBuild(
-  [entryPath, entryName]: [string, string | undefined],
-  config: EsbdConfigWithPlugins,
-  options: EsbdBuildOptions,
-) {
-  if (entryPath.endsWith('.html')) {
-    await esbdBuildHtml([entryPath, entryName], config, options);
+export default async function esbdBuild(config: ResolvedEsbdConfig, options: EsbdBuildOptions) {
+  const { entryPoints } = config;
+
+  const entries = Array.isArray(entryPoints)
+    ? entryPoints.map(p => [basename(p), p] as const)
+    : Object.entries(entryPoints);
+
+  const hasHtml = entries.some(([, entryPath]) => entryPath.endsWith('.html'));
+
+  if (hasHtml) {
+    await esbdBuildHtml(entries, config, options);
   } else {
-    await esbdBuildSource([entryPath, entryName], config, options);
+    await esbdBuildSource(entries, config, options);
   }
 }
 
 async function esbdBuildHtml(
-  [entryPath, entryName]: [string, string | undefined],
-  config: EsbdConfigWithPlugins,
+  resolvedEntries: (readonly [string, string])[],
+  config: ResolvedEsbdConfig,
   { logger, mode, watch }: EsbdBuildOptions,
 ) {
-  const [buildOptions, writeOptions] = await getHtmlBuildOptions(
-    [entryPath, entryName],
+  const [buildOptions, allWriteOptions] = await getHtmlBuildOptions(
+    resolvedEntries.filter(([, entryPath]) => entryPath.endsWith('.html')),
     mode,
     config,
   );
@@ -48,10 +53,12 @@ async function esbdBuildHtml(
 
     onBuildResult: async result => {
       await Promise.all([
-        writeTemplate(result, buildOptions, writeOptions, {
-          copyFile: fs.promises.copyFile,
-          writeFile: fs.promises.writeFile,
-        }),
+        ...allWriteOptions.map(writeOptions =>
+          writeTemplate(result, buildOptions, writeOptions, {
+            copyFile: fs.promises.copyFile,
+            writeFile: fs.promises.writeFile,
+          }),
+        ),
         ...result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
       ]);
     },
@@ -64,14 +71,12 @@ async function esbdBuildHtml(
 }
 
 async function esbdBuildSource(
-  [entryPath, entryName]: [string, string | undefined],
-  config: EsbdConfigWithPlugins,
+  resolvedEntries: (readonly [string, string])[],
+  config: ResolvedEsbdConfig,
   { logger, mode, watch }: EsbdBuildOptions,
 ) {
-  const buildOptions = getBuildOptions([entryPath, entryName], mode, config);
-
   const build = await incrementalBuild({
-    ...buildOptions,
+    ...getBuildOptions(resolvedEntries, mode, config),
     copy: config.copy,
     incremental: true,
     logger,

@@ -1,17 +1,14 @@
-import { BuildOptions, Plugin, transform } from 'esbuild';
-import { findUp } from 'find-up';
-import fs from 'fs';
-import K from 'kleur';
-import { createRequire, Module } from 'module';
-import path from 'path';
-import vm from 'vm';
+import type { BuildOptions } from 'esbuild';
 
 import type { HashAlgorithm } from './html-entry-point';
 
 export type BuildMode = 'development' | 'production';
 export type CommandName = 'build' | 'node-dev' | 'serve';
 
-export interface EsbdConfig extends Omit<BuildOptions, 'entryPoints'> {
+type BuildOptionsWithEntryPoints = Omit<BuildOptions, 'entryPoints'> &
+  Required<Pick<BuildOptions, 'entryPoints'>>;
+
+export interface EsbdConfig extends BuildOptionsWithEntryPoints {
   /**
    * Base directory used for resolving entry points specified as relative paths.
    *
@@ -80,20 +77,20 @@ export interface EsbdConfig extends Omit<BuildOptions, 'entryPoints'> {
   jsxRuntime?: 'automatic' | 'classic';
 }
 
-export interface EsbdConfigWithEntryPoint extends EsbdConfig {
+export interface NamedEsbdConfig extends EsbdConfig {
   /**
-   * Entry point associated with this configuration.
+   * Name of this configuration.
    *
    * This is only required if multiple configurations are defined
    * in a single file.
    */
-  entryPoint: string;
+  name: string;
 }
 
 /**
  * Configuration export or the return value of a configuration function.
  */
-export type EsbdConfigResult = EsbdConfig | EsbdConfigWithEntryPoint[];
+export type EsbdConfigResult = EsbdConfig | NamedEsbdConfig[];
 
 /**
  * Function that returns a configuration export or an array of configuration exports.
@@ -103,57 +100,5 @@ export type ConfigFn = (
   command: CommandName,
 ) => EsbdConfigResult | Promise<EsbdConfigResult>;
 
-export type EsbdConfigWithPlugins = EsbdConfig & { plugins: Plugin[] };
-
-export async function findConfigFile(basedir: string): Promise<string | undefined> {
-  return await findUp(['esbd.config.js', 'esbd.config.ts'], { cwd: basedir });
-}
-
-export async function readConfig(
-  configPath: string,
-  mode: BuildMode,
-  commandName: CommandName,
-): Promise<EsbdConfigResult> {
-  const loader = path.extname(configPath) === '.ts' ? 'ts' : undefined;
-  const configSource = await fs.promises.readFile(configPath, 'utf-8');
-  const configJs = await transform(configSource, { format: 'cjs', loader, target: 'node14' });
-
-  if (configJs.warnings.length) {
-    for (const warning of configJs.warnings) {
-      console.warn(K.yellow(warning.text));
-    }
-  }
-
-  const mainModule = require.main!;
-  const contextModule = new Module(configPath, mainModule);
-  contextModule.filename = configPath;
-  contextModule.path = path.dirname(configPath);
-  contextModule.paths = mainModule.paths;
-  contextModule.require = createRequire(configPath);
-
-  vm.runInNewContext(configJs.code, {
-    __dirname: contextModule.path,
-    __filename: contextModule.filename,
-    exports: contextModule.exports,
-    module: contextModule,
-    require: contextModule.require,
-    console: console,
-  });
-
-  contextModule.loaded = true;
-  const exports = contextModule.exports;
-  const output = exports.default ?? exports;
-
-  let configObj: Record<string, any> | undefined;
-  if (typeof output === 'function') {
-    configObj = await output(mode, commandName);
-  } else if (output) {
-    configObj = output;
-  }
-
-  if (!configObj || (typeof configObj !== 'object' && !Array.isArray(configObj))) {
-    throw new Error(`Config file at "${configPath}" did not export a valid esbd configuration.`);
-  }
-
-  return configObj;
-}
+export type ResolvedEsbdConfig = Omit<EsbdConfig, 'plugins' | 'absWorkingDir' | 'outdir'> &
+  Required<Pick<EsbdConfig, 'plugins' | 'absWorkingDir' | 'outdir'>> & { name?: string };

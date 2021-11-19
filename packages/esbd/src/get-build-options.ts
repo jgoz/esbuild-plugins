@@ -1,8 +1,8 @@
 import type { BuildOptions } from 'esbuild';
 import path from 'path';
 
-import type { BuildMode, EsbdConfigWithPlugins } from './config';
-import { readTemplate, WriteTemplateOptions } from './html-entry-point';
+import type { BuildMode, ResolvedEsbdConfig } from './config';
+import { EntryPoints, readTemplate, WriteTemplateOptions } from './html-entry-point';
 
 export interface BuildOptionsWithInvariants extends BuildOptions {
   absWorkingDir: string;
@@ -12,12 +12,11 @@ export interface BuildOptionsWithInvariants extends BuildOptions {
 }
 
 export async function getHtmlBuildOptions(
-  [entryPath, entryName]: [string, string | undefined],
+  htmlEntries: (readonly [string, string])[],
   mode: BuildMode,
-  config: EsbdConfigWithPlugins,
-): Promise<[BuildOptionsWithInvariants, WriteTemplateOptions]> {
+  config: ResolvedEsbdConfig,
+): Promise<[BuildOptionsWithInvariants, WriteTemplateOptions[]]> {
   const outdir = config.outdir;
-  if (!outdir) throw new Error('"outdir" option must be set');
 
   const {
     bundle = true,
@@ -26,13 +25,11 @@ export async function getHtmlBuildOptions(
     jsxRuntime: __,
     integrity,
     ignoreAssets,
+    name: ___,
     publicPath = '',
     target = 'es2017',
     ...options
   } = config;
-
-  const absEntryPath = path.resolve(process.cwd(), entryPath);
-  const basedir = config.absWorkingDir ?? path.dirname(absEntryPath);
 
   const esbuildDefine = config.define ?? {};
   const define: Record<string, any> = {};
@@ -49,20 +46,31 @@ export async function getHtmlBuildOptions(
     }
   }
 
-  const [entryPoints, writeOptions] = await readTemplate(absEntryPath, {
-    basedir,
-    define,
-    filename: entryName,
-    ignoreAssets,
-    integrity,
-  });
+  let allEntryPoints: EntryPoints = {};
+  const allWriteOptions: WriteTemplateOptions[] = [];
+
+  for (const [entryName, entryPath] of htmlEntries) {
+    const basedir = config.absWorkingDir;
+    const absEntryPath = path.resolve(basedir, entryPath);
+
+    const [entryPoints, writeOptions] = await readTemplate(absEntryPath, {
+      basedir,
+      define,
+      filename: entryName,
+      ignoreAssets,
+      integrity,
+    });
+
+    allEntryPoints = { ...allEntryPoints, ...entryPoints };
+    allWriteOptions.push(writeOptions);
+  }
 
   return [
     {
       ...options,
-      absWorkingDir: basedir,
+      absWorkingDir: config.absWorkingDir,
       bundle,
-      entryPoints,
+      entryPoints: allEntryPoints,
       format,
       minify: mode === 'production',
       outdir,
@@ -72,14 +80,14 @@ export async function getHtmlBuildOptions(
       sourcemap: config.sourcemap ?? (mode === 'development' ? 'inline' : undefined),
       write: false,
     },
-    writeOptions,
+    allWriteOptions,
   ];
 }
 
 export function getBuildOptions(
-  [entryPath, entryName]: [string, string | undefined],
+  entries: (readonly [string, string])[],
   mode: BuildMode,
-  config: EsbdConfigWithPlugins,
+  config: ResolvedEsbdConfig,
 ): BuildOptionsWithInvariants {
   const outdir = config.outdir;
   if (!outdir) throw new Error('"outdir" option must be set');
@@ -90,17 +98,21 @@ export function getBuildOptions(
     jsxRuntime: __,
     integrity: ___,
     ignoreAssets: ____,
+    name: _____,
     ...options
   } = config;
 
-  const absEntryPath = path.resolve(config.absWorkingDir ?? process.cwd(), entryPath);
-  const basedir = config.absWorkingDir ?? path.dirname(absEntryPath);
+  const allEntryPoints: EntryPoints = {};
+  for (const [entryName, entryPath] of entries) {
+    const absEntryPath = path.resolve(config.absWorkingDir, entryPath);
+    allEntryPoints[entryName] = absEntryPath;
+  }
 
   return {
     ...options,
-    absWorkingDir: basedir,
+    absWorkingDir: config.absWorkingDir,
     bundle,
-    entryPoints: entryName ? { [entryName]: entryPath } : [entryPath],
+    entryPoints: allEntryPoints,
     minify: mode === 'production',
     metafile: true,
     outdir,
