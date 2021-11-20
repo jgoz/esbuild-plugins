@@ -61,7 +61,7 @@ importers:
       chokidar: ^3.5.2
       commander: ^8.3.0
       esbuild: ^0.13.13
-      esbuild-node-externals: ^1.3.0
+      esbuild-node-externals: ^1.4.0
       execa: ^5.1.1
       find-up: ^6.2.0
       io-spin: ^0.4.1
@@ -87,7 +87,7 @@ importers:
       chokidar: 3.5.2
       commander: 8.3.0
       esbuild: 0.13.13
-      esbuild-node-externals: 1.3.0_esbuild@0.13.13
+      esbuild-node-externals: 1.4.0_esbuild@0.13.13
       execa: 5.1.1
       find-up: 6.2.0
       io-spin: 0.4.1
@@ -129,7 +129,7 @@ importers:
     specifiers:
       '@types/parse5': ^6.0.2
       esbuild: ^0.13.13
-      esbuild-node-externals: ^1.3.0
+      esbuild-node-externals: ^1.4.0
       jest: ^27.3.1
       memfs: ^3.3.0
       parse5: ^6.0.1
@@ -138,7 +138,7 @@ importers:
     devDependencies:
       '@types/parse5': 6.0.2
       esbuild: 0.13.13
-      esbuild-node-externals: 1.3.0_esbuild@0.13.13
+      esbuild-node-externals: 1.4.0_esbuild@0.13.13
       jest: 27.3.1
       memfs: 3.3.0
       parse5: 6.0.1
@@ -150,7 +150,7 @@ importers:
       '@jgoz/esbuild-overlay': workspace:*
       '@playwright/test': ^1.16.3
       esbuild: ^0.13.13
-      esbuild-node-externals: ^1.3.0
+      esbuild-node-externals: ^1.4.0
       esbuild-svelte: ^0.5.7
       get-port: ^6.0.0
       open-editor: ^4.0.0
@@ -165,7 +165,7 @@ importers:
       '@jgoz/esbuild-overlay': link:../esbuild-overlay
       '@playwright/test': 1.16.3
       esbuild: 0.13.13
-      esbuild-node-externals: 1.3.0_esbuild@0.13.13
+      esbuild-node-externals: 1.4.0_esbuild@0.13.13
       esbuild-svelte: 0.5.7_esbuild@0.13.13
       get-port: 6.0.0
       open-editor: 4.0.0
@@ -183,7 +183,7 @@ importers:
       autoprefixer: ^10.4.0
       enhanced-resolve: ^5.8.3
       esbuild: ^0.13.13
-      esbuild-node-externals: ^1.3.0
+      esbuild-node-externals: ^1.4.0
       jest: ^27.3.1
       node-sass: ^6.0.1
       postcss: ^8.3.11
@@ -196,7 +196,7 @@ importers:
       autoprefixer: 10.4.0_postcss@8.3.11
       enhanced-resolve: 5.8.3
       esbuild: 0.13.13
-      esbuild-node-externals: 1.3.0_esbuild@0.13.13
+      esbuild-node-externals: 1.4.0_esbuild@0.13.13
       jest: 27.3.1
       node-sass: 6.0.1
       postcss: 8.3.11
@@ -246,7 +246,7 @@ importers:
     specifiers:
       '@jgoz/esbuild-plugin-livereload': workspace:*
       esbuild: ^0.13.13
-      esbuild-node-externals: ^1.3.0
+      esbuild-node-externals: ^1.4.0
       execa: ^5.1.1
       jest: ^27.3.1
       kleur: ^4.1.4
@@ -258,7 +258,7 @@ importers:
     devDependencies:
       '@jgoz/esbuild-plugin-livereload': link:../esbuild-plugin-livereload
       esbuild: 0.13.13
-      esbuild-node-externals: 1.3.0_esbuild@0.13.13
+      esbuild-node-externals: 1.4.0_esbuild@0.13.13
       execa: 5.1.1
       jest: 27.3.1
       kleur: 4.1.4
@@ -3414,14 +3414,14 @@ packages:
     dev: true
     optional: true
 
-  /esbuild-node-externals/1.3.0_esbuild@0.13.13:
-    resolution: {integrity: sha512-6N1IW4D1aTV/rNSL5CoDNmyr6KqFLkFNTnQlsmdG4QvizLly1itaTLpU7Cz68Gh1z87BM+k64/CM5PbyDZBhxQ==}
+  /esbuild-node-externals/1.4.0_esbuild@0.13.13:
+    resolution: {integrity: sha512-blz9ksGOSABtNkwhw6WvPlTL3dhUP7CNjA0HFBW2JXvIRn+WGEGT+rbC6X4y6DNE87EeDwgGT4gXkAfGYMNRXg==}
     peerDependencies:
-      esbuild: ^0.12.0
+      esbuild: ^0.13.0
     dependencies:
       esbuild: 0.13.13
       find-up: 5.0.0
-      tslib: 2.1.0
+      tslib: 2.3.1
     dev: true
 
   /esbuild-openbsd-64/0.13.13:
@@ -7927,10 +7927,6 @@ packages:
 
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
-    dev: true
-
-  /tslib/2.1.0:
-    resolution: {integrity: sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A==}
     dev: true
 
   /tslib/2.3.1:
