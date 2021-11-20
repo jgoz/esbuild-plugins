@@ -46,7 +46,7 @@
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.4.1",
     "sass": "^1.43.4",
-    "typescript": "^4.4.4"
+    "typescript": "^4.5.2"
   },
   "jest": {
     "testTimeout": 5000,

@@ -29,11 +29,11 @@
     "esbuild": "^0.13.13",
     "esbuild-svelte": "^0.5.7",
     "prettier": "^2.4.1",
-    "svelte": "^3.44.1",
-    "svelte-check": "^2.2.8",
+    "svelte": "^3.44.2",
+    "svelte-check": "^2.2.10",
     "svelte-preprocess": "^4.9.8",
     "tslib": "^2.3.1",
-    "typescript": "^4.4.4"
+    "typescript": "^4.5.2"
   },
   "jest": {
     "testTimeout": 5000,
