@@ -20,7 +20,7 @@
   ],
   "main": "dist/overlay.js",
   "module": "dist/overlay.js",
-  "types": "types/overlay.d.ts",
+  "types": "lib/overlay.d.ts",
   "peerDependencies": {
     "esbuild": ">= 0.12.8"
   },
@@ -41,8 +41,8 @@
   },
   "scripts": {
     "prepublish": "pnpm check",
-    "prepack": "./build.mjs",
+    "prepack": "./build.js build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "watch": "./build.mjs -w"
+    "watch": "./build.js build -w"
   }
 }

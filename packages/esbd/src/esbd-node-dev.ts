@@ -1,5 +1,5 @@
 import type { ChildProcess } from 'child_process';
-import { ExecaChildPromise, node } from 'execa';
+import { ExecaChildPromise, node as execaNode } from 'execa';
 import fs from 'fs';
 import K from 'kleur';
 import Graceful from 'node-graceful';
@@ -59,7 +59,7 @@ export default async function esbdNodeDev(
   }
 
   function runProgram(scriptPath: string, argv: string[]) {
-    child = node(scriptPath, argv, {
+    child = execaNode(scriptPath, argv, {
       nodeOptions: ['--enable-source-maps'],
       stdio: 'inherit',
     });

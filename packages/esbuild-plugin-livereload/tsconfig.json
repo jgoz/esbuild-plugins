@@ -3,8 +3,7 @@
   "compilerOptions": {
     "lib": ["dom", "es2020"],
     "rootDir": "src",
-    "outDir": "build",
-    "declarationDir": "types"
+    "outDir": "lib"
   },
   "include": ["src"],
   "references": [{ "path": "../esbuild-overlay" }]

@@ -19,7 +19,7 @@
     "html"
   ],
   "main": "dist/plugin-html.js",
-  "types": "types/index.d.ts",
+  "types": "lib/index.d.ts",
   "peerDependencies": {
     "esbuild": ">= 0.12.8"
   },
@@ -38,8 +38,8 @@
     "maxWorkers": 1
   },
   "scripts": {
-    "prepack": "./build.mjs",
+    "prepack": "./build.js build",
     "test": "jest",
-    "watch": "./build.mjs -w"
+    "watch": "./build.js build -w"
   }
 }

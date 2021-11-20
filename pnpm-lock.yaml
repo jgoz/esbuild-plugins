@@ -62,7 +62,7 @@ importers:
       commander: ^8.3.0
       esbuild: ^0.13.14
       esbuild-node-externals: ^1.4.0
-      execa: ^6.0.0
+      execa: ^5.0.0
       find-up: ^6.2.0
       io-spin: ^0.4.1
       jest: ^27.3.1
@@ -88,7 +88,7 @@ importers:
       commander: 8.3.0
       esbuild: 0.13.14
       esbuild-node-externals: 1.4.0_esbuild@0.13.14
-      execa: 6.0.0
+      execa: 5.1.1
       find-up: 6.2.0
       io-spin: 0.4.1
       jest: 27.3.1
@@ -153,7 +153,7 @@ importers:
       esbuild-node-externals: ^1.4.0
       esbuild-svelte: ^0.5.7
       get-port: ^6.0.0
-      open-editor: ^4.0.0
+      open-editor: ^3.0.0
       playwright: ^1.16.3
       prettier: ^2.4.1
       svelte: ^3.44.2
@@ -168,7 +168,7 @@ importers:
       esbuild-node-externals: 1.4.0_esbuild@0.13.14
       esbuild-svelte: 0.5.7_esbuild@0.13.14
       get-port: 6.0.0
-      open-editor: 4.0.0
+      open-editor: 3.0.0
       playwright: 1.16.3
       prettier: 2.4.1
       svelte: 3.44.2
@@ -3241,9 +3241,9 @@ packages:
       ansi-colors: 4.1.1
     dev: true
 
-  /env-editor/1.0.0:
-    resolution: {integrity: sha512-SRy6e7u1tZgohoxL952q9+kbRkkUrzi63dB7J4zr6wOSMQrCD0KJUNhMZajGTNQfdY68PaStfmIzh7To/FKilQ==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+  /env-editor/0.4.2:
+    resolution: {integrity: sha512-ObFo8v4rQJAE59M69QzwloxPZtd33TpYEIjtKD1rrFDcM1Gd7IkDxEBU+HriziN6HSHQnBJi8Dmy+JWkav5HKA==}
+    engines: {node: '>=8'}
     dev: true
 
   /env-paths/2.2.1:
@@ -3777,7 +3777,7 @@ packages:
       merge-stream: 2.0.0
       npm-run-path: 4.0.1
       onetime: 5.1.2
-      signal-exit: 3.0.5
+      signal-exit: 3.0.6
       strip-final-newline: 2.0.0
     dev: true
 
@@ -5279,11 +5279,11 @@ packages:
       type-check: 0.4.0
     dev: true
 
-  /line-column-path/3.0.0:
-    resolution: {integrity: sha512-Atocnm7Wr9nuvAn97yEPQa3pcQI5eLQGBz+m6iTb+CVw+IOzYB9MrYK7jI7BfC9ISnT4Fu0eiwhAScV//rp4Hw==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+  /line-column-path/2.0.0:
+    resolution: {integrity: sha512-nz3A+vi4bElhwd62E9+Qk/f9BDYLSzD/4Hy1rir0I4GnMxSTezSymzANyph5N1PgRZ3sSbA+yR5hOuXxc71a0Q==}
+    engines: {node: '>=8'}
     dependencies:
-      type-fest: 2.5.3
+      type-fest: 0.4.1
     dev: true
 
   /lines-and-columns/1.1.6:
@@ -5753,19 +5753,27 @@ packages:
       mimic-fn: 4.0.0
     dev: true
 
-  /open-editor/4.0.0:
-    resolution: {integrity: sha512-5mKZ98iFdkivozt5XTCOspoKbL3wtYu6oOoVxfWQ0qUX9NYsK8pdkHE7VUHXr+CwyC3nf6mV0S5FPsMS65innw==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+  /open-editor/3.0.0:
+    resolution: {integrity: sha512-00Nqoa7k8F4AK1oSFMIIhYku+essXiCljR2L2kV+bl5j90ANgbQgzEeTdZu23LsikDoz+KfhyRHpGLAwpQhugA==}
+    engines: {node: '>=10'}
     dependencies:
-      env-editor: 1.0.0
+      env-editor: 0.4.2
       execa: 5.1.1
-      line-column-path: 3.0.0
-      open: 8.4.0
+      line-column-path: 2.0.0
+      open: 7.4.2
     dev: true
 
   /open-iconic/1.1.1:
     resolution: {integrity: sha1-nc/Ix808Yc20ojaxo0eJTJetwMY=}
     dev: false
+
+  /open/7.4.2:
+    resolution: {integrity: sha512-MVHddDVweXZF3awtlAS+6pgKLlm/JgxZ90+/NBurBoQctVOOB/zDdVjcyPzQ+0laDGbsWgrRkflI65sQeOgT9Q==}
+    engines: {node: '>=8'}
+    dependencies:
+      is-docker: 2.2.1
+      is-wsl: 2.2.0
+    dev: true
 
   /open/8.4.0:
     resolution: {integrity: sha512-XgFPPM+B28FtCCgSb9I+s9szOC1vZRSwgWsRUA5ylIxRTgKozqjOCrVOqGsYABPYK5qnfqClxZTFBa8PKt2v6Q==}
@@ -7934,6 +7942,11 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
+  /type-fest/0.4.1:
+    resolution: {integrity: sha512-IwzA/LSfD2vC1/YDYMv/zHP4rDF1usCwllsDpbolT3D4fUepIO7f9K70jjmUewU/LmGUKJcwcVtDCpnKk4BPMw==}
+    engines: {node: '>=6'}
+    dev: true
+
   /type-fest/0.6.0:
     resolution: {integrity: sha512-q+MB8nYR1KDLrgr4G5yemftpMC7/QLqVndBmEEdqzmNj5dcFOO4Oo8qlwZE3ULT3+Zim1F8Kq4cBnikNhlCMlg==}
     engines: {node: '>=8'}
@@ -7942,11 +7955,6 @@ packages:
   /type-fest/0.8.1:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
-    dev: true
-
-  /type-fest/2.5.3:
-    resolution: {integrity: sha512-7VNmE7FlsrdcWjKbtuRuynZz96Gmf35p5DvoR2tbceNP0vd58ISx87PvUUInlhtRC49vSX6qlxEKc7AoiHRirg==}
-    engines: {node: '>=12.20'}
     dev: true
 
   /typedarray-to-buffer/3.1.5:

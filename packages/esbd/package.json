@@ -18,8 +18,8 @@
     "esbuild-cli"
   ],
   "main": "dist/index.js",
-  "module": "build/index.js",
-  "types": "types/index.d.ts",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
   "dependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
     "@jgoz/esbuild-plugin-typecheck": "workspace:*",
@@ -36,7 +36,7 @@
     "commander": "^8.3.0",
     "esbuild": "^0.13.14",
     "esbuild-node-externals": "^1.4.0",
-    "execa": "^6.0.0",
+    "execa": "^5.0.0",
     "find-up": "^6.2.0",
     "io-spin": "^0.4.1",
     "jest": "^27.3.1",
@@ -60,8 +60,8 @@
     }
   },
   "scripts": {
-    "prepack": "./build.mjs",
+    "prepack": "./build.js build",
     "test": "jest",
-    "watch": "./build.mjs -w"
+    "watch": "./build.js build -w"
   }
 }

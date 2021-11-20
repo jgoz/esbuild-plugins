@@ -1,5 +1,12 @@
 {
+  "root": true,
   "extends": "@awesome-code-style",
   "ignorePatterns": "**/fixture/**",
-  "root": true
+  "overrides": [
+    {
+      "files": "build.js",
+      "env": { "node": true },
+      "rules": { "@typescript-eslint/no-var-requires": "off" }
+    }
+  ]
 }

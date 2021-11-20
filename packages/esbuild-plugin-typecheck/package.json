@@ -21,8 +21,7 @@
     "diagnostics"
   ],
   "main": "dist/plugin-typecheck.js",
-  "module": "dist/plugin-typecheck.js",
-  "types": "types/index.d.ts",
+  "types": "lib/index.d.ts",
   "peerDependencies": {
     "@jgoz/esbuild-plugin-livereload": ">= 1",
     "typescript": ">= 3.5"
@@ -54,9 +53,8 @@
     }
   },
   "scripts": {
-    "build": "./build.mjs",
-    "prepack": "pnpm build",
+    "prepack": "./build.js build",
     "test": "jest",
-    "watch": "./build.mjs -w"
+    "watch": "./build.js build -w"
   }
 }

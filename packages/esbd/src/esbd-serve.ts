@@ -1,4 +1,4 @@
-import { createLivereloadServer, notify } from '@jgoz/esbuild-plugin-livereload';
+import { createLivereloadServer, notify } from '@jgoz/esbuild-plugin-livereload/lib';
 import { createHash } from 'crypto';
 import fs from 'fs';
 import { createServer, Server, ServerResponse } from 'http';

@@ -55,19 +55,38 @@ export function createLogger(): Logger {
 
     spin(message: string): TimedSpinner {
       busy = true;
-      const spinner = spin(K.cyan(message), 'Box7').start();
       const startTime = process.hrtime();
+
+      function doStop() {
+        busy = false;
+        while (queue.length) {
+          const fn = queue.shift();
+          fn?.();
+        }
+        const endTime = process.hrtime(startTime);
+        return [prettyTime(endTime, 'ms'), endTime] as [string, [number, number]];
+      }
+
+      if (!process.stdout.isTTY) {
+        return {
+          start() {
+            return this as any;
+          },
+          stop() {
+            return doStop();
+          },
+          update() {
+            return this as any;
+          },
+        };
+      }
+
+      const spinner = spin(K.cyan(message), 'Box7').start();
       return {
         start: spinner.start,
         stop() {
-          busy = false;
           spinner.stop();
-          while (queue.length) {
-            const fn = queue.shift();
-            fn?.();
-          }
-          const endTime = process.hrtime(startTime);
-          return [prettyTime(endTime, 'ms'), endTime];
+          return doStop();
         },
         update(updatedMessage) {
           return spinner.update(K.cyan(updatedMessage));

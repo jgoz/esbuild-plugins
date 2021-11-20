@@ -1,8 +1,9 @@
 import fs from 'fs';
 import { createServer, Server, ServerResponse } from 'http';
-import openEditor from 'open-editor';
 import path from 'path';
 import { URL } from 'url';
+
+const openEditor = import('open-editor');
 
 interface ServerOptions {
   basedir: string;
@@ -41,11 +42,11 @@ export function createLivereloadServer(options: ServerOptions): Server {
       const column = Number(url.searchParams.get('column') ?? 0);
       if (file) {
         const absfile = path.resolve(basedir, file);
-        try {
-          openEditor([{ file: absfile, column, line }]);
-        } catch (e) {
-          console.warn(e instanceof Error ? e.message : String(e));
-        }
+        openEditor
+          .then(({ default: open }) => open([{ file: absfile, column, line }]))
+          .catch(e => {
+            console.warn(e instanceof Error ? e.message : String(e));
+          });
       }
       return;
     }

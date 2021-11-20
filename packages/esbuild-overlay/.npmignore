@@ -1,6 +1,3 @@
-build/
-demo/
 test/
-*.mjs
 *.js
 tsconfig*.json

@@ -3,8 +3,15 @@
   "compilerOptions": {
     "lib": ["dom", "es2020"],
     "rootDir": "src",
-    "outDir": "build",
-    "declarationDir": "types"
+    "outDir": "lib"
   },
-  "include": ["src", "typings"]
+  "include": ["src", "typings"],
+  "references": [
+    {
+      "path": "../esbuild-plugin-livereload"
+    },
+    {
+      "path": "../esbuild-plugin-typecheck"
+    }
+  ]
 }

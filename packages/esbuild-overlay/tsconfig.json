@@ -19,8 +19,7 @@
     "types": ["svelte"],
 
     "rootDir": "src",
-    "outDir": "build",
-    "declarationDir": "types"
+    "outDir": "lib"
   },
   "include": ["src"]
 }

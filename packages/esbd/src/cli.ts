@@ -1,15 +1,20 @@
-import { typecheckPlugin } from '@jgoz/esbuild-plugin-typecheck';
+import { typecheckPlugin } from '@jgoz/esbuild-plugin-typecheck/lib';
 import { Command, Option } from 'commander';
 import path from 'path';
 
-import { ConfigFn, EsbdConfig } from '.';
-import { BuildMode, EsbdConfigResult, NamedEsbdConfig, ResolvedEsbdConfig } from './config';
+import {
+  BuildMode,
+  ConfigFn,
+  EsbdConfig,
+  EsbdConfigResult,
+  NamedEsbdConfig,
+  ResolvedEsbdConfig,
+} from './config';
 import esbdBuild from './esbd-build';
 import nodeDev from './esbd-node-dev';
 import serve from './esbd-serve';
 import { createLogger, Logger } from './log';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');
 
 interface BuildOptions {
