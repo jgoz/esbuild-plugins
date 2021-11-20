@@ -1,6 +1,7 @@
 import fs from 'fs';
 import K from 'kleur';
-import { basename } from 'path';
+import { basename, relative } from 'path';
+import prettyBytes from 'pretty-bytes';
 
 import { BuildMode, ResolvedEsbdConfig } from './config';
 import { getBuildOptions, getHtmlBuildOptions } from './get-build-options';
@@ -88,6 +89,15 @@ async function esbdBuildSource(
       await Promise.all(
         result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
       );
+      for (const file of result.outputFiles) {
+        logger.info(
+          K.gray(
+            `Wrote ${relative(process.cwd(), file.path)} (${K.bold(
+              prettyBytes(file.contents.byteLength),
+            )})`,
+          ),
+        );
+      }
     },
     onWatchEvent: (event, filePath) => {
       logger.info(K.gray(`${filePath} ${event}, rebuilding`));

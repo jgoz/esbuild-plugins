@@ -13,7 +13,7 @@ import {
 import esbdBuild from './esbd-build';
 import nodeDev from './esbd-node-dev';
 import serve from './esbd-serve';
-import { createLogger, Logger } from './log';
+import { createLogger, LOG_LEVELS, Logger } from './log';
 
 const { version } = require('../package.json');
 
@@ -33,13 +33,14 @@ interface NodeDevOptions {
   respawn?: boolean;
 }
 
-function maybeAddCheckPlugin(
+function updateConfig(
   program: Command,
   config: EsbdConfig,
   logger: Logger,
   watch?: boolean,
 ): ResolvedEsbdConfig {
   config.absWorkingDir ??= process.cwd();
+  config.logLevel = logger.logLevel;
   config.outdir ??= path.join(config.absWorkingDir, 'dist');
   config.plugins ??= [];
 
@@ -86,6 +87,11 @@ function commandWithGlobalOpts(program: Command, command: string) {
   return program
     .command(command)
     .addOption(
+      new Option('-l, --log-level <level>', 'logging level [default="warning"]').choices(
+        LOG_LEVELS,
+      ),
+    )
+    .addOption(
       new Option('-m, --mode <mode>', 'output build mode').choices(['development', 'production']),
     )
     .option('-t, --check', 'check types asynchronously with the TypeScript compiler')
@@ -99,7 +105,6 @@ function commandWithGlobalOpts(program: Command, command: string) {
 export default function init(configParam: EsbdConfigResult | ConfigFn) {
   const programName = path.relative(process.cwd(), process.argv[1]);
   const program = new Command(programName).version(version);
-  const logger = createLogger();
   const mode: BuildMode = program.opts().mode ?? 'development';
 
   commandWithGlobalOpts(program, 'build [name]')
@@ -109,6 +114,7 @@ export default function init(configParam: EsbdConfigResult | ConfigFn) {
       const { watch = false } = options;
       const configResult =
         typeof configParam === 'function' ? await configParam(mode, 'build') : configParam;
+
       const configs = Array.isArray(configResult)
         ? name
           ? configResult.filter(c => c.name === name)
@@ -116,7 +122,8 @@ export default function init(configParam: EsbdConfigResult | ConfigFn) {
         : [configResult];
 
       for (const config of configs) {
-        await esbdBuild(maybeAddCheckPlugin(command, config, logger, watch), {
+        const logger = createLogger(command.opts().logLevel ?? config.logLevel ?? 'warning');
+        await esbdBuild(updateConfig(command, config, logger, watch), {
           mode,
           logger,
           watch,
@@ -145,7 +152,8 @@ export default function init(configParam: EsbdConfigResult | ConfigFn) {
         c => c.platform === 'node',
       );
 
-      await nodeDev(maybeAddCheckPlugin(command, config, logger, true), {
+      const logger = createLogger(command.opts().logLevel ?? config.logLevel ?? 'warning');
+      await nodeDev(updateConfig(command, config, logger, true), {
         args: command.args,
         logger,
         mode,
@@ -173,7 +181,8 @@ export default function init(configParam: EsbdConfigResult | ConfigFn) {
         c => !c.platform || c.platform === 'browser',
       );
 
-      await serve(maybeAddCheckPlugin(command, config, logger, true), {
+      const logger = createLogger(command.opts().logLevel ?? config.logLevel ?? 'warning');
+      await serve(updateConfig(command, config, logger, true), {
         mode,
         host,
         port: Number(port),

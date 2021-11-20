@@ -72,6 +72,7 @@ importers:
       node-graceful: ^3.1.0
       parse5: ^6.0.1
       prettier: ^2.4.1
+      pretty-bytes: ^5.6.0
       pretty-time: ^1.1.0
       serve-static: ^1.14.1
       tslib: ^2.3.1
@@ -98,6 +99,7 @@ importers:
       node-graceful: 3.1.0
       parse5: 6.0.1
       prettier: 2.4.1
+      pretty-bytes: 5.6.0
       pretty-time: 1.1.0
       serve-static: 1.14.1
       tslib: 2.3.1
@@ -6408,6 +6410,11 @@ packages:
     resolution: {integrity: sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==}
     engines: {node: '>=10.13.0'}
     hasBin: true
+    dev: true
+
+  /pretty-bytes/5.6.0:
+    resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
+    engines: {node: '>=6'}
     dev: true
 
   /pretty-format/27.3.1:

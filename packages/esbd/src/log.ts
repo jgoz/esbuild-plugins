@@ -1,3 +1,4 @@
+import type { LogLevel } from 'esbuild';
 import spin, { Spinner } from 'io-spin';
 import K from 'kleur';
 import prettyTime from 'pretty-time';
@@ -12,6 +13,7 @@ export interface TimedSpinner extends Omit<Spinner, 'stop'> {
 }
 
 export interface Logger {
+  logLevel: LogLevel;
   info(message: any, ...args: any[]): void;
   warn(message: any, ...args: any[]): void;
   error(message: any, ...args: any[]): void;
@@ -19,7 +21,13 @@ export interface Logger {
   spin(message: string): TimedSpinner;
 }
 
-export function createLogger(): Logger {
+export const LOG_LEVELS: LogLevel[] = ['verbose', 'debug', 'info', 'warning', 'error', 'silent'];
+
+const LEVEL_INFO = LOG_LEVELS.indexOf('info');
+const LEVEL_WARNING = LOG_LEVELS.indexOf('warning');
+const LEVEL_ERROR = LOG_LEVELS.indexOf('error');
+
+export function createLogger(logLevel: LogLevel): Logger {
   let busy = false;
   const queue: (() => void)[] = [];
 
@@ -31,23 +39,30 @@ export function createLogger(): Logger {
     }
   }
 
+  const levelIndex = LOG_LEVELS.indexOf(logLevel);
+
   return {
+    logLevel,
     info(message: any, ...args: any[]) {
+      if (levelIndex > LEVEL_INFO) return;
       enqueueOrFlush(() => {
         console.info(K.bold(INFO) + '  ' + String(message), ...args);
       });
     },
     warn(message: any, ...args: any[]) {
+      if (levelIndex > LEVEL_WARNING) return;
       enqueueOrFlush(() => {
         console.warn(K.bold().yellow(WARNING) + '  ' + K.yellow(message), ...args);
       });
     },
     error(message: any, ...args: any[]) {
+      if (levelIndex > LEVEL_ERROR) return;
       enqueueOrFlush(() => {
         console.warn(K.bold().red(ERROR) + '  ' + K.red(message), ...args);
       });
     },
     success(message: any, ...args: any[]) {
+      if (levelIndex > LEVEL_WARNING) return;
       enqueueOrFlush(() => {
         console.info(K.bold().green(SUCCESS) + '  ' + K.green(message), ...args);
       });
