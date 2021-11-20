@@ -1,4 +1,5 @@
 {
   "extends": "@awesome-code-style",
+  "ignorePatterns": "**/fixture/**",
   "root": true
 }

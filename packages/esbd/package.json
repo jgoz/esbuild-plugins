@@ -23,7 +23,7 @@
   "dependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
     "@jgoz/esbuild-plugin-typecheck": "workspace:*",
-    "@swc/core": "^1.2.108"
+    "@swc/core": "^1.2.111"
   },
   "peerDependencies": {
     "esbuild": ">= 0.12.17"
@@ -34,9 +34,9 @@
     "@types/serve-static": "^1.13.10",
     "chokidar": "^3.5.2",
     "commander": "^8.3.0",
-    "esbuild": "^0.13.13",
+    "esbuild": "^0.13.14",
     "esbuild-node-externals": "^1.4.0",
-    "execa": "^5.1.1",
+    "execa": "^6.0.0",
     "find-up": "^6.2.0",
     "io-spin": "^0.4.1",
     "jest": "^27.3.1",

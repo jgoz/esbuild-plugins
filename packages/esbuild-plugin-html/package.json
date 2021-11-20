@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@types/parse5": "^6.0.2",
-    "esbuild": "^0.13.13",
+    "esbuild": "^0.13.14",
     "esbuild-node-externals": "^1.4.0",
     "jest": "^27.3.1",
     "memfs": "^3.3.0",
