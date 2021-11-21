@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
 
-import { htmlPlugin, HtmlPluginOptions } from '../';
+import { htmlPlugin, HtmlPluginOptions } from '../lib';
 
 jest.mock('fs');
 
@@ -80,7 +80,7 @@ async function buildWithHTML(
 
   // First build generates the actual output files, which is necessary because
   // we are using an in-memory FS that esbuild isn't aware of
-  const { plugins, ...buildOptionsWithoutPlugins } = buildOptions;
+  const { plugins: _, ...buildOptionsWithoutPlugins } = buildOptions;
   const result = await build(buildOptionsWithoutPlugins);
   for (const file of result.outputFiles!) {
     await fs.promises.writeFile(file.path, file.contents);
