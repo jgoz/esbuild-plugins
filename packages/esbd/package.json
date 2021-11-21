@@ -18,7 +18,6 @@
     "esbuild-cli"
   ],
   "main": "dist/index.js",
-  "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "dependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
@@ -37,9 +36,7 @@
     "esbuild": "^0.13.14",
     "esbuild-node-externals": "^1.4.0",
     "execa": "^5.0.0",
-    "find-up": "^6.2.0",
     "io-spin": "^0.4.1",
-    "jest": "^27.3.1",
     "kleur": "^4.1.4",
     "memfs": "^3.3.0",
     "mkdirp": "^1.0.4",
@@ -52,14 +49,6 @@
     "serve-static": "^1.14.1",
     "tslib": "^2.3.1",
     "typescript": "^4.5.2"
-  },
-  "jest": {
-    "testTimeout": 10000,
-    "maxWorkers": 1,
-    "transform": {
-      "^.+\\.ts$": "babel-jest",
-      "^.+\\.mjs$": "babel-jest"
-    }
   },
   "scripts": {
     "prepack": "./bundle.js build",
