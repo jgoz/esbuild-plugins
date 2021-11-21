@@ -9,7 +9,6 @@ bundle({
     'plugin-sass': './src/index.ts',
   },
   external: ['pnpapi'],
-  logLevel: 'info',
   outdir: './dist',
   platform: 'node',
   plugins: [
