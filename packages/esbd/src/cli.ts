@@ -108,7 +108,15 @@ function getSingleConfigResult(
   return config;
 }
 
+let initialized = false;
+
 export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
+  if (initialized) {
+    console.error('"bundle()" can only be used once per file');
+    process.exit(1);
+  }
+  initialized = true;
+
   const programName = path.relative(process.cwd(), process.argv[1]);
   const prog = sade(programName);
 
