@@ -19,7 +19,6 @@ export async function getHtmlBuildOptions(
   const outdir = config.outdir;
 
   const {
-    bundle = true,
     copy: _,
     format = 'esm',
     jsxRuntime: __,
@@ -69,7 +68,7 @@ export async function getHtmlBuildOptions(
     {
       ...options,
       absWorkingDir: config.absWorkingDir,
-      bundle,
+      bundle: true,
       entryPoints: allEntryPoints,
       format,
       minify: mode === 'production',
@@ -93,7 +92,6 @@ export function getBuildOptions(
   if (!outdir) throw new Error('"outdir" option must be set');
 
   const {
-    bundle = true,
     copy: _,
     jsxRuntime: __,
     integrity: ___,
@@ -111,7 +109,7 @@ export function getBuildOptions(
   return {
     ...options,
     absWorkingDir: config.absWorkingDir,
-    bundle,
+    bundle: true,
     entryPoints: allEntryPoints,
     minify: mode === 'production',
     metafile: true,

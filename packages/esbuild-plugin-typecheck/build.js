@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 const { nodeExternalsPlugin } = require('esbuild-node-externals');
-const { build } = require('../esbd/lib');
+const { bundle } = require('../esbd/lib');
 
-build({
+bundle({
   absWorkingDir: __dirname,
   entryPoints: {
     'plugin-typecheck': './src/index.ts',

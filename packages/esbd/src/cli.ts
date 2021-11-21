@@ -102,7 +102,7 @@ function commandWithGlobalOpts(program: Command, command: string) {
     );
 }
 
-export default function init(configParam: EsbdConfigResult | ConfigFn) {
+export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
   const programName = path.relative(process.cwd(), process.argv[1]);
   const program = new Command(programName).version(version);
   const mode: BuildMode = program.opts().mode ?? 'development';

@@ -1,6 +1,5 @@
-import init from './cli';
+import bundle from './cli';
 
 export type { BuildMode, CommandName, ConfigFn, EsbdConfig, EsbdConfigResult } from './config';
 
-export { init as default };
-export { init as build };
+export { bundle, bundle as default };
