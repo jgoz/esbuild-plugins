@@ -1,0 +1,220 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`build command builds a simple HTML entry point 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react";
+
+// src/app.tsx
+function App() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+
+// src/entry.tsx
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+---------------------------------
+index.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <script defer="" type="module" src="entry.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+`;
+
+exports[`build command includes referenced CSS from HTML 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry.0.css
+---------------------------------
+/* styles/app.css */
+.app {
+  background: green;
+}
+
+/* styles/entry.css */
+body {
+  background: red;
+}
+
+---------------------------------
+entry.1.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react";
+
+// src/app.tsx
+function App() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+
+// src/entry.tsx
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+---------------------------------
+index.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="entry.0.css" />
+    <script defer="" type="module" src="entry.1.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+`;
+
+exports[`build command includes referenced CSS from JS 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry.css
+---------------------------------
+/* src/app.css */
+.app {
+  background: green;
+}
+
+/* src/entry.css */
+body {
+  background: red;
+}
+
+---------------------------------
+entry.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react";
+
+// src/app.tsx
+function App() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+
+// src/entry.tsx
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+---------------------------------
+index.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <script defer="" type="module" src="entry.js"></script>
+    <link href="entry.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+`;
+
+exports[`build command includes referenced assets from HTML 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react";
+function App() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+---------------------------------
+favicon.png
+---------------------------------
+IMA FAVICON
+---------------------------------
+index.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="apple-touch-icon" href="favicon.png" />
+    <script defer="" type="module" src="entry.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+`;
+
+exports[`build command includes referenced assets from style tags 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+cats.jpg
+---------------------------------
+MEOW
+---------------------------------
+entry.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react";
+function App() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+---------------------------------
+index.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        background: url(cats.jpg);
+      }
+    </style>
+    <script defer="" type="module" src="entry.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+`;

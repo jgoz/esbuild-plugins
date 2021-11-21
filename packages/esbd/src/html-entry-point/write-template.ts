@@ -15,7 +15,8 @@ import type { EsbuildHtmlOptions } from './types';
 import { cachedCopyFile, calculateIntegrityHash } from './utils';
 
 export interface WriteTemplateOptions extends EsbuildHtmlOptions {
-  assets: [TextNode, string][];
+  tagAssets: [Element, string][];
+  textAssets: [TextNode, string][];
   template: {
     document: Document;
     head: Element;
@@ -37,7 +38,7 @@ export async function writeTemplate(
   fs: FileSystem,
 ): Promise<void> {
   const { absWorkingDir: basedir = process.cwd(), format, outdir, publicPath = '' } = buildOptions;
-  const { assets, crossorigin, define, integrity, template } = templateOptions;
+  const { tagAssets, textAssets, crossorigin, define, integrity, template } = templateOptions;
 
   const { metafile, outputFiles } = result;
 
@@ -69,12 +70,6 @@ export async function writeTemplate(
     .filter(([output]) => !!output.entryPoint)
     .map(([output, outputPath]) => [path.resolve(basedir, output.entryPoint!), outputPath]);
 
-  // Add any CSS files that were included in the output since they might not get
-  // considered as entry points above
-  const extraOutputs = outputFiles
-    .filter(f => f.path.endsWith('.css'))
-    .map(f => path.resolve(outdir, f.path));
-
   const cssOutput = new Map(outputs.filter(([, o]) => o.endsWith('.css')));
   const jsOutput = new Map(outputs.filter(([, o]) => o.endsWith('.js')));
 
@@ -102,6 +97,13 @@ export async function writeTemplate(
   // the HTML
   if (!modified) return;
 
+  // Find all CSS files that were included in the output since they might not get
+  // considered as entry points above. Files that are considered entry points will
+  // be removed below.
+  const extraCss = new Set(
+    outputFiles.filter(f => f.path.endsWith('.css')).map(f => path.resolve(outdir, f.path)),
+  );
+
   let lastCssEntry: Element | undefined;
 
   for (const node of [...head.childNodes, ...body.childNodes]) {
@@ -111,7 +113,8 @@ export async function writeTemplate(
     const absInputPath = path.resolve(absTemplateDir, url.value);
     const outputPath = cssOutput.get(absInputPath) ?? jsOutput.get(absInputPath);
     if (outputPath && isElement(node)) {
-      const relativeOutputPath = path.relative(absOutDir, path.resolve(basedir, outputPath));
+      const absOutputPath = path.resolve(basedir, outputPath);
+      const relativeOutputPath = path.relative(absOutDir, absOutputPath);
       const outputUrl = path.posix.join(publicPath, relativeOutputPath);
 
       node.attrs ??= [];
@@ -136,12 +139,14 @@ export async function writeTemplate(
           value: await calculateIntegrityHash(path.resolve(absOutDir, outputUrl), integrity),
         });
       }
+
+      // File was an entry point, so remove it from the list of extra CSS files
+      extraCss.delete(absOutputPath);
     }
   }
 
-  const extraCss = extraOutputs.filter(out => out.endsWith('.css'));
   const extraLinks = await Promise.all(
-    extraCss.map(outputPath =>
+    Array.from(extraCss.values()).map(outputPath =>
       createLinkElement({
         basedir,
         crossorigin,
@@ -157,8 +162,16 @@ export async function writeTemplate(
   if (insertIndex < 0) insertIndex = findLastChildIndex(head, isScriptOrLinkOrStyle) || -1;
   head.childNodes.splice(insertIndex + 1, 0, ...extraLinks);
 
+  // Rebase collected asset paths for tag assets (from <link> tags) and
+  // text assets (from <style> tags)
   const assetPaths: [string, string][] = [];
-  for (const [text, url] of assets) {
+  for (const [node, url] of tagAssets) {
+    const { basename, inputPath, rebasedURL } = rebaseAssetURL(url, template.inputPath, publicPath);
+    const href = node.attrs.find(a => a.name === 'href');
+    if (href) href.value = rebasedURL;
+    assetPaths.push([inputPath, path.resolve(absOutDir, basename)]);
+  }
+  for (const [text, url] of textAssets) {
     const { basename, inputPath, rebasedURL } = rebaseAssetURL(url, template.inputPath, publicPath);
     text.value = text.value.replace(url, rebasedURL);
     assetPaths.push([inputPath, path.resolve(absOutDir, basename)]);

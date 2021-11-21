@@ -5,7 +5,7 @@ import type { HashAlgorithm } from './html-entry-point';
 export type BuildMode = 'development' | 'production';
 export type CommandName = 'build' | 'node-dev' | 'serve';
 
-type BuildOptionsWithEntryPoints = Omit<BuildOptions, 'entryPoints' | 'bundle'> &
+type BuildOptionsWithEntryPoints = Omit<BuildOptions, 'entryPoints' | 'bundle' | 'write'> &
   Required<Pick<BuildOptions, 'entryPoints'>>;
 
 export interface EsbdConfig extends BuildOptionsWithEntryPoints {

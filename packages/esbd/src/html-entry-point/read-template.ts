@@ -1,5 +1,5 @@
 import { promises as fsp } from 'fs';
-import { parse, TextNode } from 'parse5';
+import { Element, parse, TextNode } from 'parse5';
 import path from 'path';
 
 import {
@@ -8,6 +8,7 @@ import {
   getUrl,
   isAbsoluteOrURL,
   isElement,
+  isNonStylesheetLink,
   isTextNode,
 } from './html-utils';
 import { parseURLs } from './parse-urls';
@@ -51,16 +52,35 @@ export async function readTemplate(
     ...body.childNodes.filter(node => node.nodeName === 'script'),
   ];
 
-  const entryPoints: EntryPoints = {};
+  // Collect entry points from script/link tags, grouping by file basename
+  // if multiple tags reference a file with the same basename
+  const entryPointsWithDuplicates: Record<string, string[]> = {};
   for (const tag of tags) {
     const url = getUrl(tag);
-    if (!url || isAbsoluteOrURL(url.value)) continue;
+    if (!url || isAbsoluteOrURL(url.value) || isNonStylesheetLink(tag)) continue;
 
     const entryName = path.basename(url.value, path.extname(url.value));
-    entryPoints[entryName] = path.relative(basedir, path.resolve(absTemplateDir, url.value));
+    const entryPath = path.relative(basedir, path.resolve(absTemplateDir, url.value));
+    entryPointsWithDuplicates[entryName] ??= [];
+    entryPointsWithDuplicates[entryName].push(entryPath);
   }
 
-  const assets: [TextNode, string][] = [];
+  // Write entry points to a map with no duplicates. Any duplicated basenames will
+  // have an index appended to the basename, e.g. `foo.js` becomes `foo.1.js`.
+  const entryPoints: EntryPoints = {};
+  for (const [entryName, entryPaths] of Object.entries(entryPointsWithDuplicates)) {
+    if (entryPaths.length === 1) {
+      entryPoints[entryName] = entryPaths[0];
+    } else {
+      for (let i = 0; i < entryPaths.length; i++) {
+        entryPoints[`${entryName}.${i}`] = entryPaths[i];
+      }
+    }
+  }
+
+  // Collect assets referenced inline by `<style>` and `<link>` tags
+  const tagAssets: [Element, string][] = [];
+  const textAssets: [TextNode, string][] = [];
   if (!ignoreAssets) {
     for (const tag of head.childNodes.filter(node => node.nodeName === 'style')) {
       const text = isElement(tag) && tag.childNodes.find(isTextNode);
@@ -68,15 +88,21 @@ export async function readTemplate(
       for (const url of parseURLs(text.value)) {
         if (!url || isAbsoluteOrURL(url)) continue;
 
-        assets.push([text, url]);
+        textAssets.push([text, url]);
       }
+    }
+    for (const tag of head.childNodes.filter(isNonStylesheetLink)) {
+      const url = getUrl(tag);
+      if (!url || isAbsoluteOrURL(url.value)) continue;
+      tagAssets.push([tag, url.value]);
     }
   }
 
   return [
     entryPoints,
     {
-      assets,
+      tagAssets,
+      textAssets,
       define,
       filename,
       ignoreAssets,

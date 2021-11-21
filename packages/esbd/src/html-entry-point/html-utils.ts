@@ -45,6 +45,14 @@ export function isLinkOrStyle(node: ChildNode): node is Element {
   return isElement(node) && (node.tagName === 'style' || node.tagName === 'link');
 }
 
+export function isNonStylesheetLink(node: ChildNode): node is Element {
+  return (
+    isElement(node) &&
+    node.tagName === 'link' &&
+    node.attrs.some(attr => attr.name === 'rel' && attr.value !== 'stylesheet')
+  );
+}
+
 export function isScriptOrLinkOrStyle(node: ChildNode): node is Element {
   return (
     isElement(node) &&
