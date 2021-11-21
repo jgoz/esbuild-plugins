@@ -236,4 +236,75 @@ describe('build command', () => {
       }),
     ).resolves.toMatchSnapshot();
   });
+
+  it('supports automatic react runtime', () => {
+    return expect(
+      buildWithHTML({
+        config: {
+          external: ['react', 'react-dom'],
+          jsxRuntime: 'automatic',
+        },
+        files: {
+          'src/index.html': `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <script defer type="module" src="./entry.tsx"></script>
+              </head>
+              <body><div id='root'></div></body>
+            </html>
+          `,
+          'src/entry.tsx': `
+            import ReactDOM from 'react';
+            import { App } from './app';
+            ReactDOM.render(<App />, document.getElementById('root'));
+          `,
+          'src/app.tsx': `
+            export function App() {
+              return <div>Hello world</div>;
+            }
+          `,
+        },
+      }),
+    ).resolves.toMatchSnapshot();
+  });
+
+  it('writes integrity hashes if requested', () => {
+    return expect(
+      buildWithHTML({
+        config: {
+          external: ['react', 'react-dom'],
+          integrity: 'sha256',
+        },
+        files: {
+          'src/index.html': `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <style>
+                  body {
+                    background: url(../assets/cats.jpg);
+                  }
+                </style>
+                <link rel="apple-touch-icon" href="../assets/favicon.png"/>
+                <link rel="stylesheet" href="../styles/entry.css" />
+                <script defer type="module" src="./entry.tsx"></script>
+              </head>
+              <body><div id='root'></div></body>
+            </html>
+          `,
+          'assets/cats.jpg': 'MEOW',
+          'assets/favicon.png': 'IMA FAVICON',
+          'src/entry.tsx': `
+            import ReactDOM from 'react';
+            function App() { return <div>Hello world</div>; }
+            ReactDOM.render(<App />, document.getElementById('root'));
+          `,
+          'styles/entry.css': `
+            body { background: red; }
+          `,
+        },
+      }),
+    ).resolves.toMatchSnapshot();
+  });
 });

@@ -218,3 +218,113 @@ index.html
 </html>
 
 `;
+
+exports[`build command supports automatic react runtime 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry.js
+---------------------------------
+// src/entry.tsx
+import { jsx as _jsx2 } from "react/jsx-runtime";
+import ReactDOM from "react";
+
+// src/app.tsx
+import { jsx as _jsx } from "react/jsx-runtime";
+function App() {
+  return /* @__PURE__ */ _jsx("div", {
+    children: "Hello world",
+  });
+}
+
+// src/entry.tsx
+ReactDOM.render(
+  /* @__PURE__ */ _jsx2(App, {}),
+  document.getElementById("root")
+);
+
+---------------------------------
+index.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <script defer="" type="module" src="entry.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+`;
+
+exports[`build command writes integrity hashes if requested 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+cats.jpg
+---------------------------------
+MEOW
+---------------------------------
+entry.0.css
+---------------------------------
+/* styles/entry.css */
+body {
+  background: red;
+}
+
+---------------------------------
+entry.1.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react";
+function App() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+---------------------------------
+favicon.png
+---------------------------------
+IMA FAVICON
+---------------------------------
+index.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        background: url(cats.jpg);
+      }
+    </style>
+    <link
+      rel="apple-touch-icon"
+      href="favicon.png"
+      integrity="sha256-m/XpYP27F4yCq5KBTKxEzP5x4gZBZjo5zeuDXbm+ypw="
+    />
+    <link
+      rel="stylesheet"
+      href="entry.0.css"
+      integrity="sha256-h7N0aRQFgi82y9VoYyAN3AlXuyhJ58bQ1uWjjffOWm4="
+    />
+    <script
+      defer=""
+      type="module"
+      src="entry.1.js"
+      integrity="sha256-eScjqSioiNP9qF5YfS4Ls4gUNjGl5AGTbQ/X3A6dtKc="
+    ></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+`;

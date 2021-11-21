@@ -168,8 +168,17 @@ export async function writeTemplate(
   for (const [node, url] of tagAssets) {
     const { basename, inputPath, rebasedURL } = rebaseAssetURL(url, template.inputPath, publicPath);
     const href = node.attrs.find(a => a.name === 'href');
-    if (href) href.value = rebasedURL;
-    assetPaths.push([inputPath, path.resolve(absOutDir, basename)]);
+    if (href) {
+      href.value = rebasedURL;
+      // TODO: parallelize this?
+      if (integrity) {
+        node.attrs.push({
+          name: 'integrity',
+          value: await calculateIntegrityHash(path.resolve(absTemplateDir, inputPath), integrity),
+        });
+      }
+      assetPaths.push([inputPath, path.resolve(absOutDir, basename)]);
+    }
   }
   for (const [text, url] of textAssets) {
     const { basename, inputPath, rebasedURL } = rebaseAssetURL(url, template.inputPath, publicPath);
