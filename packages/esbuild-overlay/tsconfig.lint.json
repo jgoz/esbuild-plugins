@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.json",
   "include": ["src", "test", "typings"],
-  "files": [".eslintrc.js", "build.js"]
+  "files": [".eslintrc.js", "bundle.js"]
 }

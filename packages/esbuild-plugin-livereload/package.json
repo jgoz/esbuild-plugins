@@ -40,8 +40,8 @@
     "typescript": "^4.5.2"
   },
   "scripts": {
-    "prepack": "./build.js build",
+    "prepack": "./bundle.js build",
     "test": "playwright test",
-    "watch": "./build.js build -w"
+    "watch": "./bundle.js build -w"
   }
 }

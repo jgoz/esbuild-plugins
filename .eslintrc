@@ -4,7 +4,7 @@
   "ignorePatterns": "**/fixture/**",
   "overrides": [
     {
-      "files": "build.js",
+      "files": "bundle.js",
       "env": { "node": true },
       "rules": { "@typescript-eslint/no-var-requires": "off" }
     }

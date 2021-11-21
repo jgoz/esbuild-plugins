@@ -53,8 +53,8 @@
     "maxWorkers": 1
   },
   "scripts": {
-    "prepack": "./build.js build",
+    "prepack": "./bundle.js build",
     "test": "jest",
-    "watch": "./build.js build -w"
+    "watch": "./bundle.js build -w"
   }
 }

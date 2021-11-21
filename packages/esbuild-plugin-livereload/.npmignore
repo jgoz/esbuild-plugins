@@ -1,5 +1,5 @@
 test/
 .*
-build.js
+bundle.js
 tsconfig*.json
 *.config.*

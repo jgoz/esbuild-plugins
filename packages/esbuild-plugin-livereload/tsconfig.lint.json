@@ -1,5 +1,11 @@
 {
   "extends": "./tsconfig.json",
   "include": ["src", "overlay", "test"],
-  "files": [".eslintrc.js", "build.js", "playwright.config.ts", "test/global-setup.ts", "banner.js"]
+  "files": [
+    ".eslintrc.js",
+    "bundle.js",
+    "playwright.config.ts",
+    "test/global-setup.ts",
+    "banner.js"
+  ]
 }

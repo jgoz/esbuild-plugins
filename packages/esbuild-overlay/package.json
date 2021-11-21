@@ -41,8 +41,8 @@
   },
   "scripts": {
     "prepublish": "pnpm check",
-    "prepack": "./build.js build",
+    "prepack": "./bundle.js build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "watch": "./build.js build -w"
+    "watch": "./bundle.js build -w"
   }
 }
