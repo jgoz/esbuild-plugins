@@ -31,9 +31,9 @@
   "devDependencies": {
     "@types/mkdirp": "^1.0.2",
     "@types/pretty-time": "^1.1.1",
+    "@types/sade": "^1.7.3",
     "@types/serve-static": "^1.13.10",
     "chokidar": "^3.5.2",
-    "commander": "^8.3.0",
     "esbuild": "^0.13.14",
     "esbuild-node-externals": "^1.4.0",
     "execa": "^5.0.0",
@@ -48,6 +48,7 @@
     "prettier": "^2.4.1",
     "pretty-bytes": "^5.6.0",
     "pretty-time": "^1.1.0",
+    "sade": "^1.7.4",
     "serve-static": "^1.14.1",
     "tslib": "^2.3.1",
     "typescript": "^4.5.2"

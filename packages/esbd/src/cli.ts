@@ -1,6 +1,7 @@
 import { typecheckPlugin } from '@jgoz/esbuild-plugin-typecheck/lib';
-import { Command, Option } from 'commander';
+import type { LogLevel } from 'esbuild';
 import path from 'path';
+import sade from 'sade';
 
 import {
   BuildMode,
@@ -17,6 +18,13 @@ import { createLogger, LOG_LEVELS, Logger } from './log';
 
 const { version } = require('../package.json');
 
+interface GlobalOptions {
+  check?: boolean;
+  logLevel?: LogLevel;
+  mode: BuildMode;
+  tsBuildMode?: 'readonly' | 'write-output';
+}
+
 interface BuildOptions {
   watch?: boolean;
 }
@@ -30,11 +38,28 @@ interface ServeOptions {
 }
 
 interface NodeDevOptions {
+  _?: string[];
   respawn?: boolean;
 }
 
+function validateOptions<T extends GlobalOptions>(opts: T): T {
+  if (opts.logLevel && !LOG_LEVELS.includes(opts.logLevel)) {
+    console.error(`Invalid --log-level option: ${opts.logLevel}`);
+    process.exit(1);
+  }
+  if (opts.mode !== 'development' && opts.mode !== 'production') {
+    console.error(`Invalid --mode option: ${opts.mode}`);
+    process.exit(1);
+  }
+  if (opts.tsBuildMode && opts.tsBuildMode !== 'readonly' && opts.tsBuildMode !== 'write-output') {
+    console.error(`Invalid --ts-build-mode option: ${opts.tsBuildMode}`);
+    process.exit(1);
+  }
+  return opts;
+}
+
 function updateConfig(
-  program: Command,
+  options: GlobalOptions,
   config: EsbdConfig,
   logger: Logger,
   watch?: boolean,
@@ -44,8 +69,8 @@ function updateConfig(
   config.outdir ??= path.join(config.absWorkingDir, 'dist');
   config.plugins ??= [];
 
-  if (program.opts().check) {
-    const buildMode = program.opts().tsBuildMode;
+  if (options.check) {
+    const buildMode = options.tsBuildMode;
     config.plugins.push(
       typecheckPlugin({
         configFile: config.tsconfig,
@@ -83,35 +108,28 @@ function getSingleConfigResult(
   return config;
 }
 
-function commandWithGlobalOpts(program: Command, command: string) {
-  return program
-    .command(command)
-    .addOption(
-      new Option('-l, --log-level <level>', 'logging level [default="warning"]').choices(
-        LOG_LEVELS,
-      ),
-    )
-    .addOption(
-      new Option('-m, --mode <mode>', 'output build mode').choices(['development', 'production']),
-    )
-    .option('-t, --check', 'check types asynchronously with the TypeScript compiler')
-    .addOption(
-      new Option('--ts-build-mode <mode>', 'TypeScript "build" mode behavior')
-        .choices(['readonly', 'write-output'])
-        .default('write-output'),
-    );
-}
-
 export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
   const programName = path.relative(process.cwd(), process.argv[1]);
-  const program = new Command(programName).version(version);
-  const mode: BuildMode = program.opts().mode ?? 'development';
+  const prog = sade(programName);
 
-  commandWithGlobalOpts(program, 'build [name]')
-    .description('Entry point bundler powered by esbuild')
+  prog
+    .version(version)
+    .describe('Bundles a web or node application')
+    .option('-l, --log-level <level>', `logging level [${LOG_LEVELS}] (default warning)`)
+    .option('-m, --mode <mode>', 'build mode [development,production]', 'development')
+    .option('-t, --check', 'check types asynchronously with the TypeScript compiler')
+    .option(
+      '--ts-build-mode',
+      'TypeScript "build" mode behavior [readonly,write-output]',
+      'write-output',
+    )
+    // Command: build
+    .command('build [name]', 'Entry point bundler powered by esbuild (Default command)', {
+      default: true,
+    })
     .option('-w, --watch', 'watch for changes and rebuild')
-    .action(async (name: string | undefined, options: BuildOptions, command: Command) => {
-      const { watch = false } = options;
+    .action(async (name: string | undefined, options: GlobalOptions & BuildOptions) => {
+      const { logLevel, mode, watch = false } = validateOptions(options);
       const configResult =
         typeof configParam === 'function' ? await configParam(mode, 'build') : configParam;
 
@@ -122,28 +140,24 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
         : [configResult];
 
       for (const config of configs) {
-        const logger = createLogger(command.opts().logLevel ?? config.logLevel ?? 'warning');
-        await esbdBuild(updateConfig(command, config, logger, watch), {
+        const logger = createLogger(logLevel ?? config.logLevel ?? 'warning');
+        await esbdBuild(updateConfig(options, config, logger, watch), {
           mode,
           logger,
           watch,
         });
       }
-    });
-
-  commandWithGlobalOpts(program, 'node-dev [name]')
-    .description('Node application development host')
+    })
+    // Command: node-dev
+    .command('node-dev [name]', 'Node application development host')
+    .example('-r -- --port 8080 --config my-config.json')
     .option('-r, --respawn', 'restart program on exit/error (but quit after 3 restarts within 5s)')
-    .addHelpText(
-      'after',
-      '\nArguments that appear after a special -- argument will be passed to the node program.' +
-        '\n\nExample:' +
-        '\n\tnode-dev path/to/entry.ts -- --port 8080 --config my-config.json',
-    )
-    .action(async (name: string, options: NodeDevOptions, command: Command) => {
-      const { respawn = false } = options;
+    .action(async (name: string, options: GlobalOptions & NodeDevOptions) => {
+      const { logLevel, mode, respawn = false } = validateOptions(options);
       const configResult =
-        typeof configParam === 'function' ? await configParam(mode, 'node-dev') : configParam;
+        typeof configParam === 'function'
+          ? await configParam(options.mode, 'node-dev')
+          : configParam;
 
       const config = getSingleConfigResult(
         'node-dev',
@@ -152,25 +166,33 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
         c => c.platform === 'node',
       );
 
-      const logger = createLogger(command.opts().logLevel ?? config.logLevel ?? 'warning');
-      await nodeDev(updateConfig(command, config, logger, true), {
-        args: command.args,
+      const logger = createLogger(logLevel ?? config.logLevel ?? 'warning');
+      await nodeDev(updateConfig(options, config, logger, true), {
+        args: options._ ?? [],
         logger,
         mode,
         respawn,
       });
-    });
-
-  commandWithGlobalOpts(program, 'serve [name]')
-    .description('Single page application development server')
+    })
+    // Command: serve
+    .command('serve [name]', 'Single page application development server')
     .option('-d, --servedir <path>', 'directory of additional static assets to serve')
     .option('-l, --livereload', 'reload page on rebuild')
     .option('-h, --host <host>', 'IP/host name to use when serving requests', 'localhost')
     .option('-p, --port <port>', 'port to use', '8000')
     .option('--rewrite', 'rewrite all not-found requests to "index.html" (SPA mode)', true)
     .option('--no-rewrite', 'disable request rewriting')
-    .action(async (name: string, options: ServeOptions, command: Command) => {
-      const { host, port = '8000', livereload, servedir, rewrite } = options;
+    .action(async (name: string, options: GlobalOptions & ServeOptions) => {
+      const {
+        host,
+        mode,
+        logLevel,
+        port = '8000',
+        livereload,
+        servedir,
+        rewrite,
+      } = validateOptions(options);
+
       const configResult =
         typeof configParam === 'function' ? await configParam(mode, 'serve') : configParam;
 
@@ -181,8 +203,8 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
         c => !c.platform || c.platform === 'browser',
       );
 
-      const logger = createLogger(command.opts().logLevel ?? config.logLevel ?? 'warning');
-      await serve(updateConfig(command, config, logger, true), {
+      const logger = createLogger(logLevel ?? config.logLevel ?? 'warning');
+      await serve(updateConfig(options, config, logger, true), {
         mode,
         host,
         port: Number(port),
@@ -193,11 +215,11 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
       });
     });
 
+  prog.parse(process.argv);
+
   process.on('unhandledRejection', (reason: Error) => {
     console.error(`An error occurred that caused ${programName} to shut down.`);
     console.error(reason.stack ?? reason);
     process.exit(1);
   });
-
-  return program.parse(process.argv);
 }
