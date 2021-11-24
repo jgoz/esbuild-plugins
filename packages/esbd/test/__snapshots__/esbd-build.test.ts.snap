@@ -9,7 +9,7 @@ STDOUT
 entry.js
 ---------------------------------
 // src/entry.tsx
-import ReactDOM from "react";
+import ReactDOM from "react-dom";
 
 // src/app.tsx
 function App() {
@@ -46,7 +46,7 @@ body {
 entry.js
 ---------------------------------
 // src/entry.tsx
-import ReactDOM from "react";
+import ReactDOM from "react-dom";
 
 // src/app.tsx
 function App() {
@@ -70,7 +70,7 @@ STDOUT
 entry.js
 ---------------------------------
 // src/entry.tsx
-import ReactDOM from "react";
+import ReactDOM from "react-dom";
 
 // src/app.tsx
 function App() {
@@ -108,7 +108,7 @@ entry.js
 ---------------------------------
 // src/entry.tsx
 import { jsx as _jsx2 } from "react/jsx-runtime";
-import ReactDOM from "react";
+import ReactDOM from "react-dom";
 
 // src/app.tsx
 import { jsx as _jsx } from "react/jsx-runtime";

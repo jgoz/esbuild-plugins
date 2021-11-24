@@ -66,7 +66,7 @@ describe('build command', () => {
         },
         files: {
           'src/entry.tsx': `
-            import ReactDOM from 'react';
+            import ReactDOM from 'react-dom';
             import { App } from './app';
             ReactDOM.render(<App />, document.getElementById('root'));
           `,
@@ -97,7 +97,7 @@ describe('build command', () => {
             .app { background: green; }
           `,
           'src/entry.tsx': `
-            import ReactDOM from 'react';
+            import ReactDOM from 'react-dom';
             import { App } from './app';
             ReactDOM.render(<App />, document.getElementById('root'));
           `,
@@ -128,7 +128,7 @@ describe('build command', () => {
             .app { background: green; }
           `,
           'src/entry.tsx': `
-            import ReactDOM from 'react';
+            import ReactDOM from 'react-dom';
             import { App } from './app';
             import './entry.css';
             ReactDOM.render(<App />, document.getElementById('root'));
@@ -154,7 +154,7 @@ describe('build command', () => {
         },
         files: {
           'src/entry.tsx': `
-            import ReactDOM from 'react';
+            import ReactDOM from 'react-dom';
             import { App } from './app';
             ReactDOM.render(<App />, document.getElementById('root'));
           `,

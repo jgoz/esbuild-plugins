@@ -63,7 +63,7 @@ async function buildWithHTML(options: BuildWithHTMLOptions): Promise<BuildWithHT
   return { outdir: absOutDir, stdout, stderr };
 }
 
-describe('build command', () => {
+describe('build command (html entry)', () => {
   afterAll(async () => {
     await fs.promises.rm(path.join(__dirname, 'tests'), { recursive: true });
   });
@@ -85,7 +85,7 @@ describe('build command', () => {
             </html>
           `,
           'src/entry.tsx': `
-            import ReactDOM from 'react';
+            import ReactDOM from 'react-dom';
             import { App } from './app';
             ReactDOM.render(<App />, document.getElementById('root'));
           `,
@@ -124,7 +124,7 @@ describe('build command', () => {
             .app { background: green; }
           `,
           'src/entry.tsx': `
-            import ReactDOM from 'react';
+            import ReactDOM from 'react-dom';
             import { App } from './app';
             ReactDOM.render(<App />, document.getElementById('root'));
           `,
@@ -162,7 +162,7 @@ describe('build command', () => {
             .app { background: green; }
           `,
           'src/entry.tsx': `
-            import ReactDOM from 'react';
+            import ReactDOM from 'react-dom';
             import { App } from './app';
             import './entry.css';
             ReactDOM.render(<App />, document.getElementById('root'));
@@ -196,7 +196,7 @@ describe('build command', () => {
           `,
           'assets/favicon.png': 'IMA FAVICON',
           'src/entry.tsx': `
-            import ReactDOM from 'react';
+            import ReactDOM from 'react-dom';
             function App() { return <div>Hello world</div>; }
             ReactDOM.render(<App />, document.getElementById('root'));
           `,
@@ -228,7 +228,7 @@ describe('build command', () => {
           `,
           'assets/cats.jpg': 'MEOW',
           'src/entry.tsx': `
-            import ReactDOM from 'react';
+            import ReactDOM from 'react-dom';
             function App() { return <div>Hello world</div>; }
             ReactDOM.render(<App />, document.getElementById('root'));
           `,
@@ -255,7 +255,7 @@ describe('build command', () => {
             </html>
           `,
           'src/entry.tsx': `
-            import ReactDOM from 'react';
+            import ReactDOM from 'react-dom';
             import { App } from './app';
             ReactDOM.render(<App />, document.getElementById('root'));
           `,
@@ -296,7 +296,7 @@ describe('build command', () => {
           'assets/cats.jpg': 'MEOW',
           'assets/favicon.png': 'IMA FAVICON',
           'src/entry.tsx': `
-            import ReactDOM from 'react';
+            import ReactDOM from 'react-dom';
             function App() { return <div>Hello world</div>; }
             ReactDOM.render(<App />, document.getElementById('root'));
           `,

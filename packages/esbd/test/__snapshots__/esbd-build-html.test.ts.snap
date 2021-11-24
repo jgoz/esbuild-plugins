@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`build command builds a simple HTML entry point 1`] = `
+exports[`build command (html entry) builds a simple HTML entry point 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -9,7 +9,7 @@ STDOUT
 entry.js
 ---------------------------------
 // src/entry.tsx
-import ReactDOM from "react";
+import ReactDOM from "react-dom";
 
 // src/app.tsx
 function App() {
@@ -37,7 +37,7 @@ index.html
 
 `;
 
-exports[`build command includes referenced CSS from HTML 1`] = `
+exports[`build command (html entry) includes referenced CSS from HTML 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -59,7 +59,7 @@ body {
 entry.1.js
 ---------------------------------
 // src/entry.tsx
-import ReactDOM from "react";
+import ReactDOM from "react-dom";
 
 // src/app.tsx
 function App() {
@@ -88,7 +88,7 @@ index.html
 
 `;
 
-exports[`build command includes referenced CSS from JS 1`] = `
+exports[`build command (html entry) includes referenced CSS from JS 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -110,7 +110,7 @@ body {
 entry.js
 ---------------------------------
 // src/entry.tsx
-import ReactDOM from "react";
+import ReactDOM from "react-dom";
 
 // src/app.tsx
 function App() {
@@ -139,7 +139,7 @@ index.html
 
 `;
 
-exports[`build command includes referenced assets from HTML 1`] = `
+exports[`build command (html entry) includes referenced assets from HTML 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -148,7 +148,7 @@ STDOUT
 entry.js
 ---------------------------------
 // src/entry.tsx
-import ReactDOM from "react";
+import ReactDOM from "react-dom";
 function App() {
   return /* @__PURE__ */ React.createElement("div", null, "Hello world");
 }
@@ -177,7 +177,7 @@ index.html
 
 `;
 
-exports[`build command includes referenced assets from style tags 1`] = `
+exports[`build command (html entry) includes referenced assets from style tags 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -190,7 +190,7 @@ MEOW
 entry.js
 ---------------------------------
 // src/entry.tsx
-import ReactDOM from "react";
+import ReactDOM from "react-dom";
 function App() {
   return /* @__PURE__ */ React.createElement("div", null, "Hello world");
 }
@@ -219,7 +219,7 @@ index.html
 
 `;
 
-exports[`build command supports automatic react runtime 1`] = `
+exports[`build command (html entry) supports automatic react runtime 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -229,7 +229,7 @@ entry.js
 ---------------------------------
 // src/entry.tsx
 import { jsx as _jsx2 } from "react/jsx-runtime";
-import ReactDOM from "react";
+import ReactDOM from "react-dom";
 
 // src/app.tsx
 import { jsx as _jsx } from "react/jsx-runtime";
@@ -260,7 +260,7 @@ index.html
 
 `;
 
-exports[`build command writes integrity hashes if requested 1`] = `
+exports[`build command (html entry) writes integrity hashes if requested 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -281,7 +281,7 @@ body {
 entry.1.js
 ---------------------------------
 // src/entry.tsx
-import ReactDOM from "react";
+import ReactDOM from "react-dom";
 function App() {
   return /* @__PURE__ */ React.createElement("div", null, "Hello world");
 }
@@ -319,7 +319,7 @@ index.html
       defer=""
       type="module"
       src="entry.1.js"
-      integrity="sha256-eScjqSioiNP9qF5YfS4Ls4gUNjGl5AGTbQ/X3A6dtKc="
+      integrity="sha256-NvQobgjBDGRnA/TwQI2waRjuU25hnAjteV1NhFBmjbo="
     ></script>
   </head>
   <body>
