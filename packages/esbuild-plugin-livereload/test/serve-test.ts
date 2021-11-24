@@ -1,6 +1,7 @@
 /* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
-import { build, serve, ServeResult } from 'esbuild';
+import type { ServeResult } from 'esbuild';
+import { build, serve } from 'esbuild';
 import esbuildSvelte from 'esbuild-svelte';
 import { promises as fsp } from 'fs';
 import getPort from 'get-port';

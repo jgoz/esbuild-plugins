@@ -5,7 +5,7 @@ import path from 'path';
 import prettier from 'prettier';
 
 import { sassPlugin } from '../src';
-import { SaasImplementation } from '../src/sass-plugin';
+import type { SaasImplementation } from '../src/sass-plugin';
 
 const implementations: SaasImplementation[] = ['sass', 'node-sass'];
 
@@ -211,7 +211,7 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
       bundle: true,
       plugins: [sassPlugin({ implementation })],
       watch: {
-        onRebuild(error, result) {
+        onRebuild(_error, _result) {
           count++;
         },
       },

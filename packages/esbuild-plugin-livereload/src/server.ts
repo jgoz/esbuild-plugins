@@ -1,5 +1,6 @@
 import fs from 'fs';
-import { createServer, Server, ServerResponse } from 'http';
+import type { Server, ServerResponse } from 'http';
+import { createServer } from 'http';
 import path from 'path';
 import { URL } from 'url';
 

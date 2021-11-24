@@ -1,7 +1,7 @@
 import type { Plugin } from 'esbuild';
 import K from 'kleur';
 
-import { Logger, TimedSpinner } from './log';
+import type { Logger, TimedSpinner } from './log';
 
 export function timingPlugin(logger: Logger, progressMessage = 'Building…'): Plugin {
   let spinner: TimedSpinner;

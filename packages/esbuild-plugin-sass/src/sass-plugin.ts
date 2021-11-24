@@ -1,7 +1,7 @@
-import { OnLoadArgs, OnLoadResult, OnResolveArgs, Plugin } from 'esbuild';
+import type { OnLoadArgs, OnLoadResult, OnResolveArgs, Plugin } from 'esbuild';
 import { promises as fsp } from 'fs';
 import { dirname, resolve } from 'path';
-import { Importer, types } from 'sass';
+import type { Importer, types } from 'sass';
 
 import { createSassImporter } from './create-sass-importer';
 import { loadSass } from './load-sass';

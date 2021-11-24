@@ -1,5 +1,6 @@
 import type { LogLevel } from 'esbuild';
-import spin, { Spinner } from 'io-spin';
+import type { Spinner } from 'io-spin';
+import spin from 'io-spin';
 import K from 'kleur';
 import prettyTime from 'pretty-time';
 

@@ -3,7 +3,7 @@ import type { LogLevel } from 'esbuild';
 import path from 'path';
 import sade from 'sade';
 
-import {
+import type {
   BuildMode,
   ConfigFn,
   EsbdConfig,
@@ -14,7 +14,8 @@ import {
 import esbdBuild from './esbd-build';
 import nodeDev from './esbd-node-dev';
 import serve from './esbd-serve';
-import { createLogger, LOG_LEVELS, Logger } from './log';
+import type { Logger } from './log';
+import { createLogger, LOG_LEVELS } from './log';
 
 const { version } = require('../package.json');
 

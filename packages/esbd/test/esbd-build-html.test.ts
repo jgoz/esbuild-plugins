@@ -2,9 +2,9 @@ import { node } from 'execa';
 import fs from 'fs';
 import path from 'path';
 
-import { EsbdConfig } from '../lib';
+import type { EsbdConfig } from '../lib';
 
-import { BuildWithHTMLOutput } from './types';
+import type { BuildWithHTMLOutput } from './types';
 
 interface BuildWithHTMLOptions {
   config: Partial<EsbdConfig>;

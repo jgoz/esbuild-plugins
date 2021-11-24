@@ -2,7 +2,8 @@ import type { BuildOptions } from 'esbuild';
 import path from 'path';
 
 import type { BuildMode, ResolvedEsbdConfig } from './config';
-import { EntryPoints, readTemplate, WriteTemplateOptions } from './html-entry-point';
+import type { EntryPoints, WriteTemplateOptions } from './html-entry-point';
+import { readTemplate } from './html-entry-point';
 
 export interface BuildOptionsWithInvariants extends BuildOptions {
   absWorkingDir: string;

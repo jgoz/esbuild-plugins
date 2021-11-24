@@ -1,6 +1,7 @@
 import type { BuildOptions, BuildResult } from 'esbuild';
 import { promises as fsp } from 'fs';
-import { Document, Element, serialize, TextNode } from 'parse5';
+import type { Document, Element, TextNode } from 'parse5';
+import { serialize } from 'parse5';
 import path from 'path';
 
 import {

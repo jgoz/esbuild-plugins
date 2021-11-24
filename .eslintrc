@@ -1,7 +1,9 @@
 {
   "root": true,
   "extends": "@awesome-code-style",
-  "ignorePatterns": "**/fixture/**",
+  "rules": {
+    "@typescript-eslint/consistent-type-imports": ["warn", { "prefer": "type-imports" }]
+  },
   "overrides": [
     {
       "files": "bundle.js",

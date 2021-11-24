@@ -1,14 +1,15 @@
 import type { ChildProcess } from 'child_process';
-import { ExecaChildPromise, node as execaNode } from 'execa';
+import type { ExecaChildPromise } from 'execa';
+import { node as execaNode } from 'execa';
 import fs from 'fs';
 import K from 'kleur';
 import Graceful from 'node-graceful';
 import path from 'path';
 
-import { BuildMode, ResolvedEsbdConfig } from './config';
+import type { BuildMode, ResolvedEsbdConfig } from './config';
 import { getBuildOptions } from './get-build-options';
 import { incrementalBuild } from './incremental-build';
-import { Logger } from './log';
+import type { Logger } from './log';
 import { timingPlugin } from './timing-plugin';
 
 interface EsbdNodeDevConfig {

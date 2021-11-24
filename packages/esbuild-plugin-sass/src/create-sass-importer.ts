@@ -4,7 +4,7 @@ import path from 'path';
 import type sass from 'sass';
 import { fileURLToPath } from 'url';
 
-import { SaasImplementation } from './sass-plugin';
+import type { SaasImplementation } from './sass-plugin';
 
 const MODULE_REQUEST_REGEX = /^[^?]*~/; // Examples:
 // - ~package

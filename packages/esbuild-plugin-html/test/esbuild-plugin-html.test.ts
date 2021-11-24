@@ -1,9 +1,11 @@
-import { build, BuildOptions } from 'esbuild';
+import type { BuildOptions } from 'esbuild';
+import { build } from 'esbuild';
 import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
 
-import { htmlPlugin, HtmlPluginOptions } from '../lib';
+import type { HtmlPluginOptions } from '../lib';
+import { htmlPlugin } from '../lib';
 
 jest.mock('fs');
 

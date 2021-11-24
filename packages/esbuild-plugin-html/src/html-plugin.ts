@@ -1,16 +1,8 @@
 import { createHash } from 'crypto';
-import { Metafile, Plugin } from 'esbuild';
+import type { Metafile, Plugin } from 'esbuild';
 import { createReadStream, promises as fsp } from 'fs';
-import {
-  Attribute,
-  ChildNode,
-  DocumentType,
-  Element,
-  ParentNode,
-  parse,
-  serialize,
-  TextNode,
-} from 'parse5';
+import type { Attribute, ChildNode, DocumentType, Element, ParentNode, TextNode } from 'parse5';
+import { parse, serialize } from 'parse5';
 import path from 'path';
 
 /**

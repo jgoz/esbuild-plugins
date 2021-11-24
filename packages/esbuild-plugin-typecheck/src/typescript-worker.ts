@@ -4,7 +4,8 @@ import { fs as memfs } from 'memfs';
 import { dirname } from 'path';
 import ts from 'typescript';
 import { ufs } from 'unionfs';
-import { isMainThread, MessagePort, parentPort, workerData } from 'worker_threads';
+import type { MessagePort } from 'worker_threads';
+import { isMainThread, parentPort, workerData } from 'worker_threads';
 
 import { Reporter } from './reporter';
 

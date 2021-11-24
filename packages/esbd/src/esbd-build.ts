@@ -3,11 +3,11 @@ import K from 'kleur';
 import { basename, relative } from 'path';
 import prettyBytes from 'pretty-bytes';
 
-import { BuildMode, ResolvedEsbdConfig } from './config';
+import type { BuildMode, ResolvedEsbdConfig } from './config';
 import { getBuildOptions, getHtmlBuildOptions } from './get-build-options';
 import { writeTemplate } from './html-entry-point';
 import { incrementalBuild } from './incremental-build';
-import { Logger } from './log';
+import type { Logger } from './log';
 import { swcPlugin } from './swc-plugin';
 import { timingPlugin } from './timing-plugin';
 

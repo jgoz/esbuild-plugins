@@ -51,7 +51,7 @@
   "scripts": {
     "build": "tsc -b && pnpm run -r --if-present prepack",
     "clobber": "rm -rf node_modules packages/*/{dist,lib,node_modules} **/*.tsbuildinfo",
-    "lint": "eslint packages/**/*.ts",
+    "lint": "eslint \"packages/**/*.ts\"",
     "node-check": "node -v && arch",
     "prepare": "tsc -b",
     "test": "pnpm test -r",

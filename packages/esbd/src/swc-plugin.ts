@@ -1,4 +1,5 @@
-import { Options, Output, transformFile } from '@swc/core';
+import type { Options, Output } from '@swc/core';
+import { transformFile } from '@swc/core';
 import type { Plugin } from 'esbuild';
 import { relative } from 'path';
 

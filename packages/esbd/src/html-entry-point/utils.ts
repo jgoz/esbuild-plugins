@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 import { createReadStream, promises as fsp } from 'fs';
 
-import { HashAlgorithm } from './types';
+import type { HashAlgorithm } from './types';
 
 export function cachedCopyFile(
   copyFile: typeof fsp.copyFile,

@@ -1,5 +1,6 @@
 import { promises as fsp } from 'fs';
-import { Element, parse, TextNode } from 'parse5';
+import type { Element, TextNode } from 'parse5';
+import { parse } from 'parse5';
 import path from 'path';
 
 import {
@@ -13,7 +14,7 @@ import {
 } from './html-utils';
 import { parseURLs } from './parse-urls';
 import type { EntryPoints, EsbuildHtmlOptions } from './types';
-import { WriteTemplateOptions } from './write-template';
+import type { WriteTemplateOptions } from './write-template';
 
 export async function readTemplate(
   templatePath: string,

@@ -1,6 +1,5 @@
 import { watch } from 'chokidar';
-import {
-  build,
+import type {
   BuildIncremental,
   BuildInvalidate,
   BuildOptions,
@@ -8,12 +7,13 @@ import {
   Metafile,
   OutputFile,
 } from 'esbuild';
+import { build } from 'esbuild';
 import { EventEmitter } from 'events';
 import { copyFile } from 'fs/promises';
 import mkdirp from 'mkdirp';
 import path from 'path';
 
-import { Logger } from './log';
+import type { Logger } from './log';
 
 interface BuildIncrementalResult extends BuildIncremental {
   metafile: Metafile;
