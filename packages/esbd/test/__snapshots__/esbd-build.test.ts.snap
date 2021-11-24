@@ -1,0 +1,127 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`build command builds a simple entry point 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react";
+
+// src/app.tsx
+function App() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+
+// src/entry.tsx
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+`;
+
+exports[`build command includes referenced CSS from JS 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry.css
+---------------------------------
+/* src/app.css */
+.app {
+  background: green;
+}
+
+/* src/entry.css */
+body {
+  background: red;
+}
+
+---------------------------------
+entry.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react";
+
+// src/app.tsx
+function App() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+
+// src/entry.tsx
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+`;
+
+exports[`build command includes referenced CSS from entry point 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react";
+
+// src/app.tsx
+function App() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+
+// src/entry.tsx
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+---------------------------------
+style.css
+---------------------------------
+/* styles/app.css */
+.app {
+  background: green;
+}
+
+/* styles/entry.css */
+body {
+  background: red;
+}
+
+`;
+
+exports[`build command supports automatic react runtime 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry.js
+---------------------------------
+// src/entry.tsx
+import { jsx as _jsx2 } from "react/jsx-runtime";
+import ReactDOM from "react";
+
+// src/app.tsx
+import { jsx as _jsx } from "react/jsx-runtime";
+function App() {
+  return /* @__PURE__ */ _jsx("div", {
+    children: "Hello world",
+  });
+}
+
+// src/entry.tsx
+ReactDOM.render(
+  /* @__PURE__ */ _jsx2(App, {}),
+  document.getElementById("root")
+);
+
+`;
