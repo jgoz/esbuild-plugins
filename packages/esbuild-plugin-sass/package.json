@@ -50,7 +50,15 @@
   },
   "jest": {
     "testTimeout": 5000,
-    "maxWorkers": 1
+    "maxWorkers": 1,
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx)$": [
+        "babel-jest",
+        {
+          "rootMode": "upward"
+        }
+      ]
+    }
   },
   "scripts": {
     "prepack": "./bundle.js build",

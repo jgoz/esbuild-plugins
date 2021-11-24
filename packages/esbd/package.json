@@ -56,7 +56,15 @@
       "<rootDir>/test/serializer.js"
     ],
     "testTimeout": 10000,
-    "maxWorkers": 1
+    "maxWorkers": 1,
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx)$": [
+        "babel-jest",
+        {
+          "rootMode": "upward"
+        }
+      ]
+    }
   },
   "scripts": {
     "prepack": "./bundle.js build",
