@@ -56,15 +56,18 @@ importers:
     specifiers:
       '@jgoz/esbuild-plugin-livereload': workspace:*
       '@jgoz/esbuild-plugin-typecheck': workspace:*
+      '@playwright/test': ^1.16.3
       '@swc/core': ^1.2.111
       '@types/mkdirp': ^1.0.2
       '@types/pretty-time': ^1.1.1
       '@types/sade': ^1.7.3
       '@types/serve-static': ^1.13.10
+      '@types/wait-on': ^5.3.1
       chokidar: ^3.5.2
       esbuild: ^0.13.15
       esbuild-node-externals: ^1.4.0
       execa: ^5.0.0
+      get-port: ^5.0.0
       io-spin: ^0.4.1
       jest: ^27.3.1
       kleur: ^4.1.4
@@ -72,26 +75,33 @@ importers:
       mkdirp: ^1.0.4
       node-graceful: ^3.1.0
       parse5: ^6.0.1
+      playwright: ^1.16.3
       prettier: ^2.4.1
       pretty-bytes: ^5.6.0
       pretty-time: ^1.1.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
       sade: ^1.7.4
       serve-static: ^1.14.1
       tslib: ^2.3.1
       typescript: ^4.5.2
+      wait-on: ^6.0.0
     dependencies:
       '@jgoz/esbuild-plugin-livereload': link:../esbuild-plugin-livereload
       '@jgoz/esbuild-plugin-typecheck': link:../esbuild-plugin-typecheck
       '@swc/core': 1.2.111
     devDependencies:
+      '@playwright/test': 1.16.3
       '@types/mkdirp': 1.0.2
       '@types/pretty-time': 1.1.1
       '@types/sade': 1.7.3
       '@types/serve-static': 1.13.10
+      '@types/wait-on': 5.3.1
       chokidar: 3.5.2
       esbuild: 0.13.15
       esbuild-node-externals: 1.4.0_esbuild@0.13.15
       execa: 5.1.1
+      get-port: 5.1.1
       io-spin: 0.4.1
       jest: 27.3.1
       kleur: 4.1.4
@@ -99,13 +109,17 @@ importers:
       mkdirp: 1.0.4
       node-graceful: 3.1.0
       parse5: 6.0.1
+      playwright: 1.16.3
       prettier: 2.4.1
       pretty-bytes: 5.6.0
       pretty-time: 1.1.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
       sade: 1.7.4
       serve-static: 1.14.1
       tslib: 2.3.1
       typescript: 4.5.2
+      wait-on: 6.0.0
 
   packages/esbuild-overlay:
     specifiers:
@@ -1574,6 +1588,16 @@ packages:
       - supports-color
     dev: true
 
+  /@hapi/hoek/9.2.1:
+    resolution: {integrity: sha512-gfta+H8aziZsm8pZa0vj04KO6biEiisppNgA1kbJvFrrWu9Vm7eaUEy76DIxsuTaWvti5fkJVhllWc6ZTE+Mdw==}
+    dev: true
+
+  /@hapi/topo/5.1.0:
+    resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
+    dependencies:
+      '@hapi/hoek': 9.2.1
+    dev: true
+
   /@humanwhocodes/config-array/0.6.0:
     resolution: {integrity: sha512-JQlEKbcgEUjBFhLIF4iqM7u/9lwgHRBcpHrmUNCALK0Q3amXN6lxdoXLnF0sm11E9VqTmBALR87IlUg1bZ8A9A==}
     engines: {node: '>=10.10.0'}
@@ -1871,6 +1895,20 @@ packages:
       - utf-8-validate
     dev: true
 
+  /@sideway/address/4.1.2:
+    resolution: {integrity: sha512-idTz8ibqWFrPU8kMirL0CoPH/A29XOzzAzpyN3zQ4kAWnzmNfFmRaoMNN6VI8ske5M73HZyhIaW4OuSFIdM4oA==}
+    dependencies:
+      '@hapi/hoek': 9.2.1
+    dev: true
+
+  /@sideway/formula/3.0.0:
+    resolution: {integrity: sha512-vHe7wZ4NOXVfkoRb8T5otiENVlT7a3IAiw7H5M2+GO+9CDgcVUUsX1zalAztCmwyOr2RUTGJdgB+ZvSVqmdHmg==}
+    dev: true
+
+  /@sideway/pinpoint/2.0.0:
+    resolution: {integrity: sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==}
+    dev: true
+
   /@sinonjs/commons/1.8.3:
     resolution: {integrity: sha512-xkNcLAn/wZaX14RPlwizcKicDk9G3F8m2nU3L7Ukm5zBgTwiT0wsoFAHx9Jq56fJA1z/7uKGtCRu16sOUCLIHQ==}
     dependencies:
@@ -2166,6 +2204,12 @@ packages:
 
   /@types/stack-utils/2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
+    dev: true
+
+  /@types/wait-on/5.3.1:
+    resolution: {integrity: sha512-2FFOKCF/YydrMUaqg+fkk49qf0e5rDgwt6aQsMzFQzbS419h2gNOXyiwp/o2yYy27bi/C1z+HgfncryjGzlvgQ==}
+    dependencies:
+      '@types/node': 16.11.9
     dev: true
 
   /@types/yargs-parser/20.2.1:
@@ -2579,6 +2623,14 @@ packages:
 
   /aws4/1.11.0:
     resolution: {integrity: sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==}
+    dev: true
+
+  /axios/0.21.4:
+    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
+    dependencies:
+      follow-redirects: 1.14.5
+    transitivePeerDependencies:
+      - debug
     dev: true
 
   /babel-jest/27.3.1_@babel+core@7.16.0:
@@ -3945,6 +3997,16 @@ packages:
     resolution: {integrity: sha512-dVsPA/UwQ8+2uoFe5GHtiBMu48dWLTdsuEd7CKGlZlD78r1TTWBvDuFaFGKCo/ZfEr95Uk56vZoX86OsHkUeIg==}
     deprecated: flatten is deprecated in favor of utility frameworks such as lodash.
 
+  /follow-redirects/1.14.5:
+    resolution: {integrity: sha512-wtphSXy7d4/OR+MvIFbCVBDzZ5520qV8XfPklSN5QtxuMUJZ+b0Wnst1e1lCDocfzuCkHqj8k0FpZqO+UIaKNA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: true
+
   /forever-agent/0.6.1:
     resolution: {integrity: sha1-+8cfDEGt6zf5bFd60e1C2P2sypE=}
     dev: true
@@ -5088,6 +5150,16 @@ packages:
       - utf-8-validate
     dev: true
 
+  /joi/17.4.2:
+    resolution: {integrity: sha512-Lm56PP+n0+Z2A2rfRvsfWVDXGEWjXxatPopkQ8qQ5mxCEhwHG+Ettgg5o98FFaxilOxozoa14cFhrE/hOzh/Nw==}
+    dependencies:
+      '@hapi/hoek': 9.2.1
+      '@hapi/topo': 5.1.0
+      '@sideway/address': 4.1.2
+      '@sideway/formula': 3.0.0
+      '@sideway/pinpoint': 2.0.0
+    dev: true
+
   /jpeg-js/0.4.3:
     resolution: {integrity: sha512-ru1HWKek8octvUHFHvE5ZzQ1yAsJmIvRdGWvSoKV52XKyuyYA437QWDttXT8eZXDSbuMpHlLzPDZUPd6idIz+Q==}
     dev: true
@@ -5314,7 +5386,6 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
-    dev: false
 
   /lru-cache/6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
@@ -6923,7 +6994,6 @@ packages:
       object-assign: 4.1.1
       react: 17.0.2
       scheduler: 0.20.2
-    dev: false
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -6939,7 +7009,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: false
 
   /read-pkg-up/7.0.1:
     resolution: {integrity: sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==}
@@ -7139,6 +7208,12 @@ packages:
       queue-microtask: 1.2.3
     dev: true
 
+  /rxjs/7.4.0:
+    resolution: {integrity: sha512-7SQDi7xeTMCJpqViXh8gL/lebcwlp3d831F05+9B44A4B0WfsEwUQHR64gsH1kvJ+Ep/J9K2+n1hVl1CsGN23w==}
+    dependencies:
+      tslib: 2.1.0
+    dev: true
+
   /sade/1.7.4:
     resolution: {integrity: sha512-y5yauMD93rX840MwUJr7C1ysLFBgMspsdTo4UVrDg3fXDvtwOyIqykhVAAm6fk/3au77773itJStObgK+LKaiA==}
     engines: {node: '>= 6'}
@@ -7203,7 +7278,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: false
 
   /scroll-into-view-if-needed/2.2.28:
     resolution: {integrity: sha512-8LuxJSuFVc92+0AdNv4QOxRL4Abeo1DgLnGNkn1XlaujPH/3cCFz3QI60r2VNu4obJJROzgnIUw5TKQkZvZI1w==}
@@ -7812,6 +7886,10 @@ packages:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
 
+  /tslib/2.1.0:
+    resolution: {integrity: sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A==}
+    dev: true
+
   /tslib/2.3.1:
     resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
     dev: true
@@ -7998,6 +8076,20 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       xml-name-validator: 3.0.0
+    dev: true
+
+  /wait-on/6.0.0:
+    resolution: {integrity: sha512-tnUJr9p5r+bEYXPUdRseolmz5XqJTTj98JgOsfBn7Oz2dxfE2g3zw1jE+Mo8lopM3j3et/Mq1yW7kKX6qw7RVw==}
+    engines: {node: '>=10.0.0'}
+    hasBin: true
+    dependencies:
+      axios: 0.21.4
+      joi: 17.4.2
+      lodash: 4.17.21
+      minimist: 1.2.5
+      rxjs: 7.4.0
+    transitivePeerDependencies:
+      - debug
     dev: true
 
   /walker/1.0.8:

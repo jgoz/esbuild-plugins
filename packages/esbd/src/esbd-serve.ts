@@ -1,4 +1,4 @@
-import { createLivereloadServer, notify } from '@jgoz/esbuild-plugin-livereload/lib';
+import { createLivereloadServer, notify } from '@jgoz/esbuild-plugin-livereload';
 import { createHash } from 'crypto';
 import fs from 'fs';
 import type { Server, ServerResponse } from 'http';
@@ -116,24 +116,31 @@ export default async function esbdServe(
     async function handleRequest() {
       await build.wait();
 
-      if (
-        url.pathname === '/' ||
-        (url.pathname.startsWith(publicPath) && !!path.extname(url.pathname))
-      ) {
-        // serve static assets for index requests and for requests that have file extensions
-        staticHandler(req, res, () => {
-          res.writeHead(404).end();
-        });
-        return;
+      if (publicPath) {
+        // Strip "publicPath" from the beginning of the URL because
+        // serve-static doesn't support path remapping
+        req.url = new URL(
+          url.pathname.replace(new RegExp(`^${publicPath}`), ''),
+          rootUrl,
+        ).toString();
       }
-      if (rewrite) {
-        // rewrite extensionless requests to the index file if requested (SPA mode)
-        // TODO: how do we handle multiple HTML files here?
-        fs.createReadStream(path.resolve(absOutDir, allWriteOptions[0].template.outputPath)).pipe(
-          res.setHeader('Content-Type', 'text/html'),
-        );
-        return;
-      }
+
+      staticHandler(req, res, () => {
+        const isExtensionlessRequest =
+          url.pathname.startsWith(publicPath) && !path.extname(url.pathname);
+
+        if (rewrite && isExtensionlessRequest) {
+          // rewrite extensionless requests to the index file if requested (SPA mode)
+          // TODO: how do we handle multiple HTML files here?
+          fs.createReadStream(path.resolve(absOutDir, allWriteOptions[0].template.outputPath)).pipe(
+            res.setHeader('Content-Type', 'text/html'),
+          );
+          return;
+        }
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.write('404 Not Found\n');
+        res.end();
+      });
     }
 
     handleRequest().catch(err => {

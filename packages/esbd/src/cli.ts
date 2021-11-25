@@ -17,7 +17,7 @@ import serve from './esbd-serve';
 import type { Logger } from './log';
 import { createLogger, LOG_LEVELS } from './log';
 
-const { version } = require('../package.json');
+const version = require('../package.json').version;
 
 interface GlobalOptions {
   check?: boolean;
@@ -186,7 +186,7 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
     // Command: serve
     .command('serve [name]', 'Single page application development server')
     .option('-d, --servedir <path>', 'directory of additional static assets to serve')
-    .option('-l, --livereload', 'reload page on rebuild')
+    .option('-r, --livereload', 'reload page on rebuild')
     .option('-h, --host <host>', 'IP/host name to use when serving requests', 'localhost')
     .option('-p, --port <port>', 'port to use', '8000')
     .option('--rewrite', 'rewrite all not-found requests to "index.html" (SPA mode)', true)

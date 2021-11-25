@@ -28,14 +28,17 @@
     "esbuild": ">= 0.12.17"
   },
   "devDependencies": {
+    "@playwright/test": "^1.16.3",
     "@types/mkdirp": "^1.0.2",
     "@types/pretty-time": "^1.1.1",
     "@types/sade": "^1.7.3",
     "@types/serve-static": "^1.13.10",
+    "@types/wait-on": "^5.3.1",
     "chokidar": "^3.5.2",
     "esbuild": "^0.13.15",
     "esbuild-node-externals": "^1.4.0",
     "execa": "^5.0.0",
+    "get-port": "^5.0.0",
     "io-spin": "^0.4.1",
     "jest": "^27.3.1",
     "kleur": "^4.1.4",
@@ -43,13 +46,17 @@
     "mkdirp": "^1.0.4",
     "node-graceful": "^3.1.0",
     "parse5": "^6.0.1",
+    "playwright": "^1.16.3",
     "prettier": "^2.4.1",
     "pretty-bytes": "^5.6.0",
     "pretty-time": "^1.1.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "sade": "^1.7.4",
     "serve-static": "^1.14.1",
     "tslib": "^2.3.1",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.2",
+    "wait-on": "^6.0.0"
   },
   "jest": {
     "setupFilesAfterEnv": [
@@ -68,7 +75,7 @@
   },
   "scripts": {
     "prepack": "./bundle.js build",
-    "test": "jest",
+    "test": "jest && playwright test",
     "watch": "./bundle.js build -w"
   }
 }
