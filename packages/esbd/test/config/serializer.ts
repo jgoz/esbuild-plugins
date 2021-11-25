@@ -5,7 +5,7 @@ const prettier = require('prettier');
 
 const SEPARATOR = '---------------------------------';
 
-function* walk(dirPath) {
+function* walk(dirPath: string) {
   for (const d of fs.readdirSync(dirPath, { withFileTypes: true })) {
     const entry = path.join(dirPath, d.name);
     if (d.isDirectory()) yield* walk(entry);
@@ -13,10 +13,16 @@ function* walk(dirPath) {
   }
 }
 
+export interface BuildWithHTMLOutput {
+  outdir: string;
+  stdout: string;
+  stderr: string;
+}
+
 expect.addSnapshotSerializer({
   test: value => typeof value === 'object' && !!value && 'outdir' in value,
   serialize: val => {
-    const value = val;
+    const value: BuildWithHTMLOutput = val;
     const output = [];
 
     if (value.stdout) {

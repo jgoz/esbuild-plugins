@@ -8,7 +8,7 @@ import getPort from 'get-port';
 import path from 'path';
 import waitOn from 'wait-on';
 
-import type { EsbdConfig } from '../lib';
+import type { EsbdConfig } from '../../lib';
 
 interface ServerTestFixtures {
   absWorkingDir: string;

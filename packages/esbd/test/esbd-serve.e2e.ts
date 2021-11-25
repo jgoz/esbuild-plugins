@@ -1,6 +1,6 @@
 import fsp from 'fs/promises';
 
-import test from './serve-test';
+import test from './config/serve-test';
 
 test('serves content from entry point', async ({ page, port, startServer }) => {
   await startServer({

@@ -60,7 +60,7 @@
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "<rootDir>/test/serializer.js"
+      "<rootDir>/test/config/serializer.ts"
     ],
     "testTimeout": 10000,
     "maxWorkers": 1,

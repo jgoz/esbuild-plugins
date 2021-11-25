@@ -1,4 +1,4 @@
-import test from './node-dev-test';
+import test from './config/node-dev-test';
 
 test('serves content from entry point', async ({ port, startServer, request }) => {
   await startServer({

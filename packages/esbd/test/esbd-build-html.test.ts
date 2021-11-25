@@ -4,7 +4,7 @@ import path from 'path';
 
 import type { EsbdConfig } from '../lib';
 
-import type { BuildWithHTMLOutput } from './types';
+import type { BuildWithHTMLOutput } from './config/serializer';
 
 interface BuildWithHTMLOptions {
   config: Partial<EsbdConfig>;
