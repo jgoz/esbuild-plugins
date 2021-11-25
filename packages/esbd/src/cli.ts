@@ -20,10 +20,10 @@ import { createLogger, LOG_LEVELS } from './log';
 const version = require('../package.json').version;
 
 interface GlobalOptions {
-  check?: boolean;
-  logLevel?: LogLevel;
-  mode: BuildMode;
-  tsBuildMode?: 'readonly' | 'write-output';
+  'check'?: boolean;
+  'log-level'?: LogLevel;
+  'mode': BuildMode;
+  'ts-build-mode'?: 'readonly' | 'write-output';
 }
 
 interface BuildOptions {
@@ -44,16 +44,20 @@ interface NodeDevOptions {
 }
 
 function validateOptions<T extends GlobalOptions>(opts: T): T {
-  if (opts.logLevel && !LOG_LEVELS.includes(opts.logLevel)) {
-    console.error(`Invalid --log-level option: ${opts.logLevel}`);
+  if (opts['log-level'] && !LOG_LEVELS.includes(opts['log-level'])) {
+    console.error(`Invalid --log-level option: ${opts['log-level']}`);
     process.exit(1);
   }
   if (opts.mode !== 'development' && opts.mode !== 'production') {
     console.error(`Invalid --mode option: ${opts.mode}`);
     process.exit(1);
   }
-  if (opts.tsBuildMode && opts.tsBuildMode !== 'readonly' && opts.tsBuildMode !== 'write-output') {
-    console.error(`Invalid --ts-build-mode option: ${opts.tsBuildMode}`);
+  if (
+    opts['ts-build-mode'] &&
+    opts['ts-build-mode'] !== 'readonly' &&
+    opts['ts-build-mode'] !== 'write-output'
+  ) {
+    console.error(`Invalid --ts-build-mode option: ${opts['ts-build-mode']}`);
     process.exit(1);
   }
   return opts;
@@ -71,7 +75,7 @@ function updateConfig(
   config.plugins ??= [];
 
   if (options.check) {
-    const buildMode = options.tsBuildMode;
+    const buildMode = options['ts-build-mode'];
     config.plugins.push(
       typecheckPlugin({
         configFile: config.tsconfig,
@@ -138,7 +142,7 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
     })
     .option('-w, --watch', 'watch for changes and rebuild')
     .action(async (name: string | undefined, options: GlobalOptions & BuildOptions) => {
-      const { logLevel, mode, watch = false } = validateOptions(options);
+      const { 'log-level': logLevel, mode, watch = false } = validateOptions(options);
       const configResult =
         typeof configParam === 'function' ? await configParam(mode, 'build') : configParam;
 
@@ -162,7 +166,7 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
     .example('-r -- --port 8080 --config my-config.json')
     .option('-r, --respawn', 'restart program on exit/error (but quit after 3 restarts within 5s)')
     .action(async (name: string, options: GlobalOptions & NodeDevOptions) => {
-      const { logLevel, mode, respawn = false } = validateOptions(options);
+      const { 'log-level': logLevel, mode, respawn = false } = validateOptions(options);
       const configResult =
         typeof configParam === 'function'
           ? await configParam(options.mode, 'node-dev')
@@ -195,7 +199,7 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
       const {
         host,
         mode,
-        logLevel,
+        'log-level': logLevel,
         port = '8000',
         livereload,
         servedir,

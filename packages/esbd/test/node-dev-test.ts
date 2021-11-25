@@ -1,5 +1,6 @@
 /* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
+import { EventEmitter } from 'events';
 import type { ExecaChildProcess } from 'execa';
 import { node } from 'execa';
 import { promises as fsp } from 'fs';
@@ -19,11 +20,12 @@ interface ServerTestFixtures {
 }
 
 interface ServerConfig {
-  config?: Partial<EsbdConfig>;
-  disableRewrite?: boolean;
+  config: Omit<EsbdConfig, 'absWorkingDir' | 'outdir'>;
   files: { [relativePath: string]: string | Buffer }[];
-  livereload?: boolean;
-  serveDir?: string;
+  respawn?: boolean;
+  args?: string[];
+  onStdout?: (data: string) => void;
+  onStderr?: (data: string) => void;
 }
 
 const test = base.extend<ServerTestFixtures>({
@@ -54,28 +56,18 @@ const test = base.extend<ServerTestFixtures>({
     let proc: ExecaChildProcess;
 
     const startServer = async (serverConfig: ServerConfig) => {
-      const { livereload, config, disableRewrite, files, serveDir } = serverConfig;
+      const { args = [], config, files, respawn, onStderr, onStdout } = serverConfig;
 
       const initialFiles = files[0];
       if (!initialFiles) {
         throw new Error('At least one set of files is required');
       }
-      const index = Object.keys(initialFiles).find(file => file.endsWith('index.html'));
-      if (!index) {
-        throw new Error('index.html is required');
-      }
 
       const fullConfig: EsbdConfig = {
-        format: 'esm',
-        metafile: true,
-        splitting: true,
-        sourcemap: false,
         ...config,
+        sourcemap: false,
         absWorkingDir,
         outdir: './out',
-        entryPoints: {
-          'index.html': index,
-        },
       };
 
       const bundleFile = path.join(absWorkingDir, 'bundle.js');
@@ -86,32 +78,42 @@ const test = base.extend<ServerTestFixtures>({
 
       await Promise.all([writeBundle, writeFiles(initialFiles)]);
 
-      proc = node(
-        bundleFile,
-        [
-          'serve',
-          '-l',
-          'info',
-          '-p',
-          String(port),
-          livereload && '-r',
-          disableRewrite && '--no-rewrite',
-          serveDir && '-d',
-          serveDir,
-        ].filter(Boolean),
-        {
-          encoding: 'utf8',
-          reject: false,
-          cwd: absWorkingDir,
-          env: { ...process.env, FORCE_COLOR: '0' },
-        },
-      );
+      proc = node(bundleFile, ['node-dev', '-l', 'info', respawn && '-r', ...args], {
+        encoding: 'utf8',
+        reject: false,
+        cwd: absWorkingDir,
+        env: { ...process.env, FORCE_COLOR: '0' },
+      });
 
       await waitOn({ resources: [`http-get://127.0.0.1:${port}`], timeout: 10000 });
+
+      const evt = new EventEmitter();
+      proc.stdout.on('data', (chunk: Buffer) => {
+        const str = chunk.toString();
+        if (/rebuilding and restarting/.exec(str)) {
+          evt.emit('done');
+        }
+        onStdout?.(str);
+      });
+
+      proc.stderr.on('data', (chunk: Buffer) => {
+        const str = chunk.toString();
+        if (/Maximum keep-alive count reached, dying/.exec(str)) {
+          evt.emit('err');
+        }
+        onStderr?.(str);
+      });
 
       return {
         write: async (fileIndex: number) => {
           await writeFiles(files[fileIndex]);
+          try {
+            await new Promise((resolve, reject) => {
+              evt.once('done', resolve);
+              evt.once('err', reject);
+            });
+            await waitOn({ resources: [`http-get://127.0.0.1:${port}`], timeout: 500 });
+          } catch {}
         },
       };
     };

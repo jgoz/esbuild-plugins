@@ -20,6 +20,7 @@ interface EsbdNodeDevConfig {
 }
 
 const MAX_RETRIES = 3;
+const KEEPALIVE_RESET_TIMEOUT_MS = 5000;
 
 export default async function esbdNodeDev(
   config: ResolvedEsbdConfig,
@@ -27,7 +28,7 @@ export default async function esbdNodeDev(
 ) {
   let child: ChildProcess & ExecaChildPromise<string>;
   let keepAliveCount = 0;
-  let keepAliveTimeout: NodeJS.Timeout;
+  let keepAliveResetTimeout: NodeJS.Timeout;
 
   const entries = Array.isArray(config.entryPoints)
     ? config.entryPoints.map(entry => [entry, entry] as const)
@@ -38,7 +39,7 @@ export default async function esbdNodeDev(
   const defaultTarget = `node${process.versions.node}`;
 
   async function handleExit(exitCode = 0) {
-    clearTimeout(keepAliveTimeout);
+    clearTimeout(keepAliveResetTimeout);
 
     if (!respawn) {
       shutdown(exitCode);
@@ -54,9 +55,9 @@ export default async function esbdNodeDev(
     logger.info('Keep-alive requested, rebuilding and restarting');
     await build.rebuild();
 
-    keepAliveTimeout = setTimeout(() => {
+    keepAliveResetTimeout = setTimeout(() => {
       keepAliveCount = 0;
-    }, 5000);
+    }, KEEPALIVE_RESET_TIMEOUT_MS);
   }
 
   function runProgram(scriptPath: string, argv: string[]) {
@@ -74,7 +75,7 @@ export default async function esbdNodeDev(
     child.once('error', err => {
       child.removeAllListeners();
       logger.error('Uncaught program error', err.toString(), err.stack);
-      void handleExit();
+      void handleExit(1);
     });
   }
 
@@ -101,7 +102,7 @@ export default async function esbdNodeDev(
         result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
       );
 
-      logger.info(`Starting ${K.cyan(entryOutputFile.path)} ${K.gray(args.slice(1).join(' '))}`);
+      logger.info(`Starting ${K.cyan(entryOutputFile.path)} ${K.gray(args.join(' '))}`);
       runProgram(entryOutputFile.path, args);
     },
     onWatchEvent: (event: string, filePath: string) => {
