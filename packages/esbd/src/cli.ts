@@ -1,4 +1,4 @@
-import { typecheckPlugin } from '@jgoz/esbuild-plugin-typecheck/lib';
+import type { typecheckPlugin as typecheckPluginFn } from '@jgoz/esbuild-plugin-typecheck';
 import type { LogLevel } from 'esbuild';
 import path from 'path';
 import sade from 'sade';
@@ -75,6 +75,9 @@ function updateConfig(
   config.plugins ??= [];
 
   if (options.check) {
+    const typecheckPlugin: typeof typecheckPluginFn =
+      require('@jgoz/esbuild-plugin-typecheck').typecheckPlugin;
+
     const buildMode = options['ts-build-mode'];
     config.plugins.push(
       typecheckPlugin({

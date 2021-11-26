@@ -1,4 +1,4 @@
-import { createLivereloadServer, notify } from '@jgoz/esbuild-plugin-livereload';
+import type { notify as notifyFn } from '@jgoz/esbuild-plugin-livereload';
 import { createHash } from 'crypto';
 import fs from 'fs';
 import type { Server, ServerResponse } from 'http';
@@ -53,13 +53,18 @@ export default async function esbdServe(
 
   let banner: string | undefined;
   let lrserver: Server | undefined;
+  let notify: typeof notifyFn | undefined;
   if (livereload) {
+    const { createLivereloadServer, notify: notifyLR } = await import(
+      '@jgoz/esbuild-plugin-livereload'
+    );
     const bannerTemplate = await fs.promises.readFile(
       require.resolve('@jgoz/esbuild-plugin-livereload/banner.js'),
       'utf-8',
     );
     banner = bannerTemplate.replace(/{baseUrl}/g, 'http://127.0.0.1:53099');
     lrserver = createLivereloadServer({ basedir, onSSE: res => clients.add(res), port: 53099 });
+    notify = notifyLR;
   }
 
   const build = await incrementalBuild({
@@ -83,7 +88,7 @@ export default async function esbdServe(
         ...result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
       ]);
 
-      if (livereload) {
+      if (livereload && notify) {
         let cssUpdate = false;
         for (const outputFile of result.outputFiles.filter(o => o.path.endsWith('.css'))) {
           const prevHash = outputHashes.get(outputFile.path);
