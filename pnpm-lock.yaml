@@ -56,7 +56,7 @@ importers:
     specifiers:
       '@jgoz/esbuild-plugin-livereload': workspace:*
       '@jgoz/esbuild-plugin-typecheck': workspace:*
-      '@playwright/test': ^1.16.3
+      '@playwright/test': rc
       '@swc/core': ^1.2.112
       '@types/mkdirp': ^1.0.2
       '@types/pretty-time': ^1.1.1
@@ -75,7 +75,7 @@ importers:
       mkdirp: ^1.0.4
       node-graceful: ^3.1.0
       parse5: ^6.0.1
-      playwright: ^1.16.3
+      playwright: rc
       prettier: ^2.4.1
       pretty-bytes: ^5.6.0
       pretty-time: ^1.1.0
@@ -90,7 +90,7 @@ importers:
       '@jgoz/esbuild-plugin-livereload': link:../esbuild-plugin-livereload
       '@jgoz/esbuild-plugin-typecheck': link:../esbuild-plugin-typecheck
     devDependencies:
-      '@playwright/test': 1.16.3
+      '@playwright/test': 1.17.0-rc1
       '@swc/core': 1.2.112
       '@types/mkdirp': 1.0.2
       '@types/pretty-time': 1.1.1
@@ -109,7 +109,7 @@ importers:
       mkdirp: 1.0.4
       node-graceful: 3.1.0
       parse5: 6.0.1
-      playwright: 1.16.3
+      playwright: 1.17.0-rc1
       prettier: 2.4.1
       pretty-bytes: 5.6.0
       pretty-time: 1.1.0
@@ -166,13 +166,13 @@ importers:
   packages/esbuild-plugin-livereload:
     specifiers:
       '@jgoz/esbuild-overlay': workspace:*
-      '@playwright/test': ^1.16.3
+      '@playwright/test': rc
       esbuild: ^0.13.15
       esbuild-node-externals: ^1.4.0
       esbuild-svelte: ^0.5.7
       get-port: ^5.0.0
       open-editor: ^3.0.0
-      playwright: ^1.16.3
+      playwright: rc
       prettier: ^2.4.1
       svelte: ^3.44.2
       svelte-check: ^2.2.10
@@ -181,13 +181,13 @@ importers:
       typescript: ^4.5.2
     devDependencies:
       '@jgoz/esbuild-overlay': link:../esbuild-overlay
-      '@playwright/test': 1.16.3
+      '@playwright/test': 1.17.0-rc1
       esbuild: 0.13.15
       esbuild-node-externals: 1.4.0_esbuild@0.13.15
       esbuild-svelte: 0.5.7_esbuild@0.13.15
       get-port: 5.1.1
       open-editor: 3.0.0
-      playwright: 1.16.3
+      playwright: 1.17.0-rc1
       prettier: 2.4.1
       svelte: 3.44.2
       svelte-check: 2.2.10_@babel+core@7.16.0+svelte@3.44.2
@@ -1851,8 +1851,8 @@ packages:
       fastq: 1.13.0
     dev: true
 
-  /@playwright/test/1.16.3:
-    resolution: {integrity: sha512-aJR6d6Fd/y6lq1RWWggcuiivM7offqddOW3te+NGGMxgF2P0xAxU0/xUurwIFnEp7iHwXILSZByzZ6W6fuKPIg==}
+  /@playwright/test/1.17.0-rc1:
+    resolution: {integrity: sha512-tJt/FDJGdKIEq4KcoFknNnz4TdnA0ZQVI190Qavcshst9Zrt/W/2qXXAF7InMlvQYduczhox46cxLnqD18HS5A==}
     engines: {node: '>=12'}
     hasBin: true
     dependencies:
@@ -1884,7 +1884,7 @@ packages:
       open: 8.4.0
       pirates: 4.0.1
       pixelmatch: 5.2.1
-      playwright-core: 1.16.3
+      playwright-core: 1.17.0-rc1
       pngjs: 5.0.0
       rimraf: 3.0.2
       source-map-support: 0.4.18
@@ -2146,11 +2146,6 @@ packages:
     resolution: {integrity: sha512-nJOuiTlsvmClSr3+a/trTSx4DTuY/VURsWGKSf/eeavh0LRMqdsK60ti0TlwM5iHiGOK3/Ibkxsbr7i9rzGreA==}
     dev: true
 
-  /@types/node/16.11.7:
-    resolution: {integrity: sha512-QB5D2sqfSjCmTuWcBWyJ+/44bcjO7VbjSbOE0ucoVbAsSNQc4Lt6QkgkVXkTDwkL4z/beecZNDvVX15D4P8Jbw==}
-    dev: true
-    optional: true
-
   /@types/node/16.11.9:
     resolution: {integrity: sha512-MKmdASMf3LtPzwLyRrFjtFFZ48cMf8jmX5VRYrDQiJa8Ybu5VAmkqBWqKU8fdCwD8ysw4mQ9nrEHvzg6gunR7A==}
     dev: true
@@ -2226,7 +2221,7 @@ packages:
     resolution: {integrity: sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==}
     requiresBuild: true
     dependencies:
-      '@types/node': 16.11.7
+      '@types/node': 16.11.9
     dev: true
     optional: true
 
@@ -3856,7 +3851,7 @@ packages:
       '@jest/types': 27.2.5
       ansi-styles: 5.2.0
       jest-get-type: 27.3.1
-      jest-matcher-utils: 27.2.5
+      jest-matcher-utils: 27.3.1
       jest-message-util: 27.3.1
       jest-regex-util: 27.0.6
     dev: true
@@ -5992,8 +5987,8 @@ packages:
       find-up: 4.1.0
     dev: true
 
-  /playwright-core/1.16.3:
-    resolution: {integrity: sha512-16hF27IvQheJee+DbhC941AUZLjbJgfZFWi9YPS4LKEk/lKFhZI+9TiFD0sboYqb9eaEWvul47uR5xxTVbE4iw==}
+  /playwright-core/1.17.0-rc1:
+    resolution: {integrity: sha512-aKAUlLxK043+e9XqEBqNGUdQeehze+vRCzoIBWIf7INC+5DK3ZoFmXVV60O7fraXc7REXniK+0FzzTW/egAscg==}
     engines: {node: '>=12'}
     hasBin: true
     dependencies:
@@ -6019,13 +6014,13 @@ packages:
       - utf-8-validate
     dev: true
 
-  /playwright/1.16.3:
-    resolution: {integrity: sha512-nfJx/OpIb/8OexL3rYGxNN687hGyaM3XNpfuMzoPlrekURItyuiHHsNhC9oQCx3JDmCn5O3EyyyFCnrZjH6MpA==}
+  /playwright/1.17.0-rc1:
+    resolution: {integrity: sha512-oFHqjqsPboX0NTVbHiltEVMCGvfwVf4IboIDE/j9g4lkrb8BmsUeHmfubZxzmDNrHPobyRbau+B0wR7HeTLaVQ==}
     engines: {node: '>=12'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      playwright-core: 1.16.3
+      playwright-core: 1.17.0-rc1
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -6451,7 +6446,7 @@ packages:
     dependencies:
       graceful-fs: 4.2.8
       retry: 0.12.0
-      signal-exit: 3.0.5
+      signal-exit: 3.0.6
     dev: true
 
   /proxy-from-env/1.1.0:
@@ -7378,10 +7373,6 @@ packages:
 
   /signal-exit/3.0.3:
     resolution: {integrity: sha512-VUJ49FC8U1OxwZLxIbTTrDvLnf/6TDgxZcK8wxR8zs13xpx7xbG60ndBlhNrFi2EMuFRoeDoJO7wthSLq42EjA==}
-    dev: true
-
-  /signal-exit/3.0.5:
-    resolution: {integrity: sha512-KWcOiKeQj6ZyXx7zq4YxSMgHRlod4czeBQZrPb8OKcohcqAXShm7E20kEMle9WBt26hFcAf0qLOcp5zmY7kOqQ==}
     dev: true
 
   /signal-exit/3.0.6:
