@@ -28,24 +28,28 @@ test('page reloads as content changes', async ({ page, port, writeFile }) => {
 test('page replaces stylesheets without reloading', async ({ page, port, writeFile }) => {
   await page.goto(`http://127.0.0.1:${port}/`);
 
-  const body = await page.$('body');
-  if (!body) throw new Error('Umm.. no body?');
+  const body = page.locator('body');
 
-  test
-    .expect(await body.evaluate(b => window.getComputedStyle(b).backgroundColor))
-    .toBe('rgb(255, 255, 255)');
+  let bg = await body.evaluate(b => window.getComputedStyle(b).backgroundColor);
+  test.expect(bg).toBe('rgb(255, 255, 255)');
 
   await writeFile(['style-2.css', 'style.css']);
-
   await page.waitForRequest(/\.css\?_hash=/);
-  test
-    .expect(await body.evaluate(b => window.getComputedStyle(b).backgroundColor))
-    .toBe('rgb(135, 206, 250)');
+  await page.waitForFunction(
+    bg => window.getComputedStyle(document.body).backgroundColor !== bg,
+    bg,
+  );
+
+  bg = await body.evaluate(b => window.getComputedStyle(b).backgroundColor);
+  test.expect(bg).toBe('rgb(135, 206, 250)');
 
   await writeFile(['style-1.css', 'style.css']);
-
   await page.waitForRequest(/\.css\?_hash=/);
-  test
-    .expect(await body.evaluate(b => window.getComputedStyle(b).backgroundColor))
-    .toBe('rgb(255, 255, 255)');
+  await page.waitForFunction(
+    bg => window.getComputedStyle(document.body).backgroundColor !== bg,
+    bg,
+  );
+
+  bg = await body.evaluate(b => window.getComputedStyle(b).backgroundColor);
+  test.expect(bg).toBe('rgb(255, 255, 255)');
 });
