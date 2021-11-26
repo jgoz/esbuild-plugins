@@ -71,7 +71,7 @@ function setup(relFixtureDirSrc: string) {
         if (/Typecheck finished in/.exec(str)) {
           const files = queue.shift();
           if (files) {
-            copySrcFileSync(...files);
+            setTimeout(() => copySrcFileSync(...files), 200);
           } else {
             proc.cancel();
           }
