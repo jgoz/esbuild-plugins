@@ -8,7 +8,8 @@
     "paths": {
       "pkg-one": ["../pkg-one/one.ts"],
       "pkg-two": ["../pkg-two/two.ts"]
-    }
+    },
+    "strict": true
   },
   "files": ["./three.ts"],
   "references": [{ "path": "../pkg-one" }, { "path": "../pkg-two" }]

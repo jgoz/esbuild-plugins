@@ -71,7 +71,7 @@ function setup(relFixtureDirSrc: string) {
         if (/Typecheck finished in/.exec(str)) {
           const files = queue.shift();
           if (files) {
-            setTimeout(() => copySrcFileSync(...files), 200);
+            setTimeout(() => copySrcFileSync(...files), 300);
           } else {
             proc.cancel();
           }
@@ -261,36 +261,52 @@ describe('eslint-plugin-typecheck', () => {
           ['pkg-two/two.ts', 'pkg-two/two.ts'],
           ['pkg-three/three.ts', 'pkg-three/three.ts'],
         ],
-        { watch: true },
+        { buildMode: 'write-output', watch: true },
       );
 
       expect(output).toEqual([
         '✔  Typecheck passed',
         'ℹ  Typecheck finished in TIME',
+        // one-error
         "../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
         '✖  Typecheck failed with 1 error',
         'ℹ  Typecheck finished in TIME',
+        // two-error
         "../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
         "../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
         '✖  Typecheck failed with 2 errors',
         'ℹ  Typecheck finished in TIME',
+        // three-error
         "../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
         "../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
         '✖  Typecheck failed with 2 errors',
         'ℹ  Typecheck finished in TIME',
+        // one
         "../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
         '✖  Typecheck failed with 1 error',
         'ℹ  Typecheck finished in TIME',
+        // two
         "three.ts(13,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
         "  Type 'undefined' is not assignable to type 'boolean'.",
         "three.ts(18,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
         '✖  Typecheck failed with 2 errors',
         'ℹ  Typecheck finished in TIME',
+        // three
         '✔  Typecheck passed',
         'ℹ  Typecheck finished in TIME',
       ]);
 
-      await expect(build.findTSOutput()).resolves.toEqual([]);
+      await expect(build.findTSOutput()).resolves.toEqual([
+        'pkg-one/build/one.js',
+        'pkg-one/build/tsconfig.tsbuildinfo',
+        'pkg-one/types/one.d.ts',
+        'pkg-three/build/three.js',
+        'pkg-three/build/tsconfig.tsbuildinfo',
+        'pkg-three/types/three.d.ts',
+        'pkg-two/build/tsconfig.tsbuildinfo',
+        'pkg-two/build/two.js',
+        'pkg-two/types/two.d.ts',
+      ]);
     }, 20000);
 
     it('writes output when buildMode is write-output', async () => {
