@@ -21,14 +21,20 @@
   "types": "lib/index.d.ts",
   "dependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
-    "@jgoz/esbuild-plugin-typecheck": "workspace:*",
-    "@swc/core": "^1.2.111"
+    "@jgoz/esbuild-plugin-typecheck": "workspace:*"
   },
   "peerDependencies": {
-    "esbuild": ">= 0.12.17"
+    "esbuild": ">= 0.13.0",
+    "@swc/core": ">= 1.2.111"
+  },
+  "peerDependenciesMeta": {
+    "@swc/core": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@playwright/test": "^1.16.3",
+    "@swc/core": "^1.2.112",
     "@types/mkdirp": "^1.0.2",
     "@types/pretty-time": "^1.1.1",
     "@types/sade": "^1.7.3",

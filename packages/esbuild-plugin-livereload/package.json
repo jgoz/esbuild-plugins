@@ -21,7 +21,7 @@
   "main": "dist/plugin-livereload.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
-    "esbuild": ">= 0.12.8"
+    "esbuild": ">= 0.13.0"
   },
   "devDependencies": {
     "@jgoz/esbuild-overlay": "workspace:*",

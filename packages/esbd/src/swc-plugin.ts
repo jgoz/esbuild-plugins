@@ -1,13 +1,21 @@
-import type { Options, Output } from '@swc/core';
-import { transformFile } from '@swc/core';
+import type { Options, Output, transformFile as transformFileFunction } from '@swc/core';
 import type { Plugin } from 'esbuild';
 import { relative } from 'path';
 
 export function swcPlugin(runtime: 'automatic' | 'classic' | undefined): Plugin {
   return {
     name: 'esbd-swc-unholy-union',
-    setup(build) {
+    async setup(build) {
       if (runtime !== 'automatic') return;
+
+      let transformFile: typeof transformFileFunction;
+      try {
+        transformFile = (await import('@swc/core')).transformFile;
+      } catch {
+        throw new Error(
+          '"@swc/core" must be installed as a dependency if "jsxRuntime": "automatic" is set',
+        );
+      }
 
       const { absWorkingDir = process.cwd(), sourcemap } = build.initialOptions;
 

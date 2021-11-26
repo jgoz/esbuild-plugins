@@ -22,7 +22,7 @@
   "module": "dist/overlay.js",
   "types": "lib/overlay.d.ts",
   "peerDependencies": {
-    "esbuild": ">= 0.12.8"
+    "esbuild": ">= 0.13.0"
   },
   "devDependencies": {
     "@tsconfig/svelte": "^2.0.1",

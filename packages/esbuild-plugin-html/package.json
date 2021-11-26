@@ -21,7 +21,7 @@
   "main": "dist/plugin-html.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
-    "esbuild": ">= 0.12.8"
+    "esbuild": ">= 0.13.0"
   },
   "devDependencies": {
     "@types/parse5": "^6.0.2",

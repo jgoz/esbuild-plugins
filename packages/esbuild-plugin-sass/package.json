@@ -22,7 +22,7 @@
   "main": "dist/plugin-sass.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
-    "esbuild": ">= 0.12.8",
+    "esbuild": ">= 0.13.0",
     "node-sass": ">= 5.x",
     "sass": ">= 1.x"
   },
