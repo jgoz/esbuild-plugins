@@ -107,7 +107,7 @@ const test = base.extend<ServerTestFixtures>({
 
       return {
         write: async (fileIndex: number) => {
-          await setTimeout(101); // watchers aren't restarted until 100ms after the last change
+          await setTimeout(250); // watchers aren't restarted until 100ms after the last change
           await writeFiles(files[fileIndex]);
           try {
             await new Promise((resolve, reject) => {
