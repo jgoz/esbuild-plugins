@@ -49,7 +49,7 @@
     "typescript": "^4.5.2"
   },
   "scripts": {
-    "build": "tsc -b && pnpm run -r --if-present prepack",
+    "build": "tsc -b && pnpm run --filter esbd prepack && pnpm run -r --filter \\!esbd --if-present prepack",
     "clobber": "rm -rf node_modules packages/*/{dist,lib,node_modules} **/*.tsbuildinfo",
     "lint": "eslint \"packages/**/*.ts\"",
     "node-check": "node -v && arch",
