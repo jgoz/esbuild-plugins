@@ -1,11 +1,8 @@
 #!/usr/bin/env node
 
-import { typecheckPlugin } from '../../../dist/plugin-typecheck.js';
-import { build } from 'esbuild';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const { typecheckPlugin } = require('../../lib');
+const { build } = require('esbuild');
+const path = require('path');
 
 build({
   absWorkingDir: __dirname,

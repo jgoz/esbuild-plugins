@@ -16,7 +16,10 @@ interface RunOptions {
   watch?: boolean;
 }
 
-function setup(fixtureDirSrc: string, fixtureDirOut: string) {
+function setup(relFixtureDirSrc: string) {
+  const fixtureDirSrc = path.join(__dirname, relFixtureDirSrc);
+  const fixtureDirOut = fs.mkdtempSync(path.join(__dirname, 'tmp-'));
+
   async function copySrcFile(src: string, out: string) {
     await fs.promises.copyFile(path.join(fixtureDirSrc, src), path.join(fixtureDirOut, out));
   }
@@ -105,22 +108,19 @@ function setup(fixtureDirSrc: string, fixtureDirOut: string) {
 
 describe('eslint-plugin-typecheck', () => {
   describe('compile, once', () => {
-    const build = setup(
-      path.join(__dirname, 'fixture', 'compile'),
-      path.join(__dirname, 'fixture', 'compile-out'),
-    );
+    const build = setup('fixture/compile');
 
     beforeEach(async () => await build.init());
     afterEach(async () => await build.cleanup());
 
     it('completes successfully', async () => {
-      const { code, output } = await build.run('build.mjs', [['src/index.ts', 'src/index.ts']]);
+      const { code, output } = await build.run('build.js', [['src/index.ts', 'src/index.ts']]);
       expect(code).toBe(0);
       expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
     });
 
     it('reports errors', async () => {
-      const { code, output } = await build.run('build.mjs', [
+      const { code, output } = await build.run('build.js', [
         ['src/index-error.ts', 'src/index.ts'],
       ]);
       expect(code).toBe(1);
@@ -134,17 +134,14 @@ describe('eslint-plugin-typecheck', () => {
   });
 
   describe('compile, watch', () => {
-    const build = setup(
-      path.join(__dirname, 'fixture', 'compile'),
-      path.join(__dirname, 'fixture', 'compile-out'),
-    );
+    const build = setup('fixture/compile');
 
     beforeEach(async () => await build.init());
     afterEach(async () => await build.cleanup());
 
     it('watches for changes', async () => {
       const { output } = await build.run(
-        'build.mjs',
+        'build.js',
         [
           ['src/index-error.ts', 'src/index.ts'],
           ['src/index.ts', 'src/index.ts'],
@@ -171,16 +168,13 @@ describe('eslint-plugin-typecheck', () => {
   });
 
   describe('build, once', () => {
-    const build = setup(
-      path.join(__dirname, 'fixture', 'build'),
-      path.join(__dirname, 'fixture', 'build-out'),
-    );
+    const build = setup('fixture/build');
 
     beforeEach(async () => await build.init());
     afterEach(async () => await build.cleanup());
 
     it('produces no output by default', async () => {
-      const { code, output } = await build.run('pkg-three/build.mjs', []);
+      const { code, output } = await build.run('pkg-three/build.js', []);
       expect(code).toBe(0);
       expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
 
@@ -188,7 +182,7 @@ describe('eslint-plugin-typecheck', () => {
     });
 
     it('reports errors across all dependencies', async () => {
-      const { code, output } = await build.run('pkg-three/build.mjs', [
+      const { code, output } = await build.run('pkg-three/build.js', [
         ['pkg-one/one-error.ts', 'pkg-one/one.ts'],
         ['pkg-two/two-error.ts', 'pkg-two/two.ts'],
       ]);
@@ -205,7 +199,7 @@ describe('eslint-plugin-typecheck', () => {
     });
 
     it('reports errors in entry point', async () => {
-      const { code, output } = await build.run('pkg-three/build.mjs', [
+      const { code, output } = await build.run('pkg-three/build.js', [
         ['pkg-three/three-error.ts', 'pkg-three/three.ts'],
       ]);
 
@@ -222,7 +216,7 @@ describe('eslint-plugin-typecheck', () => {
     });
 
     it('writes output when buildMode is write-output', async () => {
-      const { code, output } = await build.run('pkg-three/build.mjs', [], {
+      const { code, output } = await build.run('pkg-three/build.js', [], {
         buildMode: 'write-output',
       });
 
@@ -244,16 +238,13 @@ describe('eslint-plugin-typecheck', () => {
   });
 
   describe('build, watch', () => {
-    const build = setup(
-      path.join(__dirname, 'fixture', 'build'),
-      path.join(__dirname, 'fixture', 'build-out'),
-    );
+    const build = setup('fixture/build');
 
     beforeEach(async () => await build.init());
     afterEach(async () => await build.cleanup());
 
     it('produces no output by default', async () => {
-      const { output } = await build.run('pkg-three/build.mjs', [], { watch: true });
+      const { output } = await build.run('pkg-three/build.js', [], { watch: true });
       expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
 
       await expect(build.findTSOutput()).resolves.toEqual([]);
@@ -261,7 +252,7 @@ describe('eslint-plugin-typecheck', () => {
 
     it('reports errors across all dependencies', async () => {
       const { output } = await build.run(
-        'pkg-three/build.mjs',
+        'pkg-three/build.js',
         [
           ['pkg-one/one-error.ts', 'pkg-one/one.ts'],
           ['pkg-two/two-error.ts', 'pkg-two/two.ts'],
@@ -303,7 +294,7 @@ describe('eslint-plugin-typecheck', () => {
     }, 20000);
 
     it('writes output when buildMode is write-output', async () => {
-      const { output } = await build.run('pkg-three/build.mjs', [], {
+      const { output } = await build.run('pkg-three/build.js', [], {
         buildMode: 'write-output',
         watch: true,
       });
