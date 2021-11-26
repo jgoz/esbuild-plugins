@@ -256,3 +256,78 @@ test('can serve static files from a given directory', async ({ page, port, start
 
   await test.expect(page.locator('body')).toContainText('Hello world');
 });
+
+test('page replaces stylesheets without reloading', async ({ page, port, startServer }) => {
+  const { write } = await startServer({
+    livereload: true,
+    config: { jsxRuntime: 'automatic' },
+    files: [
+      // 0
+      {
+        'src/index.html': `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <script defer type="module" src="./entry.tsx"></script>
+            </head>
+            <body><div id='root'></div></body>
+          </html>
+        `,
+        'src/entry.tsx': `
+          import ReactDOM from 'react-dom';
+          import './style.css';
+          function App() { return <div>Hello world</div>; }
+          ReactDOM.render(<App />, document.getElementById('root'));
+        `,
+        'src/style.css': `
+          body { background: white; }
+        `,
+      },
+      // 1
+      {
+        'src/style.css': `
+          body { background: lightskyblue; }
+        `,
+      },
+      // 2
+      {
+        'src/style.css': `
+          body { background: white; }
+        `,
+      },
+    ],
+  });
+
+  let loadCount = 0;
+  page.addListener('load', () => {
+    loadCount++;
+  });
+
+  await page.goto(`http://127.0.0.1:${port}/`);
+
+  const body = await page.$('body');
+  if (!body) throw new Error('Umm.. no body?');
+
+  let bg = await body.evaluate(b => window.getComputedStyle(b).backgroundColor);
+  test.expect(bg).toBe('rgb(255, 255, 255)');
+
+  await write(1);
+  await page.waitForFunction(
+    bg => window.getComputedStyle(document.body).backgroundColor !== bg,
+    bg,
+  );
+
+  bg = await body.evaluate(b => window.getComputedStyle(b).backgroundColor);
+  test.expect(bg).toBe('rgb(135, 206, 250)');
+
+  await write(2);
+  await page.waitForFunction(
+    bg => window.getComputedStyle(document.body).backgroundColor !== bg,
+    bg,
+  );
+
+  bg = await body.evaluate(b => window.getComputedStyle(b).backgroundColor);
+  test.expect(bg).toBe('rgb(255, 255, 255)');
+
+  test.expect(loadCount).toBe(1);
+});

@@ -6,6 +6,7 @@ import { node } from 'execa';
 import { promises as fsp } from 'fs';
 import getPort from 'get-port';
 import path from 'path';
+import { setTimeout } from 'timers/promises';
 import waitOn from 'wait-on';
 
 import type { EsbdConfig } from '../../lib';
@@ -106,6 +107,7 @@ const test = base.extend<ServerTestFixtures>({
 
       return {
         write: async (fileIndex: number) => {
+          await setTimeout(101); // watchers aren't restarted until 100ms after the last change
           await writeFiles(files[fileIndex]);
           try {
             await new Promise((resolve, reject) => {

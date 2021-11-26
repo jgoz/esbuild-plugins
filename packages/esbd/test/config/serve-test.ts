@@ -1,13 +1,15 @@
 /* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
+import { EventEmitter } from 'events';
 import type { ExecaChildProcess } from 'execa';
 import { node } from 'execa';
 import { promises as fsp } from 'fs';
 import getPort from 'get-port';
 import path from 'path';
+import { setTimeout } from 'timers/promises';
 import waitOn from 'wait-on';
 
-import type { EsbdConfig } from '../lib';
+import type { EsbdConfig } from '../../lib';
 
 interface ServerTestFixtures {
   absWorkingDir: string;
@@ -90,7 +92,7 @@ const test = base.extend<ServerTestFixtures>({
         bundleFile,
         [
           'serve',
-          '-l',
+          '--log-level',
           'info',
           '-p',
           String(port),
@@ -98,7 +100,7 @@ const test = base.extend<ServerTestFixtures>({
           disableRewrite && '--no-rewrite',
           serveDir && '-d',
           serveDir,
-        ].filter(Boolean),
+        ],
         {
           encoding: 'utf8',
           reject: false,
@@ -107,11 +109,23 @@ const test = base.extend<ServerTestFixtures>({
         },
       );
 
+      const evt = new EventEmitter();
+      proc.stdout.on('data', (chunk: Buffer) => {
+        const str = chunk.toString();
+        if (/Finished with/.exec(str)) {
+          evt.emit('done');
+        }
+      });
+
       await waitOn({ resources: [`http-get://127.0.0.1:${port}`], timeout: 10000 });
 
       return {
         write: async (fileIndex: number) => {
+          await setTimeout(101); // watchers aren't restarted until 100ms after the last change
           await writeFiles(files[fileIndex]);
+          await new Promise(resolve => {
+            evt.once('done', resolve);
+          });
         },
       };
     };
