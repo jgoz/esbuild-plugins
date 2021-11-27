@@ -8,7 +8,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jgoz/esbuild-plugins.git",
-    "directory": "packages/esb"
+    "directory": "packages/esbd"
   },
   "bugs": {
     "url": "https://github.com/jgoz/esbuild-plugins/issues"

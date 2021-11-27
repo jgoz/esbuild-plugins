@@ -56,7 +56,7 @@
     "lint": "eslint \"packages/**/*.ts\"",
     "node-check": "node -v && arch",
     "prepare": "tsc -b",
-    "release": "pnpm publish",
+    "release": "pnpm publish -r",
     "test": "pnpm test -r",
     "watch": "pnpm run -r --if-present --stream --parallel watch"
   }
