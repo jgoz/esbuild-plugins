@@ -256,10 +256,8 @@ describe('eslint-plugin-typecheck', () => {
         [
           ['pkg-one/one-error.ts', 'pkg-one/one.ts'],
           ['pkg-two/two-error.ts', 'pkg-two/two.ts'],
-          ['pkg-three/three-error.ts', 'pkg-three/three.ts'],
           ['pkg-one/one.ts', 'pkg-one/one.ts'],
           ['pkg-two/two.ts', 'pkg-two/two.ts'],
-          ['pkg-three/three.ts', 'pkg-three/three.ts'],
         ],
         { buildMode: 'write-output', watch: true },
       );
@@ -276,22 +274,11 @@ describe('eslint-plugin-typecheck', () => {
         "../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
         '✖  Typecheck failed with 2 errors',
         'ℹ  Typecheck finished in TIME',
-        // three-error
-        "../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        "../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        '✖  Typecheck failed with 2 errors',
-        'ℹ  Typecheck finished in TIME',
         // one
         "../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
         '✖  Typecheck failed with 1 error',
         'ℹ  Typecheck finished in TIME',
         // two
-        "three.ts(13,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
-        "  Type 'undefined' is not assignable to type 'boolean'.",
-        "three.ts(18,7): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.",
-        '✖  Typecheck failed with 2 errors',
-        'ℹ  Typecheck finished in TIME',
-        // three
         '✔  Typecheck passed',
         'ℹ  Typecheck finished in TIME',
       ]);
