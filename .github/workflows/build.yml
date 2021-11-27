@@ -6,26 +6,36 @@ on:
   pull_request:
     branches: [master]
 
+env:
+  CI: 'true'
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     strategy:
       matrix:
         node-version: [16.x]
-        pnpm-version: [6.23.2]
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use pnpm ${{ matrix.pnpm-version }}
-        uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2
         with:
-          version: ${{ matrix.pnpm-version }}
+          version: 6
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
+      - name: Cache browsers
+        id: browser_cache
+        uses: actions/cache@v2.1.7
+        with:
+          path: '~/.cache/ms-playwright'
+          key: chromium-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: ${{ steps.browser_cache.outputs.cache-hit == 'true' }}
       - run: pnpm build
       - run: pnpm test
