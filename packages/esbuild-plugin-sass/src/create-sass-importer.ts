@@ -4,8 +4,6 @@ import path from 'path';
 import type sass from 'sass';
 import { fileURLToPath } from 'url';
 
-import type { SaasImplementation } from './sass-plugin';
-
 const MODULE_REQUEST_REGEX = /^[^?]*~/; // Examples:
 // - ~package
 // - ~package/
@@ -75,13 +73,11 @@ const IS_SPECIAL_MODULE_IMPORT = /^~[^/]+$/; // `[drive_letter]:\` + `\\[server]
 const IS_NATIVE_WIN32_PATH = /^[a-z]:[/\\]|^\\\\/i;
 
 export function createSassImporter(
-  implementation: SaasImplementation,
   includePaths: string[] = [],
   alias: Record<string, string | string[]> = {},
-): sass.Importer {
+): sass.LegacyImporter<'sync'> {
   // Logic adapted from from sass-loader
 
-  const isDartSass = implementation === 'sass'; // We only have one difference with the built-in sass resolution logic and out resolution logic:
   // First, we look at the files starting with `_`, then without `_` (i.e. `_name.sass`, `_name.scss`, `_name.css`, `name.sass`, `name.scss`, `name.css`),
   // although `sass` look together by extensions (i.e. `_name.sass`/`name.sass`/`_name.scss`/`name.scss`/`_name.css`/`name.css`).
   // It shouldn't be a problem because `sass` throw errors:
@@ -121,13 +117,6 @@ export function createSassImporter(
   });
 
   return (url, prev) => {
-    // See https://github.com/webpack/webpack/issues/12340
-    // Because `node-sass` calls our importer before `1. Filesystem imports relative to the base file.`
-    // custom importer may not return `{ file: '/path/to/name.ext' }` and therefore our `context` will be relative
-    if (!isDartSass && !path.isAbsolute(prev)) {
-      return { file: url };
-    }
-
     const originalRequest = url;
     const isFileScheme = originalRequest.slice(0, 5).toLowerCase() === 'file:';
 
@@ -161,14 +150,6 @@ export function createSassImporter(
       //
       // `sass` run custom importers before `3`, `4` and `5` points, we need to emulate this behavior to avoid wrong resolution.
       const sassPossibleRequests = getPossibleRequests(url, 'sass'); // `node-sass` calls our importer before `1. Filesystem imports relative to the base file.`, so we need emulate this too
-
-      if (!isDartSass) {
-        resolvers.push({
-          resolve: sassModuleResolve,
-          context: path.dirname(prev),
-          possibleRequests: sassPossibleRequests,
-        });
-      }
 
       resolvers.push(
         ...includePaths.map(context => {

@@ -1,12 +1,10 @@
 import type { OnLoadArgs, OnLoadResult, OnResolveArgs, Plugin } from 'esbuild';
 import { promises as fsp } from 'fs';
 import { dirname, resolve } from 'path';
-import type { Importer, types } from 'sass';
+import { LegacyFunction, LegacyImporter } from 'sass';
 
 import { createSassImporter } from './create-sass-importer';
 import { loadSass } from './load-sass';
-
-export type SaasImplementation = 'sass' | 'node-sass';
 
 export interface SassPluginOptions {
   /**
@@ -15,14 +13,6 @@ export interface SassPluginOptions {
    * @default process.cwd()
    */
   basedir?: string;
-
-  /**
-   * "sass" for dart-sass (compiled to javascript, slow) or "node-sass" (libsass, fast yet deprecated)
-   * You can pass the module name of any other implementation as long as it is API compatible
-   *
-   * @default "sass"
-   */
-  implementation?: SaasImplementation;
 
   /**
    * Handles when the @import directive is encountered *inside a Sass file*.
@@ -50,7 +40,7 @@ export interface SassPluginOptions {
    *
    * @default undefined
    */
-  importer?: Importer | Importer[];
+  importer?: LegacyImporter<'sync'> | LegacyImporter<'sync'>[];
 
   /**
    * Holds a collection of custom functions that may be invoked by the sass files being compiled.
@@ -58,9 +48,7 @@ export interface SassPluginOptions {
    *
    * @default undefined
    */
-  functions?: {
-    [key: string]: (...args: types.SassType[]) => types.SassType | void;
-  };
+  functions?: Record<string, LegacyFunction<'sync'>>;
 
   /**
    * An array of paths that should be looked in to attempt to resolve your @import declarations.
@@ -117,7 +105,7 @@ export interface SassPluginOptions {
    *
    * @default undefined
    */
-  sourceMap?: boolean | string;
+  sourceMap?: boolean;
 
   /**
    * Includes the contents in the source map information.
@@ -152,13 +140,9 @@ export interface SassPluginOptions {
 }
 
 export function sassPlugin(options: SassPluginOptions = {}): Plugin {
-  const {
-    basedir = process.cwd(),
-    implementation = 'sass',
-    importer = createSassImporter(implementation, options.includePaths),
-  } = options;
+  const { basedir = process.cwd(), importer = createSassImporter(options.includePaths) } = options;
 
-  const sass = loadSass(implementation, basedir);
+  const sass = loadSass(basedir);
 
   function pathResolve({ resolveDir, path, importer }: OnResolveArgs) {
     return resolve(resolveDir || dirname(importer), path);
@@ -178,16 +162,15 @@ export function sassPlugin(options: SassPluginOptions = {}): Plugin {
 
   async function renderSass(file: string) {
     return new Promise<{ css: string; watchFiles: string[] }>((resolve, reject) => {
-      sass.render({ importer, ...options, file }, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve({
-            css: result.css.toString('utf-8'),
-            watchFiles: result.stats.includedFiles,
-          });
-        }
-      });
+      try {
+        const result = sass.renderSync({ importer, ...options, file });
+        resolve({
+          css: result.css.toString('utf-8'),
+          watchFiles: result.stats.includedFiles,
+        });
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
