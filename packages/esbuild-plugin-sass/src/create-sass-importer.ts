@@ -174,7 +174,11 @@ export function createSassImporter(
         try {
           const resolvedPath = resolver.resolve.resolveSync({}, resolver.context, request);
           if (resolvedPath) return { file: resolvedPath.replace(/\.css$/i, '') };
-        } catch {}
+        } catch (e) {
+          if (!(e as Error).message.startsWith("Can't resolve")) {
+            console.error(e);
+          }
+        }
       }
     }
     return { file: url }; // unable to resolve
