@@ -1,12 +1,19 @@
 import type { OnLoadArgs, OnLoadResult, OnResolveArgs, Plugin } from 'esbuild';
 import { promises as fsp } from 'fs';
 import { dirname, resolve } from 'path';
-import { LegacyFunction, LegacyImporter } from 'sass';
+import type { LegacyFunction, LegacyImporter } from 'sass';
 
 import { createSassImporter } from './create-sass-importer';
 import { loadSass } from './load-sass';
 
 export interface SassPluginOptions {
+  /**
+   * Import aliases to use when resolving imports from within sass files.
+   *
+   * These will not be used when esbuild resolves imports from other module types.
+   */
+  alias?: Record<string, string | string[]>;
+
   /**
    * Base directory to use when resolving the sass implementation.
    *
@@ -140,7 +147,10 @@ export interface SassPluginOptions {
 }
 
 export function sassPlugin(options: SassPluginOptions = {}): Plugin {
-  const { basedir = process.cwd(), importer = createSassImporter(options.includePaths) } = options;
+  const {
+    basedir = process.cwd(),
+    importer = createSassImporter(options.includePaths, options.alias),
+  } = options;
 
   const sass = loadSass(basedir);
 
