@@ -72,6 +72,10 @@ function getPossibleRequests(url: string, resolverMode: 'sass' | 'webpack') {
 const IS_SPECIAL_MODULE_IMPORT = /^~[^/]+$/; // `[drive_letter]:\` + `\\[server]\[sharename]\`
 const IS_NATIVE_WIN32_PATH = /^[a-z]:[/\\]|^\\\\/i;
 
+const DEBUG_RESOLVER =
+  process.env.SASS_PLUGIN_DEBUG_RESOLVER === '1' ||
+  process.env.SASS_PLUGIN_DEBUG_RESOLVER === 'true';
+
 export function createSassImporter(
   includePaths: string[] = [],
   alias: Record<string, string | string[]> = {},
@@ -162,12 +166,13 @@ export function createSassImporter(
       );
     }
 
-    const webpackPossibleRequests = getPossibleRequests(url, 'webpack');
     resolvers.push({
       resolve: webpackModuleResolve,
       context: path.dirname(prev),
-      possibleRequests: webpackPossibleRequests,
+      possibleRequests: getPossibleRequests(url, 'webpack'),
     });
+
+    const resolveErrors = [];
 
     for (const resolver of resolvers) {
       for (const request of resolver.possibleRequests) {
@@ -177,10 +182,20 @@ export function createSassImporter(
         } catch (e) {
           if (!(e as Error).message.startsWith("Can't resolve")) {
             console.error(e);
+          } else if (DEBUG_RESOLVER) {
+            resolveErrors.push(e);
           }
         }
       }
     }
+
+    if (resolveErrors.length > 0) {
+      console.error(`Errors resolving ${originalRequest}:`);
+      for (const error of resolveErrors) {
+        console.error(error);
+      }
+    }
+
     return { file: url }; // unable to resolve
   };
 }
