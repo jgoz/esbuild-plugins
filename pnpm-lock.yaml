@@ -22,14 +22,14 @@ importers:
       eslint-plugin-header: ^3.1.1
       eslint-plugin-import: ^2.25.3
       eslint-plugin-simple-import-sort: ^7.0.0
-      eslint-plugin-unicorn: ^39.0.0
+      eslint-plugin-unicorn: ^38.0.0
       eslint-plugin-unused-imports: ^2.0.0
       jest: ^27.4.5
       prettier: ^2.5.1
       tslib: ^2.3.1
       typescript: ^4.5.4
     devDependencies:
-      '@awesome-code-style/eslint-config': 4.0.0_1fdc5dfb4b63dcd3725485e6a9d4a9b6
+      '@awesome-code-style/eslint-config': 4.0.0_1f2975b01203f41141ec4d2df92eb074
       '@awesome-code-style/prettier-config': 4.0.0_prettier@2.5.1
       '@babel/core': 7.16.5
       '@babel/preset-env': 7.16.5_@babel+core@7.16.5
@@ -47,7 +47,7 @@ importers:
       eslint-plugin-header: 3.1.1_eslint@8.5.0
       eslint-plugin-import: 2.25.3_eslint@8.5.0
       eslint-plugin-simple-import-sort: 7.0.0_eslint@8.5.0
-      eslint-plugin-unicorn: 39.0.0_eslint@8.5.0
+      eslint-plugin-unicorn: 38.0.1_eslint@8.5.0
       eslint-plugin-unused-imports: 2.0.0_d82f9ed89a10e1f575ae61d02090781e
       jest: 27.4.5
       prettier: 2.5.1
@@ -327,7 +327,7 @@ packages:
       resize-observer-polyfill: 1.5.1
     dev: false
 
-  /@awesome-code-style/eslint-config/4.0.0_1fdc5dfb4b63dcd3725485e6a9d4a9b6:
+  /@awesome-code-style/eslint-config/4.0.0_1f2975b01203f41141ec4d2df92eb074:
     resolution: {integrity: sha512-hLtTlWXXNU/56e1hYCNsP6ptJco7G84kzKx13u1sXb7ORihfjGWV0NEMAG2dlRbBQlo63Oxefr5A5D0tHnBWXg==}
     peerDependencies:
       '@typescript-eslint/eslint-plugin': ^5.3.0
@@ -351,7 +351,7 @@ packages:
       eslint-config-prettier: 8.3.0_eslint@8.5.0
       eslint-plugin-import: 2.25.3_eslint@8.5.0
       eslint-plugin-simple-import-sort: 7.0.0_eslint@8.5.0
-      eslint-plugin-unicorn: 39.0.0_eslint@8.5.0
+      eslint-plugin-unicorn: 38.0.1_eslint@8.5.0
       eslint-plugin-unused-imports: 2.0.0_d82f9ed89a10e1f575ae61d02090781e
     transitivePeerDependencies:
       - supports-color
@@ -3942,8 +3942,8 @@ packages:
       eslint: 8.5.0
     dev: true
 
-  /eslint-plugin-unicorn/39.0.0_eslint@8.5.0:
-    resolution: {integrity: sha512-fd5RK2FtYjGcIx3wra7csIE/wkkmBo22T1gZtRTsLr1Mb+KsFKJ+JOdSqhHXQUrI/JTs/Mon64cEYzTgSCbltw==}
+  /eslint-plugin-unicorn/38.0.1_eslint@8.5.0:
+    resolution: {integrity: sha512-eu4HCg7Bv43nk/hYZoWpLzRo668Nb7swQySn94aohn0heh9KLJ1GOFgVxJndLS8BploMGaClxgsyTNGJrP69yw==}
     engines: {node: '>=12'}
     peerDependencies:
       eslint: '>=7.32.0'
