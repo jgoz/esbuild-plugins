@@ -22,12 +22,14 @@ export interface SassPluginOptions {
   basedir?: string;
 
   /**
-   * Handles when the @import directive is encountered *inside a Sass file*.
-   * @see {@link https://github.com/sass/node-sass#importer--v200---experimental}
+   * Resolves `@import` directives *between sass files*.
+   *
+   * This is not used when esbuild resolves imports from other module types, e.g.,
+   * when importing from JS/TS files or when defining a Sass file as an entry point.
    *
    * If left undefined, a default importer will be used that closely mimics webpack's
    * sass-loader resolution algorithm, which itself closely mimic's the default resolution
-   * algorithm of either dart-sass or node-sass.
+   * algorithm of dart-sass.
    *
    * If you want to extend the import algorithm while keeping the default, you can import it
    * like so:
@@ -36,7 +38,6 @@ export interface SassPluginOptions {
    * import { createSassImporter } from '@jgoz/esbuild-plugin-sass';
    *
    * const defaultImporter = createSassImporter(
-   *   'sass', // or 'node-sass' -- should match 'implementation' option
    *   [], // includePaths
    *   {}, // aliases
    * );
@@ -46,6 +47,7 @@ export interface SassPluginOptions {
    * })
    *
    * @default undefined
+   * @see {@link https://github.com/sass/node-sass#importer--v200---experimental}
    */
   importer?: LegacyImporter<'sync'> | LegacyImporter<'sync'>[];
 
@@ -139,13 +141,34 @@ export interface SassPluginOptions {
   sourceMapRoot?: string;
 
   /**
-   * A function which will post-process the css output before wrapping it in a module.
+   * A function that will post-process the css output before wrapping it in a module.
+   *
+   * This might be useful for, e.g., processing CSS output with PostCSS/autoprefixer.
+   *
+   * @example
+   * const postCSS = require("postcss")([
+   *  require("autoprefixer"),
+   *  require("postcss-preset-env")({stage:0})
+   * ]);
+   *
+   * sassPlugin({
+   *  async transform(source, resolveDir) {
+   *    const {css} = await postCSS.process(source, {from: undefined});
+   *    return css;
+   *  }
+   * })
    *
    * @default undefined
    */
   transform?: (css: string, resolveDir: string) => string | Promise<string>;
 }
 
+/**
+ * ESBuild plugin that transpiles Sass files to CSS.
+ *
+ * @param options - Plugin options.
+ * @returns Sass plugin instance.
+ */
 export function sassPlugin(options: SassPluginOptions = {}): Plugin {
   const {
     basedir = process.cwd(),
