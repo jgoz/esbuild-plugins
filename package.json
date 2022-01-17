@@ -47,12 +47,14 @@
     "jest": "^27.4.5",
     "prettier": "^2.5.1",
     "tslib": "^2.3.1",
+    "typedoc": "^0.22.10",
     "typescript": "^4.5.4"
   },
   "scripts": {
     "build": "tsc -b && pnpm run -r --if-present prepack",
     "changeset:version": "changeset version && pnpm i --lockfile-only",
     "clobber": "rm -rf node_modules packages/*/{dist,lib,node_modules} **/*.tsbuildinfo",
+    "docs": "pnpm run -r --if-present docs",
     "lint": "eslint \"packages/**/*.ts\"",
     "node-check": "node -v && arch",
     "prepare": "tsc -b",
