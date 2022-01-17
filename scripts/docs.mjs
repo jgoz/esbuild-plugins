@@ -79,9 +79,14 @@ function printDecl(decl, required) {
   const nameWithLink = nameLink ? `[${name}](${nameLink})` : name;
 
   const type = getType(decl);
+  const typeCol = `\`${escape(type)}\``;
+
   const defaultValue = extractDefault(decl.comment?.getTag('default')?.text);
+  const defaultCol = defaultValue ? `\`${escape(defaultValue)}\`` : '';
+
   const comment = formatComment(decl.comment);
-  console.log(`| ${nameWithLink} | \`${escape(type)}\` | ${escape(defaultValue)} | ${comment} |`);
+
+  console.log(`| ${nameWithLink} | ${typeCol} | ${defaultCol} | ${comment} |`);
 }
 
 function writeTable(entryPoint, name) {
