@@ -80,16 +80,14 @@ function printDecl(decl, required) {
   const nameLink = extractLink(decl.comment?.getTag('see')?.text);
   const nameWithLink = nameLink ? `[${name}](${nameLink})` : name;
 
-  let type = `\`${escape(getType(decl))}\``;
+  const type = `\`${escape(getType(decl))}\``;
 
   const defaultValue = extractDefault(decl.comment?.getTag('default')?.text);
-  if (defaultValue) {
-    type += `<br>Default: \`${escape(defaultValue)}\``;
-  }
+  const default_ = defaultValue ? `\`${defaultValue}\`` : '-';
 
   const comment = formatComment(decl.comment);
 
-  console.log(`| ${nameWithLink} | ${type} | ${comment} |`);
+  console.log(`| ${nameWithLink} | ${type} | ${default_} | ${comment} |`);
 }
 
 /**
@@ -116,8 +114,8 @@ function writeTable(entryPoint, name) {
     return;
   }
 
-  console.log('| Name | Type | Description |');
-  console.log('| ---- | ---- | ----------- |');
+  console.log('| Name | Type | Default | Description |');
+  console.log('| ---- | ---- | ------- | ----------- |');
   for (const child of /** @type {DeclarationReflection} */ (reflection).children) {
     const required = !child.flags.isOptional;
     if (child.signatures) {
