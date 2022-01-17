@@ -22,21 +22,45 @@ Add it to your esbuild plugins:
 
 ```js
 const esbuild = require('esbuild');
-const { sassPlugin } = require('@goz/esbuild-plugin-sass');
+const { sassPlugin } = require('@jgoz/esbuild-plugin-sass');
 
 await esbuild.build({
-  ...
-  plugins: [sassPlugin()]
-})
+  // ...
+  plugins: [sassPlugin()],
+});
 ```
 
 This will produce a separate CSS output file for each entry point you define containing the transpiled Sass output.
 
+#### Usage with PostCSS/Autoprefixer
+
+The `transform` option can be used to process CSS output using PostCSS or any other utility.
+
+```ts
+const esbuild = require('esbuild');
+const { sassPlugin } = require('@jgoz/esbuild-plugin-sass');
+const autoprefixer = require('autoprefixer');
+const presetEnv = require('postcss-preset-env');
+const postcss = require('postcss');
+
+const processor = postcss([autoprefixer, presetEnv()]);
+
+await esbuild.build({
+  // ...
+  plugins: [
+    sassPlugin({
+      async transform(source, resolveDir) {
+        const { css } = await processor.process(source, { from: resolveDir });
+        return css;
+      },
+    }),
+  ],
+});
+```
+
 ### API
 
 #### `function sassPlugin(options?: SassPluginOptions): Plugin`
-
-> ESBuild plugin that transpiles Sass files to CSS.
 
 **Plugin options:**
 
@@ -58,6 +82,6 @@ This will produce a separate CSS output file for each entry point you define con
 | [sourceMapContents](https://github.com/sass/node-sass#sourcemapcontents) | `boolean` | `false` | Includes the contents in the source map information. |
 | [sourceMapEmbed](https://github.com/sass/node-sass#sourcemapembed) | `boolean` | `false` | Embeds the source map as a data URI. |
 | [sourceMapRoot](https://github.com/sass/node-sass#sourcemaproot) | `string` | - | The value will be emitted as `sourceRoot` in the source map information. |
-| transform | `(css: string, resolveDir: string) => string \| Promise<string>` | - | A function that will post-process the css output before wrapping it in a module.<br><br>This might be useful for, e.g., processing CSS output with PostCSS/autoprefixer. <br><br><details><summary>Example</summary><pre>const postCSS = require("postcss")([<br> require("autoprefixer"),<br> require("postcss-preset-env")({stage:0})<br>]);<br><br>sassPlugin({<br> async transform(source, resolveDir) {<br>   const {css} = await postCSS.process(source, {from: undefined});<br>   return css;<br> }<br>})</pre></details> |
+| transform | `(css: string, resolveDir: string) => string \| Promise<string>` | - | A function that will post-process the css output before wrapping it in a module.<br><br>This might be useful for, e.g., processing CSS output with PostCSS/autoprefixer. <br><br><details><summary>Example</summary><pre>const postCSS = require("postcss")([<br> require("autoprefixer"),<br> require("postcss-preset-env")({ stage:0 })<br>]);<br><br>sassPlugin({<br> async transform(source, resolveDir) {<br>   const { css } = await postCSS.process(<br>     source,<br>     { from: resolveDir }<br>   );<br>   return css;<br> }<br>})</pre></details> |
 <!-- end -->
 <!-- prettier-ignore-end -->

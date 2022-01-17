@@ -148,12 +148,15 @@ export interface SassPluginOptions {
    * @example
    * const postCSS = require("postcss")([
    *  require("autoprefixer"),
-   *  require("postcss-preset-env")({stage:0})
+   *  require("postcss-preset-env")({ stage:0 })
    * ]);
    *
    * sassPlugin({
    *  async transform(source, resolveDir) {
-   *    const {css} = await postCSS.process(source, {from: undefined});
+   *    const { css } = await postCSS.process(
+   *      source,
+   *      { from: resolveDir }
+   *    );
    *    return css;
    *  }
    * })
