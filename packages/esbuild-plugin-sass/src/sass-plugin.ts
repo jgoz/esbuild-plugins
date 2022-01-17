@@ -47,13 +47,13 @@ export interface SassPluginOptions {
    * })
    *
    * @default undefined
-   * @see {@link https://github.com/sass/node-sass#importer--v200---experimental}
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#importer}
    */
   importer?: LegacyImporter<'sync'> | LegacyImporter<'sync'>[];
 
   /**
    * Holds a collection of custom functions that may be invoked by the sass files being compiled.
-   * @see {@link https://github.com/sass/node-sass#functions--v300---experimental}
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#functions}
    *
    * @default undefined
    */
@@ -62,7 +62,7 @@ export interface SassPluginOptions {
   /**
    * An array of paths that should be looked in to attempt to resolve your @import declarations.
    * When using `data`, it is recommended that you use this.
-   * @see {@link https://github.com/sass/node-sass#includepaths}
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#includePaths}
    *
    * @default []
    */
@@ -70,7 +70,7 @@ export interface SassPluginOptions {
 
   /**
    * Enable Sass Indented Syntax for parsing the data string or file.
-   * @see {@link https://github.com/sass/node-sass#indentedsyntax}
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyStringOptions#indentedSyntax}
    *
    * @default false
    */
@@ -78,7 +78,7 @@ export interface SassPluginOptions {
 
   /**
    * Used to determine whether to use space or tab character for indentation.
-   * @see {@link https://github.com/sass/node-sass#indenttype--v300}
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#indentType}
    *
    * @default 'space'
    */
@@ -86,7 +86,7 @@ export interface SassPluginOptions {
 
   /**
    * Used to determine the number of spaces or tabs to be used for indentation.
-   * @see {@link https://github.com/sass/node-sass#indentwidth--v300}
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#indentWidth}
    *
    * @default 2
    */
@@ -94,7 +94,7 @@ export interface SassPluginOptions {
 
   /**
    * Used to determine which sequence to use for line breaks.
-   * @see {@link https://github.com/sass/node-sass#linefeed--v300}
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#linefeed}
    *
    * @default 'lf'
    */
@@ -102,7 +102,7 @@ export interface SassPluginOptions {
 
   /**
    * Determines the output format of the final CSS style.
-   * @see {@link https://github.com/sass/node-sass#outputstyle}
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#outputStyle}
    *
    * @default 'expanded'
    */
@@ -110,7 +110,7 @@ export interface SassPluginOptions {
 
   /**
    * Enables the outputting of a source map.
-   * @see {@link https://github.com/sass/node-sass#sourcemap}
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#sourceMap}
    *
    * @default undefined
    */
@@ -118,7 +118,7 @@ export interface SassPluginOptions {
 
   /**
    * Includes the contents in the source map information.
-   * @see {@link https://github.com/sass/node-sass#sourcemapcontents}
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#sourceMapContents}
    *
    * @default false
    */
@@ -126,7 +126,7 @@ export interface SassPluginOptions {
 
   /**
    * Embeds the source map as a data URI.
-   * @see {@link https://github.com/sass/node-sass#sourcemapembed}
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#sourceMapEmbed}
    *
    * @default false
    */
@@ -134,7 +134,7 @@ export interface SassPluginOptions {
 
   /**
    * The value will be emitted as `sourceRoot` in the source map information.
-   * @see {@link https://github.com/sass/node-sass#sourcemaproot}
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#sourceMapRoot}
    *
    * @default undefined
    */
