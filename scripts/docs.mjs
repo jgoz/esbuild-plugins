@@ -64,7 +64,9 @@ function formatComment(comment) {
   }
 
   if (comment.hasTag('example')) {
-    text += `<br><pre>${escapeCode(comment.getTag('example').text)}</pre>`;
+    text += `<br><details><summary>Example</summary><pre>${escapeCode(
+      comment.getTag('example').text,
+    )}</pre></details>`;
   }
 
   return text;
