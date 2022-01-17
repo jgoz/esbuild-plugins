@@ -64,7 +64,7 @@ function formatComment(comment) {
   }
 
   if (comment.hasTag('example')) {
-    text += `<br><details><summary>Example</summary><pre>${escapeCode(
+    text += `<br><br><details><summary>Example</summary><pre>${escapeCode(
       comment.getTag('example').text,
     )}</pre></details>`;
   }
@@ -80,17 +80,22 @@ function printDecl(decl, required) {
   const nameLink = extractLink(decl.comment?.getTag('see')?.text);
   const nameWithLink = nameLink ? `[${name}](${nameLink})` : name;
 
-  const type = getType(decl);
-  const typeCol = `\`${escape(type)}\``;
+  let type = `\`${escape(getType(decl))}\``;
 
   const defaultValue = extractDefault(decl.comment?.getTag('default')?.text);
-  const defaultCol = defaultValue ? `\`${escape(defaultValue)}\`` : '';
+  if (defaultValue) {
+    type += `<br>Default: \`${escape(defaultValue)}\``;
+  }
 
   const comment = formatComment(decl.comment);
 
-  console.log(`| ${nameWithLink} | ${typeCol} | ${defaultCol} | ${comment} |`);
+  console.log(`| ${nameWithLink} | ${type} | ${comment} |`);
 }
 
+/**
+ * @param {string} entryPoint
+ * @param {string} name
+ */
 function writeTable(entryPoint, name) {
   const app = new Application();
   app.options.addReader(new TSConfigReader());
@@ -111,8 +116,8 @@ function writeTable(entryPoint, name) {
     return;
   }
 
-  console.log('| Name | Type | Default | Description |');
-  console.log('| --- | --- | --- | --- |');
+  console.log('| Name | Type | Description |');
+  console.log('| ---- | ---- | ----------- |');
   for (const child of /** @type {DeclarationReflection} */ (reflection).children) {
     const required = !child.flags.isOptional;
     if (child.signatures) {
