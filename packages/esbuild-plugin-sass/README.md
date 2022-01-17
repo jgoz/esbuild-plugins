@@ -1,4 +1,4 @@
-# `@jgoz/esbuild-plugin-sass`
+# @jgoz/esbuild-plugin-sass
 
 An esbuild plugin for loading [Sass/SCSS](https://sass-lang.com) files using the [CSS content type](https://esbuild.github.io/content-types/#css).
 
