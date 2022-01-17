@@ -13,7 +13,7 @@ function escape(str) {
 }
 
 function escapeCode(str) {
-  return str?.replace(/\|/g, '\\|').replace(/\n/g, '<br>') ?? '';
+  return str?.trim().replace(/\|/g, '\\|').replace(/\n/g, '<br>') ?? '';
 }
 
 /**
@@ -64,7 +64,7 @@ function formatComment(comment) {
   }
 
   if (comment.hasTag('example')) {
-    text += `<br><code>${escapeCode(comment.getTag('example').text)}</code>`;
+    text += `<br><pre>${escapeCode(comment.getTag('example').text)}</pre>`;
   }
 
   return text;
