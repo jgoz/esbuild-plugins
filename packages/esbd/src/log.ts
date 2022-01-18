@@ -15,6 +15,7 @@ export interface TimedSpinner extends Omit<Spinner, 'stop'> {
 
 export interface Logger {
   logLevel: LogLevel;
+  verbose(message: any, ...args: any[]): void;
   info(message: any, ...args: any[]): void;
   warn(message: any, ...args: any[]): void;
   error(message: any, ...args: any[]): void;
@@ -24,6 +25,7 @@ export interface Logger {
 
 export const LOG_LEVELS: LogLevel[] = ['verbose', 'debug', 'info', 'warning', 'error', 'silent'];
 
+const LEVEL_VERBOSE = LOG_LEVELS.indexOf('verbose');
 const LEVEL_INFO = LOG_LEVELS.indexOf('info');
 const LEVEL_WARNING = LOG_LEVELS.indexOf('warning');
 const LEVEL_ERROR = LOG_LEVELS.indexOf('error');
@@ -44,6 +46,10 @@ export function createLogger(logLevel: LogLevel): Logger {
 
   return {
     logLevel,
+    verbose(message: any, ...args: any[]) {
+      if (levelIndex > LEVEL_VERBOSE) return;
+      enqueueOrFlush(() => console.log(message, ...args));
+    },
     info(message: any, ...args: any[]) {
       if (levelIndex > LEVEL_INFO) return;
       enqueueOrFlush(() => {

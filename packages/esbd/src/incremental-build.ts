@@ -144,11 +144,13 @@ export async function incrementalBuild({
       inputWatcher.once('all', onInputEvent);
       moduleWatcher.once('change', onModuleEvent);
       assetWatcher.on('all', onAssetEvent);
+      logger.verbose('Started watching for changes');
     }, 100);
   }
 
   async function triggerBuild() {
     running = true;
+    logger.verbose('Stopped watching for changes');
     await inputWatcher.close();
     await moduleWatcher.close();
     await assetWatcher.close();

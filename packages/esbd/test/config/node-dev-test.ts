@@ -6,7 +6,6 @@ import { node } from 'execa';
 import { promises as fsp } from 'fs';
 import getPort from 'get-port';
 import path from 'path';
-import { setTimeout } from 'timers/promises';
 import waitOn from 'wait-on';
 
 import type { EsbdConfig } from '../../lib';
@@ -58,6 +57,14 @@ const test = base.extend<ServerTestFixtures>({
 
     const startServer = async (serverConfig: ServerConfig) => {
       const { args = [], config, files, respawn, onStderr, onStdout } = serverConfig;
+      const evt = new EventEmitter();
+
+      async function waitForWatcher() {
+        await new Promise((resolve, reject) => {
+          evt.once('watch-on', resolve);
+          evt.once('err', reject);
+        });
+      }
 
       const initialFiles = files[0];
       if (!initialFiles) {
@@ -79,7 +86,7 @@ const test = base.extend<ServerTestFixtures>({
 
       await Promise.all([writeBundle, writeFiles(initialFiles)]);
 
-      proc = node(bundleFile, ['node-dev', '-l', 'info', respawn && '-r', ...args], {
+      proc = node(bundleFile, ['node-dev', '-l', 'verbose', respawn && '-r', ...args], {
         encoding: 'utf8',
         reject: false,
         cwd: absWorkingDir,
@@ -88,14 +95,21 @@ const test = base.extend<ServerTestFixtures>({
 
       await waitOn({ resources: [`http-get://127.0.0.1:${port}`], timeout: 10000 });
 
-      const evt = new EventEmitter();
       proc.stdout.on('data', (chunk: Buffer) => {
         const str = chunk.toString();
         if (/rebuilding and restarting/.exec(str)) {
           evt.emit('done');
         }
+        if (/Started watching for changes/.exec(str)) {
+          evt.emit('watch-on');
+        }
+        if (/Stopped watching for changes/.exec(str)) {
+          evt.emit('watch-off');
+        }
         onStdout?.(str);
       });
+
+      await waitForWatcher();
 
       proc.stderr.on('data', (chunk: Buffer) => {
         const str = chunk.toString();
@@ -107,13 +121,13 @@ const test = base.extend<ServerTestFixtures>({
 
       return {
         write: async (fileIndex: number) => {
-          await setTimeout(250); // watchers aren't restarted until 100ms after the last change
           await writeFiles(files[fileIndex]);
           try {
             await new Promise((resolve, reject) => {
               evt.once('done', resolve);
               evt.once('err', reject);
             });
+            await waitForWatcher();
             await waitOn({ resources: [`http-get://127.0.0.1:${port}`], timeout: 500 });
           } catch {}
         },
