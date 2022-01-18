@@ -3,6 +3,8 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
+const xit = process.env.CI ? it.skip : it;
+
 async function* walk(dirPath: string): AsyncIterable<string> {
   for await (const d of await fs.promises.readdir(dirPath, { withFileTypes: true })) {
     const entry = path.join(dirPath, d.name);
@@ -250,7 +252,7 @@ describe('eslint-plugin-typecheck', () => {
       await expect(build.findTSOutput()).resolves.toEqual([]);
     });
 
-    it.skip('[flaky] reports errors across all dependencies', async () => {
+    xit('reports errors across all dependencies [skip CI]', async () => {
       const { output } = await build.run(
         'pkg-three/build.js',
         [
