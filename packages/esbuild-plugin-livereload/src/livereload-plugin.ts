@@ -6,10 +6,21 @@ import path from 'path';
 
 import { createLivereloadServer } from './server';
 
-interface ClientMessage {
-  warnings?: readonly Message[];
-  errors?: readonly Message[];
+export interface ClientMessage {
+  /**
+   * Does the current message represent a CSS-only update?
+   */
   cssUpdate?: boolean;
+
+  /**
+   * Error messages.
+   */
+  errors?: readonly Message[];
+
+  /**
+   * Warning messages.
+   */
+  warnings?: readonly Message[];
 }
 
 const clients = new Set<ServerResponse>();
@@ -97,8 +108,8 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
  * a given source. If there are no errors and the notification originates
  * from esbuild, the page will be sent a reload request.
  *
- * @param errorSource - Identifier for the errors and warnings. Previous
- *                      results will be overwritten for the same errorSource.
+ * @param errorSource - Key to use when identifying these errors and warnings.
+ *                      Previous results will be overwritten for the same `errorSource`.
  * @param msg - Object containing errors and warnings from the given source
  * @param connectedClients - Set of long-lived server responses representing
  *                           clients currently connected to the livereload

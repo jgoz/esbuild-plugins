@@ -82,7 +82,7 @@ function printDecl(decl, required) {
 
   const type = `\`${escape(getType(decl))}\``;
 
-  const defaultValue = extractDefault(decl.comment?.getTag('default')?.text);
+  const defaultValue = decl.defaultValue ?? extractDefault(decl.comment?.getTag('default')?.text);
   const default_ = defaultValue ? `\`${defaultValue}\`` : '-';
 
   const comment = formatComment(decl.comment);
@@ -102,22 +102,34 @@ function writeTable(entryPoint, name) {
     readme: 'none',
   });
   const project = app.convert();
-  const reflection = project.findReflectionByName(name);
+  let reflection = project.findReflectionByName(name);
 
   if (!reflection) {
     console.warn(`Could not find reflection for ${name}`);
     return;
   }
 
-  if (reflection.kind !== ReflectionKind.Interface) {
-    console.warn(`Reflection for ${name} is not an interface`);
+  /** @type DeclarationReflection[] */
+  let children;
+  if (reflection.kind === ReflectionKind.Interface) {
+    children = /** @type {DeclarationReflection} */ (reflection).children;
+  } else if (reflection.kind === ReflectionKind.Function) {
+    reflection = reflection.signatures.at(0);
+    children = reflection.parameters;
+  } else {
+    console.warn(`Reflection for ${name} is not an interface or function`);
     return;
+  }
+
+  if (reflection.comment?.shortText) {
+    console.log(reflection.comment.shortText + reflection.comment.text);
+    console.log();
   }
 
   console.log('| Name | Type | Default | Description |');
   console.log('| ---- | ---- | ------- | ----------- |');
-  for (const child of /** @type {DeclarationReflection} */ (reflection).children) {
-    const required = !child.flags.isOptional;
+  for (const child of children) {
+    const required = !child.flags.isOptional && child.defaultValue === undefined;
     if (child.signatures) {
       printDecl(child.signatures.at(0), required);
     } else {
