@@ -153,6 +153,7 @@ importers:
       esbuild: ^0.14.8
       esbuild-node-externals: ^1.4.1
       jest: ^27.4.5
+      markdown-interpolate: ^0.0.7
       memfs: ^3.4.0
       parse5: ^6.0.1
       prettier: ^2.5.1
@@ -162,6 +163,7 @@ importers:
       esbuild: 0.14.8
       esbuild-node-externals: 1.4.1_esbuild@0.14.8
       jest: 27.4.5
+      markdown-interpolate: 0.0.7
       memfs: 3.4.0
       parse5: 6.0.1
       prettier: 2.5.1

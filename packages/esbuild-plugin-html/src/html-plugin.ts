@@ -181,10 +181,8 @@ export interface HtmlPluginOptions {
   /**
    * Path to the HTML template to use (required).
    *
-   * If a relative path is provided, it will be resolved relation
+   * If a relative path is provided, it will be resolved relative
    * to the `absWorkingDir` build option (falling back to `process.cwd()`).
-   *
-   * The minimum requirement for an HTML template is
    */
   template: string;
 }

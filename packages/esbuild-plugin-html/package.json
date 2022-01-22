@@ -28,6 +28,7 @@
     "esbuild": "^0.14.8",
     "esbuild-node-externals": "^1.4.1",
     "jest": "^27.4.5",
+    "markdown-interpolate": "^0.0.7",
     "memfs": "^3.4.0",
     "parse5": "^6.0.1",
     "prettier": "^2.5.1",
@@ -46,6 +47,7 @@
     }
   },
   "scripts": {
+    "docs": "markdown-interpolate README.md && prettier --write README.md",
     "prepack": "./bundle.js build",
     "test": "jest",
     "watch": "./bundle.js build -w"

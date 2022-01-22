@@ -4,16 +4,42 @@ import {
   Comment,
   DeclarationReflection,
   ReflectionKind,
+  Type,
   SignatureReflection,
   TSConfigReader,
 } from 'typedoc';
 
 function escape(str) {
-  return str?.replace(/\|/g, '\\|').replace(/\n{2}/g, '<br><br>').replace(/\n/g, ' ') ?? '';
+  return (
+    str
+      ?.replace(/\|/g, '\\|')
+      .replace(/\n{2}/g, '<br><br>')
+      .replace(/\n- /g, '<li>')
+      .replace(/\n/g, ' ') ?? ''
+  );
 }
 
 function escapeCode(str) {
   return str?.trim().replace(/\|/g, '\\|').replace(/\n/g, '<br>') ?? '';
+}
+
+/**
+ * @param {Type | undefined} type
+ */
+function typeStr(type) {
+  if (type?.type === 'reference' && type.reflection?.type) {
+    return typeStr(type.reflection.type);
+  }
+
+  if (type?.type === 'union' && type?.types?.length > 0) {
+    return type.types.map(type => typeStr(type)).join(' | ');
+  }
+
+  if (type?.type === 'reflection' && type.declaration?.signatures) {
+    return getType(type.declaration.signatures.at(0));
+  }
+
+  return type?.toString() ?? 'any';
 }
 
 /**
@@ -25,10 +51,10 @@ function getType(decl) {
       /** @type {SignatureReflection} */ (decl).parameters?.map(
         param => `${param.name}: ${getType(param)}`,
       ) ?? [];
-    return `(${params.join(', ')}) => ${decl.type?.toString() ?? 'any'}`;
+    return `(${params.join(', ')}) => ${typeStr(decl.type)}`;
   }
 
-  return decl.type?.toString() ?? 'any';
+  return typeStr(decl.type);
 }
 
 /**
@@ -126,10 +152,19 @@ function writeTable(entryPoint, name) {
     console.log();
   }
 
+  const withRequired = children.map(child => [
+    child,
+    !child.flags.isOptional && child.defaultValue === undefined,
+  ]);
+  withRequired.sort(([, required1], [, required2]) => {
+    if (required2 && !required1) return 1;
+    if (required1 && !required2) return -1;
+    return 0;
+  });
+
   console.log('| Name | Type | Default | Description |');
   console.log('| ---- | ---- | ------- | ----------- |');
-  for (const child of children) {
-    const required = !child.flags.isOptional && child.defaultValue === undefined;
+  for (const [child, required] of withRequired) {
     if (child.signatures) {
       printDecl(child.signatures.at(0), required);
     } else {
