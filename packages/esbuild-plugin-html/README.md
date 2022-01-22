@@ -55,3 +55,124 @@ At the bare minimum, the provided template should have a `doctype`, `html`, `hea
 | scriptPlacement | `"head-above" \| "head-below" \| "body-above" \| "body-below"` | `"head-below"` | Where to emit `<script>` elements for JS chunks.<br><br>Possible values:<li>`"head-above"` &mdash; inside `<head>` element, above existing `<script>`s<li>`"head-below"` &mdash; inside `<head>` element, below existing `<script>`s<li>`"body-above"` &mdash; inside `<body>` element, above existing `<script>`s<li>`"body-below"` &mdash; inside `<body>` element, below existing `<script>`s<br><br>When emitted to `<head>`, the `defer` option will be implicitly set to `true`. If you wish to disable this behavior, set `defer: false`.  |
 <!-- end -->
 <!-- prettier-ignore-end -->
+
+### Example templates
+
+#### Bare Minimum:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body></body>
+</html>
+```
+
+#### With external referenced assets (will not be copied):
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="Me" />
+    <meta name="google" value="notranslate" />
+    <link rel="apple-touch-icon" sizes="180x180" href="http://icons.com/icon.png" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Complex Template</title>
+    <style type="text/css" media="screen, print"></style>
+    <link rel="stylesheet" href="https://google.com/fonts" />
+    <script>
+      window.global = window;
+    </script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="http://google.com/analytics"></script>
+  </body>
+</html>
+```
+
+#### With local referenced assets (will be copied):
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="Me" />
+    <meta name="google" value="notranslate" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icon.png" />
+    <link rel="mask-icon" href="./assets/mask.svg" color="#5bbad5" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Local Assets Template</title>
+    <style type="text/css" media="screen, print">
+      @font-face {
+        font-family: 'Open Sans';
+        font-weight: 400;
+        font-style: normal;
+        src: url('./assets/font.svg#OpenSans') format('svg');
+      }
+      body {
+        background: url(./assets/bg.png?test#foo);
+        content: 'url';
+      }
+    </style>
+    <link rel="stylesheet" href="https://google.com/fonts" />
+    <link rel="stylesheet" href="./assets/custom.css" />
+    <script>
+      window.global = window;
+    </script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="http://google.com/analytics"></script>
+  </body>
+</html>
+```
+
+#### With values that will be replaced by `define` option:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description" />
+    <meta name="author" content="Me" />
+    <meta name="google" value="notranslate" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="http://icons.com/icon.png?{{ process.env.NODE_ENV }}"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>Complex Template</title>
+    <style type="text/css" media="screen, print"></style>
+    <link rel="stylesheet" href="https://google.com/fonts?{{ VERSION }}" />
+    <script>
+      window.global = window;
+      window.version = '{{VERSION}}';
+      window.environment = '{{process.env.NODE_ENV}}';
+    </script>
+  </head>
+  <body>
+    <div class="app-container"></div>
+    <script src="http://google.com/analytics"></script>
+  </body>
+</html>
+```
