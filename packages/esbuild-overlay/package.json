@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@tsconfig/svelte": "^3.0.0",
-    "esbuild": "^0.14.8",
+    "esbuild": "^0.14.13",
     "esbuild-svelte": "^0.6.0",
     "markdown-interpolate": "^0.0.7",
     "prettier": "^2.5.1",
