@@ -29,13 +29,15 @@ interface Logger {
 
 export interface TypecheckPluginOptions {
   /**
-   * Run the compiler in build mode, equivalent to passing the "--build"
-   * argument. Normally, this will be inferred if "tsconfig.json" sets
-   * "composite: true" but it can be overridden by this option.
+   * Run the compiler in build mode, equivalent to running `tsc --build`.
+   * Normally, this will be inferred if `tsconfig.json` sets
+   * `"composite": true` but it can be overridden by this option.
    *
    * This option also accepts an object, which implicitly turns build mode
    * on. The object accepts build-mode-specific options that will be passed
    * to the TypeScript compiler API.
+   *
+   * @see {@link https://www.typescriptlang.org/docs/handbook/project-references.html#tsc--b-commandline}
    *
    * @default undefined
    */
@@ -44,7 +46,6 @@ export interface TypecheckPluginOptions {
   /**
    * Changes the behavior of build mode with respect to program output (JavaScript,
    * type definitions, sourcemaps, and .tsbuildinfo files).
-   *
    * - `readonly` (default) &mdash; output files will be written to an in-memory
    *   file system and discared after esbuild exits
    * - `write-output` &mdash; output files will be written to disk as though you
@@ -52,7 +53,7 @@ export interface TypecheckPluginOptions {
    *
    * There are tradeoffs between the two modes. In `readonly` mode, the initial
    * typecheck may be slower, especially if the output/.tsbuildinfo files do not
-   * match the sources. However, subsequent incremental typechecks may be slightly
+   * match the source files. However, subsequent incremental typechecks may be slightly
    * faster since no I/O is involved. This mode is also the least surprising because
    * typechecking implies a different intent than compilation, but TypeScript's build
    * mode needs to produce output in order to remain fast for incremental compilation.
@@ -71,13 +72,15 @@ export interface TypecheckPluginOptions {
    * TypeScript compiler option overrides that will be merged into the options
    * in "tsconfig.json".
    *
+   * @see {@link https://www.typescriptlang.org/tsconfig}
+   *
    * @default {}
    */
   compilerOptions?: ts.CompilerOptions;
 
   /**
    * Path to "tsconfig.json". If not specified, this will use ESBuild's "tsconfig"
-   * option, finally falling back to TypeScripts config file resolution algorithm.
+   * option, finally falling back to TypeScript's config file resolution algorithm.
    *
    * @default undefined
    */
@@ -98,7 +101,7 @@ export interface TypecheckPluginOptions {
   /**
    * Force operation in watch mode.
    *
-   * @default false
+   * By default, watch mode will be inferred from esbuild's "watch" option.
    */
   watch?: boolean;
 }

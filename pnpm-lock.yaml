@@ -276,6 +276,7 @@ importers:
       execa: ^5.0.0
       jest: ^27.4.5
       kleur: ^4.1.4
+      markdown-interpolate: ^0.0.7
       memfs: ^3.4.0
       prettier: ^2.5.1
       tslib: ^2.3.1
@@ -288,6 +289,7 @@ importers:
       execa: 5.1.1
       jest: 27.4.5
       kleur: 4.1.4
+      markdown-interpolate: 0.0.7
       memfs: 3.4.0
       prettier: 2.5.1
       tslib: 2.3.1
