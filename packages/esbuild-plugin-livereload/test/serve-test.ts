@@ -73,7 +73,7 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
         outdir: 'js',
         plugins: [
           esbuildSvelte({
-            compileOptions: { css: true },
+            compilerOptions: { css: true },
             preprocess: sveltePreprocess(),
           }),
           livereloadPlugin({ port: lrPort }),
