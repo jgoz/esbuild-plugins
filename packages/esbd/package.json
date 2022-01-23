@@ -40,7 +40,7 @@
     "@types/sade": "^1.7.4",
     "@types/serve-static": "^1.13.10",
     "@types/wait-on": "^5.3.1",
-    "chokidar": "^3.5.2",
+    "chokidar": "^3.5.3",
     "esbuild": "^0.14.8",
     "esbuild-node-externals": "^1.4.1",
     "execa": "^5.0.0",
