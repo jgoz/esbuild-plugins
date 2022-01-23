@@ -3,7 +3,16 @@ import type { Message } from 'esbuild';
 import Overlay from './Overlay.svelte';
 
 export interface OverlayProps {
+  /**
+   * Error messages to display.
+   */
   errors: Message[];
+
+  /**
+   * If provided, this URL will be opened when the user clicks on the overlay.
+   *
+   * This can be used to open the source file of the error or warning.
+   */
   openFileURL?: string;
 }
 
