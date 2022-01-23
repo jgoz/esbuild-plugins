@@ -14,7 +14,7 @@ bundle({
   outdir: './dist',
   plugins: [
     esbuildSvelte({
-      compileOptions: { css: true },
+      compilerOptions: { css: true },
       preprocess: sveltePreprocess(),
     }),
   ],
