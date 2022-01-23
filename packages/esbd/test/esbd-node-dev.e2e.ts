@@ -1,7 +1,5 @@
 import test from './config/node-dev-test';
 
-const xtest = process.env.CI ? test.skip : test;
-
 test('serves content from entry point', async ({ port, startServer, request }) => {
   await startServer({
     config: {
@@ -51,7 +49,7 @@ test('passes extra args to program', async ({ port, startServer, request }) => {
   test.expect(await res.text()).toBe('Hello one,--respawn,-v');
 });
 
-xtest('reloads server if requested [skip CI]', async ({ port, startServer, request }) => {
+test('reloads server if requested [skip CI]', async ({ port, startServer, request }) => {
   const { write } = await startServer({
     respawn: true,
     config: {

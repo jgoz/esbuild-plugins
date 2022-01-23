@@ -28,10 +28,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          cache: ${{ !env.ACT && 'pnpm' || '' }}
       - name: Cache browsers
         id: browser_cache
         uses: actions/cache@v2.1.7
+        if: ${{ !env.ACT }}
         with:
           path: '~/.cache/ms-playwright'
           key: chromium-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -40,3 +41,6 @@ jobs:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: ${{ steps.browser_cache.outputs.cache-hit == 'true' }}
       - run: pnpm build
       - run: pnpm test
+        env:
+          CHOKIDAR_USEPOLLING: '1'
+          TSC_WATCHFILE: 'DynamicPriorityPolling'

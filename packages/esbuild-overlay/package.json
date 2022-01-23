@@ -37,7 +37,7 @@
     "typescript": "^4.5.4"
   },
   "jest": {
-    "testTimeout": 5000,
+    "testTimeout": 10000,
     "maxWorkers": 1
   },
   "scripts": {
