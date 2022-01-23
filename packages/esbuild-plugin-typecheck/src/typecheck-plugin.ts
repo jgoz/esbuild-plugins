@@ -1,7 +1,7 @@
 import type { notify as lrNotify } from '@jgoz/esbuild-plugin-livereload';
 import type { Message, Plugin } from 'esbuild';
-import K from 'kleur';
 import path from 'path';
+import pc from 'picocolors';
 import type ts from 'typescript';
 import { Worker } from 'worker_threads';
 
@@ -156,7 +156,7 @@ export function typecheckPlugin({
           case 'diagnostic': {
             errors.push(...msg.diagnostics.filter(d => d.type === 'error').map(d => d.message));
             warnings.push(...msg.diagnostics.filter(d => d.type === 'warning').map(d => d.message));
-            console.error(K.enabled ? msg.output.pretty : msg.output.standard);
+            console.error(pc.isColorSupported ? msg.output.pretty : msg.output.standard);
             break;
           }
           case 'done': {
@@ -195,32 +195,32 @@ export function typecheckPlugin({
 
 const DEFAULT_LOGGER: Logger = {
   info(message) {
-    console.info(K.bold(INFO) + '  ' + message);
+    console.info(pc.bold(INFO) + '  ' + message);
   },
   warn(message) {
-    console.warn(K.bold().yellow(WARNING) + '  ' + message);
+    console.warn(pc.bold(pc.yellow(WARNING)) + '  ' + message);
   },
   error(message) {
-    console.error(K.bold().red(ERROR) + '  ' + message);
+    console.error(pc.bold(pc.red(ERROR)) + '  ' + message);
   },
   success(message) {
-    console.info(K.bold(SUCCESS) + '  ' + K.green(message));
+    console.info(pc.bold(SUCCESS) + '  ' + pc.green(message));
   },
 };
 
 function logStarted(logger: Logger, { build = false, watch = false } = {}) {
   const opts = [build && 'build', watch && 'watch'].filter(Boolean).join(', ');
-  const optStr = opts ? K.cyan(` (${opts})`) : '';
+  const optStr = opts ? pc.cyan(` (${opts})`) : '';
 
   logger.info('Typecheck started…' + optStr);
 }
 
 function logPassed(logger: Logger, duration: number) {
   logger.success('Typecheck passed');
-  logger.info(K.gray(`Typecheck finished in ${duration.toFixed(0)}ms`));
+  logger.info(pc.gray(`Typecheck finished in ${duration.toFixed(0)}ms`));
 }
 
 function logFailed(logger: Logger, numErrors: string, duration: number) {
-  logger.error(`Typecheck failed with ${K.bold(numErrors)}`);
-  logger.info(K.gray(`Typecheck finished in ${duration.toFixed(0)}ms`));
+  logger.error(`Typecheck failed with ${pc.bold(numErrors)}`);
+  logger.info(pc.gray(`Typecheck finished in ${duration.toFixed(0)}ms`));
 }

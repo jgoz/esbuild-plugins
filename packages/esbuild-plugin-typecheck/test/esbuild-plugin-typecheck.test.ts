@@ -61,7 +61,7 @@ function setup(relFixtureDirSrc: string) {
       cwd: path.dirname(scriptPath),
       env: {
         ...process.env,
-        FORCE_COLOR: '0',
+        NO_COLOR: '1',
         BUILD_MODE: buildMode,
         WATCH: watch ? 'true' : undefined,
       },

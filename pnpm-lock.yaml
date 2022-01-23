@@ -74,11 +74,11 @@ importers:
       get-port: ^5.0.0
       io-spin: ^0.4.1
       jest: ^27.4.5
-      kleur: ^4.1.4
       memfs: ^3.4.0
       mkdirp: ^1.0.4
       node-graceful: ^3.1.0
       parse5: ^6.0.1
+      picocolors: ^1.0.0
       playwright: ^1.17.1
       prettier: ^2.5.1
       pretty-bytes: ^5.6.0
@@ -108,11 +108,11 @@ importers:
       get-port: 5.1.1
       io-spin: 0.4.1
       jest: 27.4.5
-      kleur: 4.1.4
       memfs: 3.4.0
       mkdirp: 1.0.4
       node-graceful: 3.1.0
       parse5: 6.0.1
+      picocolors: 1.0.0
       playwright: 1.17.1
       prettier: 2.5.1
       pretty-bytes: 5.6.0
@@ -277,9 +277,9 @@ importers:
       esbuild-node-externals: ^1.4.1
       execa: ^5.0.0
       jest: ^27.4.5
-      kleur: ^4.1.4
       markdown-interpolate: ^0.0.7
       memfs: ^3.4.0
+      picocolors: ^1.0.0
       prettier: ^2.5.1
       tslib: ^2.3.1
       typescript: ^4.5.4
@@ -290,9 +290,9 @@ importers:
       esbuild-node-externals: 1.4.1_esbuild@0.14.13
       execa: 5.1.1
       jest: 27.4.5
-      kleur: 4.1.4
       markdown-interpolate: 0.0.7
       memfs: 3.4.0
+      picocolors: 1.0.0
       prettier: 2.5.1
       tslib: 2.3.1
       typescript: 4.5.4
@@ -5625,11 +5625,6 @@ packages:
 
   /kleur/3.0.3:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
-    engines: {node: '>=6'}
-    dev: true
-
-  /kleur/4.1.4:
-    resolution: {integrity: sha512-8QADVssbrFjivHWQU7KkMgptGTl6WAcSdlbBPY4uNF+mWr6DGcKrvY2w4FQJoXch7+fKMjj0dRrL75vk3k23OA==}
     engines: {node: '>=6'}
     dev: true
 

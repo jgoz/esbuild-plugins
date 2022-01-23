@@ -55,7 +55,7 @@ async function buildWithHTML(options: BuildWithHTMLOptions): Promise<BuildWithHT
     encoding: 'utf8',
     reject: false,
     cwd: absWorkingDir,
-    env: { ...process.env, FORCE_COLOR: '0' },
+    env: { ...process.env, NO_COLOR: '1' },
   });
 
   const { stderr, stdout } = await proc;

@@ -3,9 +3,9 @@ import { createHash } from 'crypto';
 import fs from 'fs';
 import type { Server, ServerResponse } from 'http';
 import { createServer } from 'http';
-import K from 'kleur';
 import Graceful from 'node-graceful';
 import path from 'path';
+import pc from 'picocolors';
 import serveStatic from 'serve-static';
 import { URL } from 'url';
 import { promisify } from 'util';
@@ -102,7 +102,7 @@ export default async function esbdServe(
       }
     },
     onWatchEvent: (event: string, filePath: string) => {
-      logger.info(K.gray(`${filePath} ${event}, rebuilding`));
+      logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
     },
   });
 
@@ -155,7 +155,7 @@ export default async function esbdServe(
   });
 
   server.listen(port, host, () => {
-    const url = K.cyan(`http://${host}:${port}`);
+    const url = pc.cyan(`http://${host}:${port}`);
     logger.info(`Listening on ${url}`);
   });
 

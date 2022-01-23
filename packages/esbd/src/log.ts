@@ -1,7 +1,7 @@
 import type { LogLevel } from 'esbuild';
 import type { Spinner } from 'io-spin';
 import spin from 'io-spin';
-import K from 'kleur';
+import pc from 'picocolors';
 import prettyTime from 'pretty-time';
 
 const SUCCESS = process.platform === 'win32' ? '√' : '✔';
@@ -53,25 +53,25 @@ export function createLogger(logLevel: LogLevel): Logger {
     info(message: any, ...args: any[]) {
       if (levelIndex > LEVEL_INFO) return;
       enqueueOrFlush(() => {
-        console.info(K.bold(INFO) + '  ' + String(message), ...args);
+        console.info(pc.bold(INFO) + '  ' + String(message), ...args);
       });
     },
     warn(message: any, ...args: any[]) {
       if (levelIndex > LEVEL_WARNING) return;
       enqueueOrFlush(() => {
-        console.warn(K.bold().yellow(WARNING) + '  ' + K.yellow(message), ...args);
+        console.warn(pc.bold(pc.yellow(WARNING)) + '  ' + pc.yellow(message), ...args);
       });
     },
     error(message: any, ...args: any[]) {
       if (levelIndex > LEVEL_ERROR) return;
       enqueueOrFlush(() => {
-        console.warn(K.bold().red(ERROR) + '  ' + K.red(message), ...args);
+        console.warn(pc.bold(pc.red(ERROR)) + '  ' + pc.red(message), ...args);
       });
     },
     success(message: any, ...args: any[]) {
       if (levelIndex > LEVEL_WARNING) return;
       enqueueOrFlush(() => {
-        console.info(K.bold().green(SUCCESS) + '  ' + K.green(message), ...args);
+        console.info(pc.bold(pc.green(SUCCESS)) + '  ' + pc.green(message), ...args);
       });
     },
 
@@ -103,7 +103,7 @@ export function createLogger(logLevel: LogLevel): Logger {
         };
       }
 
-      const spinner = spin(K.cyan(message), 'Box7').start();
+      const spinner = spin(pc.cyan(message), 'Box7').start();
       return {
         start: spinner.start,
         stop() {
@@ -111,7 +111,7 @@ export function createLogger(logLevel: LogLevel): Logger {
           return doStop();
         },
         update(updatedMessage) {
-          return spinner.update(K.cyan(updatedMessage));
+          return spinner.update(pc.cyan(updatedMessage));
         },
       };
     },

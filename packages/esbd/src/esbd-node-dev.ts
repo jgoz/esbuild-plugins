@@ -2,9 +2,9 @@ import type { ChildProcess } from 'child_process';
 import type { ExecaChildPromise } from 'execa';
 import { node as execaNode } from 'execa';
 import fs from 'fs';
-import K from 'kleur';
 import Graceful from 'node-graceful';
 import path from 'path';
+import pc from 'picocolors';
 
 import type { BuildMode, ResolvedEsbdConfig } from './config';
 import { getBuildOptions } from './get-build-options';
@@ -102,11 +102,11 @@ export default async function esbdNodeDev(
         result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
       );
 
-      logger.info(`Starting ${K.cyan(entryOutputFile.path)} ${K.gray(args.join(' '))}`);
+      logger.info(`Starting ${pc.cyan(entryOutputFile.path)} ${pc.gray(args.join(' '))}`);
       runProgram(entryOutputFile.path, args);
     },
     onWatchEvent: (event: string, filePath: string) => {
-      logger.info(K.gray(`${filePath} ${event}, rebuilding and restarting`));
+      logger.info(pc.gray(`${filePath} ${event}, rebuilding and restarting`));
       child.removeAllListeners();
       child.cancel();
     },

@@ -1,6 +1,6 @@
 import fs from 'fs';
-import K from 'kleur';
 import { basename, relative } from 'path';
+import pc from 'picocolors';
 import prettyBytes from 'pretty-bytes';
 
 import type { BuildMode, ResolvedEsbdConfig } from './config';
@@ -64,7 +64,7 @@ async function esbdBuildHtml(
       ]);
     },
     onWatchEvent: (event, filePath) => {
-      logger.info(K.gray(`${filePath} ${event}, rebuilding`));
+      logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
     },
   });
 
@@ -91,8 +91,8 @@ async function esbdBuildSource(
       );
       for (const file of result.outputFiles) {
         logger.info(
-          K.gray(
-            `Wrote ${relative(process.cwd(), file.path)} (${K.bold(
+          pc.gray(
+            `Wrote ${relative(process.cwd(), file.path)} (${pc.bold(
               prettyBytes(file.contents.byteLength),
             )})`,
           ),
@@ -100,7 +100,7 @@ async function esbdBuildSource(
       }
     },
     onWatchEvent: (event, filePath) => {
-      logger.info(K.gray(`${filePath} ${event}, rebuilding`));
+      logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
     },
   });
 

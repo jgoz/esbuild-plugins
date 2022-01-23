@@ -1,5 +1,5 @@
 import type { Plugin } from 'esbuild';
-import K from 'kleur';
+import pc from 'picocolors';
 
 import type { Logger, TimedSpinner } from './log';
 
@@ -19,9 +19,9 @@ export function timingPlugin(logger: Logger, progressMessage = 'Building…'): P
         const numWarnings = result.warnings.length;
         const log = numErrors ? logger.error : numWarnings ? logger.warn : logger.success;
         log(
-          `Finished with ${K.white(numErrors)} error(s) and ${K.white(
+          `Finished with ${pc.white(numErrors)} error(s) and ${pc.white(
             numWarnings,
-          )} warning(s) in ${K.gray(time)}`,
+          )} warning(s) in ${pc.gray(time)}`,
         );
       });
     },
