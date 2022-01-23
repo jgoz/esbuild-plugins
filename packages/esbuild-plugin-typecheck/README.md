@@ -11,7 +11,7 @@ An esbuild plugin for TypeScript type checking and side-channel compilation.
 ### Install
 
 ```console
-$ npm i @goz/esbuild-plugin-typecheck
+$ npm i @jgoz/esbuild-plugin-typecheck
 ```
 
 ### Usage

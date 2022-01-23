@@ -12,7 +12,7 @@ An esbuild plugin that reloads the browser window after you make changes. CSS-on
 ### Install
 
 ```console
-$ npm i @goz/esbuild-plugin-livereload
+$ npm i @jgoz/esbuild-plugin-livereload
 ```
 
 ### Usage

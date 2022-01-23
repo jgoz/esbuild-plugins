@@ -10,7 +10,7 @@ An esbuild plugin that populates an HTML template with `<script>` and `<link>` t
 ### Install
 
 ```console
-$ npm i @goz/esbuild-plugin-html
+$ npm i @jgoz/esbuild-plugin-html
 ```
 
 ### Usage

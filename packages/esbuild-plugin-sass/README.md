@@ -13,7 +13,7 @@ This plugin was forked from [esbuild-sass-plugin](https://github.com/glromeo/esb
 ### Install
 
 ```console
-$ npm i @goz/esbuild-plugin-sass
+$ npm i @jgoz/esbuild-plugin-sass
 ```
 
 ### Usage
