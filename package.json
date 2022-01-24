@@ -32,7 +32,6 @@
     "@changesets/cli": "^2.19.0",
     "@tsconfig/node14": "^1.0.1",
     "@types/jest": "^27.0.3",
-    "@types/mri": "^1.1.1",
     "@typescript-eslint/eslint-plugin": "^5.8.1",
     "@typescript-eslint/parser": "^5.8.1",
     "babel-jest": "^27.4.5",

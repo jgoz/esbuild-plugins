@@ -30,6 +30,13 @@ const LEVEL_INFO = LOG_LEVELS.indexOf('info');
 const LEVEL_WARNING = LOG_LEVELS.indexOf('warning');
 const LEVEL_ERROR = LOG_LEVELS.indexOf('error');
 
+export function LogLevelType(level: LogLevel) {
+  if (!LOG_LEVELS.includes(level)) {
+    throw new Error(`Invalid log level: "${level}"`);
+  }
+  return level;
+}
+
 export function createLogger(logLevel: LogLevel): Logger {
   let busy = false;
   const queue: (() => void)[] = [];

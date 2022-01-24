@@ -1,7 +1,7 @@
 import type { typecheckPlugin as typecheckPluginFn } from '@jgoz/esbuild-plugin-typecheck';
+import { cli, command } from 'cleye';
 import type { LogLevel } from 'esbuild';
 import path from 'path';
-import sade from 'sade';
 
 import type {
   BuildMode,
@@ -15,52 +15,15 @@ import esbdBuild from './esbd-build';
 import nodeDev from './esbd-node-dev';
 import serve from './esbd-serve';
 import type { Logger } from './log';
-import { createLogger, LOG_LEVELS } from './log';
+import { createLogger, LOG_LEVELS, LogLevelType } from './log';
 
 const version = require('../package.json').version;
 
 interface GlobalOptions {
-  'check'?: boolean;
-  'log-level'?: LogLevel;
-  'mode': BuildMode;
-  'ts-build-mode'?: 'readonly' | 'write-output';
-}
-
-interface BuildOptions {
-  watch?: boolean;
-}
-
-interface ServeOptions {
-  host?: string;
-  port?: string;
-  livereload?: boolean;
-  servedir?: string;
-  rewrite: boolean;
-}
-
-interface NodeDevOptions {
-  _?: string[];
-  respawn?: boolean;
-}
-
-function validateOptions<T extends GlobalOptions>(opts: T): T {
-  if (opts['log-level'] && !LOG_LEVELS.includes(opts['log-level'])) {
-    console.error(`Invalid --log-level option: ${opts['log-level']}`);
-    process.exit(1);
-  }
-  if (opts.mode !== 'development' && opts.mode !== 'production') {
-    console.error(`Invalid --mode option: ${opts.mode}`);
-    process.exit(1);
-  }
-  if (
-    opts['ts-build-mode'] &&
-    opts['ts-build-mode'] !== 'readonly' &&
-    opts['ts-build-mode'] !== 'write-output'
-  ) {
-    console.error(`Invalid --ts-build-mode option: ${opts['ts-build-mode']}`);
-    process.exit(1);
-  }
-  return opts;
+  check?: boolean;
+  logLevel?: LogLevel;
+  mode: BuildMode;
+  tsBuildMode?: TsBuildModes;
 }
 
 function updateConfig(
@@ -78,7 +41,7 @@ function updateConfig(
     const typecheckPlugin: typeof typecheckPluginFn =
       require('@jgoz/esbuild-plugin-typecheck').typecheckPlugin;
 
-    const buildMode = options['ts-build-mode'];
+    const buildMode = options.tsBuildMode;
     config.plugins.push(
       typecheckPlugin({
         configFile: config.tsconfig,
@@ -116,6 +79,102 @@ function getSingleConfigResult(
   return config;
 }
 
+const MODES = ['development', 'production'] as const;
+type Modes = typeof MODES[number];
+
+function ModeType(mode: Modes) {
+  if (!MODES.includes(mode)) {
+    throw new Error(`Invalid mode: ${mode}`);
+  }
+  return mode;
+}
+
+const TS_BUILD_MODES = ['readonly', 'write-output'] as const;
+type TsBuildModes = typeof TS_BUILD_MODES[number];
+
+function BuildModeType(mode: TsBuildModes) {
+  if (!TS_BUILD_MODES.includes(mode)) {
+    throw new Error(`Invalid TypeScript build mode: ${mode}`);
+  }
+  return mode;
+}
+
+const globalFlags = {
+  logLevel: {
+    type: LogLevelType,
+    alias: 'l',
+    default: 'info',
+    description: `Logging level (${LOG_LEVELS.join(', ')})`,
+  },
+  mode: {
+    type: ModeType,
+    alias: 'm',
+    default: 'development',
+    description: 'Build mode (development, production)',
+  },
+  check: {
+    type: Boolean,
+    alias: 't',
+    default: false,
+    description: 'Check types asynchronously with the TypeScript compiler',
+  },
+  tsBuildMode: {
+    type: BuildModeType,
+    default: 'write-output',
+    description: 'TypeScript "build" mode behavior (readonly, write-output)',
+  },
+} as const;
+
+const buildFlags = {
+  watch: {
+    type: Boolean,
+    alias: 'w',
+    default: false,
+    description: 'Watch for changes and rebuild',
+  },
+} as const;
+
+const nodeDevFlags = {
+  respawn: {
+    type: Boolean,
+    alias: 'r',
+    default: false,
+    description: 'Restart program on exit/error (but quit after 3 restarts within 5s)',
+  },
+} as const;
+
+const serveFlags = {
+  servedir: {
+    type: String,
+    alias: 'd',
+    placeholder: '<path>',
+    description: 'Directory of additional static assets to serve',
+  },
+  livereload: {
+    type: Boolean,
+    alias: 'r',
+    default: false,
+    description: 'Reload page on rebuild',
+  },
+  host: {
+    type: String,
+    alias: 's',
+    default: 'localhost',
+    description: 'Development server IP/host name (localhost)',
+  },
+  port: {
+    type: Number,
+    alias: 'p',
+    default: 8000,
+    description: 'Development server port',
+  },
+  rewrite: {
+    type: Boolean,
+    default: true,
+    description: 'Rewrite all not-found requests to "index.html" (SPA mode)',
+  },
+} as const;
+
 let initialized = false;
 
 export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
@@ -125,117 +184,127 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
   }
   initialized = true;
 
-  const programName = path.relative(process.cwd(), process.argv[1]);
-  const prog = sade(programName);
+  const programName = path.basename(path.relative(process.cwd(), process.argv[1]));
 
-  prog
-    .version(version)
-    .describe('Bundles a web or node application')
-    .option('-l, --log-level <level>', `logging level [${LOG_LEVELS}] (default warning)`)
-    .option('-m, --mode <mode>', 'build mode [development,production]', 'development')
-    .option('-t, --check', 'check types asynchronously with the TypeScript compiler')
-    .option(
-      '--ts-build-mode',
-      'TypeScript "build" mode behavior [readonly,write-output]',
-      'write-output',
-    )
-    // Command: build
-    .command('build [name]', 'Entry point bundler powered by esbuild (Default command)', {
-      default: true,
-    })
-    .option('-w, --watch', 'watch for changes and rebuild')
-    .action(async (name: string | undefined, options: GlobalOptions & BuildOptions) => {
-      const { 'log-level': logLevel, mode, watch = false } = validateOptions(options);
-      const configResult =
-        typeof configParam === 'function' ? await configParam(mode, 'build') : configParam;
+  const argv = cli({
+    name: programName,
+    version,
+    commands: [
+      command({
+        name: 'build',
+        help: {
+          description: 'Entry point bundler powered by esbuild',
+        },
+        parameters: ['[name]'],
+        flags: { ...buildFlags, ...globalFlags },
+      }),
+      command({
+        name: 'node-dev',
+        help: {
+          description: 'Node application development host',
+          examples: ['-r -- --port 8080 --config my-config.json'],
+        },
+        parameters: ['[name]'],
+        flags: { ...globalFlags, ...nodeDevFlags },
+      }),
+      command({
+        name: 'serve',
+        help: {
+          description: 'Single page application development server',
+        },
+        parameters: ['[name]'],
+        flags: { ...globalFlags, ...serveFlags },
+      }),
+    ],
+  });
 
-      const configs = Array.isArray(configResult)
-        ? name
-          ? configResult.filter(c => c.name === name)
-          : configResult
-        : [configResult];
+  async function run() {
+    switch (argv.command) {
+      case 'build': {
+        const { logLevel, mode, watch } = argv.flags;
+        const configResult =
+          typeof configParam === 'function' ? await configParam(mode, 'build') : configParam;
 
-      for (const config of configs) {
-        const logger = createLogger(logLevel ?? config.logLevel ?? 'warning');
-        await esbdBuild(updateConfig(options, config, logger, watch), {
-          mode,
-          logger,
-          watch,
-        });
+        const configs = Array.isArray(configResult)
+          ? argv._.name
+            ? configResult.filter(c => c.name === argv._.name)
+            : configResult
+          : [configResult];
+
+        for (const config of configs) {
+          const logger = createLogger(logLevel ?? config.logLevel ?? 'warning');
+          await esbdBuild(updateConfig(argv.flags, config, logger, watch), {
+            mode,
+            logger,
+            watch,
+          });
+        }
+        break;
       }
-    })
-    // Command: node-dev
-    .command('node-dev [name]', 'Node application development host')
-    .example('-r -- --port 8080 --config my-config.json')
-    .option('-r, --respawn', 'restart program on exit/error (but quit after 3 restarts within 5s)')
-    .action(async (name: string, options: GlobalOptions & NodeDevOptions) => {
-      const { 'log-level': logLevel, mode, respawn = false } = validateOptions(options);
-      const configResult =
-        typeof configParam === 'function'
-          ? await configParam(options.mode, 'node-dev')
-          : configParam;
 
-      const config = getSingleConfigResult(
-        'node-dev',
-        configResult,
-        c => c.name === name,
-        c => c.platform === 'node',
-      );
+      case 'node-dev': {
+        const { logLevel, mode, respawn } = argv.flags;
+        const configResult =
+          typeof configParam === 'function' ? await configParam(mode, 'node-dev') : configParam;
 
-      const logger = createLogger(logLevel ?? config.logLevel ?? 'warning');
-      await nodeDev(updateConfig(options, config, logger, true), {
-        args: options._ ?? [],
-        logger,
-        mode,
-        respawn,
-      });
-    })
-    // Command: serve
-    .command('serve [name]', 'Single page application development server')
-    .option('-d, --servedir <path>', 'directory of additional static assets to serve')
-    .option('-r, --livereload', 'reload page on rebuild')
-    .option('-h, --host <host>', 'IP/host name to use when serving requests', 'localhost')
-    .option('-p, --port <port>', 'port to use', '8000')
-    .option('--rewrite', 'rewrite all not-found requests to "index.html" (SPA mode)', true)
-    .option('--no-rewrite', 'disable request rewriting')
-    .action(async (name: string, options: GlobalOptions & ServeOptions) => {
-      const {
-        host,
-        mode,
-        'log-level': logLevel,
-        port = '8000',
-        livereload,
-        servedir,
-        rewrite,
-      } = validateOptions(options);
+        const config = getSingleConfigResult(
+          'node-dev',
+          configResult,
+          c => c.name === argv._.name,
+          c => c.platform === 'node',
+        );
 
-      const configResult =
-        typeof configParam === 'function' ? await configParam(mode, 'serve') : configParam;
+        const logger = createLogger(logLevel ?? config.logLevel ?? 'warning');
+        await nodeDev(updateConfig(argv.flags, config, logger, true), {
+          args: argv._ ?? [],
+          logger,
+          mode,
+          respawn,
+        });
+        break;
+      }
 
-      const config = getSingleConfigResult(
-        'serve',
-        configResult,
-        c => c.name === name,
-        c => !c.platform || c.platform === 'browser',
-      );
+      case 'serve': {
+        const { host, mode, logLevel, port, livereload, servedir, rewrite } = argv.flags;
+        const configResult =
+          typeof configParam === 'function' ? await configParam(mode, 'serve') : configParam;
 
-      const logger = createLogger(logLevel ?? config.logLevel ?? 'warning');
-      await serve(updateConfig(options, config, logger, true), {
-        mode,
-        host,
-        port: Number(port),
-        livereload,
-        logger,
-        servedir: servedir ? path.resolve(process.cwd(), servedir) : undefined,
-        rewrite,
-      });
-    });
+        const config = getSingleConfigResult(
+          'serve',
+          configResult,
+          c => c.name === argv._.name,
+          c => !c.platform || c.platform === 'browser',
+        );
 
-  prog.parse(process.argv);
+        const logger = createLogger(logLevel ?? config.logLevel ?? 'warning');
+        await serve(updateConfig(argv.flags, config, logger, true), {
+          mode,
+          host,
+          port,
+          livereload,
+          logger,
+          servedir: servedir ? path.resolve(process.cwd(), servedir) : undefined,
+          rewrite,
+        });
+        break;
+      }
+
+      case undefined:
+        argv.showHelp();
+        console.error('Expected one of the following commands: build, node-dev, serve');
+        process.exitCode = 1;
+        break;
+    }
+  }
 
   process.on('unhandledRejection', (reason: Error) => {
     console.error(`An error occurred that caused ${programName} to shut down.`);
     console.error(reason.stack ?? reason);
+    process.exit(1);
+  });
+
+  run().catch(err => {
+    console.error(err);
     process.exit(1);
   });
 }

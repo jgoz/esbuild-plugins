@@ -12,7 +12,6 @@ importers:
       '@changesets/cli': ^2.19.0
       '@tsconfig/node14': ^1.0.1
       '@types/jest': ^27.0.3
-      '@types/mri': ^1.1.1
       '@typescript-eslint/eslint-plugin': ^5.8.1
       '@typescript-eslint/parser': ^5.8.1
       babel-jest: ^27.4.5
@@ -39,7 +38,6 @@ importers:
       '@changesets/cli': 2.19.0
       '@tsconfig/node14': 1.0.1
       '@types/jest': 27.0.3
-      '@types/mri': 1.1.1
       '@typescript-eslint/eslint-plugin': 5.8.1_3a47348159e115370aa4cba56aba33b6
       '@typescript-eslint/parser': 5.8.1_eslint@8.5.0+typescript@4.5.4
       babel-jest: 27.4.5_@babel+core@7.16.5
@@ -66,10 +64,10 @@ importers:
       '@swc/core': ^1.2.123
       '@types/mkdirp': ^1.0.2
       '@types/pretty-time': ^1.1.2
-      '@types/sade': ^1.7.4
       '@types/serve-static': ^1.13.10
       '@types/wait-on': ^5.3.1
       chokidar: ^3.5.3
+      cleye: ^1.0.1
       esbuild: ^0.14.13
       esbuild-node-externals: ^1.4.1
       execa: ^5.0.0
@@ -87,7 +85,6 @@ importers:
       pretty-time: ^1.1.0
       react: ^17.0.2
       react-dom: ^17.0.2
-      sade: ^1.7.4
       serve-static: ^1.14.2
       tslib: ^2.3.1
       typescript: ^4.5.4
@@ -100,10 +97,10 @@ importers:
       '@swc/core': 1.2.123
       '@types/mkdirp': 1.0.2
       '@types/pretty-time': 1.1.2
-      '@types/sade': 1.7.4
       '@types/serve-static': 1.13.10
       '@types/wait-on': 5.3.1
       chokidar: 3.5.3
+      cleye: 1.0.1
       esbuild: 0.14.13
       esbuild-node-externals: 1.4.1_esbuild@0.14.13
       execa: 5.1.1
@@ -121,7 +118,6 @@ importers:
       pretty-time: 1.1.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      sade: 1.7.4
       serve-static: 1.14.2
       tslib: 2.3.1
       typescript: 4.5.4
@@ -2377,10 +2373,6 @@ packages:
       '@types/node': 16.7.10
     dev: true
 
-  /@types/mri/1.1.1:
-    resolution: {integrity: sha512-nJOuiTlsvmClSr3+a/trTSx4DTuY/VURsWGKSf/eeavh0LRMqdsK60ti0TlwM5iHiGOK3/Ibkxsbr7i9rzGreA==}
-    dev: true
-
   /@types/node/12.20.39:
     resolution: {integrity: sha512-U7PMwkDmc3bnL0e4U8oA0POpi1vfsYDc+DEUS2+rPxm9NlLcW1dBa5JcRhO633PoPUcCSWMNXrMsqhmAVEo+IQ==}
     dev: true
@@ -2419,12 +2411,6 @@ packages:
 
   /@types/pug/2.0.6:
     resolution: {integrity: sha512-SnHmG9wN1UVmagJOnyo/qkk0Z7gejYxOYYmaAwr5u2yFYfsupN3sg10kyzN8Hep/2zbHxCnsumxOoRIRMBwKCg==}
-    dev: true
-
-  /@types/sade/1.7.4:
-    resolution: {integrity: sha512-6ys13kmtlY0aIOz4KtMdeBD9BHs6vSE3aRcj4vAZqXjypT2el8WZt6799CMjElVgh1cbOH/t3vrpQ4IpwytcPA==}
-    dependencies:
-      '@types/mri': 1.1.1
     dev: true
 
   /@types/sass/1.43.1:
@@ -3179,6 +3165,13 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       escape-string-regexp: 1.0.5
+    dev: true
+
+  /cleye/1.0.1:
+    resolution: {integrity: sha512-MackVW9Cwdy7n7h1R7522q8ofJZqXtdnmD1K7a4RbCUZ8KuM3RUkgcO3ooLZqQWff0eXpoTHbf5pU1Iwhx73EQ==}
+    dependencies:
+      terminal-columns: 1.4.0
+      type-flag: 2.0.0
     dev: true
 
   /cli-boxes/1.0.0:
@@ -8301,6 +8294,10 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /terminal-columns/1.4.0:
+    resolution: {integrity: sha512-Oh62O26xgOUjakUlGfjAEdgZmipNsqHPmvs8QQ8j6WH3c5iXhshCjr6yB6bW7CYXG5POoUrHLLLcKdRvv8LBZg==}
+    dev: true
+
   /terminal-link/2.1.1:
     resolution: {integrity: sha512-un0FmiRUQNr5PJqy9kP7c40F5BOfpGlYTrxonDChEZB7pzZxRNp/bt+ymiy9/npwXya9KH99nJ/GXFIiUkYGFQ==}
     engines: {node: '>=8'}
@@ -8470,6 +8467,10 @@ packages:
   /type-fest/0.8.1:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
+    dev: true
+
+  /type-flag/2.0.0:
+    resolution: {integrity: sha512-L0jgov26xVtNM23pL0Roh45Is/l8aIA6YyI9U8x8L8tcw2t+nwZHYzjBVB8CIJ2PFe3qb5hJSDynUmKP1GcHtw==}
     dev: true
 
   /typedarray-to-buffer/3.1.5:
