@@ -37,7 +37,6 @@
     "esbuild-node-externals": "^1.4.1",
     "execa": "^5.0.0",
     "jest": "^27.4.5",
-    "markdown-interpolate": "^0.0.7",
     "memfs": "^3.4.0",
     "picocolors": "^1.0.0",
     "prettier": "^2.5.1",
@@ -58,7 +57,7 @@
     }
   },
   "scripts": {
-    "docs": "markdown-interpolate README.md && prettier --write README.md",
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
     "prepack": "./bundle.js build",
     "test": "jest",
     "watch": "./bundle.js build -w"

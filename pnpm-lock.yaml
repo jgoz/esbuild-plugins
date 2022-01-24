@@ -24,6 +24,7 @@ importers:
       eslint-plugin-simple-import-sort: ^7.0.0
       eslint-plugin-unicorn: ^38.0.0
       eslint-plugin-unused-imports: ^2.0.0
+      execa: ^5.0.0
       jest: ^27.4.5
       prettier: ^2.5.1
       tslib: ^2.3.1
@@ -50,6 +51,7 @@ importers:
       eslint-plugin-simple-import-sort: 7.0.0_eslint@8.5.0
       eslint-plugin-unicorn: 38.0.1_eslint@8.5.0
       eslint-plugin-unused-imports: 2.0.0_d82f9ed89a10e1f575ae61d02090781e
+      execa: 5.1.1
       jest: 27.4.5
       prettier: 2.5.1
       tslib: 2.3.1
@@ -130,7 +132,6 @@ importers:
       '@tsconfig/svelte': ^3.0.0
       esbuild: ^0.14.13
       esbuild-svelte: ^0.6.0
-      markdown-interpolate: ^0.0.7
       prettier: ^2.5.1
       svelte: ^3.44.3
       svelte-check: ^2.2.11
@@ -141,7 +142,6 @@ importers:
       '@tsconfig/svelte': 3.0.0
       esbuild: 0.14.13
       esbuild-svelte: 0.6.0_esbuild@0.14.13
-      markdown-interpolate: 0.0.7
       prettier: 2.5.1
       svelte: 3.44.3
       svelte-check: 2.2.11_@babel+core@7.16.5+svelte@3.44.3
@@ -155,7 +155,6 @@ importers:
       esbuild: ^0.14.13
       esbuild-node-externals: ^1.4.1
       jest: ^27.4.5
-      markdown-interpolate: ^0.0.7
       memfs: ^3.4.0
       parse5: ^6.0.1
       prettier: ^2.5.1
@@ -165,7 +164,6 @@ importers:
       esbuild: 0.14.13
       esbuild-node-externals: 1.4.1_esbuild@0.14.13
       jest: 27.4.5
-      markdown-interpolate: 0.0.7
       memfs: 3.4.0
       parse5: 6.0.1
       prettier: 2.5.1
@@ -179,7 +177,6 @@ importers:
       esbuild-node-externals: ^1.4.1
       esbuild-svelte: ^0.6.0
       get-port: ^5.0.0
-      markdown-interpolate: ^0.0.7
       open-editor: ^3.0.0
       playwright: ^1.17.1
       prettier: ^2.5.1
@@ -195,7 +192,6 @@ importers:
       esbuild-node-externals: 1.4.1_esbuild@0.14.13
       esbuild-svelte: 0.6.0_esbuild@0.14.13
       get-port: 5.1.1
-      markdown-interpolate: 0.0.7
       open-editor: 3.0.0
       playwright: 1.17.1
       prettier: 2.5.1
@@ -213,7 +209,6 @@ importers:
       esbuild: ^0.14.13
       esbuild-node-externals: ^1.4.1
       jest: ^27.4.5
-      markdown-interpolate: ^0.0.7
       postcss: ^8.4.5
       postcss-preset-env: ^7.1.0
       prettier: ^2.5.1
@@ -226,7 +221,6 @@ importers:
       esbuild: 0.14.13
       esbuild-node-externals: 1.4.1_esbuild@0.14.13
       jest: 27.4.5
-      markdown-interpolate: 0.0.7
       postcss: 8.4.5
       postcss-preset-env: 7.1.0_postcss@8.4.5
       prettier: 2.5.1
@@ -277,7 +271,6 @@ importers:
       esbuild-node-externals: ^1.4.1
       execa: ^5.0.0
       jest: ^27.4.5
-      markdown-interpolate: ^0.0.7
       memfs: ^3.4.0
       picocolors: ^1.0.0
       prettier: ^2.5.1
@@ -290,7 +283,6 @@ importers:
       esbuild-node-externals: 1.4.1_esbuild@0.14.13
       execa: 5.1.1
       jest: 27.4.5
-      markdown-interpolate: 0.0.7
       memfs: 3.4.0
       picocolors: 1.0.0
       prettier: 2.5.1
@@ -2809,11 +2801,6 @@ packages:
     resolution: {integrity: sha1-x57Zf380y48robyXkLzDZkdLS3k=}
     dev: true
 
-  /at-least-node/1.0.0:
-    resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
-    engines: {node: '>= 4.0.0'}
-    dev: true
-
   /autoprefixer/10.4.0_postcss@8.4.5:
     resolution: {integrity: sha512-7FdJ1ONtwzV1G43GDD0kpVMn/qbiNqyOPMFTX5nRffI+7vgWoFEc6DcXOxHJxrWNDXrZh18eDsZjvZGUljSRGA==}
     engines: {node: ^10 || ^12 || >=14}
@@ -4165,21 +4152,6 @@ packages:
       strip-eof: 1.0.0
     dev: true
 
-  /execa/4.1.0:
-    resolution: {integrity: sha512-j5W0//W7f8UxAn8hXVnwG8tLwdiUy4FJLcSupCg6maBYZDpyBvTApK7KyuI4bKj8KOh1r2YH+6ucuYtJv1bTZA==}
-    engines: {node: '>=10'}
-    dependencies:
-      cross-spawn: 7.0.3
-      get-stream: 5.2.0
-      human-signals: 1.1.1
-      is-stream: 2.0.1
-      merge-stream: 2.0.0
-      npm-run-path: 4.0.1
-      onetime: 5.1.2
-      signal-exit: 3.0.6
-      strip-final-newline: 2.0.0
-    dev: true
-
   /execa/5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
     engines: {node: '>=10'}
@@ -4396,16 +4368,6 @@ packages:
       graceful-fs: 4.2.8
       jsonfile: 4.0.0
       universalify: 0.1.2
-    dev: true
-
-  /fs-extra/9.1.0:
-    resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
-    engines: {node: '>=10'}
-    dependencies:
-      at-least-node: 1.0.0
-      graceful-fs: 4.2.8
-      jsonfile: 6.1.0
-      universalify: 2.0.0
     dev: true
 
   /fs-monkey/1.0.3:
@@ -4640,11 +4602,6 @@ packages:
 
   /human-id/1.0.2:
     resolution: {integrity: sha512-UNopramDEhHJD+VR+ehk8rOslwSfByxPIZyJRfV739NDhN5LF1fa1MqnzKm2lGTQRjNrjK19Q5fhkgIfjlVUKw==}
-    dev: true
-
-  /human-signals/1.1.1:
-    resolution: {integrity: sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==}
-    engines: {node: '>=8.12.0'}
     dev: true
 
   /human-signals/2.1.0:
@@ -5610,14 +5567,6 @@ packages:
       graceful-fs: 4.2.8
     dev: true
 
-  /jsonfile/6.1.0:
-    resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
-    dependencies:
-      universalify: 2.0.0
-    optionalDependencies:
-      graceful-fs: 4.2.8
-    dev: true
-
   /kind-of/6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
@@ -5758,16 +5707,6 @@ packages:
   /map-obj/4.3.0:
     resolution: {integrity: sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==}
     engines: {node: '>=8'}
-    dev: true
-
-  /markdown-interpolate/0.0.7:
-    resolution: {integrity: sha512-J2uid+lM169EqjoMfrCftgt+jGq7wr2vD0Nbve+/t+IvLV5DPsmTc7M8SHa6kiYdTDDjCjNCP3lox2nqFYmI5g==}
-    hasBin: true
-    dependencies:
-      execa: 4.1.0
-      fs-extra: 9.1.0
-      globby: 11.0.4
-      sade: 1.7.4
     dev: true
 
   /marked/3.0.8:
@@ -8605,11 +8544,6 @@ packages:
   /universalify/0.1.2:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
     engines: {node: '>= 4.0.0'}
-    dev: true
-
-  /universalify/2.0.0:
-    resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
-    engines: {node: '>= 10.0.0'}
     dev: true
 
   /uri-js/4.4.1:

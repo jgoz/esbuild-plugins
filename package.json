@@ -44,6 +44,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-unicorn": "^38.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "execa": "^5.0.0",
     "jest": "^27.4.5",
     "prettier": "^2.5.1",
     "tslib": "^2.3.1",

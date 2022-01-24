@@ -28,7 +28,6 @@
     "@tsconfig/svelte": "^3.0.0",
     "esbuild": "^0.14.13",
     "esbuild-svelte": "^0.6.0",
-    "markdown-interpolate": "^0.0.7",
     "prettier": "^2.5.1",
     "svelte": "^3.44.3",
     "svelte-check": "^2.2.11",
@@ -41,7 +40,7 @@
     "maxWorkers": 1
   },
   "scripts": {
-    "docs": "markdown-interpolate README.md && prettier --write README.md",
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
     "prepublish": "pnpm check",
     "prepack": "./bundle.js build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
