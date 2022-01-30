@@ -4,7 +4,7 @@ import { relative } from 'path';
 
 export function swcPlugin(runtime: 'automatic' | 'classic' | undefined): Plugin {
   return {
-    name: 'esbd-swc-unholy-union',
+    name: 'esbd-swc-holy-matrimony',
     async setup(build) {
       if (runtime !== 'automatic') return;
 
