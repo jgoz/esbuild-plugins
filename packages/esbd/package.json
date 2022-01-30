@@ -40,7 +40,7 @@
     "@types/serve-static": "^1.13.10",
     "@types/wait-on": "^5.3.1",
     "chokidar": "^3.5.3",
-    "cleye": "^1.0.1",
+    "cleye": "^1.1.0",
     "esbuild": "^0.14.13",
     "esbuild-node-externals": "^1.4.1",
     "execa": "^5.0.0",

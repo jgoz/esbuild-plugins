@@ -67,7 +67,7 @@ importers:
       '@types/serve-static': ^1.13.10
       '@types/wait-on': ^5.3.1
       chokidar: ^3.5.3
-      cleye: ^1.0.1
+      cleye: ^1.1.0
       esbuild: ^0.14.13
       esbuild-node-externals: ^1.4.1
       execa: ^5.0.0
@@ -100,7 +100,7 @@ importers:
       '@types/serve-static': 1.13.10
       '@types/wait-on': 5.3.1
       chokidar: 3.5.3
-      cleye: 1.0.1
+      cleye: 1.1.0
       esbuild: 0.14.13
       esbuild-node-externals: 1.4.1_esbuild@0.14.13
       execa: 5.1.1
@@ -3167,11 +3167,11 @@ packages:
       escape-string-regexp: 1.0.5
     dev: true
 
-  /cleye/1.0.1:
-    resolution: {integrity: sha512-MackVW9Cwdy7n7h1R7522q8ofJZqXtdnmD1K7a4RbCUZ8KuM3RUkgcO3ooLZqQWff0eXpoTHbf5pU1Iwhx73EQ==}
+  /cleye/1.1.0:
+    resolution: {integrity: sha512-pEKYkgy1wigX3v1tdQN0KAl1XSrjcyfJJuhQorH8F3J7euQPx5nkkdZj8dxRb7+AFI24XagsiA61RBHkQCE48g==}
     dependencies:
-      terminal-columns: 1.4.0
-      type-flag: 2.0.0
+      terminal-columns: 1.4.1
+      type-flag: 2.1.0
     dev: true
 
   /cli-boxes/1.0.0:
@@ -8294,8 +8294,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /terminal-columns/1.4.0:
-    resolution: {integrity: sha512-Oh62O26xgOUjakUlGfjAEdgZmipNsqHPmvs8QQ8j6WH3c5iXhshCjr6yB6bW7CYXG5POoUrHLLLcKdRvv8LBZg==}
+  /terminal-columns/1.4.1:
+    resolution: {integrity: sha512-IKVL/itiMy947XWVv4IHV7a0KQXvKjj4ptbi7Ew9MPMcOLzkiQeyx3Gyvh62hKrfJ0RZc4M1nbhzjNM39Kyujw==}
     dev: true
 
   /terminal-link/2.1.1:
@@ -8469,8 +8469,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /type-flag/2.0.0:
-    resolution: {integrity: sha512-L0jgov26xVtNM23pL0Roh45Is/l8aIA6YyI9U8x8L8tcw2t+nwZHYzjBVB8CIJ2PFe3qb5hJSDynUmKP1GcHtw==}
+  /type-flag/2.1.0:
+    resolution: {integrity: sha512-ln8u/BdNzppXeFP8JsmsofElwVC2/FYoQAIipzhx45jjFwSApFqIieBEY93TKoLpphQBAbazX8LCoIY59Vwxlg==}
     dev: true
 
   /typedarray-to-buffer/3.1.5:

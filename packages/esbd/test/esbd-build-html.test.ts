@@ -28,6 +28,7 @@ async function buildWithHTML(options: BuildWithHTMLOptions): Promise<BuildWithHT
     metafile: true,
     splitting: true,
     sourcemap: false,
+    logLevel: 'warning',
     ...options.config,
 
     absWorkingDir,
@@ -51,7 +52,7 @@ async function buildWithHTML(options: BuildWithHTMLOptions): Promise<BuildWithHT
 
   await Promise.all([...writeFiles, writeBundle]);
 
-  const proc = node(bundleFile, {
+  const proc = node(bundleFile, ['build'], {
     encoding: 'utf8',
     reject: false,
     cwd: absWorkingDir,

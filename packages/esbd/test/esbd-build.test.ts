@@ -22,6 +22,7 @@ async function build(options: BuildWithHTMLOptions): Promise<BuildWithHTMLOutput
     ...options.config,
     sourcemap: false,
     absWorkingDir,
+    logLevel: 'warning',
     outdir: './out',
   };
 
@@ -39,7 +40,7 @@ async function build(options: BuildWithHTMLOptions): Promise<BuildWithHTMLOutput
 
   await Promise.all([...writeFiles, writeBundle]);
 
-  const proc = node(bundleFile, {
+  const proc = node(bundleFile, ['build'], {
     encoding: 'utf8',
     reject: false,
     cwd: absWorkingDir,

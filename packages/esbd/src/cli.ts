@@ -103,8 +103,7 @@ const globalFlags = {
   logLevel: {
     type: LogLevelType,
     alias: 'l',
-    default: 'info',
-    description: `Logging level (${LOG_LEVELS.join(', ')})`,
+    description: `Logging level (${LOG_LEVELS.join(', ')}) (default: "info")`,
   },
   mode: {
     type: ModeType,
@@ -122,56 +121,6 @@ const globalFlags = {
     type: BuildModeType,
     default: 'write-output',
     description: 'TypeScript "build" mode behavior (readonly, write-output)',
-  },
-} as const;
-
-const buildFlags = {
-  watch: {
-    type: Boolean,
-    alias: 'w',
-    default: false,
-    description: 'Watch for changes and rebuild',
-  },
-} as const;
-
-const nodeDevFlags = {
-  respawn: {
-    type: Boolean,
-    alias: 'r',
-    default: false,
-    description: 'Restart program on exit/error (but quit after 3 restarts within 5s)',
-  },
-} as const;
-
-const serveFlags = {
-  servedir: {
-    type: String,
-    alias: 'd',
-    placeholder: '<path>',
-    description: 'Directory of additional static assets to serve',
-  },
-  livereload: {
-    type: Boolean,
-    alias: 'r',
-    default: false,
-    description: 'Reload page on rebuild',
-  },
-  host: {
-    type: String,
-    alias: 's',
-    default: 'localhost',
-    description: 'Development server IP/host name (localhost)',
-  },
-  port: {
-    type: Number,
-    alias: 'p',
-    default: 8000,
-    description: 'Development server port',
-  },
-  rewrite: {
-    type: Boolean,
-    default: true,
-    description: 'Rewrite all not-found requests to "index.html" (SPA mode)',
   },
 } as const;
 
@@ -196,7 +145,15 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
           description: 'Entry point bundler powered by esbuild',
         },
         parameters: ['[name]'],
-        flags: { ...buildFlags, ...globalFlags },
+        flags: {
+          ...globalFlags,
+          watch: {
+            type: Boolean,
+            alias: 'w',
+            default: false,
+            description: 'Watch for changes and rebuild',
+          },
+        },
       }),
       command({
         name: 'node-dev',
@@ -205,7 +162,15 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
           examples: ['-r -- --port 8080 --config my-config.json'],
         },
         parameters: ['[name]'],
-        flags: { ...globalFlags, ...nodeDevFlags },
+        flags: {
+          ...globalFlags,
+          respawn: {
+            type: Boolean,
+            alias: 'r',
+            default: false,
+            description: 'Restart program on exit/error (but quit after 3 restarts within 5s)',
+          },
+        },
       }),
       command({
         name: 'serve',
@@ -213,7 +178,38 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
           description: 'Single page application development server',
         },
         parameters: ['[name]'],
-        flags: { ...globalFlags, ...serveFlags },
+        flags: {
+          ...globalFlags,
+          servedir: {
+            type: String,
+            alias: 'd',
+            placeholder: '<path>',
+            description: 'Directory of additional static assets to serve',
+          },
+          livereload: {
+            type: Boolean,
+            alias: 'r',
+            default: false,
+            description: 'Reload page on rebuild',
+          },
+          host: {
+            type: String,
+            alias: 's',
+            default: 'localhost',
+            description: 'Development server IP/host name (localhost)',
+          },
+          port: {
+            type: Number,
+            alias: 'p',
+            default: 8000,
+            description: 'Development server port',
+          },
+          rewrite: {
+            type: Boolean,
+            default: true,
+            description: 'Rewrite all not-found requests to "index.html" (SPA mode)',
+          },
+        },
       }),
     ],
   });
@@ -232,7 +228,7 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
           : [configResult];
 
         for (const config of configs) {
-          const logger = createLogger(logLevel ?? config.logLevel ?? 'warning');
+          const logger = createLogger(logLevel ?? config.logLevel ?? 'info');
           await esbdBuild(updateConfig(argv.flags, config, logger, watch), {
             mode,
             logger,
@@ -254,9 +250,9 @@ export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
           c => c.platform === 'node',
         );
 
-        const logger = createLogger(logLevel ?? config.logLevel ?? 'warning');
+        const logger = createLogger(logLevel ?? config.logLevel ?? 'info');
         await nodeDev(updateConfig(argv.flags, config, logger, true), {
-          args: argv._ ?? [],
+          args: argv._['--'] ?? [],
           logger,
           mode,
           respawn,

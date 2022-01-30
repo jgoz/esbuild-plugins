@@ -97,7 +97,7 @@ const test = base.extend<ServerTestFixtures>({
           '-p',
           String(port),
           livereload && '-r',
-          disableRewrite && '--no-rewrite',
+          disableRewrite && '--rewrite=false',
           serveDir && '-d',
           serveDir,
         ],
@@ -105,7 +105,7 @@ const test = base.extend<ServerTestFixtures>({
           encoding: 'utf8',
           reject: false,
           cwd: absWorkingDir,
-          env: { ...process.env, NO_COLOR: '1' },
+          env: { ...process.env, FORCE_COLOR: undefined, NO_COLOR: '1' },
         },
       );
 

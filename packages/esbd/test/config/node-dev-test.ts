@@ -90,7 +90,7 @@ const test = base.extend<ServerTestFixtures>({
         encoding: 'utf8',
         reject: false,
         cwd: absWorkingDir,
-        env: { ...process.env, NO_COLOR: '1' },
+        env: { ...process.env, FORCE_COLOR: undefined, NO_COLOR: '1' },
       });
 
       await waitOn({ resources: [`http-get://127.0.0.1:${port}`], timeout: 10000 });
