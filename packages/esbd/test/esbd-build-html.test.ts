@@ -41,7 +41,7 @@ async function buildWithHTML(options: BuildWithHTMLOptions): Promise<BuildWithHT
   const bundleFile = path.join(absWorkingDir, 'bundle.js');
   const writeBundle = fs.promises.writeFile(
     bundleFile,
-    `require('../../../lib').bundle(${JSON.stringify(config)});`,
+    `require('../../../lib').configure(${JSON.stringify(config)});`,
   );
 
   const writeFiles = Object.entries(options.files).map(async ([file, content]) => {

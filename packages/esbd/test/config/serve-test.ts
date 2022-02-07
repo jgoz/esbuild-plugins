@@ -83,7 +83,7 @@ const test = base.extend<ServerTestFixtures>({
       const bundleFile = path.join(absWorkingDir, 'bundle.js');
       const writeBundle = fsp.writeFile(
         bundleFile,
-        `require('../../lib').bundle(${JSON.stringify(fullConfig)});`,
+        `require('../../lib').configure(${JSON.stringify(fullConfig)});`,
       );
 
       await Promise.all([writeBundle, writeFiles(initialFiles)]);
