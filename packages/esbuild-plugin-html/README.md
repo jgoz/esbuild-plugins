@@ -78,7 +78,11 @@ At the bare minimum, the provided template should have a `doctype`, `html`, `hea
     <meta name="description" content="Description" />
     <meta name="author" content="Me" />
     <meta name="google" value="notranslate" />
-    <link rel="apple-touch-icon" sizes="180x180" href="http://icons.com/icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="http://icons.com/icon.png"
+    />
     <meta name="theme-color" content="#ffffff" />
     <meta
       name="viewport"

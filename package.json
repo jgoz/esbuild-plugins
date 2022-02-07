@@ -14,7 +14,6 @@
   "volta": {
     "node": "16.13.0"
   },
-  "prettier": "@awesome-code-style/prettier-config",
   "jest": {
     "projects": [
       "<rootDir>/packages/esbd",
