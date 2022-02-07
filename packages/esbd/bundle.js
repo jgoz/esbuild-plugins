@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 const { nodeExternalsPlugin } = require('esbuild-node-externals');
-const { bundle } = require('./lib');
+const { configure } = require('./lib');
 
-bundle({
+configure({
   absWorkingDir: __dirname,
   bundle: true,
   entryPoints: {

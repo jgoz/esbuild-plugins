@@ -126,9 +126,9 @@ const globalFlags = {
 
 let initialized = false;
 
-export default function bundle(configParam: EsbdConfigResult | ConfigFn) {
+export default function configure(configParam: EsbdConfigResult | ConfigFn) {
   if (initialized) {
-    console.error('"bundle()" can only be used once per file');
+    console.error('"configure()" can only be used once per file');
     process.exit(1);
   }
   initialized = true;

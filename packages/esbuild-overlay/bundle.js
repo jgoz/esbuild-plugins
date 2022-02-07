@@ -2,9 +2,9 @@
 
 const esbuildSvelte = require('esbuild-svelte');
 const sveltePreprocess = require('svelte-preprocess');
-const { bundle } = require('../esbd/lib');
+const { configure } = require('../esbd/lib');
 
-bundle({
+configure({
   absWorkingDir: __dirname,
   entryPoints: {
     overlay: './src/overlay.ts',
