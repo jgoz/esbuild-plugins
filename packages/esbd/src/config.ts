@@ -8,14 +8,7 @@ export type CommandName = 'build' | 'node-dev' | 'serve';
 type BuildOptionsWithEntryPoints = Omit<BuildOptions, 'entryPoints' | 'bundle' | 'write'> &
   Required<Pick<BuildOptions, 'entryPoints'>>;
 
-export interface EsbdConfig extends BuildOptionsWithEntryPoints {
-  /**
-   * Base directory used for resolving entry points specified as relative paths.
-   *
-   * @default "process.cwd()"
-   */
-  absWorkingDir?: string;
-
+export interface EsbdSpecificOptions {
   /**
    * Files to copy to the output directory during the build.
    *
@@ -76,6 +69,8 @@ export interface EsbdConfig extends BuildOptionsWithEntryPoints {
    */
   jsxRuntime?: 'automatic' | 'classic';
 }
+
+export interface EsbdConfig extends EsbdSpecificOptions, BuildOptionsWithEntryPoints {}
 
 export interface NamedEsbdConfig extends EsbdConfig {
   /**

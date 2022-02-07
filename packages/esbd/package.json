@@ -79,6 +79,7 @@
     }
   },
   "scripts": {
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
     "prepack": "./bundle.js build",
     "test": "jest && playwright test",
     "watch": "./bundle.js build -w"

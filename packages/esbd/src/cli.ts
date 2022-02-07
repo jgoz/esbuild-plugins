@@ -126,6 +126,11 @@ const globalFlags = {
 
 let initialized = false;
 
+/**
+ * Configures one or more bundles that will be produced by this build script.
+ *
+ * @param configParam Configuration object, array, or function that defines the bundles.
+ */
 export default function configure(configParam: EsbdConfigResult | ConfigFn) {
   if (initialized) {
     console.error('"configure()" can only be used once per file');
@@ -196,7 +201,7 @@ export default function configure(configParam: EsbdConfigResult | ConfigFn) {
             type: String,
             alias: 's',
             default: 'localhost',
-            description: 'Development server IP/host name (localhost)',
+            description: 'Development server IP/host name',
           },
           port: {
             type: Number,
