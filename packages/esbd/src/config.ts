@@ -1,9 +1,8 @@
 import type { BuildOptions } from 'esbuild';
 
-import type { HashAlgorithm } from './html-entry-point';
-
 export type BuildMode = 'development' | 'production';
 export type CommandName = 'build' | 'node-dev' | 'serve';
+export type HashAlgorithm = 'sha256' | 'sha384' | 'sha512';
 
 type BuildOptionsWithEntryPoints = Omit<BuildOptions, 'entryPoints' | 'bundle' | 'write'> &
   Required<Pick<BuildOptions, 'entryPoints'>>;
@@ -53,8 +52,7 @@ export interface EsbdSpecificOptions {
 
   /**
    * React 17 introduced a new JSX transform that enables some internal performance
-   * optimmizations and obviates having to import 'React' in every module. The details
-   * can be read {@link here https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html}.
+   * optimmizations and obviates having to import 'React' in every module.
    *
    * Though esbuild does not support this new transform natively, setting this option to
    * `automatic` will add a load plugin (powered by SWC) for ".jsx" and ".tsx" files so
@@ -65,20 +63,23 @@ export interface EsbdSpecificOptions {
    * currently read this option from tsconfig.json, so "jsxRuntime" must be set to "automatic"
    * explicitly for the new transform to be used.
    *
+   * @see {@link https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html}
+   *
    * @default "classic"
    */
   jsxRuntime?: 'automatic' | 'classic';
+
+  /**
+   * Name of this configuration.
+   *
+   * This is required for configurations that appear in an array.
+   */
+  name?: string;
 }
 
 export interface EsbdConfig extends EsbdSpecificOptions, BuildOptionsWithEntryPoints {}
 
 export interface NamedEsbdConfig extends EsbdConfig {
-  /**
-   * Name of this configuration.
-   *
-   * This is only required if multiple configurations are defined
-   * in a single file.
-   */
   name: string;
 }
 

@@ -209,10 +209,10 @@ export default function configure(configParam: EsbdConfigResult | ConfigFn) {
             default: 8000,
             description: 'Development server port',
           },
-          rewrite: {
+          noRewrite: {
             type: Boolean,
-            default: true,
-            description: 'Rewrite all not-found requests to "index.html" (SPA mode)',
+            default: false,
+            description: 'Disable rewriting of all requests to "index.html" (SPA mode)',
           },
         },
       }),
@@ -266,7 +266,7 @@ export default function configure(configParam: EsbdConfigResult | ConfigFn) {
       }
 
       case 'serve': {
-        const { host, mode, logLevel, port, livereload, servedir, rewrite } = argv.flags;
+        const { host, mode, logLevel, port, livereload, servedir, noRewrite } = argv.flags;
         const configResult =
           typeof configParam === 'function' ? await configParam(mode, 'serve') : configParam;
 
@@ -285,7 +285,7 @@ export default function configure(configParam: EsbdConfigResult | ConfigFn) {
           livereload,
           logger,
           servedir: servedir ? path.resolve(process.cwd(), servedir) : undefined,
-          rewrite,
+          rewrite: !noRewrite,
         });
         break;
       }
