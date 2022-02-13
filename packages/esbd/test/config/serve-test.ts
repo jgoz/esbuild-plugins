@@ -97,7 +97,7 @@ const test = base.extend<ServerTestFixtures>({
           '-p',
           String(port),
           livereload && '-r',
-          disableRewrite && '--rewrite=false',
+          disableRewrite && '--no-rewrite',
           serveDir && '-d',
           serveDir,
         ],
