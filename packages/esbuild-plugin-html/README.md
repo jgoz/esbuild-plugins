@@ -2,6 +2,8 @@
 
 An esbuild plugin that populates an HTML template with `<script>` and `<link>` tags based on build output.
 
+Note that this plugin is not necessary if you are using `esbd`, which has native support for HTML entry points.
+
 ### Features
 
 - Adds tags for JS and CSS output files
