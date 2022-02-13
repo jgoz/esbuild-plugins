@@ -52,7 +52,7 @@ export interface EsbdSpecificOptions {
 
   /**
    * React 17 introduced a new JSX transform that enables some internal performance
-   * optimmizations and obviates having to import 'React' in every module.
+   * optimizations and obviates having to import 'React' in every module.
    *
    * Though esbuild does not support this new transform natively, setting this option to
    * `automatic` will add a load plugin (powered by SWC) for ".jsx" and ".tsx" files so
