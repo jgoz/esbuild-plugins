@@ -5,6 +5,9 @@
   "description": "HTML plugin for esbuild",
   "license": "MIT",
   "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jgoz/esbuild-plugins.git",
