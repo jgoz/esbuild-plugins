@@ -56,7 +56,8 @@
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
     "prepack": "./bundle.js build",
-    "test": "pushd test/fixture && pnpm install && popd && jest",
+    "prepare": "cd test/fixture && pnpm install",
+    "test": "jest",
     "watch": "./bundle.js build -w"
   }
 }
