@@ -2,14 +2,5 @@
   "name": "fixtures",
   "version": "1.0.0",
   "license": "MIT",
-  "private": true,
-  "workspaces": [
-    "open-iconic",
-    "postcss",
-    "react",
-    "watch"
-  ],
-  "installConfig": {
-    "hoistingLimits": "workspaces"
-  }
+  "private": true
 }
