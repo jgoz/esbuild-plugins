@@ -1,5 +1,11 @@
 # esbd
 
+## 1.0.3
+
+### Patch Changes
+
+- 949887d: Set default log level to 'info' for serve
+
 ## 1.0.2
 
 ### Patch Changes
