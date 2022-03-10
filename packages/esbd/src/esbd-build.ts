@@ -6,6 +6,7 @@ import prettyBytes from 'pretty-bytes';
 import type { BuildMode, ResolvedEsbdConfig } from './config';
 import { getBuildOptions, getHtmlBuildOptions } from './get-build-options';
 import { writeTemplate } from './html-entry-point';
+import type { BuildIncrementalResult } from './incremental-build';
 import { incrementalBuild } from './incremental-build';
 import type { Logger } from './log';
 import { swcPlugin } from './swc-plugin';
@@ -62,6 +63,7 @@ async function esbdBuildHtml(
         ),
         ...result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
       ]);
+      logOutput(result, logger);
     },
     onWatchEvent: (event, filePath) => {
       logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
@@ -89,15 +91,7 @@ async function esbdBuildSource(
       await Promise.all(
         result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
       );
-      for (const file of result.outputFiles) {
-        logger.info(
-          pc.gray(
-            `Wrote ${relative(process.cwd(), file.path)} (${pc.bold(
-              prettyBytes(file.contents.byteLength),
-            )})`,
-          ),
-        );
-      }
+      logOutput(result, logger);
     },
     onWatchEvent: (event, filePath) => {
       logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
@@ -105,4 +99,16 @@ async function esbdBuildSource(
   });
 
   if (!watch) build.rebuild.dispose();
+}
+
+function logOutput(result: BuildIncrementalResult, logger: Logger) {
+  for (const file of result.outputFiles) {
+    logger.info(
+      pc.gray(
+        `Wrote ${relative(process.cwd(), file.path)} (${pc.bold(
+          prettyBytes(file.contents.byteLength),
+        )})`,
+      ),
+    );
+  }
 }

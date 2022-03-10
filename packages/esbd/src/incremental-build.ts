@@ -15,7 +15,7 @@ import path from 'path';
 
 import type { Logger } from './log';
 
-interface BuildIncrementalResult extends BuildIncremental {
+export interface BuildIncrementalResult extends BuildIncremental {
   metafile: Metafile;
   outputFiles: OutputFile[];
 }
