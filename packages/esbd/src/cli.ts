@@ -277,7 +277,7 @@ export default function configure(configParam: EsbdConfigResult | ConfigFn) {
           c => !c.platform || c.platform === 'browser',
         );
 
-        const logger = createLogger(logLevel ?? config.logLevel ?? 'warning');
+        const logger = createLogger(logLevel ?? config.logLevel ?? 'info');
         await serve(updateConfig(argv.flags, config, logger, true), {
           mode,
           host,
