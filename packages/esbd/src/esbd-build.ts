@@ -1,9 +1,10 @@
+import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
 import fs from 'fs';
 import { basename, relative } from 'path';
 import pc from 'picocolors';
 import prettyBytes from 'pretty-bytes';
 
-import type { BuildMode, ResolvedEsbdConfig } from './config';
+import type { BuildMode, ResolvedEsbdConfig, TsBuildMode } from './config';
 import { getBuildOptions, getHtmlBuildOptions } from './get-build-options';
 import { writeTemplate } from './html-entry-point';
 import type { BuildIncrementalResult } from './incremental-build';
@@ -16,9 +17,42 @@ interface EsbdBuildOptions {
   logger: Logger;
   mode: BuildMode;
   watch: boolean;
+  check?: boolean;
+  tsBuildMode?: TsBuildMode;
 }
 
-export default async function esbdBuild(config: ResolvedEsbdConfig, options: EsbdBuildOptions) {
+export default async function esbdBuildMulti(
+  configs: ResolvedEsbdConfig[],
+  options: EsbdBuildOptions,
+) {
+  if (options.check) {
+    const TypecheckRunner: typeof TypecheckRunnerCls =
+      require('@jgoz/esbuild-plugin-typecheck').TypecheckRunner;
+
+    const checks = new Map<string, TypecheckRunnerCls>();
+    for (const config of configs) {
+      const runner = new TypecheckRunner({
+        absWorkingDir: config.absWorkingDir,
+        build: options.tsBuildMode ? true : undefined,
+        buildMode: options.tsBuildMode,
+        configFile: config.tsconfig,
+        logger: options.logger,
+        omitStartLog: true,
+        watch: options.watch,
+      });
+      checks.set(runner.configPath, runner);
+    }
+
+    checks.forEach(runner => {
+      runner.start();
+      runner.logger.info('Type checking enabled');
+    });
+  }
+
+  await Promise.all(configs.map(config => esbdBuild(config, options)));
+}
+
+async function esbdBuild(config: ResolvedEsbdConfig, options: EsbdBuildOptions) {
   const { entryPoints } = config;
 
   const entries = Array.isArray(entryPoints)
@@ -28,8 +62,10 @@ export default async function esbdBuild(config: ResolvedEsbdConfig, options: Esb
   const htmlEntries = entries.filter(([, entryPath]) => entryPath.endsWith('.html'));
   const sourceEntries = entries.filter(([, entryPath]) => !entryPath.endsWith('.html'));
 
-  await esbdBuildHtml(htmlEntries, config, options);
-  await esbdBuildSource(sourceEntries, config, options);
+  await Promise.all([
+    esbdBuildHtml(htmlEntries, config, options),
+    esbdBuildSource(sourceEntries, config, options),
+  ]);
 }
 
 async function esbdBuildHtml(
@@ -39,12 +75,15 @@ async function esbdBuildHtml(
 ) {
   if (htmlEntries.length === 0) return;
 
+  const entryNames = htmlEntries.map(([name]) => name).join(', ');
+  const name = config.name ? `"${config.name}" (${entryNames})` : entryNames;
+
   const [buildOptions, allWriteOptions] = await getHtmlBuildOptions(htmlEntries, mode, config);
   const build = await incrementalBuild({
     ...buildOptions,
     incremental: true,
     logger,
-    plugins: [...config.plugins, swcPlugin(config.jsxRuntime), timingPlugin(logger)],
+    plugins: [...config.plugins, swcPlugin(config.jsxRuntime), timingPlugin(logger, name)],
     watch,
     write: false,
 
@@ -75,12 +114,15 @@ async function esbdBuildSource(
 ) {
   if (sourceEntries.length === 0) return;
 
+  const entryNames = sourceEntries.map(([name]) => name).join(', ');
+  const name = config.name ? `"${config.name}" (${entryNames})` : entryNames;
+
   const build = await incrementalBuild({
     ...getBuildOptions(sourceEntries, mode, config),
     copy: config.copy,
     incremental: true,
     logger,
-    plugins: [...config.plugins, swcPlugin(config.jsxRuntime), timingPlugin(logger)],
+    plugins: [...config.plugins, swcPlugin(config.jsxRuntime), timingPlugin(logger, name)],
     watch,
     write: false,
 

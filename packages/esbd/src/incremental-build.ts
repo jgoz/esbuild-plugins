@@ -50,6 +50,16 @@ const NULL_RESULT: Omit<BuildIncrementalResult, 'rebuild'> = {
   outputFiles: [],
 };
 
+const INPUT_WATCH_IGNORE = [
+  /[/\\]node_modules[/\\]/,
+  /[/\\]\.git[/\\]/,
+  /\.tsbuildinfo$/,
+  /\.d.ts$/,
+  /\.map$/,
+];
+
+const MODULE_WATCH_IGNORE = [/[/\\]\.git[/\\]/, /\.tsbuildinfo$/, /\.d.ts$/, /\.map$/];
+
 export async function incrementalBuild({
   copy,
   logger,
@@ -85,13 +95,14 @@ export async function incrementalBuild({
   const inputWatcher = watch([], {
     cwd: basedir,
     disableGlobbing: true,
-    ignored: ['**/node_modules/**', '*.tsbuildinfo'],
+    ignored: INPUT_WATCH_IGNORE,
   });
 
   const moduleWatcher = watch([], {
     cwd: basedir,
     depth: 2,
     disableGlobbing: true,
+    ignored: MODULE_WATCH_IGNORE,
     interval: 2000,
     usePolling: true,
   });
@@ -102,6 +113,7 @@ export async function incrementalBuild({
 
   function onInputEvent(event: string, path: string) {
     if (running) return;
+    if (INPUT_WATCH_IGNORE.some(re => re.test(path))) return;
     Promise.resolve(onWatchEvent(event, path))
       .then(triggerBuild)
       .catch(e => logger.error(e));
@@ -109,6 +121,7 @@ export async function incrementalBuild({
 
   function onModuleEvent(path: string) {
     if (running) return;
+    if (MODULE_WATCH_IGNORE.some(re => re.test(path))) return;
     Promise.resolve(onWatchEvent('change', path))
       .then(triggerBuild)
       .catch(e => logger.error(e));

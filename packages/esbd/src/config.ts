@@ -4,6 +4,11 @@ export type BuildMode = 'development' | 'production';
 export type CommandName = 'build' | 'node-dev' | 'serve';
 export type HashAlgorithm = 'sha256' | 'sha384' | 'sha512';
 
+export const BUILD_MODES = ['development', 'production'] as const;
+export const TS_BUILD_MODES = ['readonly', 'write-output'] as const;
+
+export type TsBuildMode = typeof TS_BUILD_MODES[number];
+
 type BuildOptionsWithEntryPoints = Omit<BuildOptions, 'entryPoints' | 'bundle' | 'write'> &
   Required<Pick<BuildOptions, 'entryPoints'>>;
 

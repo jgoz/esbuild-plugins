@@ -1,3 +1,4 @@
+import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
 import type { ChildProcess } from 'child_process';
 import type { ExecaChildPromise } from 'execa';
 import { node as execaNode } from 'execa';
@@ -6,7 +7,7 @@ import Graceful from 'node-graceful';
 import path from 'path';
 import pc from 'picocolors';
 
-import type { BuildMode, ResolvedEsbdConfig } from './config';
+import type { BuildMode, ResolvedEsbdConfig, TsBuildMode } from './config';
 import { getBuildOptions } from './get-build-options';
 import { incrementalBuild } from './incremental-build';
 import type { Logger } from './log';
@@ -17,6 +18,8 @@ interface EsbdNodeDevConfig {
   logger: Logger;
   mode: BuildMode;
   respawn?: boolean;
+  check?: boolean;
+  tsBuildMode?: TsBuildMode;
 }
 
 const MAX_RETRIES = 3;
@@ -24,7 +27,7 @@ const KEEPALIVE_RESET_TIMEOUT_MS = 5000;
 
 export default async function esbdNodeDev(
   config: ResolvedEsbdConfig,
-  { args, logger, mode, respawn }: EsbdNodeDevConfig,
+  { args, logger, mode, respawn, check, tsBuildMode }: EsbdNodeDevConfig,
 ) {
   let child: ChildProcess & ExecaChildPromise<string>;
   let keepAliveCount = 0;
@@ -79,12 +82,29 @@ export default async function esbdNodeDev(
     });
   }
 
+  if (check) {
+    const TypecheckRunner: typeof TypecheckRunnerCls =
+      require('@jgoz/esbuild-plugin-typecheck').TypecheckRunner;
+
+    const runner = new TypecheckRunner({
+      absWorkingDir: buildOptions.absWorkingDir,
+      build: tsBuildMode ? true : undefined,
+      buildMode: tsBuildMode,
+      configFile: config.tsconfig,
+      logger,
+      watch: true,
+    });
+
+    runner.logger.info('Type checking enabled');
+    runner.start();
+  }
+
   const build = await incrementalBuild({
     ...buildOptions,
     incremental: true,
     logger,
     minify: mode === 'production',
-    plugins: [...config.plugins, timingPlugin(logger)],
+    plugins: [...config.plugins, timingPlugin(logger, config.name && `"${config.name}"`)],
     platform: 'node',
     target: config.target ?? defaultTarget,
     watch: true,

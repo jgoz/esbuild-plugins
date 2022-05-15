@@ -1,4 +1,5 @@
 import type { notify as notifyFn } from '@jgoz/esbuild-plugin-livereload';
+import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
 import { createHash } from 'crypto';
 import fs from 'fs';
 import type { Server, ServerResponse } from 'http';
@@ -10,7 +11,7 @@ import serveStatic from 'serve-static';
 import { URL } from 'url';
 import { promisify } from 'util';
 
-import type { BuildMode, ResolvedEsbdConfig } from './config';
+import type { BuildMode, ResolvedEsbdConfig, TsBuildMode } from './config';
 import { getHtmlBuildOptions } from './get-build-options';
 import { writeTemplate } from './html-entry-point/write-template';
 import { incrementalBuild } from './incremental-build';
@@ -19,13 +20,15 @@ import { swcPlugin } from './swc-plugin';
 import { timingPlugin } from './timing-plugin';
 
 interface EsbdServeConfig {
-  mode: BuildMode;
+  check?: boolean;
   host?: string;
-  port?: number;
   livereload?: boolean;
   logger: Logger;
-  servedir?: string;
+  mode: BuildMode;
+  port?: number;
   rewrite: boolean;
+  servedir?: string;
+  tsBuildMode?: TsBuildMode;
 }
 
 function calculateHash(contents: Uint8Array): string {
@@ -36,7 +39,17 @@ function calculateHash(contents: Uint8Array): string {
 
 export default async function esbdServe(
   config: ResolvedEsbdConfig,
-  { mode, host = 'localhost', port = 8000, livereload, logger, servedir, rewrite }: EsbdServeConfig,
+  {
+    mode,
+    host = 'localhost',
+    port = 8000,
+    livereload,
+    logger,
+    servedir,
+    rewrite,
+    check,
+    tsBuildMode,
+  }: EsbdServeConfig,
 ) {
   const entries = Array.isArray(config.entryPoints)
     ? config.entryPoints.map(entry => [entry, entry] as const)
@@ -67,6 +80,23 @@ export default async function esbdServe(
     notify = notifyLR;
   }
 
+  if (check) {
+    const TypecheckRunner: typeof TypecheckRunnerCls =
+      require('@jgoz/esbuild-plugin-typecheck').TypecheckRunner;
+
+    const runner = new TypecheckRunner({
+      absWorkingDir: buildOptions.absWorkingDir,
+      build: tsBuildMode ? true : undefined,
+      buildMode: tsBuildMode,
+      configFile: config.tsconfig,
+      logger,
+      watch: true,
+    });
+
+    runner.logger.info('Type checking enabled');
+    runner.start();
+  }
+
   const build = await incrementalBuild({
     ...buildOptions,
     banner: banner
@@ -75,7 +105,11 @@ export default async function esbdServe(
     copy: config.copy,
     incremental: true,
     logger,
-    plugins: [...config.plugins, swcPlugin(config.jsxRuntime), timingPlugin(logger)],
+    plugins: [
+      ...config.plugins,
+      swcPlugin(config.jsxRuntime),
+      timingPlugin(logger, config.name && `"${config.name}"`),
+    ],
     watch: true,
     onBuildResult: async (result, options) => {
       await Promise.all([

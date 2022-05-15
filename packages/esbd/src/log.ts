@@ -38,7 +38,7 @@ export function LogLevelType(level: LogLevel) {
 }
 
 export function createLogger(logLevel: LogLevel): Logger {
-  let busy = false;
+  let busy = 0;
   const queue: (() => void)[] = [];
 
   function enqueueOrFlush(fn: () => void) {
@@ -83,14 +83,16 @@ export function createLogger(logLevel: LogLevel): Logger {
     },
 
     spin(message: string): TimedSpinner {
-      busy = true;
+      busy += 1;
       const startTime = process.hrtime();
 
       function doStop() {
-        busy = false;
-        while (queue.length) {
-          const fn = queue.shift();
-          fn?.();
+        busy -= 1;
+        if (!busy) {
+          while (queue.length) {
+            const fn = queue.shift();
+            fn?.();
+          }
         }
         const endTime = process.hrtime(startTime);
         return [prettyTime(endTime, 'ms'), endTime] as [string, [number, number]];

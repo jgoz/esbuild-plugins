@@ -12,11 +12,13 @@ export interface BuildOptionsWithInvariants extends BuildOptions {
   write: false;
 }
 
+export type HtmlBuildOptions = [BuildOptionsWithInvariants, WriteTemplateOptions[]];
+
 export async function getHtmlBuildOptions(
   htmlEntries: (readonly [string, string])[],
   mode: BuildMode,
   config: ResolvedEsbdConfig,
-): Promise<[BuildOptionsWithInvariants, WriteTemplateOptions[]]> {
+): Promise<HtmlBuildOptions> {
   const outdir = config.outdir;
 
   const {

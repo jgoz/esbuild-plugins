@@ -3,7 +3,13 @@ import pc from 'picocolors';
 
 import type { Logger, TimedSpinner } from './log';
 
-export function timingPlugin(logger: Logger, progressMessage = 'Building…'): Plugin {
+export function timingPlugin(
+  logger: Logger,
+  name: string | undefined,
+  progressMessage = 'Building…',
+): Plugin {
+  const buildName = name ? `${name} ` : '';
+
   let spinner: TimedSpinner;
   return {
     name: 'esbd-timing',
@@ -19,7 +25,7 @@ export function timingPlugin(logger: Logger, progressMessage = 'Building…'): P
         const numWarnings = result.warnings.length;
         const log = numErrors ? logger.error : numWarnings ? logger.warn : logger.success;
         log(
-          `Finished with ${pc.white(numErrors)} error(s) and ${pc.white(
+          `Finished ${buildName}with ${pc.white(numErrors)} error(s) and ${pc.white(
             numWarnings,
           )} warning(s) in ${pc.gray(time)}`,
         );

@@ -1,4 +1,3 @@
-import type { typecheckPlugin as typecheckPluginFn } from '@jgoz/esbuild-plugin-typecheck';
 import { cli, command } from 'cleye';
 import type { LogLevel } from 'esbuild';
 import path from 'path';
@@ -10,49 +9,21 @@ import type {
   EsbdConfigResult,
   NamedEsbdConfig,
   ResolvedEsbdConfig,
+  TsBuildMode,
 } from './config';
-import esbdBuild from './esbd-build';
+import { BUILD_MODES, TS_BUILD_MODES } from './config';
+import esbdBuildMulti from './esbd-build';
 import nodeDev from './esbd-node-dev';
 import serve from './esbd-serve';
-import type { Logger } from './log';
 import { createLogger, LOG_LEVELS, LogLevelType } from './log';
 
 const version = require('../package.json').version;
 
-interface GlobalOptions {
-  check?: boolean;
-  logLevel?: LogLevel;
-  mode: BuildMode;
-  tsBuildMode?: TsBuildModes;
-}
-
-function updateConfig(
-  options: GlobalOptions,
-  config: EsbdConfig,
-  logger: Logger,
-  watch?: boolean,
-): ResolvedEsbdConfig {
+function updateConfig(config: EsbdConfig, logLevel: LogLevel): ResolvedEsbdConfig {
   config.absWorkingDir ??= process.cwd();
-  config.logLevel = logger.logLevel;
+  config.logLevel = logLevel;
   config.outdir ??= path.join(config.absWorkingDir, 'dist');
   config.plugins ??= [];
-
-  if (options.check) {
-    const typecheckPlugin: typeof typecheckPluginFn =
-      require('@jgoz/esbuild-plugin-typecheck').typecheckPlugin;
-
-    const buildMode = options.tsBuildMode;
-    config.plugins.push(
-      typecheckPlugin({
-        configFile: config.tsconfig,
-        build: buildMode ? true : undefined,
-        buildMode,
-        logger,
-        omitStartLog: true,
-        watch,
-      }),
-    );
-  }
 
   return config as ResolvedEsbdConfig;
 }
@@ -79,20 +50,14 @@ function getSingleConfigResult(
   return config;
 }
 
-const MODES = ['development', 'production'] as const;
-type Modes = typeof MODES[number];
-
-function ModeType(mode: Modes) {
-  if (!MODES.includes(mode)) {
+function ModeType(mode: BuildMode) {
+  if (!BUILD_MODES.includes(mode)) {
     throw new Error(`Invalid mode: ${mode}`);
   }
   return mode;
 }
 
-const TS_BUILD_MODES = ['readonly', 'write-output'] as const;
-type TsBuildModes = typeof TS_BUILD_MODES[number];
-
-function BuildModeType(mode: TsBuildModes) {
+function BuildModeType(mode: TsBuildMode) {
   if (!TS_BUILD_MODES.includes(mode)) {
     throw new Error(`Invalid TypeScript build mode: ${mode}`);
   }
@@ -232,14 +197,17 @@ export default function configure(configParam: EsbdConfigResult | ConfigFn) {
             : configResult
           : [configResult];
 
-        for (const config of configs) {
-          const logger = createLogger(logLevel ?? config.logLevel ?? 'info');
-          await esbdBuild(updateConfig(argv.flags, config, logger, watch), {
-            mode,
-            logger,
-            watch,
-          });
-        }
+        const logLevels = configs
+          .map(config => LOG_LEVELS.indexOf(config.logLevel ?? 'info'))
+          .filter(i => i >= 0);
+
+        const minLogLevel = logLevels.length > 0 ? LOG_LEVELS[Math.min(...logLevels)] : 'info';
+        const logger = createLogger(minLogLevel);
+
+        await esbdBuildMulti(
+          configs.map(config => updateConfig(config, logLevel ?? config.logLevel ?? 'info')),
+          { logger, mode, watch, check: argv.flags.check, tsBuildMode: argv.flags.tsBuildMode },
+        );
         break;
       }
 
@@ -256,11 +224,13 @@ export default function configure(configParam: EsbdConfigResult | ConfigFn) {
         );
 
         const logger = createLogger(logLevel ?? config.logLevel ?? 'info');
-        await nodeDev(updateConfig(argv.flags, config, logger, true), {
+        await nodeDev(updateConfig(config, logger.logLevel), {
           args: argv._['--'] ?? [],
           logger,
           mode,
           respawn,
+          check: argv.flags.check,
+          tsBuildMode: argv.flags.tsBuildMode,
         });
         break;
       }
@@ -278,7 +248,7 @@ export default function configure(configParam: EsbdConfigResult | ConfigFn) {
         );
 
         const logger = createLogger(logLevel ?? config.logLevel ?? 'info');
-        await serve(updateConfig(argv.flags, config, logger, true), {
+        await serve(updateConfig(config, logger.logLevel), {
           mode,
           host,
           port,
@@ -286,6 +256,8 @@ export default function configure(configParam: EsbdConfigResult | ConfigFn) {
           logger,
           servedir: servedir ? path.resolve(process.cwd(), servedir) : undefined,
           rewrite: !noRewrite,
+          check: argv.flags.check,
+          tsBuildMode: argv.flags.tsBuildMode,
         });
         break;
       }
