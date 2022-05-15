@@ -36,15 +36,15 @@
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
-    "esbuild": "^0.14.13",
+    "esbuild": "^0.14.39",
     "esbuild-node-externals": "^1.4.1",
     "execa": "^5.0.0",
-    "jest": "^27.4.5",
-    "memfs": "^3.4.0",
+    "jest": "^27.5.1",
+    "memfs": "^3.4.1",
     "picocolors": "^1.0.0",
-    "prettier": "^2.5.1",
-    "tslib": "^2.3.1",
-    "typescript": "^4.5.4",
+    "prettier": "^2.6.2",
+    "tslib": "^2.4.0",
+    "typescript": "^4.6.4",
     "unionfs": "^4.4.0"
   },
   "jest": {
