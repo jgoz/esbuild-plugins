@@ -131,9 +131,14 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
       .readFileSync('./dest/app.css', 'utf-8')
       .split('\n')
       .filter(l => l.length > 0) // skip empty lines
-      .join('\n');
+      .join('\n')
+      .replace(__dirname, '.');
 
-    const actual = fs.readFileSync('./out/app.css', 'utf-8').split('\n').join('\n');
+    const actual = fs
+      .readFileSync('./out/app.css', 'utf-8')
+      .split('\n')
+      .join('\n')
+      .replace(__dirname, '.');
 
     expect(prettier.format(actual, { parser: 'css' })).toEqual(
       prettier.format(expected, { parser: 'css' }),
@@ -252,8 +257,8 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
       plugins: [sassPlugin({ implementation })],
     });
 
-    const outCSS = fs.readFileSync('./out/import.css', 'utf-8');
-    expect(outCSS).toEqual(`/* sass:./src/import.scss */
+    const outCSS = fs.readFileSync('./out/import.css', 'utf-8').replace(__dirname, '.');
+    expect(outCSS).toEqual(`/* sass:./fixture/partials/src/import.scss */
 .index-a {
   color: red;
 }
