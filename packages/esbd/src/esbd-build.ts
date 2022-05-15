@@ -25,26 +25,21 @@ export default async function esbdBuild(config: ResolvedEsbdConfig, options: Esb
     ? entryPoints.map(p => [basename(p), p] as const)
     : Object.entries(entryPoints);
 
-  const hasHtml = entries.some(([, entryPath]) => entryPath.endsWith('.html'));
+  const htmlEntries = entries.filter(([, entryPath]) => entryPath.endsWith('.html'));
+  const sourceEntries = entries.filter(([, entryPath]) => !entryPath.endsWith('.html'));
 
-  if (hasHtml) {
-    await esbdBuildHtml(entries, config, options);
-  } else {
-    await esbdBuildSource(entries, config, options);
-  }
+  await esbdBuildHtml(htmlEntries, config, options);
+  await esbdBuildSource(sourceEntries, config, options);
 }
 
 async function esbdBuildHtml(
-  resolvedEntries: (readonly [string, string])[],
+  htmlEntries: (readonly [string, string])[],
   config: ResolvedEsbdConfig,
   { logger, mode, watch }: EsbdBuildOptions,
 ) {
-  const [buildOptions, allWriteOptions] = await getHtmlBuildOptions(
-    resolvedEntries.filter(([, entryPath]) => entryPath.endsWith('.html')),
-    mode,
-    config,
-  );
+  if (htmlEntries.length === 0) return;
 
+  const [buildOptions, allWriteOptions] = await getHtmlBuildOptions(htmlEntries, mode, config);
   const build = await incrementalBuild({
     ...buildOptions,
     incremental: true,
@@ -74,12 +69,14 @@ async function esbdBuildHtml(
 }
 
 async function esbdBuildSource(
-  resolvedEntries: (readonly [string, string])[],
+  sourceEntries: (readonly [string, string])[],
   config: ResolvedEsbdConfig,
   { logger, mode, watch }: EsbdBuildOptions,
 ) {
+  if (sourceEntries.length === 0) return;
+
   const build = await incrementalBuild({
-    ...getBuildOptions(resolvedEntries, mode, config),
+    ...getBuildOptions(sourceEntries, mode, config),
     copy: config.copy,
     incremental: true,
     logger,
