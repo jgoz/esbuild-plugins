@@ -1,5 +1,11 @@
 # esbd
 
+## 1.0.4
+
+### Patch Changes
+
+- d8c9e67: Allow both html and source entry points
+
 ## 1.0.3
 
 ### Patch Changes
