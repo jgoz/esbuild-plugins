@@ -1,6 +1,6 @@
 {
   "name": "@jgoz/esbuild-plugin-typecheck",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "John Gozde <john@gozde.ca>",
   "description": "TypeScript type-checking plugin for esbuild",
   "license": "MIT",
