@@ -266,7 +266,7 @@ export function sassPlugin({
     name: 'sass-plugin',
     setup: build => {
       build.onResolve({ filter: /\.(s[ac]ss|css)$/ }, args => {
-        return { path: args.path, namespace: 'sass', pluginData: args };
+        return { path: resolve(args.resolveDir, args.path), namespace: 'sass', pluginData: args };
       });
 
       build.onLoad(
