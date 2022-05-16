@@ -5,11 +5,8 @@ import path from 'path';
 import prettier from 'prettier';
 
 import { sassPlugin } from '../src';
-import type { SaasImplementation } from '../src/sass-plugin';
 
-const implementations: SaasImplementation[] = ['sass', 'node-sass'];
-
-describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implementation => {
+describe('esbuild-plugin-sass ', () => {
   test('react application (css loader)', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/react');
     process.chdir(absWorkingDir);
@@ -22,7 +19,7 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
       sourcemap: true,
       outdir: './out',
       define: { 'process.env.NODE_ENV': '"development"' },
-      plugins: [sassPlugin({ implementation })],
+      plugins: [sassPlugin()],
     });
 
     const cssBundle = fs.readFileSync('./out/index.css', 'utf-8');
@@ -62,7 +59,7 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
         '.svg': 'file',
         '.otf': 'file',
       },
-      plugins: [sassPlugin({ implementation })],
+      plugins: [sassPlugin()],
     });
 
     const outCSS = fs.readFileSync('./out/styles.css', 'utf-8');
@@ -83,7 +80,7 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
         '.svg': 'dataurl',
         '.otf': 'dataurl',
       },
-      plugins: [sassPlugin({ implementation })],
+      plugins: [sassPlugin()],
     });
 
     const outFile = fs.readFileSync('./out/bundle.css', 'utf-8');
@@ -118,7 +115,6 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
       },
       plugins: [
         sassPlugin({
-          implementation,
           async transform(source) {
             const { css } = await postCSS.process(source, { from: undefined });
             return css;
@@ -208,7 +204,7 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
       absWorkingDir,
       outdir: `./out`,
       bundle: true,
-      plugins: [sassPlugin({ implementation })],
+      plugins: [sassPlugin()],
       watch: {
         onRebuild(_error, _result) {
           count++;
@@ -254,7 +250,7 @@ describe.each(implementations)('esbuild-plugin-sass (implementation=%s)', implem
       outdir: './out',
       bundle: true,
       format: 'esm',
-      plugins: [sassPlugin({ implementation })],
+      plugins: [sassPlugin()],
     });
 
     const outCSS = fs.readFileSync('./out/import.css', 'utf-8').replace(__dirname, '.');

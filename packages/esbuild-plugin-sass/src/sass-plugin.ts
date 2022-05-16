@@ -1,14 +1,10 @@
 import type { OnLoadArgs, OnLoadResult, OnResolveArgs, Plugin } from 'esbuild';
 import { promises as fsp } from 'fs';
-import type NodeSass from 'node-sass';
 import { dirname, resolve } from 'path';
 import type { LegacyFunction, LegacyImporter } from 'sass';
-import type DartSass from 'sass';
 
 import { createSassImporter } from './create-sass-importer';
 import { loadSass } from './load-sass';
-
-export type SaasImplementation = 'sass' | 'node-sass';
 
 export interface SassPluginOptions {
   /**
@@ -24,14 +20,6 @@ export interface SassPluginOptions {
    * @default process.cwd()
    */
   basedir?: string;
-
-  /**
-   * "sass" for dart-sass (compiled to javascript, slow) or "node-sass" (libsass, fast yet deprecated)
-   * You can pass the module name of any other implementation as long as it is API compatible
-   *
-   * @default "sass"
-   */
-  implementation?: SaasImplementation;
 
   /**
    * Resolves `@import` directives *between sass files*.
@@ -188,12 +176,11 @@ export function sassPlugin({
   alias,
   basedir = process.cwd(),
   functions,
-  implementation = 'sass',
   includePaths,
-  importer = createSassImporter(implementation, includePaths, alias),
+  importer = createSassImporter(includePaths, alias),
   ...options
 }: SassPluginOptions = {}): Plugin {
-  const sassImpl = loadSass(implementation, basedir);
+  const sass = loadSass(basedir);
 
   function pathResolve({ resolveDir, path, importer }: OnResolveArgs) {
     return resolve(resolveDir || dirname(importer), path);
@@ -211,16 +198,10 @@ export function sassPlugin({
     return { css: await fsp.readFile(path, 'utf-8'), watchFiles: [path] };
   }
 
-  async function renderSass(file: string) {
-    return sassImpl.type === 'node-sass'
-      ? renderNodeSass(sassImpl.sass, file)
-      : renderDartSass(sassImpl.sass, file);
-  }
-
-  async function renderDartSass(sass: typeof DartSass, file: string) {
+  async function renderSass(path: string) {
     return new Promise<{ css: string; watchFiles: string[] }>((resolve, reject) => {
       try {
-        const result = sass.renderSync({ importer, functions, ...options, file });
+        const result = sass.renderSync({ importer, functions, ...options, file: path });
         resolve({
           css: result.css.toString('utf-8'),
           watchFiles: result.stats.includedFiles,
@@ -228,24 +209,6 @@ export function sassPlugin({
       } catch (error) {
         reject(error);
       }
-    });
-  }
-
-  async function renderNodeSass(sass: typeof NodeSass, file: string) {
-    const legacyImporter = importer as unknown as NodeSass.SyncImporter[] | NodeSass.SyncImporter;
-    const legacyFunctions = functions as unknown as NodeSass.FunctionDeclarations;
-    const nodeSassOptions = { importer: legacyImporter, functions: legacyFunctions, ...options };
-    return new Promise<{ css: string; watchFiles: string[] }>((resolve, reject) => {
-      sass.render({ ...nodeSassOptions, file }, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve({
-            css: result.css.toString('utf-8'),
-            watchFiles: result.stats.includedFiles,
-          });
-        }
-      });
     });
   }
 
