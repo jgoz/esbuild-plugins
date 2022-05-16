@@ -60,6 +60,8 @@ const INPUT_WATCH_IGNORE = [
 
 const MODULE_WATCH_IGNORE = [/[/\\]\.git[/\\]/, /\.tsbuildinfo$/, /\.d.ts$/, /\.map$/];
 
+const NODE_MODULES_LEN = 'node_modules'.length;
+
 export async function incrementalBuild({
   copy,
   logger,
@@ -201,8 +203,15 @@ export async function incrementalBuild({
         // For paths in node_modules, we don't want to watch each file individually,
         // so try to find the first level of depth after the first "node_modules/".
         // E.g., "../node_modules/some-library/"
-        const modIndex = input.indexOf('/', index + 'node_modules'.length + 1);
+
+        let modIndex = input.indexOf('/', index + NODE_MODULES_LEN + 1);
+
         if (modIndex > 0) {
+          if (input[index + NODE_MODULES_LEN + 1] === '@') {
+            // Descend into scoped modules to avoid watching the entire scope
+            modIndex = input.indexOf('/', modIndex + 1);
+          }
+
           const mod = input.slice(0, modIndex);
           if (!watchedModules.has(mod)) addedModules.add(mod);
         }
