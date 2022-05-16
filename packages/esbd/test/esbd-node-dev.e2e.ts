@@ -11,7 +11,7 @@ test('serves content from entry point', async ({ port, startServer, request }) =
           const server = require('http').createServer((req, res) => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'text/plain');
-            res.end('Hello World');
+            res.end('Hello world');
           });
           server.listen(${port}, '127.0.0.1');
         `,
@@ -21,7 +21,7 @@ test('serves content from entry point', async ({ port, startServer, request }) =
 
   const res = await request.get(`http://127.0.0.1:${port}`);
   test.expect(res.status()).toBe(200);
-  test.expect(await res.text()).toBe('Hello World');
+  test.expect(await res.text()).toBe('Hello world');
 });
 
 test('passes extra args to program', async ({ port, startServer, request }) => {
@@ -63,7 +63,7 @@ test('reloads server if requested [skip CI]', async ({ port, startServer, reques
           const server = require('http').createServer((req, res) => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'text/plain');
-            res.end('Hello World');
+            res.end('Hello world');
           });
           server.listen(${port}, '127.0.0.1');
         `,
@@ -84,7 +84,7 @@ test('reloads server if requested [skip CI]', async ({ port, startServer, reques
 
   const res1 = await request.get(`http://127.0.0.1:${port}`);
   test.expect(res1.status()).toBe(200);
-  test.expect(await res1.text()).toBe('Hello World');
+  test.expect(await res1.text()).toBe('Hello world');
 
   await write(1);
 
@@ -109,7 +109,7 @@ test('retries 3 times if server crashes', async ({ port, startServer, request })
           const server = require('http').createServer((req, res) => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'text/plain');
-            res.end('Hello World');
+            res.end('Hello world');
           });
           server.listen(${port}, '127.0.0.1');
         `,
@@ -128,7 +128,7 @@ test('retries 3 times if server crashes', async ({ port, startServer, request })
 
   const res1 = await request.get(`http://127.0.0.1:${port}`);
   test.expect(res1.status()).toBe(200);
-  test.expect(await res1.text()).toBe('Hello World');
+  test.expect(await res1.text()).toBe('Hello world');
 
   await write(1);
 

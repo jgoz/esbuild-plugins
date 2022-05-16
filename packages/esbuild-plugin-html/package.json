@@ -27,10 +27,11 @@
     "esbuild": ">= 0.13.0"
   },
   "devDependencies": {
+    "@types/node": "^16.0.0",
     "@types/parse5": "^6.0.3",
     "esbuild": "^0.14.39",
     "esbuild-node-externals": "^1.4.1",
-    "jest": "^27.5.1",
+    "jest": "^28.1.0",
     "memfs": "^3.4.1",
     "parse5": "^6.0.1",
     "prettier": "^2.6.2",

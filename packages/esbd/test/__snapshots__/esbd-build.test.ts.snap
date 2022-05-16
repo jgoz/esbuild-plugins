@@ -4,7 +4,7 @@ exports[`build command builds a simple entry point 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
-✔  Finished with 0 error(s) and 0 warning(s) in XX time
+✔  Finished entry with 0 error(s) and 0 warning(s) in XX time
 ---------------------------------
 entry.js
 ---------------------------------
@@ -28,7 +28,7 @@ exports[`build command includes referenced CSS from JS 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
-✔  Finished with 0 error(s) and 0 warning(s) in XX time
+✔  Finished entry with 0 error(s) and 0 warning(s) in XX time
 ---------------------------------
 entry.css
 ---------------------------------
@@ -65,7 +65,7 @@ exports[`build command includes referenced CSS from entry point 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
-✔  Finished with 0 error(s) and 0 warning(s) in XX time
+✔  Finished entry, style with 0 error(s) and 0 warning(s) in XX time
 ---------------------------------
 entry.js
 ---------------------------------
@@ -102,7 +102,7 @@ exports[`build command supports automatic react runtime 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
-✔  Finished with 0 error(s) and 0 warning(s) in XX time
+✔  Finished entry with 0 error(s) and 0 warning(s) in XX time
 ---------------------------------
 entry.js
 ---------------------------------

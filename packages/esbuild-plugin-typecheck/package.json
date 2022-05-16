@@ -39,7 +39,7 @@
     "esbuild": "^0.14.39",
     "esbuild-node-externals": "^1.4.1",
     "execa": "^5.0.0",
-    "jest": "^27.5.1",
+    "jest": "^28.1.0",
     "memfs": "^3.4.1",
     "picocolors": "^1.0.0",
     "prettier": "^2.6.2",

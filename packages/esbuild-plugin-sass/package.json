@@ -44,7 +44,7 @@
     "enhanced-resolve": "^5.9.3",
     "esbuild": "^0.14.39",
     "esbuild-node-externals": "^1.4.1",
-    "jest": "^27.5.1",
+    "jest": "^28.1.0",
     "node-sass": "^7.0.1",
     "postcss": "^8.4.13",
     "postcss-preset-env": "^7.5.0",

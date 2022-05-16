@@ -1,0 +1,7 @@
+Dockerfile
+**/node_modules
+**/dist
+**/lib
+**/*.tsbuildinfo
+.git/
+.pnpm-store/

@@ -30,7 +30,7 @@
   "devDependencies": {
     "@tsconfig/svelte": "^3.0.0",
     "esbuild": "^0.14.39",
-    "esbuild-svelte": "^0.6.3",
+    "esbuild-svelte": "^0.7.0",
     "prettier": "^2.6.2",
     "svelte": "^3.48.0",
     "svelte-check": "^2.7.1",
