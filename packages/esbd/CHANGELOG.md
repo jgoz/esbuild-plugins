@@ -1,5 +1,11 @@
 # esbd
 
+## 1.0.8
+
+### Patch Changes
+
+- 2398db3: Don't watch entire scope, just the specific modules being used
+
 ## 1.0.7
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-sass
 
+## 2.0.0
+
+### Major Changes
+
+- 864c46b: Drop support for node-sass
+
 ## 1.1.2
 
 ### Patch Changes
