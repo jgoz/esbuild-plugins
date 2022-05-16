@@ -35,7 +35,7 @@ await esbuild.build({
 **Plugin options:**
 
 <!-- prettier-ignore-start -->
-<!-- markdown-interpolate: node ../../scripts/docs.mjs ./src/typecheck-plugin.ts TypecheckPluginOptions -->
+<!-- markdown-interpolate: node ../../scripts/docs.mjs ./src/types.ts TypecheckPluginOptions -->
 | Name | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | [build](https://www.typescriptlang.org/docs/handbook/project-references.html#tsc--b-commandline) | `boolean \| BuildOptions` | - | Run the compiler in build mode, equivalent to running `tsc --build`. Normally, this will be inferred if `tsconfig.json` sets `"composite": true` but it can be overridden by this option.<br><br>This option also accepts an object, which implicitly turns build mode on. The object accepts build-mode-specific options that will be passed to the TypeScript compiler API.  |
