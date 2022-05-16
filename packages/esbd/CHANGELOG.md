@@ -1,5 +1,16 @@
 # esbd
 
+## 1.0.7
+
+### Patch Changes
+
+- dbdcd49: Run type checking out-of-band, deduping on config path
+- 3246343: Update dependencies
+- Updated dependencies [a38d9c9]
+- Updated dependencies [3246343]
+  - @jgoz/esbuild-plugin-typecheck@1.1.0
+  - @jgoz/esbuild-plugin-livereload@1.0.1
+
 ## 1.0.6
 
 ### Patch Changes

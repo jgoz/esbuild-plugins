@@ -1,5 +1,17 @@
 # @jgoz/esbuild-plugin-typecheck
 
+## 1.1.0
+
+### Minor Changes
+
+- a38d9c9: Extract TypecheckRunner for more fine-grained integration
+
+### Patch Changes
+
+- 3246343: Update dependencies
+- Updated dependencies [3246343]
+  - @jgoz/esbuild-plugin-livereload@1.0.1
+
 ## 1.0.2
 
 ### Patch Changes
