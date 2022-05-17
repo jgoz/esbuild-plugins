@@ -89,6 +89,96 @@ const globalFlags = {
   },
 } as const;
 
+function parseArgv(programName: string) {
+  try {
+    return cli({
+      name: programName,
+      version,
+      commands: [
+        command({
+          name: 'build',
+          help: {
+            description: 'Entry point bundler powered by esbuild',
+          },
+          parameters: ['[name]'],
+          flags: {
+            ...globalFlags,
+            watch: {
+              type: Boolean,
+              alias: 'w',
+              default: false,
+              description: 'Watch for changes and rebuild',
+            },
+          },
+        }),
+        command({
+          name: 'node-dev',
+          help: {
+            description: 'Node application development host',
+            examples: ['-r -- --port 8080 --config my-config.json'],
+          },
+          parameters: ['[name]'],
+          flags: {
+            ...globalFlags,
+            respawn: {
+              type: Boolean,
+              alias: 'r',
+              default: false,
+              description: 'Restart program on exit/error (but quit after 3 restarts within 5s)',
+            },
+          },
+        }),
+        command({
+          name: 'serve',
+          help: {
+            description: 'Single page application development server',
+          },
+          parameters: ['[name]'],
+          flags: {
+            ...globalFlags,
+            servedir: {
+              type: String,
+              alias: 'd',
+              placeholder: '<path>',
+              description: 'Directory of additional static assets to serve',
+            },
+            livereload: {
+              type: Boolean,
+              alias: 'r',
+              default: false,
+              description: 'Reload page on rebuild',
+            },
+            host: {
+              type: String,
+              alias: 's',
+              default: 'localhost',
+              description: 'Development server IP/host name',
+            },
+            port: {
+              type: Number,
+              alias: 'p',
+              default: 8000,
+              description: 'Development server port',
+            },
+            noRewrite: {
+              type: Boolean,
+              default: false,
+              description: 'Disable rewriting of all requests to "index.html" (SPA mode)',
+            },
+          },
+        }),
+      ],
+    });
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message);
+    } else {
+      console.error(String(e));
+    }
+    process.exit(1);
+  }
+}
+
 let initialized = false;
 
 /**
@@ -104,85 +194,7 @@ export default function configure(configParam: EsbdConfigResult | ConfigFn) {
   initialized = true;
 
   const programName = path.basename(path.relative(process.cwd(), process.argv[1]));
-
-  const argv = cli({
-    name: programName,
-    version,
-    commands: [
-      command({
-        name: 'build',
-        help: {
-          description: 'Entry point bundler powered by esbuild',
-        },
-        parameters: ['[name]'],
-        flags: {
-          ...globalFlags,
-          watch: {
-            type: Boolean,
-            alias: 'w',
-            default: false,
-            description: 'Watch for changes and rebuild',
-          },
-        },
-      }),
-      command({
-        name: 'node-dev',
-        help: {
-          description: 'Node application development host',
-          examples: ['-r -- --port 8080 --config my-config.json'],
-        },
-        parameters: ['[name]'],
-        flags: {
-          ...globalFlags,
-          respawn: {
-            type: Boolean,
-            alias: 'r',
-            default: false,
-            description: 'Restart program on exit/error (but quit after 3 restarts within 5s)',
-          },
-        },
-      }),
-      command({
-        name: 'serve',
-        help: {
-          description: 'Single page application development server',
-        },
-        parameters: ['[name]'],
-        flags: {
-          ...globalFlags,
-          servedir: {
-            type: String,
-            alias: 'd',
-            placeholder: '<path>',
-            description: 'Directory of additional static assets to serve',
-          },
-          livereload: {
-            type: Boolean,
-            alias: 'r',
-            default: false,
-            description: 'Reload page on rebuild',
-          },
-          host: {
-            type: String,
-            alias: 's',
-            default: 'localhost',
-            description: 'Development server IP/host name',
-          },
-          port: {
-            type: Number,
-            alias: 'p',
-            default: 8000,
-            description: 'Development server port',
-          },
-          noRewrite: {
-            type: Boolean,
-            default: false,
-            description: 'Disable rewriting of all requests to "index.html" (SPA mode)',
-          },
-        },
-      }),
-    ],
-  });
+  const argv = parseArgv(programName);
 
   async function run() {
     switch (argv.command) {
