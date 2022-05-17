@@ -12,6 +12,7 @@ import { EventEmitter } from 'events';
 import { copyFile } from 'fs/promises';
 import mkdirp from 'mkdirp';
 import path from 'path';
+import pc from 'picocolors';
 
 import type { Logger } from './log';
 
@@ -147,7 +148,7 @@ export async function incrementalBuild({
       normalizedCopy
         .filter(([from]) => !fromPath || fromPath === from)
         .map(([from, to]) => {
-          logger.info(`Copying ${from} to ${to}`);
+          logger.info(pc.gray(`Copying ${from} to ${to}`));
           return copyFile(from, to);
         }),
     );
