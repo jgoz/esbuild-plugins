@@ -1,5 +1,12 @@
 # esbd
 
+## 1.0.9
+
+### Patch Changes
+
+- 9317670: Support non-html entry points in 'serve'
+- e4ebb7b: Better error handling for argument parsing
+
 ## 1.0.8
 
 ### Patch Changes
