@@ -52,6 +52,11 @@ export async function getHtmlBuildOptions(
   const allWriteOptions: WriteTemplateOptions[] = [];
 
   for (const [entryName, entryPath] of htmlEntries) {
+    if (!entryPath.endsWith('.html')) {
+      allEntryPoints = { ...allEntryPoints, [entryName]: entryPath };
+      continue;
+    }
+
     const basedir = config.absWorkingDir;
     const absEntryPath = path.resolve(basedir, entryPath);
 

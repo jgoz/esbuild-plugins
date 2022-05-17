@@ -57,6 +57,14 @@ export default async function esbdServe(
 
   const [buildOptions, allWriteOptions] = await getHtmlBuildOptions(entries, mode, config);
 
+  if (allWriteOptions.length === 0) {
+    logger.error('At least one HTML entry point is required for "serve" but none were found.');
+    logger.debug(`Found ${entries.length} entry points:`);
+    logger.debug(JSON.stringify(config.entryPoints, null, 2));
+    process.exitCode = 1;
+    return;
+  }
+
   const publicPath = buildOptions.publicPath ?? '';
   const basedir = buildOptions.absWorkingDir;
   const absOutDir = path.resolve(basedir, buildOptions.outdir);
