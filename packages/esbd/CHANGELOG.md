@@ -1,5 +1,11 @@
 # esbd
 
+## 1.0.10
+
+### Patch Changes
+
+- f552f3d: Fix copying on html build
+
 ## 1.0.9
 
 ### Patch Changes
