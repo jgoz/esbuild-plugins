@@ -160,13 +160,16 @@ export async function incrementalBuild({
       inputWatcher.once('all', onInputEvent);
       moduleWatcher.once('change', onModuleEvent);
       assetWatcher.on('all', onAssetEvent);
-      logger.verbose('Started watching for changes');
+
+      const inputCount = Object.keys(inputWatcher.getWatched()).length;
+      const modCount = Object.keys(moduleWatcher.getWatched()).length;
+      logger.debug(`Started watching for changes (${inputCount} inputs, ${modCount} modules)`);
     }, 100);
   }
 
   async function triggerBuild() {
     running = true;
-    logger.verbose('Stopped watching for changes');
+    logger.debug('Stopped watching for changes');
     await inputWatcher.close();
     await moduleWatcher.close();
     await assetWatcher.close();
@@ -178,11 +181,27 @@ export async function incrementalBuild({
       if (absOutDir) await mkdirp(absOutDir);
       await copyAssets();
       await onBuildResult(result, options);
-    } catch {
-      evt.emit('end');
+    } catch (e) {
       running = false;
-      if (watchForChanges) startWatchers();
-      return { ...NULL_RESULT, rebuild };
+      result = {
+        ...NULL_RESULT,
+        errors: (e as any).errors,
+        warnings: (e as any).warnings,
+        rebuild,
+      };
+      validateResult(result);
+      await onBuildResult(result, options);
+
+      evt.emit('end');
+
+      // Watch the files & modules from the last successful build result
+      if (watchForChanges) {
+        inputWatcher.add(Array.from(watchedInputs));
+        moduleWatcher.add(Array.from(watchedModules));
+        assetWatcher.add(normalizedCopy.map(c => c[0]));
+        startWatchers();
+      }
+      return result;
     }
 
     running = false;
@@ -190,10 +209,8 @@ export async function incrementalBuild({
 
     if (!watchForChanges) return result;
 
-    const addedInputs = new Set<string>();
-    const addedModules = new Set<string>();
-    const removedInputs: string[] = [];
-    const removedModules: string[] = [];
+    watchedInputs.clear();
+    watchedModules.clear();
 
     const inputs = Object.keys(result.metafile.inputs);
     for (const inputKey of inputs) {
@@ -214,26 +231,16 @@ export async function incrementalBuild({
           }
 
           const mod = input.slice(0, modIndex);
-          if (!watchedModules.has(mod)) addedModules.add(mod);
+          watchedModules.add(mod);
         }
       } else {
         // For source files, watch each file individually
-        if (!watchedInputs.has(input)) addedInputs.add(input);
+        watchedInputs.add(input);
       }
     }
 
-    watchedInputs.forEach(input => {
-      if (!addedInputs.has(input)) removedInputs.push(input);
-    });
-    watchedModules.forEach(mod => {
-      if (!addedModules.has(mod)) removedModules.push(mod);
-    });
-
-    inputWatcher.unwatch(removedInputs);
-    moduleWatcher.unwatch(removedModules);
-
-    inputWatcher.add(Array.from(addedInputs));
-    moduleWatcher.add(Array.from(addedModules));
+    inputWatcher.add(Array.from(watchedInputs));
+    moduleWatcher.add(Array.from(watchedModules));
     assetWatcher.add(normalizedCopy.map(c => c[0]));
 
     evt.emit('end');

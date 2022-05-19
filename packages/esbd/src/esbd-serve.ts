@@ -120,15 +120,17 @@ export default async function esbdServe(
     ],
     watch: true,
     onBuildResult: async (result, options) => {
-      await Promise.all([
-        ...allWriteOptions.map(writeOptions =>
-          writeTemplate(result, options, writeOptions, {
-            copyFile: fs.promises.copyFile,
-            writeFile: fs.promises.writeFile,
-          }),
-        ),
-        ...result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
-      ]);
+      if (!result.errors.length) {
+        await Promise.all([
+          ...allWriteOptions.map(writeOptions =>
+            writeTemplate(result, options, writeOptions, {
+              copyFile: fs.promises.copyFile,
+              writeFile: fs.promises.writeFile,
+            }),
+          ),
+          ...result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
+        ]);
+      }
 
       if (livereload && notify) {
         let cssUpdate = false;

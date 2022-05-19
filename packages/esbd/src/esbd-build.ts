@@ -89,15 +89,17 @@ async function esbdBuildHtml(
     write: false,
 
     onBuildResult: async result => {
-      await Promise.all([
-        ...allWriteOptions.map(writeOptions =>
-          writeTemplate(result, buildOptions, writeOptions, {
-            copyFile: fs.promises.copyFile,
-            writeFile: fs.promises.writeFile,
-          }),
-        ),
-        ...result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
-      ]);
+      if (result.errors.length === 0) {
+        await Promise.all([
+          ...allWriteOptions.map(writeOptions =>
+            writeTemplate(result, buildOptions, writeOptions, {
+              copyFile: fs.promises.copyFile,
+              writeFile: fs.promises.writeFile,
+            }),
+          ),
+          ...result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
+        ]);
+      }
       logOutput(result, logger);
     },
     onWatchEvent: (event, filePath) => {

@@ -109,6 +109,11 @@ export default async function esbdNodeDev(
     target: config.target ?? defaultTarget,
     watch: true,
     onBuildResult: async result => {
+      if (result.errors.length) {
+        logger.info(`Not starting program due to ${result.errors.length} error(s)`);
+        return;
+      }
+
       const entryOutputPath = Object.keys(result.metafile.outputs).find(
         out => result.metafile.outputs[out].entryPoint,
       );
