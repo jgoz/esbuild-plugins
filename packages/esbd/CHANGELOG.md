@@ -1,5 +1,11 @@
 # esbd
 
+## 1.0.11
+
+### Patch Changes
+
+- 129a44c: Fix watch behavior on error
+
 ## 1.0.10
 
 ### Patch Changes
