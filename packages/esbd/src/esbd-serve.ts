@@ -115,7 +115,7 @@ export default async function esbdServe(
     logger,
     plugins: [
       ...config.plugins,
-      swcPlugin(config.jsxRuntime),
+      swcPlugin(config.jsxRuntime, mode),
       timingPlugin(logger, config.name && `"${config.name}"`),
     ],
     watch: true,

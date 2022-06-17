@@ -84,7 +84,7 @@ async function esbdBuildHtml(
     copy: config.copy,
     incremental: true,
     logger,
-    plugins: [...config.plugins, swcPlugin(config.jsxRuntime), timingPlugin(logger, name)],
+    plugins: [...config.plugins, swcPlugin(config.jsxRuntime, mode), timingPlugin(logger, name)],
     watch,
     write: false,
 
@@ -125,7 +125,7 @@ async function esbdBuildSource(
     copy: config.copy,
     incremental: true,
     logger,
-    plugins: [...config.plugins, swcPlugin(config.jsxRuntime), timingPlugin(logger, name)],
+    plugins: [...config.plugins, swcPlugin(config.jsxRuntime, mode), timingPlugin(logger, name)],
     watch,
     write: false,
 

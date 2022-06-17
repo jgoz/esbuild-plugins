@@ -87,12 +87,14 @@ importers:
       react: ^18.2.0
       react-dom: ^18.2.0
       serve-static: ^1.15.0
+      source-map: ^0.7.4
       tslib: ^2.4.0
       typescript: ^4.7.4
       wait-on: ^6.0.1
     dependencies:
       '@jgoz/esbuild-plugin-livereload': link:../esbuild-plugin-livereload
       '@jgoz/esbuild-plugin-typecheck': link:../esbuild-plugin-typecheck
+      source-map: 0.7.4
     devDependencies:
       '@playwright/test': 1.22.2
       '@swc/core': 1.2.203
@@ -6894,6 +6896,11 @@ packages:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /source-map/0.7.4:
+    resolution: {integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==}
+    engines: {node: '>= 8'}
+    dev: false
 
   /sourcemap-codec/1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
