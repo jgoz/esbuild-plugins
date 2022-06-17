@@ -27,15 +27,15 @@
     "esbuild": ">= 0.13.0"
   },
   "devDependencies": {
-    "@types/node": "^16.0.0",
+    "@types/node": "^16.11.41",
     "@types/parse5": "^6.0.3",
-    "esbuild": "^0.14.39",
+    "esbuild": "^0.14.45",
     "esbuild-node-externals": "^1.4.1",
-    "jest": "^28.1.0",
-    "memfs": "^3.4.1",
+    "jest": "^28.1.1",
+    "memfs": "^3.4.4",
     "parse5": "^6.0.1",
-    "prettier": "^2.6.2",
-    "typescript": "^4.6.4"
+    "prettier": "^2.7.1",
+    "typescript": "^4.7.4"
   },
   "jest": {
     "testTimeout": 10000,
