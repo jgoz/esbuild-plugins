@@ -120,7 +120,7 @@ export default async function esbdServe(
     ],
     watch: true,
     onBuildResult: async (result, options) => {
-      if (!result.errors.length) {
+      if (!result.errors?.length) {
         await Promise.all([
           ...allWriteOptions.map(writeOptions =>
             writeTemplate(result, options, writeOptions, {

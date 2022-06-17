@@ -108,6 +108,7 @@ export class Reporter {
         yield {
           type,
           message: {
+            id: `TS${diagnostic.code}`,
             detail: diagnostic.relatedInformation,
             location: null,
             notes: [],
@@ -132,6 +133,7 @@ export class Reporter {
         character + length > lineEnd - lineStart ? lineEnd - lineStart - character : length;
 
       const message: Message = {
+        id: `TS${diagnostic.code}`,
         detail: undefined,
         location: {
           column: character,

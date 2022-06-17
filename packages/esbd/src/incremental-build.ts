@@ -185,8 +185,8 @@ export async function incrementalBuild({
       running = false;
       result = {
         ...NULL_RESULT,
-        errors: (e as any).errors,
-        warnings: (e as any).warnings,
+        errors: (e as any).errors ?? [],
+        warnings: (e as any).warnings ?? [],
         rebuild,
       };
       validateResult(result);

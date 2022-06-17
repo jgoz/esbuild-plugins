@@ -21,8 +21,8 @@ export function timingPlugin(
         if (!spinner) return;
 
         const [time] = spinner.stop();
-        const numErrors = result.errors.length;
-        const numWarnings = result.warnings.length;
+        const numErrors = result.errors?.length ?? 0;
+        const numWarnings = result.warnings?.length ?? 0;
         const log = numErrors ? logger.error : numWarnings ? logger.warn : logger.success;
         log(
           `Finished ${buildName}with ${pc.white(numErrors)} error(s) and ${pc.white(

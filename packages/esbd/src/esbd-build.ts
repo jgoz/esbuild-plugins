@@ -89,7 +89,7 @@ async function esbdBuildHtml(
     write: false,
 
     onBuildResult: async result => {
-      if (result.errors.length === 0) {
+      if (!result.errors?.length) {
         await Promise.all([
           ...allWriteOptions.map(writeOptions =>
             writeTemplate(result, buildOptions, writeOptions, {
