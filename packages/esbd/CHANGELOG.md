@@ -1,5 +1,11 @@
 # esbd
 
+## 1.0.12
+
+### Patch Changes
+
+- 50570c2: Fix invalid sourcemap generation with jsx-runtime
+
 ## 1.0.11
 
 ### Patch Changes
