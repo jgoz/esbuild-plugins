@@ -29,10 +29,10 @@
   "devDependencies": {
     "@types/node": "^16.11.41",
     "@types/parse5": "^6.0.3",
-    "esbuild": "^0.14.45",
+    "esbuild": "^0.14.46",
     "esbuild-node-externals": "^1.4.1",
     "jest": "^28.1.1",
-    "memfs": "^3.4.4",
+    "memfs": "^3.4.6",
     "parse5": "^6.0.1",
     "prettier": "^2.7.1",
     "typescript": "^4.7.4"

@@ -38,7 +38,7 @@
     "@types/sass": "^1.43.1",
     "autoprefixer": "^10.4.7",
     "enhanced-resolve": "^5.9.3",
-    "esbuild": "^0.14.45",
+    "esbuild": "^0.14.46",
     "esbuild-node-externals": "^1.4.1",
     "jest": "^28.1.1",
     "postcss": "^8.4.14",
