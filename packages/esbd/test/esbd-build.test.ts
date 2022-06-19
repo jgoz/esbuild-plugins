@@ -49,7 +49,7 @@ async function build(options: BuildWithHTMLOptions): Promise<BuildWithHTMLOutput
 
   const { stderr, stdout } = await proc;
 
-  return { outdir: absOutDir, stdout, stderr };
+  return { cwd: absWorkingDir, outdir: absOutDir, stdout, stderr };
 }
 
 describe('build command', () => {

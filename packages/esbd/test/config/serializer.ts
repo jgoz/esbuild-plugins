@@ -14,6 +14,7 @@ function* walk(dirPath: string) {
 }
 
 export interface BuildWithHTMLOutput {
+  cwd: string;
   outdir: string;
   stdout: string;
   stderr: string;
@@ -23,7 +24,7 @@ expect.addSnapshotSerializer({
   test: value => typeof value === 'object' && !!value && 'outdir' in value,
   serialize: val => {
     const value: BuildWithHTMLOutput = val;
-    const output = [];
+    const output: string[] = [];
 
     if (value.stdout) {
       output.push(SEPARATOR);
@@ -43,7 +44,7 @@ expect.addSnapshotSerializer({
       output.push(SEPARATOR);
       output.push(path.relative(value.outdir, file));
       output.push(SEPARATOR);
-      const content = fs.readFileSync(file, 'utf-8');
+      const content = fs.readFileSync(file, 'utf-8').replaceAll(value.cwd, '<CWD>');
 
       const formatted = file.endsWith('.html')
         ? prettier.format(content, { parser: 'html' })
