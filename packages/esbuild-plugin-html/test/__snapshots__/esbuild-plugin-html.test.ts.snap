@@ -15,15 +15,17 @@ template-basic.html
     <script
       src="template-basic-script.js"
       type="module"
-      integrity="sha256-QAamFdBResqMLdiEYs1XFcWxujo9AQQUdb++c8DCQcE="
+      integrity="sha256-elxgMkwbmhQIa20F26SUHsWsKqwYqiPyJNbB7Yj5gg4="
     ></script>
   </head>
   <body></body>
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -31,8 +33,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -40,12 +44,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -63,8 +69,10 @@ template-basic-script.css
 ---------------------------------
 template-basic-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-basic.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -96,8 +104,10 @@ template-empty.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -105,8 +115,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -114,12 +126,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -129,8 +143,10 @@ export {
 ---------------------------------
 template-empty-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-empty.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -162,8 +178,10 @@ template-basic.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -171,8 +189,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -180,12 +200,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -203,8 +225,10 @@ template-basic-script.css
 ---------------------------------
 template-basic-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-basic.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -271,8 +295,10 @@ template-complex.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -280,8 +306,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -289,12 +317,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -316,10 +346,11 @@ template-basic.css
 ---------------------------------
 template-basic.js
 ---------------------------------
+"use strict";
 import "./chunk-P5OBPOC4.js";
 
 // fixture/template-basic.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -338,10 +369,11 @@ template-complex.css
 ---------------------------------
 template-complex.js
 ---------------------------------
+"use strict";
 import "./chunk-P5OBPOC4.js";
 
 // fixture/template-complex.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -365,8 +397,10 @@ template-basic.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -374,8 +408,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -383,12 +419,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -410,10 +448,11 @@ template-basic.css
 ---------------------------------
 template-basic.js
 ---------------------------------
+"use strict";
 import "./chunk-P5OBPOC4.js";
 
 // fixture/template-basic.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -432,10 +471,11 @@ template-complex.css
 ---------------------------------
 template-complex.js
 ---------------------------------
+"use strict";
 import "./chunk-P5OBPOC4.js";
 
 // fixture/template-complex.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -453,14 +493,16 @@ template-basic.html
 <html>
   <head>
     <link href="template-basic-style-LCZ4I64V.css" rel="stylesheet" />
-    <script src="template-basic-script-EXALUX7T.js" type="module"></script>
+    <script src="template-basic-script-XKAZK3GT.js" type="module"></script>
   </head>
   <body></body>
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -468,8 +510,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -477,12 +521,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -498,10 +544,12 @@ template-basic-script-EOY7FBT3.css
 }
 
 ---------------------------------
-template-basic-script-EXALUX7T.js
+template-basic-script-XKAZK3GT.js
 ---------------------------------
+"use strict";
+
 // fixture/template-basic.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -535,8 +583,10 @@ template-basic.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -544,8 +594,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -553,12 +605,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -593,10 +647,11 @@ template-basic.css
 ---------------------------------
 template-basic.js
 ---------------------------------
+"use strict";
 import "./chunk-P5OBPOC4.js";
 
 // fixture/template-basic.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -615,10 +670,11 @@ template-complex.css
 ---------------------------------
 template-complex.js
 ---------------------------------
+"use strict";
 import "./chunk-P5OBPOC4.js";
 
 // fixture/template-complex.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -673,8 +729,10 @@ template-complex.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -682,8 +740,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -691,12 +751,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -714,8 +776,10 @@ template-complex-script.css
 ---------------------------------
 template-complex-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-complex.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -775,8 +839,10 @@ template-complex.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -784,8 +850,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -793,12 +861,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -816,8 +886,10 @@ template-complex-script.css
 ---------------------------------
 template-complex-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-complex.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -877,8 +949,10 @@ template-complex.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -886,8 +960,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -895,12 +971,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -918,8 +996,10 @@ template-complex-script.css
 ---------------------------------
 template-complex-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-complex.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -979,8 +1059,10 @@ template-complex.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -988,8 +1070,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -997,12 +1081,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -1020,8 +1106,10 @@ template-complex-script.css
 ---------------------------------
 template-complex-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-complex.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -1059,8 +1147,10 @@ template-basic.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -1068,8 +1158,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -1077,12 +1169,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -1100,8 +1194,10 @@ template-basic-script.css
 ---------------------------------
 template-basic-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-basic.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -1144,6 +1240,7 @@ template-basic-script.css
 ---------------------------------
 template-basic-script.js
 ---------------------------------
+"use strict";
 (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -1163,6 +1260,7 @@ template-basic-script.js
   var A;
   var init_a = __esm({
     "fixture/deps/a.js"() {
+      "use strict";
       A = "a";
     }
   });
@@ -1175,6 +1273,7 @@ template-basic-script.js
   var B;
   var init_b = __esm({
     "fixture/deps/b.js"() {
+      "use strict";
       B = "b";
     }
   });
@@ -1191,6 +1290,7 @@ template-basic-script.js
   }
   var init_c = __esm({
     "fixture/deps/c.js"() {
+      "use strict";
     }
   });
 
@@ -1266,8 +1366,10 @@ template-assets.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -1275,8 +1377,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -1289,12 +1393,14 @@ bg.png
 bg
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("/static/a-LTDY5RBP.js");
-  const { B } = await import("/static/b-HIJ6EZP3.js");
+  const { A } = await import("/static/a-IFB6WFNM.js");
+  const { B } = await import("/static/b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -1326,8 +1432,10 @@ mask.svg
 ---------------------------------
 template-assets-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-assets.js
-import("/static/c-RYJBTEBJ.js").then(({ C }) => {
+import("/static/c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -1412,8 +1520,10 @@ template-assets.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -1421,8 +1531,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -1435,12 +1547,14 @@ bg.png
 bg
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("http://test.com/static/a-LTDY5RBP.js");
-  const { B } = await import("http://test.com/static/b-HIJ6EZP3.js");
+  const { A } = await import("http://test.com/static/a-IFB6WFNM.js");
+  const { B } = await import("http://test.com/static/b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -1472,8 +1586,10 @@ mask.svg
 ---------------------------------
 template-assets-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-assets.js
-import("http://test.com/static/c-RYJBTEBJ.js").then(({ C }) => {
+import("http://test.com/static/c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -1548,8 +1664,10 @@ template-assets.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -1557,8 +1675,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -1571,12 +1691,14 @@ bg.png
 bg
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -1608,8 +1730,10 @@ mask.svg
 ---------------------------------
 template-assets-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-assets.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -1646,8 +1770,10 @@ template-basic.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -1655,8 +1781,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -1664,12 +1792,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -1687,8 +1817,10 @@ template-basic-script.css
 ---------------------------------
 template-basic-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-basic.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -1743,8 +1875,10 @@ template-complex.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -1752,8 +1886,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -1761,12 +1897,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -1784,8 +1922,10 @@ template-complex-script.css
 ---------------------------------
 template-complex-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-complex.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -1860,8 +2000,10 @@ template-assets.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -1869,8 +2011,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -1878,12 +2022,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("/static/a-LTDY5RBP.js");
-  const { B } = await import("/static/b-HIJ6EZP3.js");
+  const { A } = await import("/static/a-IFB6WFNM.js");
+  const { B } = await import("/static/b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -1893,8 +2039,10 @@ export {
 ---------------------------------
 template-assets-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-assets.js
-import("/static/c-RYJBTEBJ.js").then(({ C }) => {
+import("/static/c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -1956,8 +2104,10 @@ template-define.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -1965,8 +2115,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -1974,12 +2126,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -1997,8 +2151,10 @@ template-define-script.css
 ---------------------------------
 template-define-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-define.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -2038,8 +2194,10 @@ template-basic.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -2047,8 +2205,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -2056,12 +2216,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -2079,8 +2241,10 @@ template-basic-script.css
 ---------------------------------
 template-basic-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-basic.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -2120,8 +2284,10 @@ template-basic.html
 </html>
 
 ---------------------------------
-a-LTDY5RBP.js
+a-IFB6WFNM.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/a.js
 var A = "a";
 export {
@@ -2129,8 +2295,10 @@ export {
 };
 
 ---------------------------------
-b-HIJ6EZP3.js
+b-QJ3VG5IN.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/b.js
 var B = "b";
 export {
@@ -2138,12 +2306,14 @@ export {
 };
 
 ---------------------------------
-c-RYJBTEBJ.js
+c-PKEIC2K7.js
 ---------------------------------
+"use strict";
+
 // fixture/deps/c.js
 async function C() {
-  const { A } = await import("./a-LTDY5RBP.js");
-  const { B } = await import("./b-HIJ6EZP3.js");
+  const { A } = await import("./a-IFB6WFNM.js");
+  const { B } = await import("./b-QJ3VG5IN.js");
   return A + B;
 }
 export {
@@ -2161,8 +2331,10 @@ template-basic-script.css
 ---------------------------------
 template-basic-script.js
 ---------------------------------
+"use strict";
+
 // fixture/template-basic.js
-import("./c-RYJBTEBJ.js").then(({ C }) => {
+import("./c-PKEIC2K7.js").then(({ C }) => {
   return C();
 }).then((output) => {
   console.log(output);
@@ -2204,6 +2376,7 @@ template-basic-script.css
 ---------------------------------
 template-basic-script.js
 ---------------------------------
+"use strict";
 (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -2223,6 +2396,7 @@ template-basic-script.js
   var A;
   var init_a = __esm({
     "fixture/deps/a.js"() {
+      "use strict";
       A = "a";
     }
   });
@@ -2235,6 +2409,7 @@ template-basic-script.js
   var B;
   var init_b = __esm({
     "fixture/deps/b.js"() {
+      "use strict";
       B = "b";
     }
   });
@@ -2251,6 +2426,7 @@ template-basic-script.js
   }
   var init_c = __esm({
     "fixture/deps/c.js"() {
+      "use strict";
     }
   });
 
