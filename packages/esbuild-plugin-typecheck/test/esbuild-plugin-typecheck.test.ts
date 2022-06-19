@@ -127,9 +127,8 @@ describe('eslint-plugin-typecheck', () => {
       ]);
       expect(code).toBe(1);
       expect(output).toEqual([
-        "src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
         "src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
-        '✖  Typecheck failed with 2 errors',
+        '✖  Typecheck failed with 1 error',
         'ℹ  Typecheck finished in TIME',
       ]);
     });
@@ -155,15 +154,13 @@ describe('eslint-plugin-typecheck', () => {
       expect(output).toEqual([
         '✔  Typecheck passed',
         'ℹ  Typecheck finished in TIME',
-        "src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
         "src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
-        '✖  Typecheck failed with 2 errors',
+        '✖  Typecheck failed with 1 error',
         'ℹ  Typecheck finished in TIME',
         '✔  Typecheck passed',
         'ℹ  Typecheck finished in TIME',
-        "src/index.ts(8,19): error TS2552: Cannot find name 'URL'. Did you mean 'url'?",
         "src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
-        '✖  Typecheck failed with 2 errors',
+        '✖  Typecheck failed with 1 error',
         'ℹ  Typecheck finished in TIME',
       ]);
     });

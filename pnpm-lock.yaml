@@ -236,6 +236,7 @@ importers:
   packages/esbuild-plugin-typecheck:
     specifiers:
       '@jgoz/esbuild-plugin-livereload': workspace:*
+      '@types/node': ^16.0.0
       esbuild: ^0.14.46
       esbuild-node-externals: ^1.4.1
       execa: ^5.0.0
@@ -248,10 +249,11 @@ importers:
       unionfs: ^4.4.0
     devDependencies:
       '@jgoz/esbuild-plugin-livereload': link:../esbuild-plugin-livereload
+      '@types/node': 16.11.41
       esbuild: 0.14.46
       esbuild-node-externals: 1.4.1_esbuild@0.14.46
       execa: 5.1.1
-      jest: 28.1.1
+      jest: 28.1.1_@types+node@16.11.41
       memfs: 3.4.6
       picocolors: 1.0.0
       prettier: 2.7.1
