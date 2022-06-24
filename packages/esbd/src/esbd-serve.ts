@@ -16,7 +16,6 @@ import { getHtmlBuildOptions } from './get-build-options';
 import { writeTemplate } from './html-entry-point/write-template';
 import { incrementalBuild } from './incremental-build';
 import type { Logger } from './log';
-import { swcPlugin } from './swc-plugin';
 import { timingPlugin } from './timing-plugin';
 
 interface EsbdServeConfig {
@@ -113,11 +112,7 @@ export default async function esbdServe(
     copy: config.copy,
     incremental: true,
     logger,
-    plugins: [
-      ...config.plugins,
-      swcPlugin(config.jsxRuntime, mode),
-      timingPlugin(logger, config.name && `"${config.name}"`),
-    ],
+    plugins: [...config.plugins, timingPlugin(logger, config.name && `"${config.name}"`)],
     watch: true,
     onBuildResult: async (result, options) => {
       if (!result.errors?.length) {

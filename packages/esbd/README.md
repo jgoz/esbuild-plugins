@@ -288,16 +288,6 @@ If `src/entry.tsx` included any CSS assets, either directly or indirectly via it
 
 There are two configuration options that affect HTML entry point behavior: `ignoreAssets` and `integrity`. You can read about them in the [API](#api) section.
 
-### JSX runtime mode
-
-React 17 introduced a new [JSX transform](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html) that enables some internal performance optimizations and obviates having to import 'React' in every module. Unfortunately, esbuild does not support this transform natively, even though both Babel and the TypeScript compiler do support it.
-
-Esbd adds optional support for the new transform on top of esbuild through the use of [SWC](https://swc.rs). If you set the `jsxRuntime` configuration option to `automatic` and have `@swc/core` installed as a dependency in your project, esbd will transform `.jsx` and `.tsx` files first using SWC to transform JSX elements and then again using esbuild to transpile or downlevel according to the build target.
-
-This adds minimal time to each build because SWC is a very fast transpiler and because only files that use JSX will be processed twice. And again, this is entirely opt-in.
-
-If you are using TypeScript, note that you should set the "jsx" tsconfig option to "react-jsx" so that your editor does not require the "React" import. Esbd does not currently read this option from tsconfig.json, so `jsxRuntime` must be set to `automatic` explicitly for the new transform to be used.
-
 ### Copying static assets
 
 Esbd can copy static assets to the output directory that would not otherwise be discovered through esbuild's dependency resolution. This works for files referenced by [HTML entry points](#html-entry-points) and also via the `copy` [configuration option](#api).
