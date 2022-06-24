@@ -84,7 +84,7 @@ export async function getHtmlBuildOptions(
       metafile: true,
       publicPath,
       target,
-      sourcemap: config.sourcemap ?? (mode === 'development' ? 'inline' : undefined),
+      sourcemap: config.sourcemap ?? (mode === 'development' ? true : undefined),
       write: false,
     },
     allWriteOptions,
