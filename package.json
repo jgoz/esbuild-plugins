@@ -29,7 +29,7 @@
     "@tsconfig/node16": "^1.0.3",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
-    "esbuild": "^0.14.47",
+    "esbuild": "^0.14.51",
     "eslint": "^8.18.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-header": "^3.1.1",

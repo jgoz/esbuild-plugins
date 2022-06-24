@@ -24,7 +24,7 @@
     "@jgoz/esbuild-plugin-typecheck": "workspace:*"
   },
   "peerDependencies": {
-    "esbuild": ">= 0.13.0"
+    "esbuild": ">= 0.14.51"
   },
   "devDependencies": {
     "@playwright/test": "^1.22.2",
@@ -35,7 +35,7 @@
     "@types/wait-on": "^5.3.1",
     "chokidar": "^3.5.3",
     "cleye": "^1.2.1",
-    "esbuild": "^0.14.47",
+    "esbuild": "^0.14.51",
     "esbuild-node-externals": "^1.4.1",
     "execa": "^5.0.0",
     "get-port": "^5.0.0",

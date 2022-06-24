@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@types/node": "^16.11.41",
-    "esbuild": "^0.14.47",
+    "esbuild": "^0.14.51",
     "esbuild-node-externals": "^1.4.1",
     "parse5": "^7.0.0",
     "prettier": "^2.7.1",
