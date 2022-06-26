@@ -1,5 +1,11 @@
 # esbd
 
+## 1.0.13
+
+### Patch Changes
+
+- d8cd1e6: Add workaround for chromium sourcemap issue
+
 ## 1.0.12
 
 ### Patch Changes
