@@ -38,13 +38,13 @@
     "@types/sass": "^1.43.1",
     "autoprefixer": "^10.4.7",
     "enhanced-resolve": "^5.9.3",
-    "esbuild": "^0.14.46",
+    "esbuild": "^0.14.47",
     "esbuild-node-externals": "^1.4.1",
     "jest": "^28.1.1",
     "postcss": "^8.4.14",
-    "postcss-preset-env": "^7.7.1",
+    "postcss-preset-env": "^7.7.2",
     "prettier": "^2.7.1",
-    "sass": "^1.52.3",
+    "sass": "^1.53.0",
     "typescript": "^4.7.4"
   },
   "jest": {
