@@ -1,5 +1,4 @@
 import { promises as fsp } from 'fs';
-import type { Element, TextNode } from 'parse5';
 import { parse } from 'parse5';
 import path from 'path';
 
@@ -13,6 +12,7 @@ import {
   isTextNode,
 } from './html-utils';
 import { parseURLs } from './parse-urls';
+import type { Element, TextNode } from './parse5';
 import type { EntryPoints, EsbuildHtmlOptions } from './types';
 import type { WriteTemplateOptions } from './write-template';
 

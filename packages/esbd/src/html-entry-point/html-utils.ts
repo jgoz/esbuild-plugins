@@ -1,12 +1,13 @@
-import type { Attribute, ChildNode, DocumentType, Element, ParentNode, TextNode } from 'parse5';
 import path from 'path';
 
+import type { Attribute, ChildNode, DocumentType, Element, ParentNode, TextNode } from './parse5';
 import type { Crossorigin, HashAlgorithm } from './types';
 import { calculateIntegrityHash, collect } from './utils';
 
 export const defaultDoctype: DocumentType = {
-  nodeName: '#documentType',
+  nodeName: '#documentType' as DocumentType['nodeName'],
   name: 'html',
+  parentNode: null,
   publicId: '',
   systemId: '',
 };
@@ -68,7 +69,7 @@ function createElement(parentNode: ParentNode, tagName: string, attrs: Attribute
   return {
     attrs,
     childNodes: [],
-    namespaceURI: '',
+    namespaceURI: 'http://www.w3.org/1999/xhtml' as Element['namespaceURI'],
     nodeName: tagName,
     parentNode,
     tagName,

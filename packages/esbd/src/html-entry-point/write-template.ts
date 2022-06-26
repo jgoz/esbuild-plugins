@@ -1,6 +1,5 @@
 import type { BuildOptions, BuildResult } from 'esbuild';
 import { promises as fsp } from 'fs';
-import type { Document, Element, TextNode } from 'parse5';
 import { serialize } from 'parse5';
 import path from 'path';
 
@@ -12,6 +11,7 @@ import {
   isLinkOrStyle,
   isScriptOrLinkOrStyle,
 } from './html-utils';
+import type { Document, Element, TextNode } from './parse5';
 import type { EsbuildHtmlOptions } from './types';
 import { cachedCopyFile, calculateIntegrityHash } from './utils';
 

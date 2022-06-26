@@ -1,9 +1,16 @@
 import { createHash } from 'crypto';
 import type { Metafile, Plugin } from 'esbuild';
 import { createReadStream, promises as fsp } from 'fs';
-import type { Attribute, ChildNode, DocumentType, Element, ParentNode, TextNode } from 'parse5';
+import type { DefaultTreeAdapterMap, Token } from 'parse5';
 import { parse, serialize } from 'parse5';
 import path from 'path';
+
+type DocumentType = DefaultTreeAdapterMap['documentType'];
+type Element = DefaultTreeAdapterMap['element'];
+type ChildNode = DefaultTreeAdapterMap['childNode'];
+type ParentNode = DefaultTreeAdapterMap['parentNode'];
+type TextNode = DefaultTreeAdapterMap['textNode'];
+type Attribute = Token.Attribute;
 
 /**
  * Possible values for `crossorigin` attribute.
@@ -36,8 +43,9 @@ export type TagPlacement = `${EmitTarget}-${EmitPosition}`;
 export type MetafileOutput = Metafile['outputs'][string];
 
 const defaultDoctype: DocumentType = {
-  nodeName: '#documentType',
+  nodeName: '#documentType' as DocumentType['nodeName'],
   name: 'html',
+  parentNode: null,
   publicId: '',
   systemId: '',
 };
@@ -407,7 +415,7 @@ function createElement(parentNode: ParentNode, tagName: string, attrs: Attribute
   return {
     attrs,
     childNodes: [],
-    namespaceURI: '',
+    namespaceURI: 'http://www.w3.org/1999/xhtml' as Element['namespaceURI'],
     nodeName: tagName,
     parentNode,
     tagName,
