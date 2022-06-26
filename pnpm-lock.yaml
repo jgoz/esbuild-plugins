@@ -78,7 +78,7 @@ importers:
       memfs: ^3.4.7
       mkdirp: ^1.0.4
       node-graceful: ^3.1.0
-      parse5: ^6.0.1
+      parse5: ^7.0.0
       picocolors: ^1.0.0
       playwright: ^1.22.2
       prettier: ^2.7.1
@@ -113,7 +113,7 @@ importers:
       memfs: 3.4.7
       mkdirp: 1.0.4
       node-graceful: 3.1.0
-      parse5: 6.0.1
+      parse5: 7.0.0
       picocolors: 1.0.0
       playwright: 1.22.2
       prettier: 2.7.1
@@ -157,7 +157,7 @@ importers:
       esbuild-node-externals: ^1.4.1
       jest: ^28.1.1
       memfs: ^3.4.7
-      parse5: ^6.0.1
+      parse5: ^7.0.0
       prettier: ^2.7.1
       typescript: ^4.7.4
     devDependencies:
@@ -167,7 +167,7 @@ importers:
       esbuild-node-externals: 1.4.1_esbuild@0.14.47
       jest: 28.1.1_@types+node@16.11.41
       memfs: 3.4.7
-      parse5: 6.0.1
+      parse5: 7.0.0
       prettier: 2.7.1
       typescript: 4.7.4
 
@@ -3511,6 +3511,11 @@ packages:
       ansi-colors: 4.1.3
     dev: true
 
+  /entities/4.3.0:
+    resolution: {integrity: sha512-/iP1rZrSEJ0DTlPiX+jbzlA3eVkY/e8L8SozroF395fIqE3TYF/Nz7YOMAawta+vLmyJ/hkGNNPcSbMADCCXbg==}
+    engines: {node: '>=0.12'}
+    dev: true
+
   /env-editor/0.4.2:
     resolution: {integrity: sha512-ObFo8v4rQJAE59M69QzwloxPZtd33TpYEIjtKD1rrFDcM1Gd7IkDxEBU+HriziN6HSHQnBJi8Dmy+JWkav5HKA==}
     engines: {node: '>=8'}
@@ -5980,8 +5985,10 @@ packages:
       lines-and-columns: 1.2.4
     dev: true
 
-  /parse5/6.0.1:
-    resolution: {integrity: sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==}
+  /parse5/7.0.0:
+    resolution: {integrity: sha512-y/t8IXSPWTuRZqXc0ajH/UwDj4mnqLEbSttNbThcFhGrZuOyoyvNBO85PBp2jQa55wY9d07PBNjsK8ZP3K5U6g==}
+    dependencies:
+      entities: 4.3.0
     dev: true
 
   /parseurl/1.3.3:

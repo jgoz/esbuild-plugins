@@ -51,7 +51,7 @@
     "memfs": "^3.4.7",
     "mkdirp": "^1.0.4",
     "node-graceful": "^3.1.0",
-    "parse5": "^6.0.1",
+    "parse5": "^7.0.0",
     "picocolors": "^1.0.0",
     "playwright": "^1.22.2",
     "prettier": "^2.7.1",
