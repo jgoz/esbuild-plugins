@@ -1,5 +1,11 @@
 # esbd
 
+## 1.0.14
+
+### Patch Changes
+
+- 454bf73: Bump parse5 to version 7
+
 ## 1.0.13
 
 ### Patch Changes
