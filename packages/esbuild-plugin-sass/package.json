@@ -40,30 +40,19 @@
     "enhanced-resolve": "^5.9.3",
     "esbuild": "^0.14.47",
     "esbuild-node-externals": "^1.4.1",
-    "jest": "^28.1.1",
     "postcss": "^8.4.14",
     "postcss-preset-env": "^7.7.2",
     "prettier": "^2.7.1",
     "sass": "^1.53.0",
-    "typescript": "^4.7.4"
-  },
-  "jest": {
-    "testTimeout": 10000,
-    "maxWorkers": 1,
-    "transform": {
-      "^.+\\.(js|jsx|ts|tsx)$": [
-        "babel-jest",
-        {
-          "rootMode": "upward"
-        }
-      ]
-    }
+    "typescript": "^4.7.4",
+    "vite": "^2.9.12",
+    "vitest": "^0.16.0"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
     "prepack": "./bundle.js build",
     "prepare": "cd test/fixture && pnpm install",
-    "test": "jest",
+    "test": "vitest run",
     "watch": "./bundle.js build -w"
   }
 }

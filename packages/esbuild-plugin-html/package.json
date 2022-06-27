@@ -28,31 +28,18 @@
   },
   "devDependencies": {
     "@types/node": "^16.11.41",
-    "@types/parse5": "^6.0.3",
     "esbuild": "^0.14.47",
     "esbuild-node-externals": "^1.4.1",
-    "jest": "^28.1.1",
-    "memfs": "^3.4.7",
     "parse5": "^7.0.0",
     "prettier": "^2.7.1",
-    "typescript": "^4.7.4"
-  },
-  "jest": {
-    "testTimeout": 10000,
-    "maxWorkers": 1,
-    "transform": {
-      "^.+\\.(js|jsx|ts|tsx)$": [
-        "babel-jest",
-        {
-          "rootMode": "upward"
-        }
-      ]
-    }
+    "typescript": "^4.7.4",
+    "vite": "^2.9.12",
+    "vitest": "^0.16.0"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
     "prepack": "./bundle.js build",
-    "test": "jest",
+    "test": "vitest --run",
     "watch": "./bundle.js build -w"
   }
 }

@@ -1,6 +1,7 @@
 import { node } from 'execa';
 import fs from 'fs';
 import path from 'path';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { EsbdConfig } from '../lib';
 
@@ -11,9 +12,10 @@ interface BuildWithHTMLOptions {
   files: { [file: string]: string };
 }
 
+const TEST_ROOT = path.join(__dirname, '..', 'test-results', 'html');
+
 async function buildWithHTML(options: BuildWithHTMLOptions): Promise<BuildWithHTMLOutput> {
-  await fs.promises.mkdir(path.join(__dirname, 'tests'), { recursive: true });
-  const absWorkingDir = await fs.promises.mkdtemp(path.join(__dirname, 'tests', 'test-'));
+  const absWorkingDir = await fs.promises.mkdtemp(path.join(TEST_ROOT, 'test-'));
   const absOutDir = path.join(absWorkingDir, 'out');
 
   await fs.promises.mkdir(absOutDir, { recursive: true });
@@ -65,8 +67,11 @@ async function buildWithHTML(options: BuildWithHTMLOptions): Promise<BuildWithHT
 }
 
 describe('build command (html entry)', () => {
-  afterAll(async () => {
-    await fs.promises.rm(path.join(__dirname, 'tests'), { recursive: true });
+  beforeAll(async () => {
+    await fs.promises.mkdir(TEST_ROOT, { recursive: true });
+    return async () => {
+      await fs.promises.rm(TEST_ROOT, { recursive: true });
+    };
   });
 
   it('builds a simple HTML entry point', () => {

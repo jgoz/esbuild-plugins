@@ -38,10 +38,6 @@
     "tslib": "^2.4.0",
     "typescript": "^4.7.4"
   },
-  "jest": {
-    "testTimeout": 10000,
-    "maxWorkers": 1
-  },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
     "prepublish": "pnpm check",

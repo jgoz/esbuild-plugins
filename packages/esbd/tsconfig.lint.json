@@ -2,5 +2,5 @@
   "extends": "./tsconfig.json",
   "include": ["src", "test", "typings"],
   "exclude": ["**/test/fixutre"],
-  "files": [".eslintrc.js", "bundle.js", "playwright.config.ts"]
+  "files": [".eslintrc.js", "bundle.js", "playwright.config.ts", "vite.config.ts"]
 }

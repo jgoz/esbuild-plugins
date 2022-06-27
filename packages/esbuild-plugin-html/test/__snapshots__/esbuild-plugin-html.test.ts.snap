@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`eslint-plugin-html adds integrity if requested 1`] = `
+exports[`eslint-plugin-html > adds integrity if requested 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
@@ -90,7 +90,7 @@ template-basic-style.css
 
 `;
 
-exports[`eslint-plugin-html adds missing elements if not defined in the template 2`] = `
+exports[`eslint-plugin-html > adds missing elements if not defined in the template 1`] = `
 ---------------------------------
 template-empty.html
 ---------------------------------
@@ -164,7 +164,7 @@ template-empty-style.css
 
 `;
 
-exports[`eslint-plugin-html adds scripts and styles to HEAD by default 1`] = `
+exports[`eslint-plugin-html > adds scripts and styles to HEAD by default 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
@@ -246,7 +246,7 @@ template-basic-style.css
 
 `;
 
-exports[`eslint-plugin-html can be used multiple times 1`] = `
+exports[`eslint-plugin-html > can be used multiple times 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
@@ -383,7 +383,7 @@ import("./c-PKEIC2K7.js").then(({ C }) => {
 
 `;
 
-exports[`eslint-plugin-html can filter chunks using a function 1`] = `
+exports[`eslint-plugin-html > can filter chunks using a function 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
@@ -485,7 +485,7 @@ import("./c-PKEIC2K7.js").then(({ C }) => {
 
 `;
 
-exports[`eslint-plugin-html can handle different entry names 1`] = `
+exports[`eslint-plugin-html > can handle different entry names 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
@@ -567,7 +567,7 @@ template-basic-style-LCZ4I64V.css
 
 `;
 
-exports[`eslint-plugin-html can handle multiple entry points 1`] = `
+exports[`eslint-plugin-html > can handle multiple entry points 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
@@ -692,7 +692,7 @@ template-define.css
 
 `;
 
-exports[`eslint-plugin-html can place scripts above existing scripts in BODY 1`] = `
+exports[`eslint-plugin-html > can place scripts above existing scripts in BODY 1`] = `
 ---------------------------------
 template-complex.html
 ---------------------------------
@@ -802,7 +802,7 @@ template-complex-style.css
 
 `;
 
-exports[`eslint-plugin-html can place scripts above existing scripts in HEAD 1`] = `
+exports[`eslint-plugin-html > can place scripts above existing scripts in HEAD 1`] = `
 ---------------------------------
 template-complex.html
 ---------------------------------
@@ -912,7 +912,7 @@ template-complex-style.css
 
 `;
 
-exports[`eslint-plugin-html can place scripts below existing scripts in BODY 1`] = `
+exports[`eslint-plugin-html > can place scripts below existing scripts in BODY 1`] = `
 ---------------------------------
 template-complex.html
 ---------------------------------
@@ -1022,7 +1022,7 @@ template-complex-style.css
 
 `;
 
-exports[`eslint-plugin-html can place styles above existing styles 1`] = `
+exports[`eslint-plugin-html > can place styles above existing styles 1`] = `
 ---------------------------------
 template-complex.html
 ---------------------------------
@@ -1132,7 +1132,7 @@ template-complex-style.css
 
 `;
 
-exports[`eslint-plugin-html can render scripts in body if requested 1`] = `
+exports[`eslint-plugin-html > can render scripts in body if requested 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
@@ -1215,7 +1215,7 @@ template-basic-style.css
 
 `;
 
-exports[`eslint-plugin-html can render scripts in body with "defer" 1`] = `
+exports[`eslint-plugin-html > can render scripts in body with "defer" 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
@@ -1314,7 +1314,7 @@ template-basic-style.css
 
 `;
 
-exports[`eslint-plugin-html copies and rebases assets from "href", "src" and "url" (with FS public path) 1`] = `
+exports[`eslint-plugin-html > copies and rebases assets from "href", "src" and "url" (with FS public path) 1`] = `
 ---------------------------------
 template-assets.html
 ---------------------------------
@@ -1458,7 +1458,7 @@ template-assets-style.css
 
 `;
 
-exports[`eslint-plugin-html copies and rebases assets from "href", "src" and "url" (with URL public path) 1`] = `
+exports[`eslint-plugin-html > copies and rebases assets from "href", "src" and "url" (with URL public path) 1`] = `
 ---------------------------------
 template-assets.html
 ---------------------------------
@@ -1612,7 +1612,7 @@ template-assets-style.css
 
 `;
 
-exports[`eslint-plugin-html copies and rebases assets from "href", "src" and "url" (with no public path) 1`] = `
+exports[`eslint-plugin-html > copies and rebases assets from "href", "src" and "url" (with no public path) 1`] = `
 ---------------------------------
 template-assets.html
 ---------------------------------
@@ -1756,7 +1756,7 @@ template-assets-style.css
 
 `;
 
-exports[`eslint-plugin-html ignores "defer" with "esm" output 1`] = `
+exports[`eslint-plugin-html > ignores "defer" with "esm" output 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
@@ -1838,7 +1838,7 @@ template-basic-style.css
 
 `;
 
-exports[`eslint-plugin-html places styles and scripts below existing ones by default 1`] = `
+exports[`eslint-plugin-html > places styles and scripts below existing ones by default 1`] = `
 ---------------------------------
 template-complex.html
 ---------------------------------
@@ -1948,7 +1948,7 @@ template-complex-style.css
 
 `;
 
-exports[`eslint-plugin-html skips asset rebasing/copying if "ignoreAssets" is set 1`] = `
+exports[`eslint-plugin-html > skips asset rebasing/copying if "ignoreAssets" is set 1`] = `
 ---------------------------------
 template-assets.html
 ---------------------------------
@@ -2065,7 +2065,7 @@ template-assets-style.css
 
 `;
 
-exports[`eslint-plugin-html substitutes values from "define" in output HTML 1`] = `
+exports[`eslint-plugin-html > substitutes values from "define" in output HTML 1`] = `
 ---------------------------------
 template-define.html
 ---------------------------------
@@ -2172,7 +2172,7 @@ template-define-style.css
 
 `;
 
-exports[`eslint-plugin-html supports "crossorigin": "anonymous" 1`] = `
+exports[`eslint-plugin-html > supports "crossorigin": "anonymous" 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
@@ -2262,7 +2262,7 @@ template-basic-style.css
 
 `;
 
-exports[`eslint-plugin-html supports "crossorigin": "use-credentials" 1`] = `
+exports[`eslint-plugin-html > supports "crossorigin": "use-credentials" 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------
@@ -2352,7 +2352,7 @@ template-basic-style.css
 
 `;
 
-exports[`eslint-plugin-html uses "defer" with "iife" output if requested 1`] = `
+exports[`eslint-plugin-html > uses "defer" with "iife" output if requested 1`] = `
 ---------------------------------
 template-basic.html
 ---------------------------------

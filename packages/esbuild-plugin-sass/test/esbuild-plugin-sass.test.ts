@@ -3,13 +3,13 @@ import { build } from 'esbuild';
 import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
+import { describe, expect, test } from 'vitest';
 
 import { sassPlugin } from '../src';
 
 describe('esbuild-plugin-sass ', () => {
   test('react application (css loader)', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/react');
-    process.chdir(absWorkingDir);
 
     await build({
       absWorkingDir,
@@ -22,7 +22,7 @@ describe('esbuild-plugin-sass ', () => {
       plugins: [sassPlugin()],
     });
 
-    const cssBundle = fs.readFileSync('./out/index.css', 'utf-8');
+    const cssBundle = fs.readFileSync(path.resolve(absWorkingDir, './out/index.css'), 'utf-8');
     expect(cssBundle).toEqual(
       expect.stringContaining('@-ms-viewport {\n' + '  width: device-width;\n' + '}'),
     );
@@ -39,9 +39,8 @@ describe('esbuild-plugin-sass ', () => {
 
   test('open-iconic (dealing with relative paths & data urls)', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/open-iconic');
-    process.chdir(absWorkingDir);
 
-    const styleSCSS = fs.readFileSync('./src/styles.scss', 'utf-8');
+    const styleSCSS = fs.readFileSync(path.resolve(absWorkingDir, './src/styles.scss'), 'utf-8');
     expect(styleSCSS).toEqual(
       expect.stringContaining("$iconic-font-path: 'open-iconic/font/fonts/';"),
     );
@@ -62,7 +61,7 @@ describe('esbuild-plugin-sass ', () => {
       plugins: [sassPlugin()],
     });
 
-    const outCSS = fs.readFileSync('./out/styles.css', 'utf-8');
+    const outCSS = fs.readFileSync(path.resolve(absWorkingDir, './out/styles.css'), 'utf-8');
     expect(outCSS).toMatch(
       /url\(\.\/open-iconic-[^.]+\.eot\?#iconic-sm\) format\("embedded-opentype"\)/,
     );
@@ -83,7 +82,7 @@ describe('esbuild-plugin-sass ', () => {
       plugins: [sassPlugin()],
     });
 
-    const outFile = fs.readFileSync('./out/bundle.css', 'utf-8');
+    const outFile = fs.readFileSync(path.resolve(absWorkingDir, './out/bundle.css'), 'utf-8');
     expect(outFile).toEqual(
       expect.stringContaining('src: url(data:application/vnd.ms-fontobject;base64,JG4AAHxt'),
     );
@@ -91,7 +90,6 @@ describe('esbuild-plugin-sass ', () => {
 
   test('postcss', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/postcss');
-    process.chdir(absWorkingDir);
 
     const postcss = require(require.resolve('postcss', {
       paths: [absWorkingDir],
@@ -124,14 +122,14 @@ describe('esbuild-plugin-sass ', () => {
     });
 
     const expected = fs
-      .readFileSync('./dest/app.css', 'utf-8')
+      .readFileSync(path.resolve(absWorkingDir, './dest/app.css'), 'utf-8')
       .split('\n')
       .filter(l => l.length > 0) // skip empty lines
       .join('\n')
       .replace(__dirname, '.');
 
     const actual = fs
-      .readFileSync('./out/app.css', 'utf-8')
+      .readFileSync(path.resolve(absWorkingDir, './out/app.css'), 'utf-8')
       .split('\n')
       .join('\n')
       .replace(__dirname, '.');
@@ -143,11 +141,10 @@ describe('esbuild-plugin-sass ', () => {
 
   test('watched files', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/watch');
-    process.chdir(absWorkingDir);
 
     function writeInitial() {
       fs.writeFileSync(
-        './src/banner-import.scss',
+        path.resolve(absWorkingDir, './src/banner-import.scss'),
         `
     .banner {
         font-size: 30px;
@@ -158,7 +155,7 @@ describe('esbuild-plugin-sass ', () => {
 `,
       );
       fs.writeFileSync(
-        './src/alternate-import.css',
+        path.resolve(absWorkingDir, './src/alternate-import.css'),
         `
     .banner {
         font-size: 20px;
@@ -172,7 +169,7 @@ describe('esbuild-plugin-sass ', () => {
 
     function writeUpdated() {
       fs.writeFileSync(
-        './src/banner-import.scss',
+        path.resolve(absWorkingDir, './src/banner-import.scss'),
         `
     .banner {
         font-size: 30px;
@@ -184,7 +181,7 @@ describe('esbuild-plugin-sass ', () => {
       );
 
       fs.writeFileSync(
-        './src/alternate-import.css',
+        path.resolve(absWorkingDir, './src/alternate-import.css'),
         `
     .banner {
         font-size: 20px;
@@ -213,15 +210,17 @@ describe('esbuild-plugin-sass ', () => {
     });
 
     try {
-      expect(fs.readFileSync('./out/index.css', 'utf-8')).toMatch(/crimson/);
+      expect(fs.readFileSync(path.resolve(absWorkingDir, './out/index.css'), 'utf-8')).toMatch(
+        /crimson/,
+      );
 
-      const { mtimeMs } = fs.statSync('./out/index.js');
+      const { mtimeMs } = fs.statSync(path.resolve(absWorkingDir, './out/index.js'));
 
       await new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(reject, 10000);
 
         setTimeout(function tryAgain() {
-          if (mtimeMs < fs.statSync('./out/index.js').mtimeMs) {
+          if (mtimeMs < fs.statSync(path.resolve(absWorkingDir, './out/index.js')).mtimeMs) {
             clearTimeout(timeout);
             resolve();
           } else {
@@ -234,7 +233,9 @@ describe('esbuild-plugin-sass ', () => {
 
       expect(count).toBe(1);
 
-      expect(fs.readFileSync('./out/index.css', 'utf-8')).toMatch(/cornflowerblue/);
+      expect(fs.readFileSync(path.resolve(absWorkingDir, './out/index.css'), 'utf-8')).toMatch(
+        /cornflowerblue/,
+      );
     } finally {
       result.stop?.();
     }
@@ -242,7 +243,6 @@ describe('esbuild-plugin-sass ', () => {
 
   test('partials', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/partials');
-    process.chdir(absWorkingDir);
 
     await build({
       entryPoints: ['./src/import.scss'],
@@ -253,7 +253,9 @@ describe('esbuild-plugin-sass ', () => {
       plugins: [sassPlugin()],
     });
 
-    const outCSS = fs.readFileSync('./out/import.css', 'utf-8').replace(__dirname, '.');
+    const outCSS = fs
+      .readFileSync(path.resolve(absWorkingDir, './out/import.css'), 'utf-8')
+      .replace(__dirname, '.');
     expect(outCSS).toEqual(`/* sass:./fixture/partials/src/import.scss */
 .index-a {
   color: red;

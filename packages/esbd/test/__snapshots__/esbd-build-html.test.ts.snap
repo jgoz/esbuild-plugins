@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`build command (html entry) builds a simple HTML entry point 1`] = `
+exports[`build command (html entry) > builds a simple HTML entry point 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -39,7 +39,7 @@ index.html
 
 `;
 
-exports[`build command (html entry) includes referenced CSS from HTML 1`] = `
+exports[`build command (html entry) > includes referenced CSS from HTML 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -92,7 +92,7 @@ index.html
 
 `;
 
-exports[`build command (html entry) includes referenced CSS from JS 1`] = `
+exports[`build command (html entry) > includes referenced CSS from JS 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -145,7 +145,7 @@ index.html
 
 `;
 
-exports[`build command (html entry) includes referenced assets from HTML 1`] = `
+exports[`build command (html entry) > includes referenced assets from HTML 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -185,7 +185,7 @@ index.html
 
 `;
 
-exports[`build command (html entry) includes referenced assets from style tags 1`] = `
+exports[`build command (html entry) > includes referenced assets from style tags 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -229,7 +229,7 @@ index.html
 
 `;
 
-exports[`build command (html entry) supports automatic react runtime 1`] = `
+exports[`build command (html entry) > supports automatic react runtime 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------
@@ -316,7 +316,7 @@ index.html
 
 `;
 
-exports[`build command (html entry) writes integrity hashes if requested 1`] = `
+exports[`build command (html entry) > writes integrity hashes if requested 1`] = `
 ---------------------------------
 STDOUT
 ---------------------------------

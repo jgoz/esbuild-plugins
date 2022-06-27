@@ -71,7 +71,7 @@ test('can disable index rewriting', async ({ page, port, startServer }) => {
   await test.expect(page).toHaveURL(`http://127.0.0.1:${port}/`);
 
   const response = await page.goto(`http://127.0.0.1:${port}/wont-rewrite-to-index`);
-  test.expect(response.status()).toBe(404);
+  test.expect(response!.status()).toBe(404);
 });
 
 test('reloads page on file update if livereload enabled', async ({ page, port, startServer }) => {
@@ -211,7 +211,7 @@ test('can disable index rewriting with publicPath', async ({ page, port, startSe
   test.expect(await page.screenshot()).toMatchSnapshot('publicPath-noRewrite-cat.png');
 
   const response = await page.goto(`http://127.0.0.1:${port}/public/wont-rewrite-to-index`);
-  test.expect(response.status()).toBe(404);
+  test.expect(response!.status()).toBe(404);
 });
 
 test('can serve static files from a given directory', async ({ page, port, startServer }) => {

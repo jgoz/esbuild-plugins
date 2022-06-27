@@ -2,5 +2,5 @@
   "extends": "./tsconfig.json",
   "include": ["src", "overlay", "test"],
   "exclude": ["**/test/fixutre"],
-  "files": [".eslintrc.js", "bundle.js"]
+  "files": [".eslintrc.js", "bundle.js", "vite.config.ts"]
 }

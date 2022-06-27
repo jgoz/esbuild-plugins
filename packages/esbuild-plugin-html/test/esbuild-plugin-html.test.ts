@@ -3,11 +3,10 @@ import { build } from 'esbuild';
 import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { HtmlPluginOptions } from '../lib';
 import { htmlPlugin } from '../lib';
-
-jest.mock('fs');
 
 async function* walk(dirPath: string): AsyncIterable<string> {
   for await (const d of await fs.promises.readdir(dirPath, { withFileTypes: true })) {
@@ -52,13 +51,15 @@ expect.addSnapshotSerializer({
   },
 });
 
+const TEST_ROOT = path.join(__dirname, '..', 'test-results');
+
 async function buildWithHTML(
   fixture: string,
   optionOverrides: Partial<HtmlPluginOptions> = {},
   buildOptionOverrides: Partial<BuildOptions> = {},
 ): Promise<BuildWithHTMLOutput> {
   const { absWorkingDir = __dirname, outdir = './out' } = buildOptionOverrides;
-  const absOutDir = await fs.promises.mkdtemp(path.join(absWorkingDir, outdir + '-'));
+  const absOutDir = await fs.promises.mkdtemp(path.join(TEST_ROOT, outdir + '-'));
 
   const options: HtmlPluginOptions = {
     template: `./fixture/${fixture}.html`,
@@ -107,8 +108,15 @@ async function buildWithHTML(
 }
 
 describe('eslint-plugin-html', () => {
+  beforeAll(async () => {
+    await fs.promises.mkdir(TEST_ROOT, { recursive: true });
+    return async () => {
+      await fs.promises.rm(TEST_ROOT, { recursive: true });
+    };
+  });
+
   it('throws if outdir not set', () => {
-    void expect(
+    return expect(
       build({
         absWorkingDir: __dirname,
         bundle: true,
@@ -116,14 +124,11 @@ describe('eslint-plugin-html', () => {
         logLevel: 'silent',
         plugins: [htmlPlugin({ template: './fixture/template-empty.html' })],
       }),
-    ).rejects.toThrowErrorMatchingInlineSnapshot(`
-                  "Build failed with 1 error:
-                  error: html-plugin: \\"outdir\\" esbuild build option is required"
-              `);
+    ).rejects.toThrow(/html-plugin: "outdir" esbuild build option is required/);
   });
 
   it('throws if metafile not set', () => {
-    void expect(
+    return expect(
       build({
         absWorkingDir: __dirname,
         bundle: true,
@@ -136,7 +141,7 @@ describe('eslint-plugin-html', () => {
   });
 
   it('throws if template not found', () => {
-    void expect(
+    return expect(
       build({
         absWorkingDir: __dirname,
         bundle: true,

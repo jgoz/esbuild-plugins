@@ -1,11 +1,12 @@
 /* eslint-env jest */
-const fs = require('fs');
-const path = require('path');
-const prettier = require('prettier');
+import fs from 'fs';
+import path from 'path';
+import prettier from 'prettier';
+import { expect } from 'vitest';
 
 const SEPARATOR = '---------------------------------';
 
-function* walk(dirPath: string) {
+function* walk(dirPath: string): Generator<string, void> {
   for (const d of fs.readdirSync(dirPath, { withFileTypes: true })) {
     const entry = path.join(dirPath, d.name);
     if (d.isDirectory()) yield* walk(entry);

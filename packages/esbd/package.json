@@ -47,7 +47,6 @@
     "execa": "^5.0.0",
     "get-port": "^5.0.0",
     "io-spin": "^0.4.1",
-    "jest": "^28.1.1",
     "memfs": "^3.4.7",
     "mkdirp": "^1.0.4",
     "node-graceful": "^3.1.0",
@@ -63,27 +62,14 @@
     "source-map": "^0.7.4",
     "tslib": "^2.4.0",
     "typescript": "^4.7.4",
+    "vite": "^2.9.12",
+    "vitest": "^0.16.0",
     "wait-on": "^6.0.1"
-  },
-  "jest": {
-    "setupFilesAfterEnv": [
-      "<rootDir>/test/config/serializer.ts"
-    ],
-    "testTimeout": 10000,
-    "maxWorkers": 1,
-    "transform": {
-      "^.+\\.(js|jsx|ts|tsx)$": [
-        "babel-jest",
-        {
-          "rootMode": "upward"
-        }
-      ]
-    }
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
     "prepack": "./bundle.js build",
-    "test": "jest && playwright test",
+    "test": "vitest run && playwright test",
     "watch": "./bundle.js build -w"
   }
 }
