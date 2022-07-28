@@ -148,6 +148,11 @@ function parseArgv(programName: string) {
               default: false,
               description: 'Reload page on rebuild',
             },
+            livereloadHost: {
+              type: String,
+              default: '127.0.0.1',
+              description: 'Host for livereload server',
+            },
             host: {
               type: String,
               alias: 's',
@@ -248,7 +253,8 @@ export default function configure(configParam: EsbdConfigResult | ConfigFn) {
       }
 
       case 'serve': {
-        const { host, mode, logLevel, port, livereload, servedir, noRewrite } = argv.flags;
+        const { host, mode, logLevel, port, livereload, livereloadHost, servedir, noRewrite } =
+          argv.flags;
         const configResult =
           typeof configParam === 'function' ? await configParam(mode, 'serve') : configParam;
 
@@ -265,6 +271,7 @@ export default function configure(configParam: EsbdConfigResult | ConfigFn) {
           host,
           port,
           livereload,
+          livereloadHost,
           logger,
           servedir: servedir ? path.resolve(process.cwd(), servedir) : undefined,
           rewrite: !noRewrite,

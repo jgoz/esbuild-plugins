@@ -22,6 +22,7 @@ interface EsbdServeConfig {
   check?: boolean;
   host?: string;
   livereload?: boolean;
+  livereloadHost?: string;
   logger: Logger;
   mode: BuildMode;
   port?: number;
@@ -43,6 +44,7 @@ export default async function esbdServe(
     host = 'localhost',
     port = 8000,
     livereload,
+    livereloadHost = '127.0.0.1',
     logger,
     servedir,
     rewrite,
@@ -82,8 +84,13 @@ export default async function esbdServe(
       require.resolve('@jgoz/esbuild-plugin-livereload/banner.js'),
       'utf-8',
     );
-    banner = bannerTemplate.replace(/{baseUrl}/g, 'http://127.0.0.1:53099');
-    lrserver = createLivereloadServer({ basedir, onSSE: res => clients.add(res), port: 53099 });
+    banner = bannerTemplate.replace(/{baseUrl}/g, `http://${livereloadHost}:53099`);
+    lrserver = createLivereloadServer({
+      basedir,
+      onSSE: res => clients.add(res),
+      host: livereloadHost,
+      port: 53099,
+    });
     notify = notifyLR;
   }
 
