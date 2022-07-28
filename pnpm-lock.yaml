@@ -72,7 +72,6 @@ importers:
       react: ^18.2.0
       react-dom: ^18.2.0
       serve-static: ^1.15.0
-      source-map: ^0.7.4
       tslib: ^2.4.0
       typescript: ^4.7.4
       vite: ^3.0.3
@@ -106,7 +105,6 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       serve-static: 1.15.0
-      source-map: 0.7.4
       tslib: 2.4.0
       typescript: 4.7.4
       vite: 3.0.3
@@ -4475,11 +4473,6 @@ packages:
   /source-map-js/1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
     engines: {node: '>=0.10.0'}
-    dev: true
-
-  /source-map/0.7.4:
-    resolution: {integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==}
-    engines: {node: '>= 8'}
     dev: true
 
   /sourcemap-codec/1.4.8:

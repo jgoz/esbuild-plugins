@@ -13,7 +13,6 @@ import { copyFile } from 'fs/promises';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import pc from 'picocolors';
-import type { RawSourceMap } from 'source-map';
 
 import type { Logger } from './log';
 
@@ -26,32 +25,6 @@ function validateResult(result: BuildResult): asserts result is BuildIncremental
   if (!result.metafile) throw new Error('incrementalBuild: "metafile" option must be "true"');
   if (!result.outputFiles) throw new Error('incrementalBuild: "write" option must be "false"');
   if (!result.rebuild) throw new Error('incrementalBuild: "incremental" option must be "true"');
-}
-
-/**
- * Workaround for https://bugs.chromium.org/p/chromium/issues/detail?id=1329997
- */
-function fixDuplicateSourceNames(result: BuildIncrementalResult): void {
-  for (const mapFile of result.outputFiles.filter(f => f.path.endsWith('.map'))) {
-    try {
-      const string = new TextDecoder().decode(mapFile.contents);
-      const map = JSON.parse(string) as RawSourceMap;
-      const sources = new Set<string>();
-      const newSources: string[] = [];
-      for (let source of map.sources) {
-        while (sources.has(source)) {
-          source += '_';
-        }
-        sources.add(source);
-        newSources.push(source);
-      }
-      map.sources = newSources;
-      mapFile.contents = Buffer.from(JSON.stringify(map));
-    } catch (e) {
-      console.error(`Error processing sourcemap at ${mapFile.path}, ignoring`);
-      console.error(e);
-    }
-  }
 }
 
 type BuildIncrementalOptions = BuildOptions & { incremental: true; metafile: true; write: false };
@@ -205,7 +178,6 @@ export async function incrementalBuild({
     try {
       result = await rebuild();
       validateResult(result);
-      fixDuplicateSourceNames(result);
       if (absOutDir) await mkdirp(absOutDir);
       await copyAssets();
       await onBuildResult(result, options);
@@ -218,7 +190,6 @@ export async function incrementalBuild({
         rebuild,
       };
       validateResult(result);
-      fixDuplicateSourceNames(result);
       await onBuildResult(result, options);
 
       evt.emit('end');
