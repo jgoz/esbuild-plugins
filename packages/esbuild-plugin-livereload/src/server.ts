@@ -14,7 +14,7 @@ interface ServerOptions {
 }
 
 export function createLivereloadServer(options: ServerOptions): Server {
-  const { port, onSSE, basedir } = options;
+  const { port, host, onSSE, basedir } = options;
 
   return createServer((req, res) => {
     if (!req.url) return;
