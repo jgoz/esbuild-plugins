@@ -52,5 +52,5 @@ export function createLivereloadServer(options: ServerOptions): Server {
       }
       return;
     }
-  }).listen(port);
+  }).listen(port, host);
 }
