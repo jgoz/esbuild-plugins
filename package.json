@@ -25,12 +25,12 @@
   "devDependencies": {
     "@awesome-code-style/eslint-config": "^4.0.0",
     "@awesome-code-style/prettier-config": "^4.0.0",
-    "@changesets/cli": "^2.23.0",
+    "@changesets/cli": "^2.24.1",
     "@tsconfig/node16": "^1.0.3",
-    "@typescript-eslint/eslint-plugin": "^5.29.0",
-    "@typescript-eslint/parser": "^5.29.0",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
     "esbuild": "^0.14.51",
-    "eslint": "^8.18.0",
+    "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-import": "^2.26.0",
@@ -40,7 +40,7 @@
     "execa": "^5.0.0",
     "prettier": "^2.7.1",
     "tslib": "^2.4.0",
-    "typedoc": "^0.22.18",
+    "typedoc": "^0.23.9",
     "typescript": "^4.7.4"
   },
   "scripts": {
