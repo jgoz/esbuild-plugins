@@ -1,5 +1,14 @@
 # esbd
 
+## 2.0.0
+
+### Major Changes
+
+- 62d81bd: Remove built-in jsx-automatic handling in favor of esbuild's
+
+  This change sets the minimum version of esbuild to be `>= 0.14.51` and removes
+  the old SWC plugin, since esbuild now supports the automatic runtime natively.
+
 ## 1.0.14
 
 ### Patch Changes
