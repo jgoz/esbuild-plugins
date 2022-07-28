@@ -154,7 +154,7 @@ describe('build command', () => {
       build({
         config: {
           external: ['react', 'react-dom'],
-          jsxRuntime: 'automatic',
+          jsx: 'automatic',
           entryPoints: { entry: 'src/entry.tsx' },
           format: 'esm',
         },

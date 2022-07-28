@@ -8,8 +8,6 @@ STDOUT
 ---------------------------------
 entry.js
 ---------------------------------
-"use strict";
-
 // src/entry.tsx
 import ReactDOM from "react-dom";
 
@@ -47,8 +45,6 @@ body {
 ---------------------------------
 entry.js
 ---------------------------------
-"use strict";
-
 // src/entry.tsx
 import ReactDOM from "react-dom";
 
@@ -73,8 +69,6 @@ STDOUT
 ---------------------------------
 entry.js
 ---------------------------------
-"use strict";
-
 // src/entry.tsx
 import ReactDOM from "react-dom";
 
@@ -112,68 +106,19 @@ STDOUT
 ---------------------------------
 entry.js
 ---------------------------------
-"use strict";
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __esm = (fn, res) =>
-  function __init() {
-    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])((fn = 0))), res;
-  };
-var __commonJS = (cb, mod) =>
-  function __require() {
-    return (
-      mod ||
-        (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod),
-      mod.exports
-    );
-  };
+// src/entry.tsx
+import ReactDOM from "react-dom";
 
 // src/app.tsx
-import { jsxDEV as _jsxDEV } from "react/jsx-dev-runtime";
+import { jsx } from "react/jsx-runtime";
 function App() {
-  return /* @__PURE__ */ _jsxDEV(
-    "div",
-    {
-      children: "Hello world",
-    },
-    void 0,
-    false,
-    {
-      fileName: "<CWD>/src/app.tsx",
-      lineNumber: 3,
-      columnNumber: 22,
-    },
-    this
-  );
+  return /* @__PURE__ */ jsx("div", {
+    children: "Hello world",
+  });
 }
-var init_app = __esm({
-  "src/app.tsx"() {
-    "use strict";
-  },
-});
 
 // src/entry.tsx
-import { jsxDEV as _jsxDEV2 } from "react/jsx-dev-runtime";
-import ReactDOM from "react-dom";
-var require_entry = __commonJS({
-  "src/entry.tsx"(exports) {
-    init_app();
-    ReactDOM.render(
-      /* @__PURE__ */ _jsxDEV2(
-        App,
-        {},
-        void 0,
-        false,
-        {
-          fileName: "<CWD>/src/entry.tsx",
-          lineNumber: 4,
-          columnNumber: 29,
-        },
-        exports
-      ),
-      document.getElementById("root")
-    );
-  },
-});
-export default require_entry();
+import { jsx as jsx2 } from "react/jsx-runtime";
+ReactDOM.render(/* @__PURE__ */ jsx2(App, {}), document.getElementById("root"));
 
 `;

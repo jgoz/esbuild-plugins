@@ -10,7 +10,6 @@ import { writeTemplate } from './html-entry-point';
 import type { BuildIncrementalResult } from './incremental-build';
 import { incrementalBuild } from './incremental-build';
 import type { Logger } from './log';
-import { swcPlugin } from './swc-plugin';
 import { timingPlugin } from './timing-plugin';
 
 interface EsbdBuildOptions {
@@ -84,7 +83,7 @@ async function esbdBuildHtml(
     copy: config.copy,
     incremental: true,
     logger,
-    plugins: [...config.plugins, swcPlugin(config.jsxRuntime, mode), timingPlugin(logger, name)],
+    plugins: [...config.plugins, timingPlugin(logger, name)],
     watch,
     write: false,
 
@@ -125,7 +124,7 @@ async function esbdBuildSource(
     copy: config.copy,
     incremental: true,
     logger,
-    plugins: [...config.plugins, swcPlugin(config.jsxRuntime, mode), timingPlugin(logger, name)],
+    plugins: [...config.plugins, timingPlugin(logger, name)],
     watch,
     write: false,
 

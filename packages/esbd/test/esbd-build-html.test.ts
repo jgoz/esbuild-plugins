@@ -248,7 +248,7 @@ describe('build command (html entry)', () => {
       buildWithHTML({
         config: {
           external: ['react', 'react-dom'],
-          jsxRuntime: 'automatic',
+          jsx: 'automatic',
         },
         files: {
           'src/index.html': `

@@ -35,7 +35,6 @@ In an ideal world, esbd would not exist. If any of its extended features get add
 - Live-reload for web applications and restart-on-change for Node applications
 - Opt-in sideband type checking for TypeScript projects
 - In-browser error overlay for esbuild and TypeScript errors (dismissable)
-- Optional support for React's `"jsxRuntime": "automatic"` mode via a small [SWC](https://swc.rs) plugin
 - Copy static assets into the build folder
 - Full support for other esbuild plugins (JS only)
 
@@ -288,16 +287,6 @@ If `src/entry.tsx` included any CSS assets, either directly or indirectly via it
 
 There are two configuration options that affect HTML entry point behavior: `ignoreAssets` and `integrity`. You can read about them in the [API](#api) section.
 
-### JSX runtime mode
-
-React 17 introduced a new [JSX transform](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html) that enables some internal performance optimizations and obviates having to import 'React' in every module. Unfortunately, esbuild does not support this transform natively, even though both Babel and the TypeScript compiler do support it.
-
-Esbd adds optional support for the new transform on top of esbuild through the use of [SWC](https://swc.rs). If you set the `jsxRuntime` configuration option to `automatic` and have `@swc/core` installed as a dependency in your project, esbd will transform `.jsx` and `.tsx` files first using SWC to transform JSX elements and then again using esbuild to transpile or downlevel according to the build target.
-
-This adds minimal time to each build because SWC is a very fast transpiler and because only files that use JSX will be processed twice. And again, this is entirely opt-in.
-
-If you are using TypeScript, note that you should set the "jsx" tsconfig option to "react-jsx" so that your editor does not require the "React" import. Esbd does not currently read this option from tsconfig.json, so `jsxRuntime` must be set to `automatic` explicitly for the new transform to be used.
-
 ### Copying static assets
 
 Esbd can copy static assets to the output directory that would not otherwise be discovered through esbuild's dependency resolution. This works for files referenced by [HTML entry points](#html-entry-points) and also via the `copy` [configuration option](#api).
@@ -350,7 +339,6 @@ Note that these esbuild options are ignored:
 | copy | `[from: string, to?: string][]` | - | Files to copy to the output directory during the build.<br><br>Each entry is a tuple representing the source file path to copy and, optionally, the destination file path.<br><br>Source paths may be absolute or relative to `absWorkingDir`. Destination paths may be absolute or relative to `outdir`. If no destination path is provided, the source file will be copied to `outdir` with the same name.<br><br>If `esbd` is started in a watch mode (serve, node-dev, or build --watch), source files will be watched and copied whenever they change.<br><br>Note that `copy` does not support glob patterns.  |
 | ignoreAssets | `boolean` | - | By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and `<script>` tags in the HTML template will be collected as esbuild assets if their `src` attributes are specified as relative paths. The asset paths will be resolved relative to the *template file* and will be copied to the output directory, taking `publicPath` into consideration if it has been set.<br><br>Absolute paths or URIs will be ignored.<br><br>To ignore all `src` attributes and avoid collecting discovered assets, set this option to `true`.  |
 | [integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) | `"sha256" \| "sha384" \| "sha512"` | - | If specified, a cryptographic digest for each file referenced by a `<link>` or `<script>` tag will be calculated using the specified algorithm and added as an `integrity` attribute on the associated tag. |
-| [jsxRuntime](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html) | `"automatic" \| "classic"` | `"classic"` | React 17 introduced a new JSX transform that enables some internal performance optimizations and obviates having to import 'React' in every module.<br><br>Though esbuild does not support this new transform natively, setting this option to `automatic` will add a load plugin (powered by SWC) for ".jsx" and ".tsx" files so they use the new tranform as expected.<br><br>If you are using TypeScript, note that you should set the "jsx" tsconfig option to "react-jsx" so that your editor does not require the "React" import. esbd does not currently read this option from tsconfig.json, so "jsxRuntime" must be set to "automatic" explicitly for the new transform to be used.  |
 | name | `string` | - | Name of this configuration.<br><br>This is required for configurations that appear in an array.  |
 <!-- end -->
 <!-- prettier-ignore-end -->

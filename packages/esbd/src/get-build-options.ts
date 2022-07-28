@@ -24,7 +24,6 @@ export async function getHtmlBuildOptions(
   const {
     copy: _,
     format = 'esm',
-    jsxRuntime: __,
     integrity,
     ignoreAssets,
     name: ___,
@@ -99,14 +98,7 @@ export function getBuildOptions(
   const outdir = config.outdir;
   if (!outdir) throw new Error('"outdir" option must be set');
 
-  const {
-    copy: _,
-    jsxRuntime: __,
-    integrity: ___,
-    ignoreAssets: ____,
-    name: _____,
-    ...options
-  } = config;
+  const { copy: _, integrity: ___, ignoreAssets: ____, name: _____, ...options } = config;
 
   const allEntryPoints: EntryPoints = {};
   for (const [entryName, entryPath] of entries) {
