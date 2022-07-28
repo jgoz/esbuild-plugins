@@ -9,6 +9,7 @@ const openEditor = import('open-editor');
 interface ServerOptions {
   basedir: string;
   port: number;
+  host: string;
   onSSE: (res: ServerResponse) => void;
 }
 
@@ -17,7 +18,7 @@ export function createLivereloadServer(options: ServerOptions): Server {
 
   return createServer((req, res) => {
     if (!req.url) return;
-    const url = new URL(req.url, `http://127.0.0.1:${port}`);
+    const url = new URL(req.url, `http://${host}:${port}`);
 
     if (url.pathname === '/esbuild') {
       onSSE(
