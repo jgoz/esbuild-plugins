@@ -41,11 +41,18 @@ export interface LivereloadPluginOptions {
    * @default 53099
    */
   port?: number;
+  
+  /**
+   * Host that the livereload server will run on.
+   *
+   * @default 127.0.0.1
+   */
+  host?: string;
 }
 
 export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin {
-  const { port = 53099 } = options;
-  const baseUrl = `http://127.0.0.1:${port}`;
+  const { port = 53099, host = '127.0.0.1' } = options;
+  const baseUrl = `http://${host}:${port}`;
 
   return {
     name: 'livereload-plugin',
