@@ -42,6 +42,7 @@ Note that this will have no effect for Node programs.
 | Name | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | fullReloadOnCssUpdates | `boolean` | `false` | Instead of hot-reloading CSS files, trigger a full page reload when CSS is updated. |
+| host | `string` | `127.0.0.1` | Host that the livereload server will run on. |
 | port | `number` | `53099` | Port that the livereload server will run on. |
 <!-- end -->
 <!-- prettier-ignore-end -->
