@@ -61,7 +61,7 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
       const bannerTemplate = await fsp.readFile(require.resolve('../banner.js'), 'utf-8');
       const banner = bannerTemplate.replace(/{baseUrl}/g, baseUrl);
 
-      createLivereloadServer({ basedir, port, onSSE: res => clients.add(res) });
+      createLivereloadServer({ basedir, host, port, onSSE: res => clients.add(res) });
 
       build.initialOptions.banner ??= {};
       if (build.initialOptions.banner.js) {
