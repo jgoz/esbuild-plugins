@@ -1,5 +1,18 @@
 # esbd
 
+## 2.1.0
+
+### Minor Changes
+
+- a05325a: Add --livereload-host CLI argument
+
+### Patch Changes
+
+- dd828b4: Remove chromium sourcemap workarouond
+- Updated dependencies [a05325a]
+  - @jgoz/esbuild-plugin-livereload@1.1.0
+  - @jgoz/esbuild-plugin-typecheck@2.0.0
+
 ## 2.0.0
 
 ### Major Changes
