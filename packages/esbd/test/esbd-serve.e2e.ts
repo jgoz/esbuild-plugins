@@ -4,7 +4,7 @@ import test from './config/serve-test';
 
 test('serves content from entry point', async ({ page, port, startServer }) => {
   await startServer({
-    config: { jsxRuntime: 'automatic' },
+    config: { jsx: 'automatic' },
     files: [
       // 0
       {
@@ -40,7 +40,7 @@ test('serves content from entry point', async ({ page, port, startServer }) => {
 test('can disable index rewriting', async ({ page, port, startServer }) => {
   await startServer({
     disableRewrite: true,
-    config: { jsxRuntime: 'automatic' },
+    config: { jsx: 'automatic' },
     files: [
       // 0
       {
@@ -77,7 +77,7 @@ test('can disable index rewriting', async ({ page, port, startServer }) => {
 test('reloads page on file update if livereload enabled', async ({ page, port, startServer }) => {
   const { write } = await startServer({
     livereload: true,
-    config: { jsxRuntime: 'automatic' },
+    config: { jsx: 'automatic' },
     files: [
       // 0
       {
@@ -128,7 +128,7 @@ test('can serve from publicPath', async ({ page, port, startServer }) => {
   await startServer({
     config: {
       loader: { '.png': 'file' },
-      jsxRuntime: 'automatic',
+      jsx: 'automatic',
       publicPath: '/public',
     },
     files: [
@@ -173,7 +173,7 @@ test('can disable index rewriting with publicPath', async ({ page, port, startSe
     disableRewrite: true,
     config: {
       loader: { '.png': 'file' },
-      jsxRuntime: 'automatic',
+      jsx: 'automatic',
       publicPath: '/public',
     },
     files: [
@@ -219,7 +219,7 @@ test('can serve static files from a given directory', async ({ page, port, start
     serveDir: __dirname + '/fixture',
     config: {
       loader: { '.png': 'file' },
-      jsxRuntime: 'automatic',
+      jsx: 'automatic',
       publicPath: '/public',
     },
     files: [
@@ -260,7 +260,7 @@ test('can serve static files from a given directory', async ({ page, port, start
 test('page replaces stylesheets without reloading', async ({ page, port, startServer }) => {
   const { write } = await startServer({
     livereload: true,
-    config: { jsxRuntime: 'automatic' },
+    config: { jsx: 'automatic' },
     files: [
       // 0
       {
