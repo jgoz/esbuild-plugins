@@ -41,11 +41,18 @@ export interface LivereloadPluginOptions {
    * @default 53099
    */
   port?: number;
+  
+  /**
+   * Host that the livereload server will run on.
+   *
+   * @default 127.0.0.1
+   */
+  host?: string;
 }
 
 export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin {
-  const { port = 53099 } = options;
-  const baseUrl = `http://127.0.0.1:${port}`;
+  const { port = 53099, host = '127.0.0.1' } = options;
+  const baseUrl = `http://${host}:${port}`;
 
   return {
     name: 'livereload-plugin',
@@ -54,7 +61,7 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
       const bannerTemplate = await fsp.readFile(require.resolve('../banner.js'), 'utf-8');
       const banner = bannerTemplate.replace(/{baseUrl}/g, baseUrl);
 
-      createLivereloadServer({ basedir, port, onSSE: res => clients.add(res) });
+      createLivereloadServer({ basedir, host, port, onSSE: res => clients.add(res) });
 
       build.initialOptions.banner ??= {};
       if (build.initialOptions.banner.js) {
