@@ -1,5 +1,11 @@
 # esbd
 
+## 2.2.0
+
+### Minor Changes
+
+- 0021d1f: Add htmlChunkFilter option
+
 ## 2.1.0
 
 ### Minor Changes
