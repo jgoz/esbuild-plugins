@@ -39,7 +39,15 @@ export async function writeTemplate(
   fs: FileSystem,
 ): Promise<void> {
   const { absWorkingDir: basedir = process.cwd(), format, outdir, publicPath = '' } = buildOptions;
-  const { tagAssets, textAssets, crossorigin, define, integrity, template } = templateOptions;
+  const {
+    tagAssets,
+    textAssets,
+    crossorigin,
+    define,
+    htmlChunkFilter = () => true,
+    integrity,
+    template,
+  } = templateOptions;
 
   const { metafile, outputFiles } = result;
 
@@ -102,7 +110,10 @@ export async function writeTemplate(
   // considered as entry points above. Files that are considered entry points will
   // be removed below.
   const extraCss = new Set(
-    outputFiles.filter(f => f.path.endsWith('.css')).map(f => path.resolve(outdir, f.path)),
+    outputFiles
+      .filter(f => f.path.endsWith('.css'))
+      .map(f => path.resolve(outdir, f.path))
+      .filter(htmlChunkFilter),
   );
 
   let lastCssEntry: Element | undefined;

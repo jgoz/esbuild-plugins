@@ -76,6 +76,14 @@ export interface EsbuildHtmlOptions {
   filename?: string;
 
   /**
+   * Predicate function that determines whether an output file should be added to the written HTML entry point.
+   *
+   * This function receives an output file path and should return a value indicating
+   * whether that file should be referenced in the HTML output.
+   */
+  htmlChunkFilter?: (file: string) => boolean;
+
+  /**
    * By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and
    * `<script>` tags in the HTML template will be collected as esbuild assets if their `src` attributes
    * are specified as relative paths. The asset paths will be resolved relative to the *template file*

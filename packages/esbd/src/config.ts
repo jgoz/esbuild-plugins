@@ -31,6 +31,19 @@ export interface EsbdSpecificOptions {
   copy?: [from: string, to?: string][];
 
   /**
+   * Predicate function that determines whether an output file should be added to the written HTML entry point.
+   *
+   * Esbd makes a best effort to determine which output files should be referenced
+   * as `<script>` and `<link rel="stylesheet">` tags in the HTML entry point, but
+   * in some cases it will be too eager. This most often occurs when a build contains
+   * a mix of HTML entry points and non-HTML entry points.
+   *
+   * This function receives an output file path and should return a value indicating
+   * whether that file should be referenced in the HTML output.
+   */
+  htmlChunkFilter?: (file: string) => boolean;
+
+  /**
    * By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and
    * `<script>` tags in the HTML template will be collected as esbuild assets if their `src` attributes
    * are specified as relative paths. The asset paths will be resolved relative to the *template file*

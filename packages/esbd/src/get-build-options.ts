@@ -24,6 +24,7 @@ export async function getHtmlBuildOptions(
   const {
     copy: _,
     format = 'esm',
+    htmlChunkFilter,
     integrity,
     ignoreAssets,
     name: ___,
@@ -63,6 +64,7 @@ export async function getHtmlBuildOptions(
       basedir,
       define,
       filename: entryName,
+      htmlChunkFilter,
       ignoreAssets,
       integrity,
     });

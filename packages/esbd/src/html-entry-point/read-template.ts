@@ -21,6 +21,7 @@ export async function readTemplate(
   {
     basedir = process.cwd(),
     define,
+    htmlChunkFilter,
     filename = path.basename(templatePath),
     ignoreAssets,
     integrity,
@@ -105,6 +106,7 @@ export async function readTemplate(
       tagAssets,
       textAssets,
       define,
+      htmlChunkFilter,
       filename,
       ignoreAssets,
       integrity,
