@@ -27,7 +27,7 @@ export async function getHtmlBuildOptions(
     htmlChunkFilter,
     integrity,
     ignoreAssets,
-    name: ___,
+    name: __,
     publicPath = '',
     target = 'es2017',
     ...options
@@ -100,7 +100,14 @@ export function getBuildOptions(
   const outdir = config.outdir;
   if (!outdir) throw new Error('"outdir" option must be set');
 
-  const { copy: _, integrity: ___, ignoreAssets: ____, name: _____, ...options } = config;
+  const {
+    copy: _,
+    htmlChunkFilter: __,
+    integrity: ___,
+    ignoreAssets: ____,
+    name: _____,
+    ...options
+  } = config;
 
   const allEntryPoints: EntryPoints = {};
   for (const [entryName, entryPath] of entries) {
