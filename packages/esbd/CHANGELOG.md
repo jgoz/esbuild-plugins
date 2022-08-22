@@ -1,5 +1,11 @@
 # esbd
 
+## 2.2.1
+
+### Patch Changes
+
+- 6fe444f: Fix build options
+
 ## 2.2.0
 
 ### Minor Changes
