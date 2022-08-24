@@ -464,6 +464,124 @@ route-SG2FYVD5.css
 
 `;
 
+exports[`build command (html entry) > substitutes defined values in output HTML 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished index.html with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react-dom";
+function App() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+---------------------------------
+favicon.png
+---------------------------------
+IMA FAVICON
+---------------------------------
+index.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="preload"
+      as="fetch"
+      crossorigin="anonymous"
+      type="application/json"
+      href="/abs-manifest.json"
+    />
+    <link
+      rel="preload"
+      as="fetch"
+      crossorigin="anonymous"
+      type="application/json"
+      href="manifest.json"
+    />
+    <link rel="apple-touch-icon" href="favicon.png?v=1.2.3" />
+    <script defer="" type="module" src="entry.js"></script>
+    <script>
+      window.__app_version__ = "1.2.3";
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+---------------------------------
+manifest.json
+---------------------------------
+Man, I fest
+`;
+
+exports[`build command (html entry) > substitutes defined values in output HTML with publicPath 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished index.html with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react-dom";
+function App() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+---------------------------------
+favicon.png
+---------------------------------
+IMA FAVICON
+---------------------------------
+index.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="preload"
+      as="fetch"
+      crossorigin="anonymous"
+      type="application/json"
+      href="/abs-manifest.json"
+    />
+    <link
+      rel="preload"
+      as="fetch"
+      crossorigin="anonymous"
+      type="application/json"
+      href="/public/manifest.json"
+    />
+    <link rel="apple-touch-icon" href="/public/favicon.png?v=1.2.3" />
+    <script defer="" type="module" src="/public/entry.js"></script>
+    <script>
+      window.__app_version__ = "1.2.3";
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+---------------------------------
+manifest.json
+---------------------------------
+Man, I fest
+`;
+
 exports[`build command (html entry) > supports automatic react runtime 1`] = `
 ---------------------------------
 STDOUT

@@ -235,36 +235,43 @@ export async function writeTemplate(
   // text assets (from <style> tags)
   const assetPaths: [string, string][] = [];
   for (const [node, url] of tagAssets) {
-    const { basename, inputPath, rebasedURL } = rebaseAssetURL(url, template.inputPath, publicPath);
+    const { basename, inputPath, rebasedURL } = rebaseAssetURL(
+      substituteDefines(url, define),
+      template.inputPath,
+      publicPath,
+    );
     const href = node.attrs.find(a => a.name === 'href');
     if (href) {
       href.value = rebasedURL;
-      // TODO: parallelize this?
-      if (integrity) {
-        node.attrs.push({
-          name: 'integrity',
-          value: await calculateFileIntegrityHash(
-            path.resolve(absTemplateDir, inputPath),
-            integrity,
-          ),
-        });
+
+      if (inputPath && basename) {
+        // TODO: parallelize this?
+        if (integrity) {
+          node.attrs.push({
+            name: 'integrity',
+            value: await calculateFileIntegrityHash(
+              path.resolve(absTemplateDir, inputPath),
+              integrity,
+            ),
+          });
+        }
+        assetPaths.push([inputPath, path.resolve(absOutDir, basename)]);
       }
-      assetPaths.push([inputPath, path.resolve(absOutDir, basename)]);
     }
   }
   for (const [text, url] of textAssets) {
-    const { basename, inputPath, rebasedURL } = rebaseAssetURL(url, template.inputPath, publicPath);
+    const { basename, inputPath, rebasedURL } = rebaseAssetURL(
+      substituteDefines(url, define),
+      template.inputPath,
+      publicPath,
+    );
     text.value = text.value.replace(url, rebasedURL);
-    assetPaths.push([inputPath, path.resolve(absOutDir, basename)]);
-  }
-
-  let htmlOutput = serialize(document);
-  if (define) {
-    for (const def of Object.keys(define)) {
-      const re = new RegExp(`\\{\\{\\s*${def}\\s*\\}\\}`, 'gi');
-      htmlOutput = htmlOutput.replace(re, define[def]);
+    if (inputPath && basename) {
+      assetPaths.push([inputPath, path.resolve(absOutDir, basename)]);
     }
   }
+
+  const htmlOutput = substituteDefines(serialize(document), define);
 
   const writeHTMLOutput = fsp
     .mkdir(absOutDir, { recursive: true })
@@ -278,10 +285,19 @@ function rebaseAssetURL(
   templatePath: string,
   publicPath: string | undefined,
 ): {
-  basename: string;
+  basename: string | undefined;
   rebasedURL: string;
-  inputPath: string;
+  inputPath: string | undefined;
 } {
+  if (path.isAbsolute(inputURL) || inputURL.includes('://')) {
+    // Don't rebase absolute/schemed URLs
+    return {
+      rebasedURL: inputURL,
+      inputPath: undefined,
+      basename: undefined,
+    };
+  }
+
   const queryPos = inputURL.indexOf('?');
   const hashPos = inputURL.indexOf('#');
   const pathEnd = queryPos < 0 ? hashPos : hashPos < 0 ? queryPos : Math.min(queryPos, hashPos);
@@ -302,4 +318,14 @@ function rebaseAssetURL(
     inputPath,
     basename,
   };
+}
+
+function substituteDefines(value: string, define: Record<string, string> | undefined): string {
+  if (define) {
+    for (const def of Object.keys(define)) {
+      const re = new RegExp(`\\{\\{\\s*${def}\\s*\\}\\}`, 'gi');
+      value = value.replace(re, define[def]);
+    }
+  }
+  return value;
 }
