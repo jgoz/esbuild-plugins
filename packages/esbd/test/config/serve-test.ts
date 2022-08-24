@@ -53,7 +53,7 @@ const test = base.extend<ServerTestFixtures>({
   },
 
   startServer: async ({ port, absWorkingDir, writeFiles }, use) => {
-    let proc: ExecaChildProcess;
+    let proc: ExecaChildProcess | undefined;
 
     const startServer = async (serverConfig: ServerConfig) => {
       const { livereload, config, disableRewrite, files, serveDir } = serverConfig;
@@ -100,7 +100,7 @@ const test = base.extend<ServerTestFixtures>({
           disableRewrite && '--no-rewrite',
           serveDir && '-d',
           serveDir,
-        ],
+        ].filter((s): s is string => !!s),
         {
           encoding: 'utf8',
           reject: false,
@@ -110,7 +110,7 @@ const test = base.extend<ServerTestFixtures>({
       );
 
       const evt = new EventEmitter();
-      proc.stdout.on('data', (chunk: Buffer) => {
+      proc.stdout!.on('data', (chunk: Buffer) => {
         const str = chunk.toString();
         if (/Finished with/.exec(str)) {
           evt.emit('done');
@@ -133,9 +133,9 @@ const test = base.extend<ServerTestFixtures>({
     // Tests execute here
     await use(startServer);
 
-    proc.cancel();
+    proc!.cancel();
     try {
-      const { stderr } = await proc;
+      const { stderr } = await proc!;
       if (stderr) {
         console.error('Error output from esbd:');
         console.error(stderr);

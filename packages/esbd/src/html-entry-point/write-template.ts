@@ -128,7 +128,10 @@ export async function writeTemplate(
       // Complex case -- the candidate might be a CSS file that is referenced by a JS entry point.
 
       // First, look for the candidate in the metafile "outputs" and extracts its inputs (if any).
-      const candidateInputs = new Set(Object.keys(metafile.outputs[candidatePath]?.inputs ?? {}));
+      const candidatePathKey = path.relative(basedir, absCandidatePath);
+      const candidateInputs = new Set(
+        Object.keys(metafile.outputs[candidatePathKey]?.inputs ?? {}),
+      );
       if (!candidateInputs.size) return false;
 
       // A candidate is a "CSS from JS" entry point if exactly one input of the CSS output file
@@ -140,7 +143,11 @@ export async function writeTemplate(
         const outputFilePath = jsOutput.get(absSourceFilePath);
         if (!outputFilePath) continue;
 
-        const inputs = Object.keys(metafile.outputs[outputFilePath]?.inputs ?? {});
+        const outputFilePathKey = path.relative(
+          basedir,
+          path.resolve(absTemplateDir, outputFilePath),
+        );
+        const inputs = Object.keys(metafile.outputs[outputFilePathKey]?.inputs ?? {});
         if (!inputs.length) continue;
 
         const intersection = new Set(inputs.filter(input => candidateInputs.has(input)));
