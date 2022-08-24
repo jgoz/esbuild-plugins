@@ -36,17 +36,17 @@
   "devDependencies": {
     "@types/node-sass": "^4.11.3",
     "@types/sass": "^1.43.1",
-    "autoprefixer": "^10.4.7",
+    "autoprefixer": "^10.4.8",
     "enhanced-resolve": "^5.10.0",
-    "esbuild": "^0.14.51",
+    "esbuild": "^0.15.5",
     "esbuild-node-externals": "^1.4.1",
-    "postcss": "^8.4.14",
-    "postcss-preset-env": "^7.7.2",
+    "postcss": "^8.4.16",
+    "postcss-preset-env": "^7.8.0",
     "prettier": "^2.7.1",
-    "sass": "^1.54.0",
+    "sass": "^1.54.5",
     "typescript": "^4.7.4",
-    "vite": "^3.0.3",
-    "vitest": "^0.19.1"
+    "vite": "^3.0.9",
+    "vitest": "^0.22.1"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",

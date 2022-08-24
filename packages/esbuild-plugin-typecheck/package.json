@@ -37,7 +37,7 @@
   "devDependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
     "@types/node": "^16.11.46",
-    "esbuild": "^0.14.51",
+    "esbuild": "^0.15.5",
     "esbuild-node-externals": "^1.4.1",
     "execa": "^5.0.0",
     "memfs": "^3.4.7",
@@ -46,8 +46,8 @@
     "tslib": "^2.4.0",
     "typescript": "^4.7.4",
     "unionfs": "^4.4.0",
-    "vite": "^3.0.3",
-    "vitest": "^0.19.1"
+    "vite": "^3.0.9",
+    "vitest": "^0.22.1"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
