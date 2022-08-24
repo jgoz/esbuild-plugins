@@ -103,62 +103,65 @@ export async function writeTemplate(
   // the HTML
   if (!modified) return;
 
-  let cssChunkFilter = templateOptions.cssChunkFilter;
-  if (!cssChunkFilter) {
-    // The default chunk filter will include any CSS files directly referenced
-    // as entry points as well as those that are referenced by JS entry points.
-    // This is tricky because esbuild doesn't give us a direct mapping between
-    // JS entries and their CSS _output_ files, so we have to make some intelligent
-    // guesses based on corresponding "input" keys in the metafile.
+  const htmlEntryPathsAbs = Object.values(htmlEntryPoints).map(filePath =>
+    path.resolve(basedir, filePath),
+  );
 
-    const htmlEntryPathsAbs = Object.values(htmlEntryPoints).map(filePath =>
-      path.resolve(basedir, filePath),
-    );
-
-    cssChunkFilter = (absCandidatePath: string) => {
-      const candidatePath = path.relative(absTemplateDir, absCandidatePath);
-      for (const [, outputFilePath] of cssOutput) {
-        if (candidatePath === outputFilePath) {
-          // This is the simple case -- the candidate is a CSS file that is directly
-          // referenced as an entry point.
-          return true;
-        }
+  // The default chunk filter will include any CSS files directly referenced
+  // as entry points as well as those that are referenced by JS entry points.
+  // This is tricky because esbuild doesn't give us a direct mapping between
+  // JS entries and their CSS _output_ files, so we have to make some intelligent
+  // guesses based on corresponding "input" keys in the metafile.
+  const defaultCssChunkFilter = (absCandidatePath: string) => {
+    const candidatePath = path.relative(absTemplateDir, absCandidatePath);
+    for (const [, outputFilePath] of cssOutput) {
+      if (candidatePath === outputFilePath) {
+        // This is the simple case -- the candidate is a CSS file that is directly
+        // referenced as an entry point.
+        return true;
       }
+    }
 
-      // Complex case -- the candidate might be a CSS file that is referenced by a JS entry point.
+    // Complex case -- the candidate might be a CSS file that is referenced by a JS entry point.
 
-      // First, look for the candidate in the metafile "outputs" and extracts its inputs (if any).
-      const candidatePathKey = path.relative(basedir, absCandidatePath);
-      const candidateInputs = new Set(
-        Object.keys(metafile.outputs[candidatePathKey]?.inputs ?? {}),
+    // First, look for the candidate in the metafile "outputs" and extracts its inputs (if any).
+    const candidatePathKey = path.relative(basedir, absCandidatePath);
+    const candidateInputs = new Set(Object.keys(metafile.outputs[candidatePathKey]?.inputs ?? {}));
+    if (!candidateInputs.size) return false;
+
+    // A candidate is a "CSS from JS" entry point if exactly one input of the CSS output file
+    // overlaps with an input from a JS entry point referenced in the HTML. This roundabout
+    // heuristic is necessary because esbuild doesn't indicate which CSS files are bound to
+    // JS entry points. We also can't rely on input/output filename matching because the user
+    // might be using [hash], [dir], etc., in the "entryNames" option.
+    for (const absSourceFilePath of htmlEntryPathsAbs) {
+      const outputFilePath = jsOutput.get(absSourceFilePath);
+      if (!outputFilePath) continue;
+
+      const outputFilePathKey = path.relative(
+        basedir,
+        path.resolve(absTemplateDir, outputFilePath),
       );
-      if (!candidateInputs.size) return false;
+      const inputs = Object.keys(metafile.outputs[outputFilePathKey]?.inputs ?? {});
+      if (!inputs.length) continue;
 
-      // A candidate is a "CSS from JS" entry point if exactly one input of the CSS output file
-      // overlaps with an input from a JS entry point referenced in the HTML. This roundabout
-      // heuristic is necessary because esbuild doesn't indicate which CSS files are bound to
-      // JS entry points. We also can't rely on input/output filename matching because the user
-      // might be using [hash], [dir], etc., in the "entryNames" option.
-      for (const absSourceFilePath of htmlEntryPathsAbs) {
-        const outputFilePath = jsOutput.get(absSourceFilePath);
-        if (!outputFilePath) continue;
-
-        const outputFilePathKey = path.relative(
-          basedir,
-          path.resolve(absTemplateDir, outputFilePath),
-        );
-        const inputs = Object.keys(metafile.outputs[outputFilePathKey]?.inputs ?? {});
-        if (!inputs.length) continue;
-
-        const intersection = new Set(inputs.filter(input => candidateInputs.has(input)));
-        if (intersection.size === 1) {
-          return true;
-        }
+      const intersection = new Set(inputs.filter(input => candidateInputs.has(input)));
+      if (intersection.size === 1) {
+        return true;
       }
+    }
 
-      return false;
-    };
-  }
+    return false;
+  };
+
+  const cssChunkFilter = templateOptions.cssChunkFilter
+    ? (absCandidatePath: string) => {
+        const include = templateOptions.cssChunkFilter?.(absCandidatePath);
+        if (include) return true;
+        if (include === false) return false;
+        return defaultCssChunkFilter(absCandidatePath);
+      }
+    : defaultCssChunkFilter;
 
   const absOutputFiles = new Map(
     outputFiles.map(outfile => [path.resolve(outdir, outfile.path), outfile]),

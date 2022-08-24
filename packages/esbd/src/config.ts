@@ -44,9 +44,10 @@ export interface EsbdSpecificOptions {
    * by esbuild.
    *
    * This function receives an output file path and should return a value indicating
-   * whether that file should be referenced in the HTML output.
+   * whether that file should be referenced in the HTML output. If the function returns `null`
+   * or `undefined`, the default algorithm will be used.
    */
-  cssChunkFilter?: (absFilePath: string) => boolean;
+  cssChunkFilter?: (absFilePath: string) => boolean | null | undefined;
 
   /**
    * By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and

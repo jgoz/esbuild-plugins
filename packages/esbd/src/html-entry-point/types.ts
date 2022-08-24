@@ -46,7 +46,7 @@ export interface EsbuildHtmlOptions {
    * specified in the HTML template. CSS files that are referenced directly in HTML and those
    * that are referenced indirectly from JS entry points will be included.
    */
-  cssChunkFilter?: (absFilePath: string) => boolean;
+  cssChunkFilter?: (absFilePath: string) => boolean | null | undefined;
 
   /**
    * Values that will be substituted in the HTML output.
