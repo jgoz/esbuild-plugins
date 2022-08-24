@@ -1,5 +1,11 @@
 # esbd
 
+## 2.2.5
+
+### Patch Changes
+
+- 38438f9: Always re-create HTML templates in 'serve' mode
+
 ## 2.2.4
 
 ### Patch Changes
