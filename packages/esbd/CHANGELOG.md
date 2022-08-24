@@ -1,5 +1,11 @@
 # esbd
 
+## 2.2.4
+
+### Patch Changes
+
+- 22c642c: Allow multiple overlaps for css candidate
+
 ## 2.2.3
 
 ### Patch Changes
