@@ -129,7 +129,7 @@ export async function writeTemplate(
     const candidateInputs = new Set(Object.keys(metafile.outputs[candidatePathKey]?.inputs ?? {}));
     if (!candidateInputs.size) return false;
 
-    // A candidate is a "CSS from JS" entry point if exactly one input of the CSS output file
+    // A candidate is a "CSS from JS" entry point if at least one input of the CSS output file
     // overlaps with an input from a JS entry point referenced in the HTML. This roundabout
     // heuristic is necessary because esbuild doesn't indicate which CSS files are bound to
     // JS entry points. We also can't rely on input/output filename matching because the user
@@ -146,7 +146,7 @@ export async function writeTemplate(
       if (!inputs.length) continue;
 
       const intersection = new Set(inputs.filter(input => candidateInputs.has(input)));
-      if (intersection.size === 1) {
+      if (intersection.size >= 1) {
         return true;
       }
     }
