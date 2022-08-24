@@ -31,17 +31,22 @@ export interface EsbdSpecificOptions {
   copy?: [from: string, to?: string][];
 
   /**
-   * Predicate function that determines whether an output file should be added to the written HTML entry point.
+   * Predicate function that determines whether a CSS output file should be added to the written HTML entry point.
    *
    * Esbd makes a best effort to determine which output files should be referenced
-   * as `<script>` and `<link rel="stylesheet">` tags in the HTML entry point, but
-   * in some cases it will be too eager. This most often occurs when a build contains
-   * a mix of HTML entry points and non-HTML entry points.
+   * as `<script>` and `<link rel="stylesheet">` tags in the HTML entry point. By default,
+   * CSS output files will be cross-referenced with CSS and JS entry points defined in HTML.
+   * Both CSS files that are referenced directly in HTML and those that are referenced indirectly
+   * from JS entry points will be included.
+   *
+   * In some cases, more CSS files will need to be included than the default algorithm can detect,
+   * so this function can be used to be more specific since it will receive every CSS output file produced
+   * by esbuild.
    *
    * This function receives an output file path and should return a value indicating
    * whether that file should be referenced in the HTML output.
    */
-  htmlChunkFilter?: (file: string) => boolean;
+  cssChunkFilter?: (absFilePath: string) => boolean;
 
   /**
    * By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and

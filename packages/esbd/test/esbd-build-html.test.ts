@@ -313,4 +313,110 @@ describe('build command (html entry)', () => {
       }),
     ).resolves.toMatchSnapshot();
   });
+
+  it('includes referenced CSS from JS with content hashes', () => {
+    return expect(
+      buildWithHTML({
+        config: {
+          entryNames: '[name]-[hash]',
+          external: ['react', 'react-dom'],
+          splitting: true,
+        },
+        files: {
+          'index.html': `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <script defer type="module" src="./src/entry.tsx"></script>
+              </head>
+              <body><div id='root'></div></body>
+            </html>
+          `,
+          'src/entry.css': `
+            @import "./app.css";
+            body { background: red; }
+          `,
+          'src/app.css': `
+            .app { background: green; }
+          `,
+          'src/route.css': `
+            .route { background: blue; }
+          `,
+          'src/entry.tsx': `
+            import ReactDOM from 'react-dom';
+            import { App } from './app';
+            import './entry.css';
+            ReactDOM.render(<App />, document.getElementById('root'));
+          `,
+          'src/app.tsx': `
+            const Route = import('./route').then(({ default: Route }) => Route);
+            export function App() {
+              return <Suspense><Route>Hello world</Route></Suspense>;
+            }
+          `,
+          'src/route.tsx': `
+            import './route.css';
+            export default function Route() {
+              return <div>Hello world</div>;
+            }
+          `,
+        },
+      }),
+    ).resolves.toMatchSnapshot();
+  });
+
+  it('includes CSS entries and referenced CSS from JS with content hashes and path segments', () => {
+    return expect(
+      buildWithHTML({
+        config: {
+          entryNames: '[ext]/[name]-[hash]',
+          external: ['react', 'react-dom'],
+          splitting: true,
+        },
+        files: {
+          'index.html': `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <link rel="stylesheet" href="src/style.css" />
+                <script defer type="module" src="./src/entry.tsx"></script>
+              </head>
+              <body><div id='root'></div></body>
+            </html>
+          `,
+          'src/entry.css': `
+            @import "./app.css";
+            body { background: red; }
+          `,
+          'src/app.css': `
+            .app { background: green; }
+          `,
+          'src/route.css': `
+            .route { background: blue; }
+          `,
+          'src/style.css': `
+            body { background: yellow; }
+          `,
+          'src/entry.tsx': `
+            import ReactDOM from 'react-dom';
+            import { App } from './app';
+            import './entry.css';
+            ReactDOM.render(<App />, document.getElementById('root'));
+          `,
+          'src/app.tsx': `
+            const Route = import('./route').then(({ default: Route }) => Route);
+            export function App() {
+              return <Suspense><Route>Hello world</Route></Suspense>;
+            }
+          `,
+          'src/route.tsx': `
+            import './route.css';
+            export default function Route() {
+              return <div>Hello world</div>;
+            }
+          `,
+        },
+      }),
+    ).resolves.toMatchSnapshot();
+  });
 });

@@ -23,8 +23,8 @@ export async function getHtmlBuildOptions(
 
   const {
     copy: _,
+    cssChunkFilter,
     format = 'esm',
-    htmlChunkFilter,
     integrity,
     ignoreAssets,
     name: __,
@@ -60,16 +60,16 @@ export async function getHtmlBuildOptions(
     const basedir = config.absWorkingDir;
     const absEntryPath = path.resolve(basedir, entryPath);
 
-    const [entryPoints, writeOptions] = await readTemplate(absEntryPath, {
+    const writeOptions = await readTemplate(absEntryPath, {
       basedir,
       define,
       filename: entryName,
-      htmlChunkFilter,
+      cssChunkFilter,
       ignoreAssets,
       integrity,
     });
 
-    allEntryPoints = { ...allEntryPoints, ...entryPoints };
+    allEntryPoints = { ...allEntryPoints, ...writeOptions.htmlEntryPoints };
     allWriteOptions.push(writeOptions);
   }
 
@@ -102,7 +102,7 @@ export function getBuildOptions(
 
   const {
     copy: _,
-    htmlChunkFilter: __,
+    cssChunkFilter: __,
     integrity: ___,
     ignoreAssets: ____,
     name: _____,

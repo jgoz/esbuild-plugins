@@ -12,10 +12,11 @@ import {
   isScriptOrLinkOrStyle,
 } from './html-utils';
 import type { Document, Element, TextNode } from './parse5';
-import type { EsbuildHtmlOptions } from './types';
 import { cachedCopyFile, calculateIntegrityHash } from './utils';
+import type { EntryPoints, EsbuildHtmlOptions } from './types';
 
 export interface WriteTemplateOptions extends EsbuildHtmlOptions {
+  htmlEntryPoints: EntryPoints;
   tagAssets: [Element, string][];
   textAssets: [TextNode, string][];
   template: {
@@ -39,15 +40,8 @@ export async function writeTemplate(
   fs: FileSystem,
 ): Promise<void> {
   const { absWorkingDir: basedir = process.cwd(), format, outdir, publicPath = '' } = buildOptions;
-  const {
-    tagAssets,
-    textAssets,
-    crossorigin,
-    define,
-    htmlChunkFilter = () => true,
-    integrity,
-    template,
-  } = templateOptions;
+  const { crossorigin, define, htmlEntryPoints, integrity, tagAssets, template, textAssets } =
+    templateOptions;
 
   const { metafile, outputFiles } = result;
 
@@ -77,7 +71,10 @@ export async function writeTemplate(
   const outputs: [entryPoint: string, outputPath: string][] = Object.keys(metafile.outputs)
     .map(o => [metafile.outputs[o], o] as const)
     .filter(([output]) => !!output.entryPoint)
-    .map(([output, outputPath]) => [path.resolve(basedir, output.entryPoint!), outputPath]);
+    .map(([output, outputPath]) => [
+      path.resolve(basedir, output.entryPoint!),
+      path.relative(absTemplateDir, path.resolve(basedir, outputPath)),
+    ]);
 
   const cssOutput = new Map(outputs.filter(([, o]) => o.endsWith('.css')));
   const jsOutput = new Map(outputs.filter(([, o]) => o.endsWith('.js')));
@@ -106,14 +103,64 @@ export async function writeTemplate(
   // the HTML
   if (!modified) return;
 
-  // Find all CSS files that were included in the output since they might not get
-  // considered as entry points above. Files that are considered entry points will
-  // be removed below.
+  let cssChunkFilter = templateOptions.cssChunkFilter;
+  if (!cssChunkFilter) {
+    // The default chunk filter will include any CSS files directly referenced
+    // as entry points as well as those that are referenced by JS entry points.
+    // This is tricky because esbuild doesn't give us a direct mapping between
+    // JS entries and their CSS _output_ files, so we have to make some intelligent
+    // guesses based on corresponding "input" keys in the metafile.
+
+    const htmlEntryPathsAbs = Object.values(htmlEntryPoints).map(filePath =>
+      path.resolve(basedir, filePath),
+    );
+
+    cssChunkFilter = (absCandidatePath: string) => {
+      const candidatePath = path.relative(absTemplateDir, absCandidatePath);
+      for (const [, outputFilePath] of cssOutput) {
+        if (candidatePath === outputFilePath) {
+          // This is the simple case -- the candidate is a CSS file that is directly
+          // referenced as an entry point.
+          return true;
+        }
+      }
+
+      // Complex case -- the candidate might be a CSS file that is referenced by a JS entry point.
+
+      // First, look for the candidate in the metafile "outputs" and extracts its inputs (if any).
+      const candidateInputs = new Set(Object.keys(metafile.outputs[candidatePath]?.inputs ?? {}));
+      if (!candidateInputs.size) return false;
+
+      // A candidate is a "CSS from JS" entry point if exactly one input of the CSS output file
+      // overlaps with an input from a JS entry point referenced in the HTML. This roundabout
+      // heuristic is necessary because esbuild doesn't indicate which CSS files are bound to
+      // JS entry points. We also can't rely on input/output filename matching because the user
+      // might be using [hash], [dir], etc., in the "entryNames" option.
+      for (const absSourceFilePath of htmlEntryPathsAbs) {
+        const outputFilePath = jsOutput.get(absSourceFilePath);
+        if (!outputFilePath) continue;
+
+        const inputs = Object.keys(metafile.outputs[outputFilePath]?.inputs ?? {});
+        if (!inputs.length) continue;
+
+        const intersection = new Set(inputs.filter(input => candidateInputs.has(input)));
+        if (intersection.size === 1) {
+          return true;
+        }
+      }
+
+      return false;
+    };
+  }
+
+  const absOutputFiles = new Map(
+    outputFiles.map(outfile => [path.resolve(outdir, outfile.path), outfile]),
+  );
+
   const extraCss = new Set(
-    outputFiles
-      .filter(f => f.path.endsWith('.css'))
-      .map(f => path.resolve(outdir, f.path))
-      .filter(htmlChunkFilter),
+    Array.from(absOutputFiles.keys())
+      .filter(absFilePath => absFilePath.endsWith('.css'))
+      .filter(cssChunkFilter),
   );
 
   let lastCssEntry: Element | undefined;

@@ -37,6 +37,18 @@ export interface EsbuildHtmlOptions {
   crossorigin?: Crossorigin;
 
   /**
+   * Predicate function that determines whether a CSS output file should be added to the written HTML entry point.
+   *
+   * This function receives an absolute output file path and should return a value indicating
+   * whether that file should be referenced in the HTML output.
+   *
+   * By default, CSS output files will be cross-referenced with CSS and JS entry points, as
+   * specified in the HTML template. CSS files that are referenced directly in HTML and those
+   * that are referenced indirectly from JS entry points will be included.
+   */
+  cssChunkFilter?: (absFilePath: string) => boolean;
+
+  /**
    * Values that will be substituted in the HTML output.
    *
    * Given the following value for `define`:
@@ -74,14 +86,6 @@ export interface EsbuildHtmlOptions {
    * @default undefined
    */
   filename?: string;
-
-  /**
-   * Predicate function that determines whether an output file should be added to the written HTML entry point.
-   *
-   * This function receives an output file path and should return a value indicating
-   * whether that file should be referenced in the HTML output.
-   */
-  htmlChunkFilter?: (file: string) => boolean;
 
   /**
    * By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and

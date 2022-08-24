@@ -21,12 +21,12 @@ export async function readTemplate(
   {
     basedir = process.cwd(),
     define,
-    htmlChunkFilter,
+    cssChunkFilter,
     filename = path.basename(templatePath),
     ignoreAssets,
     integrity,
   }: EsbuildHtmlOptions,
-): Promise<[EntryPoints, WriteTemplateOptions]> {
+): Promise<WriteTemplateOptions> {
   const absTemplatePath = path.resolve(basedir, templatePath);
   const absTemplateDir = path.dirname(absTemplatePath);
 
@@ -100,23 +100,21 @@ export async function readTemplate(
     }
   }
 
-  return [
-    entryPoints,
-    {
-      tagAssets,
-      textAssets,
-      define,
-      htmlChunkFilter,
-      filename,
-      ignoreAssets,
-      integrity,
-      template: {
-        document,
-        head,
-        body,
-        inputPath: absTemplatePath,
-        outputPath: filename,
-      },
+  return {
+    tagAssets,
+    textAssets,
+    define,
+    cssChunkFilter,
+    htmlEntryPoints: entryPoints,
+    filename,
+    ignoreAssets,
+    integrity,
+    template: {
+      document,
+      head,
+      body,
+      inputPath: absTemplatePath,
+      outputPath: filename,
     },
-  ];
+  };
 }
