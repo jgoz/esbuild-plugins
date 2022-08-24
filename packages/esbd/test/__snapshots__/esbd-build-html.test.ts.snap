@@ -386,6 +386,84 @@ index.html
 
 `;
 
+exports[`build command (html entry) > includes referenced compile-to-CSS from JS with content hashes 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished index.html with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry-3GUKJLPG.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react-dom";
+
+// src/app.tsx
+var Route = import("./route-M5ZSN7S2.js").then(({ default: Route2 }) => Route2);
+function App() {
+  return /* @__PURE__ */ React.createElement(
+    Suspense,
+    null,
+    /* @__PURE__ */ React.createElement(Route, null, "Hello world")
+  );
+}
+
+// src/entry.tsx
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+---------------------------------
+entry-OSY7SPHL.css
+---------------------------------
+/* sass:./route.css */
+.route {
+  background: blue;
+}
+
+/* sass:./app.css */
+.app {
+  background: green;
+}
+
+/* sass:./entry.css */
+body {
+  background: red;
+}
+
+---------------------------------
+index.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <script defer="" type="module" src="entry-3GUKJLPG.js"></script>
+    <link href="entry-OSY7SPHL.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+---------------------------------
+route-M5ZSN7S2.js
+---------------------------------
+// src/route.tsx
+function Route() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+export { Route as default };
+
+---------------------------------
+route-SG2FYVD5.css
+---------------------------------
+/* sass:./route.css */
+.route {
+  background: blue;
+}
+
+`;
+
 exports[`build command (html entry) > supports automatic react runtime 1`] = `
 ---------------------------------
 STDOUT

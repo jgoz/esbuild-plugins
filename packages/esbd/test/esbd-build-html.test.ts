@@ -10,6 +10,7 @@ import type { BuildWithHTMLOutput } from './config/serializer';
 interface BuildWithHTMLOptions {
   config: Partial<EsbdConfig>;
   files: { [file: string]: string };
+  pluginsStr?: string;
 }
 
 const TEST_ROOT = path.join(__dirname, '..', 'test-results', 'html');
@@ -40,10 +41,19 @@ async function buildWithHTML(options: BuildWithHTMLOptions): Promise<BuildWithHT
     },
   };
 
+  let bundleContents = `
+    const config = ${JSON.stringify(config, undefined, 2)};
+  `;
+  if (options.pluginsStr) {
+    bundleContents += `
+      config.plugins = ${options.pluginsStr};
+    `;
+  }
+
   const bundleFile = path.join(absWorkingDir, 'bundle.js');
   const writeBundle = fs.promises.writeFile(
     bundleFile,
-    `require('../../../lib').configure(${JSON.stringify(config)});`,
+    `${bundleContents}require('../../../lib').configure(config);`,
   );
 
   const writeFiles = Object.entries(options.files).map(async ([file, content]) => {
@@ -396,6 +406,76 @@ describe('build command (html entry)', () => {
           `,
           'src/style.css': `
             body { background: yellow; }
+          `,
+          'src/entry.tsx': `
+            import ReactDOM from 'react-dom';
+            import { App } from './app';
+            import './entry.css';
+            ReactDOM.render(<App />, document.getElementById('root'));
+          `,
+          'src/app.tsx': `
+            const Route = import('./route').then(({ default: Route }) => Route);
+            export function App() {
+              return <Suspense><Route>Hello world</Route></Suspense>;
+            }
+          `,
+          'src/route.tsx': `
+            import './route.css';
+            export default function Route() {
+              return <div>Hello world</div>;
+            }
+          `,
+        },
+      }),
+    ).resolves.toMatchSnapshot();
+  });
+
+  it('includes referenced compile-to-CSS from JS with content hashes', () => {
+    const pluginsStr = `[
+      {
+        name: 'fake-sass-plugin',
+        setup(build) {
+          build.onResolve({ filter: /\\.css$/ }, args => {
+            return { path: args.path, namespace: 'sass', pluginData: args };
+          });
+          build.onLoad({ filter: /\\.css$/, namespace: 'sass' }, async (args) => {
+            const text = await require('fs').promises.readFile(require('path').resolve('./src', args.path), 'utf8');
+            return {
+              contents: text,
+              loader: 'css',
+            };
+          });
+        },
+      },
+    ]`;
+
+    return expect(
+      buildWithHTML({
+        config: {
+          entryNames: '[name]-[hash]',
+          external: ['react', 'react-dom'],
+          splitting: true,
+        },
+        pluginsStr,
+        files: {
+          'index.html': `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <script defer type="module" src="./src/entry.tsx"></script>
+              </head>
+              <body><div id='root'></div></body>
+            </html>
+          `,
+          'src/entry.css': `
+            @import "./app.css";
+            body { background: red; }
+          `,
+          'src/app.css': `
+            .app { background: green; }
+          `,
+          'src/route.css': `
+            .route { background: blue; }
           `,
           'src/entry.tsx': `
             import ReactDOM from 'react-dom';
