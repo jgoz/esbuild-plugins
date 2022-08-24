@@ -124,7 +124,10 @@ export default async function esbdNodeDev(
       if (!entryOutputFile) throw new Error('Unable to find entry point script');
 
       await Promise.all(
-        result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
+        result.outputFiles.map(async file => {
+          await fs.promises.mkdir(path.dirname(file.path), { recursive: true });
+          await fs.promises.writeFile(file.path, file.contents);
+        }),
       );
 
       logger.info(`Starting ${pc.cyan(entryOutputFile.path)} ${pc.gray(args.join(' '))}`);

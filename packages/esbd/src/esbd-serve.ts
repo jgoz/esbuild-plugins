@@ -130,7 +130,10 @@ export default async function esbdServe(
               writeFile: fs.promises.writeFile,
             }),
           ),
-          ...result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
+          ...result.outputFiles.map(async file => {
+            await fs.promises.mkdir(path.dirname(file.path), { recursive: true });
+            await fs.promises.writeFile(file.path, file.contents);
+          }),
         ]);
       }
 

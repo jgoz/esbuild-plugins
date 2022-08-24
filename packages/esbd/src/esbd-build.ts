@@ -1,6 +1,6 @@
 import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
 import fs from 'fs';
-import { basename, relative } from 'path';
+import { basename, dirname, relative } from 'path';
 import pc from 'picocolors';
 import prettyBytes from 'pretty-bytes';
 
@@ -96,7 +96,10 @@ async function esbdBuildHtml(
               writeFile: fs.promises.writeFile,
             }),
           ),
-          ...result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
+          ...result.outputFiles.map(async file => {
+            await fs.promises.mkdir(dirname(file.path), { recursive: true });
+            await fs.promises.writeFile(file.path, file.contents);
+          }),
         ]);
       }
       logOutput(result, logger);
@@ -130,7 +133,10 @@ async function esbdBuildSource(
 
     onBuildResult: async result => {
       await Promise.all(
-        result.outputFiles.map(file => fs.promises.writeFile(file.path, file.contents)),
+        result.outputFiles.map(async file => {
+          await fs.promises.mkdir(dirname(file.path), { recursive: true });
+          await fs.promises.writeFile(file.path, file.contents);
+        }),
       );
       logOutput(result, logger);
     },
