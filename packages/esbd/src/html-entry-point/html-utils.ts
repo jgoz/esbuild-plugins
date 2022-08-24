@@ -2,7 +2,7 @@ import path from 'path';
 
 import type { Attribute, ChildNode, DocumentType, Element, ParentNode, TextNode } from './parse5';
 import type { Crossorigin, HashAlgorithm } from './types';
-import { calculateIntegrityHash, collect } from './utils';
+import { calculateFileIntegrityHash, collect } from './utils';
 
 export const defaultDoctype: DocumentType = {
   nodeName: '#documentType' as DocumentType['nodeName'],
@@ -102,7 +102,7 @@ export async function createLinkElement({
     crossorigin && { name: 'crossorigin', value: crossorigin },
     integrity && {
       name: 'integrity',
-      value: await calculateIntegrityHash(absOutputPath, integrity),
+      value: await calculateFileIntegrityHash(absOutputPath, integrity),
     },
   ]);
   return createElement(parentNode, 'link', attrs);

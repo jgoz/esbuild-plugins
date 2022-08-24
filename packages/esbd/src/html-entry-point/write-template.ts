@@ -12,8 +12,8 @@ import {
   isScriptOrLinkOrStyle,
 } from './html-utils';
 import type { Document, Element, TextNode } from './parse5';
-import { cachedCopyFile, calculateIntegrityHash } from './utils';
 import type { EntryPoints, EsbuildHtmlOptions } from './types';
+import { cachedCopyFile, calculateContentIntegrityHash, calculateFileIntegrityHash } from './utils';
 
 export interface WriteTemplateOptions extends EsbuildHtmlOptions {
   htmlEntryPoints: EntryPoints;
@@ -172,7 +172,7 @@ export async function writeTemplate(
     const absInputPath = path.resolve(absTemplateDir, url.value);
     const outputPath = cssOutput.get(absInputPath) ?? jsOutput.get(absInputPath);
     if (outputPath && isElement(node)) {
-      const absOutputPath = path.resolve(basedir, outputPath);
+      const absOutputPath = path.resolve(absTemplateDir, outputPath);
       const relativeOutputPath = path.relative(absOutDir, absOutputPath);
       const outputUrl = path.posix.join(publicPath, relativeOutputPath);
 
@@ -193,10 +193,13 @@ export async function writeTemplate(
       }
 
       if (integrity) {
-        node.attrs.push({
-          name: 'integrity',
-          value: await calculateIntegrityHash(path.resolve(absOutDir, outputUrl), integrity),
-        });
+        const file = absOutputFiles.get(absOutputPath);
+        if (file) {
+          node.attrs.push({
+            name: 'integrity',
+            value: calculateContentIntegrityHash(file.contents, integrity),
+          });
+        }
       }
 
       // File was an entry point, so remove it from the list of extra CSS files
@@ -233,7 +236,10 @@ export async function writeTemplate(
       if (integrity) {
         node.attrs.push({
           name: 'integrity',
-          value: await calculateIntegrityHash(path.resolve(absTemplateDir, inputPath), integrity),
+          value: await calculateFileIntegrityHash(
+            path.resolve(absTemplateDir, inputPath),
+            integrity,
+          ),
         });
       }
       assetPaths.push([inputPath, path.resolve(absOutDir, basename)]);

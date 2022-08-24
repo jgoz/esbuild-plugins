@@ -15,7 +15,17 @@ export function cachedCopyFile(
   };
 }
 
-export async function calculateIntegrityHash(
+export function calculateContentIntegrityHash(
+  content: Uint8Array,
+  integrity: HashAlgorithm,
+): string {
+  const hash = createHash(integrity);
+  hash.update(content);
+
+  return `${integrity}-${hash.digest('base64')}`;
+}
+
+export async function calculateFileIntegrityHash(
   filePath: string,
   integrity: HashAlgorithm,
 ): Promise<string> {
