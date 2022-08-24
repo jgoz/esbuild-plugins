@@ -1,5 +1,12 @@
 # esbd
 
+## 2.2.3
+
+### Patch Changes
+
+- dcee09d: Allow deference to default css chunk inclusion behavior
+- ef54607: Inject defines before rebasing asset URLs
+
 ## 2.2.2
 
 ### Patch Changes
