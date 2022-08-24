@@ -56,7 +56,7 @@ export default async function esbdServe(
     ? config.entryPoints.map(entry => [entry, entry] as const)
     : Object.entries(config.entryPoints);
 
-  const [buildOptions, allWriteOptions] = await getHtmlBuildOptions(entries, mode, config);
+  let [buildOptions, allWriteOptions] = await getHtmlBuildOptions(entries, mode, config);
 
   if (allWriteOptions.length === 0) {
     logger.error('At least one HTML entry point is required for "serve" but none were found.');
@@ -111,6 +111,7 @@ export default async function esbdServe(
     runner.start();
   }
 
+  // TODO: watch HTML entry points
   const build = await incrementalBuild({
     ...buildOptions,
     banner: banner
@@ -123,6 +124,11 @@ export default async function esbdServe(
     watch: true,
     onBuildResult: async (result, options) => {
       if (!result.errors?.length) {
+        // Re-parse the HTML files to pick up any changes to the template and because
+        // the parse5 document is mutable, so successive builds may continue adding
+        // new elements to the document incorrectly.
+        [, allWriteOptions] = await getHtmlBuildOptions(entries, mode, config);
+
         await Promise.all([
           ...allWriteOptions.map(writeOptions =>
             writeTemplate(result, options, writeOptions, {
