@@ -1,5 +1,13 @@
 # esbd
 
+## 2.2.2
+
+### Patch Changes
+
+- a21ecd1: Improve CSS entry point detection algorithm
+- d7b7bab: Fix integrity hash calculation for unwritten files
+- 486b077: Ensure full output dirname exists before write
+
 ## 2.2.1
 
 ### Patch Changes
