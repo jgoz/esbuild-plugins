@@ -28,6 +28,10 @@ export function findChildElement(parentNode: ParentNode, tagName: string): Eleme
   return found as Element | undefined;
 }
 
+export function getAttribute(node: ChildNode, name: string): Attribute | undefined {
+  return isElement(node) ? node.attrs.find(attr => attr.name === name) : undefined;
+}
+
 export function getUrl(node: ChildNode): Attribute | undefined {
   return isElement(node)
     ? node.attrs.find(attr => attr.name === 'href' || attr.name === 'src')

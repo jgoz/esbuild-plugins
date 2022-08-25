@@ -288,6 +288,31 @@ If `src/entry.tsx` included any CSS assets, either directly or indirectly via it
 
 There are two configuration options that affect HTML entry point behavior: `ignoreAssets` and `integrity`. You can read about them in the [API](#api) section.
 
+Entry names (output filenames) for entry points may be customized using a `data-entry-name` attribute.
+Entry name attributes can optionally reference values that appear in the `define` config.
+
+```html
+<!-- index.html entry point -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Will be written as "styles.css" -->
+    <link rel="stylesheet" href="./styles/entry.css" data-entry-name="styles" />
+
+    <!-- Will be written as "script-1.2.3.js" if {{version}} is defined as "1.2.3" -->
+    <script
+      data-entry-name="script-{{version}}"
+      defer
+      type="module"
+      src="./src/entry.tsx"
+    ></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+```
+
 ### Copying static assets
 
 Esbd can copy static assets to the output directory that would not otherwise be discovered through esbuild's dependency resolution. This works for files referenced by [HTML entry points](#html-entry-points) and also via the `copy` [configuration option](#api).

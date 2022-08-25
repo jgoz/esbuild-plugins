@@ -5,6 +5,7 @@ import path from 'path';
 import {
   defaultDoctype,
   findChildElement,
+  getAttribute,
   getUrl,
   isAbsoluteOrURL,
   isElement,
@@ -14,6 +15,7 @@ import {
 import { parseURLs } from './parse-urls';
 import type { Element, TextNode } from './parse5';
 import type { EntryPoints, EsbuildHtmlOptions } from './types';
+import { substituteDefines } from './utils';
 import type { WriteTemplateOptions } from './write-template';
 
 export async function readTemplate(
@@ -61,7 +63,11 @@ export async function readTemplate(
     const url = getUrl(tag);
     if (!url || isAbsoluteOrURL(url.value) || isNonStylesheetLink(tag)) continue;
 
-    const entryName = path.basename(url.value, path.extname(url.value));
+    const entryName = substituteDefines(
+      getAttribute(tag, 'data-entry-name')?.value ??
+        path.basename(url.value, path.extname(url.value)),
+      define,
+    );
     const entryPath = path.relative(basedir, path.resolve(absTemplateDir, url.value));
     entryPointsWithDuplicates[entryName] ??= [];
     entryPointsWithDuplicates[entryName].push(entryPath);

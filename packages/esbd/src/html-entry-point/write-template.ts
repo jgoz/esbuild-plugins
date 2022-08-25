@@ -13,7 +13,12 @@ import {
 } from './html-utils';
 import type { Document, Element, TextNode } from './parse5';
 import type { EntryPoints, EsbuildHtmlOptions } from './types';
-import { cachedCopyFile, calculateContentIntegrityHash, calculateFileIntegrityHash } from './utils';
+import {
+  cachedCopyFile,
+  calculateContentIntegrityHash,
+  calculateFileIntegrityHash,
+  substituteDefines,
+} from './utils';
 
 export interface WriteTemplateOptions extends EsbuildHtmlOptions {
   htmlEntryPoints: EntryPoints;
@@ -186,7 +191,7 @@ export async function writeTemplate(
       const relativeOutputPath = path.relative(absOutDir, absOutputPath);
       const outputUrl = path.posix.join(publicPath, relativeOutputPath);
 
-      node.attrs ??= [];
+      node.attrs = node.attrs?.filter(a => a.name !== 'data-entry-name') ?? [];
       if (node.nodeName === 'link') {
         const href = node.attrs.find(a => a.name === 'href');
         if (href) href.value = outputUrl;
@@ -321,14 +326,4 @@ function rebaseAssetURL(
     inputPath,
     basename,
   };
-}
-
-function substituteDefines(value: string, define: Record<string, string> | undefined): string {
-  if (define) {
-    for (const def of Object.keys(define)) {
-      const re = new RegExp(`\\{\\{\\s*${def}\\s*\\}\\}`, 'gi');
-      value = value.replace(re, define[def]);
-    }
-  }
-  return value;
 }

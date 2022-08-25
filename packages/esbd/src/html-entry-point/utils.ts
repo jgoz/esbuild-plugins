@@ -44,3 +44,16 @@ export async function calculateFileIntegrityHash(
 export function collect<T>(values: (T | false | undefined | null)[]): T[] {
   return values.filter((v): v is T => !!v);
 }
+
+export function substituteDefines(
+  value: string,
+  define: Record<string, string> | undefined,
+): string {
+  if (define) {
+    for (const def of Object.keys(define)) {
+      const re = new RegExp(`\\{\\{\\s*${def}\\s*\\}\\}`, 'gi');
+      value = value.replace(re, define[def]);
+    }
+  }
+  return value;
+}

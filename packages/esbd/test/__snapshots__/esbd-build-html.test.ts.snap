@@ -1,5 +1,64 @@
 // Vitest Snapshot v1
 
+exports[`build command (html entry) > allows entry name overrides via data-entry-name attribute 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished index.html with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+favicon.png
+---------------------------------
+IMA FAVICON
+---------------------------------
+index.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="preload"
+      as="fetch"
+      crossorigin="anonymous"
+      type="application/json"
+      href="/abs-manifest.json"
+    />
+    <link
+      rel="preload"
+      as="fetch"
+      crossorigin="anonymous"
+      type="application/json"
+      href="manifest.json"
+    />
+    <link rel="apple-touch-icon" href="favicon.png?v=1.2.3" />
+    <script defer="" type="module" src="my-entry-1.2.3.js"></script>
+    <script>
+      window.__app_version__ = "1.2.3";
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+---------------------------------
+manifest.json
+---------------------------------
+Man, I fest
+---------------------------------
+my-entry-1.2.3.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react-dom";
+function App() {
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world");
+}
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+`;
+
 exports[`build command (html entry) > builds a simple HTML entry point 1`] = `
 ---------------------------------
 STDOUT

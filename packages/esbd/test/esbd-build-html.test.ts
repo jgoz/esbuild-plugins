@@ -578,4 +578,43 @@ describe('build command (html entry)', () => {
       }),
     ).resolves.toMatchSnapshot();
   });
+
+  it('allows entry name overrides via data-entry-name attribute', () => {
+    return expect(
+      buildWithHTML({
+        config: {
+          define: {
+            __APP_VERSION__: JSON.stringify('1.2.3'),
+            SERVER_MANIFEST_URL: JSON.stringify('/abs-manifest.json'),
+            LOCAL_MANIFEST_URL: JSON.stringify('assets/manifest.json'),
+          },
+          external: ['react', 'react-dom'],
+        },
+        files: {
+          'index.html': `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <link rel="preload" as="fetch" crossorigin="anonymous" type="application/json" href="{{SERVER_MANIFEST_URL}}" />
+                <link rel="preload" as="fetch" crossorigin="anonymous" type="application/json" href="{{LOCAL_MANIFEST_URL}}" />
+                <link rel="apple-touch-icon" href="./assets/favicon.png?v={{__APP_VERSION__}}"/>
+                <script defer type="module" data-entry-name="my-entry-{{__APP_VERSION__}}" src="./src/entry.tsx"></script>
+                <script>
+                  window.__app_version__ = '{{__APP_VERSION__}}';
+                </script>
+              </head>
+              <body><div id='root'></div></body>
+            </html>
+          `,
+          'assets/favicon.png': 'IMA FAVICON',
+          'assets/manifest.json': 'Man, I fest',
+          'src/entry.tsx': `
+            import ReactDOM from 'react-dom';
+            function App() { return <div>Hello world</div>; }
+            ReactDOM.render(<App />, document.getElementById('root'));
+          `,
+        },
+      }),
+    ).resolves.toMatchSnapshot();
+  });
 });
