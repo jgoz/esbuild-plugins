@@ -1,5 +1,11 @@
 # esbd
 
+## 2.3.0
+
+### Minor Changes
+
+- a2bfd12: Accept data-entry-name for entryname customization
+
 ## 2.2.5
 
 ### Patch Changes
