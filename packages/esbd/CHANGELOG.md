@@ -1,5 +1,11 @@
 # esbd
 
+## 2.3.1
+
+### Patch Changes
+
+- c68385d: Wait for process exit before restart
+
 ## 2.3.0
 
 ### Minor Changes
