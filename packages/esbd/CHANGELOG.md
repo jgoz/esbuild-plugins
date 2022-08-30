@@ -1,5 +1,11 @@
 # esbd
 
+## 2.4.0
+
+### Minor Changes
+
+- b1eb226: Throttle builds and queue watch events while building
+
 ## 2.3.1
 
 ### Patch Changes
