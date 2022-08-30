@@ -133,8 +133,13 @@ export default async function esbdNodeDev(
       logger.info(`Starting ${pc.cyan(entryOutputFile.path)} ${pc.gray(args.join(' '))}`);
       runProgram(entryOutputFile.path, args);
     },
-    onWatchEvent: async (event: string, filePath: string) => {
-      logger.info(pc.gray(`${filePath} ${event}, rebuilding and restarting`));
+    onWatchEvent: async events => {
+      if (events.length === 1) {
+        const [event, filePath] = events[0];
+        logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
+      } else {
+        logger.info(pc.gray(`${events.length} files changed, rebuilding`));
+      }
       child.removeAllListeners();
       await new Promise<void>((resolve, reject) => {
         child.on('exit', resolve);

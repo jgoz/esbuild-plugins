@@ -156,8 +156,13 @@ export default async function esbdServe(
         notify('esbuild', { cssUpdate, errors: result.errors, warnings: result.warnings }, clients);
       }
     },
-    onWatchEvent: (event: string, filePath: string) => {
-      logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
+    onWatchEvent: events => {
+      if (events.length === 1) {
+        const [event, filePath] = events[0];
+        logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
+      } else {
+        logger.info(pc.gray(`${events.length} files changed, rebuilding`));
+      }
     },
   });
 

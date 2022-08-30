@@ -7,7 +7,7 @@ import prettyBytes from 'pretty-bytes';
 import type { BuildMode, ResolvedEsbdConfig, TsBuildMode } from './config';
 import { getBuildOptions, getHtmlBuildOptions } from './get-build-options';
 import { writeTemplate } from './html-entry-point';
-import type { BuildIncrementalResult } from './incremental-build';
+import type { BuildIncrementalResult, WatchEvent } from './incremental-build';
 import { incrementalBuild } from './incremental-build';
 import type { Logger } from './log';
 import { timingPlugin } from './timing-plugin';
@@ -104,9 +104,7 @@ async function esbdBuildHtml(
       }
       logOutput(result, logger);
     },
-    onWatchEvent: (event, filePath) => {
-      logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
-    },
+    onWatchEvent: events => onWatchEvent(logger, events),
   });
 
   if (!watch) build.rebuild.dispose();
@@ -140,9 +138,7 @@ async function esbdBuildSource(
       );
       logOutput(result, logger);
     },
-    onWatchEvent: (event, filePath) => {
-      logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
-    },
+    onWatchEvent: events => onWatchEvent(logger, events),
   });
 
   if (!watch) build.rebuild.dispose();
@@ -157,5 +153,14 @@ function logOutput(result: BuildIncrementalResult, logger: Logger) {
         )})`,
       ),
     );
+  }
+}
+
+function onWatchEvent(logger: Logger, events: WatchEvent[]): void {
+  if (events.length === 1) {
+    const [event, filePath] = events[0];
+    logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
+  } else {
+    logger.info(pc.gray(`${events.length} files changed, rebuilding`));
   }
 }

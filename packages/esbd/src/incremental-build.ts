@@ -29,6 +29,8 @@ function validateResult(result: BuildResult): asserts result is BuildIncremental
 
 type BuildIncrementalOptions = BuildOptions & { incremental: true; metafile: true; write: false };
 
+export type WatchEvent = [event: string, path: string];
+
 interface IncrementalBuildOptions extends BuildIncrementalOptions {
   absWorkingDir: string;
   copy?: [from: string, to?: string][];
@@ -37,7 +39,7 @@ interface IncrementalBuildOptions extends BuildIncrementalOptions {
     result: BuildIncrementalResult,
     options: BuildIncrementalOptions,
   ) => Promise<void> | void;
-  onWatchEvent: (event: string, path: string) => Promise<void> | void;
+  onWatchEvent: (events: WatchEvent[]) => Promise<void> | void;
 }
 
 interface IncrementalBuildResult extends BuildIncrementalResult {
@@ -51,17 +53,27 @@ const NULL_RESULT: Omit<BuildIncrementalResult, 'rebuild'> = {
   outputFiles: [],
 };
 
-const INPUT_WATCH_IGNORE = [
-  /[/\\]node_modules[/\\]/,
-  /[/\\]\.git[/\\]/,
-  /\.tsbuildinfo$/,
-  /\.d.ts$/,
-  /\.map$/,
-];
-
 const MODULE_WATCH_IGNORE = [/[/\\]\.git[/\\]/, /\.tsbuildinfo$/, /\.d.ts$/, /\.map$/];
+const INPUT_WATCH_IGNORE = MODULE_WATCH_IGNORE.concat(/[/\\]node_modules[/\\]/);
 
 const NODE_MODULES_LEN = 'node_modules'.length;
+
+function createThrottled<T>(fn: (args: T[]) => any, delay: number) {
+  let timeout: NodeJS.Timeout | null = null;
+  let queuedArgs: T[] = [];
+
+  return (arg: T) => {
+    if (!timeout) {
+      timeout = setTimeout(() => {
+        const argsToCall = queuedArgs.slice();
+        timeout = null;
+        queuedArgs = [];
+        fn(argsToCall);
+      }, delay);
+    }
+    queuedArgs.push(arg);
+  };
+}
 
 export async function incrementalBuild({
   copy,
@@ -99,6 +111,7 @@ export async function incrementalBuild({
     cwd: basedir,
     disableGlobbing: true,
     ignored: INPUT_WATCH_IGNORE,
+    ignoreInitial: true,
   });
 
   const moduleWatcher = watch([], {
@@ -106,42 +119,15 @@ export async function incrementalBuild({
     depth: 2,
     disableGlobbing: true,
     ignored: MODULE_WATCH_IGNORE,
+    ignoreInitial: true,
     interval: 2000,
     usePolling: true,
   });
 
   const assetWatcher = watch([], {
     disableGlobbing: true,
+    ignoreInitial: true,
   });
-
-  function onInputEvent(event: string, path: string) {
-    if (running) return;
-    if (INPUT_WATCH_IGNORE.some(re => re.test(path))) return;
-    Promise.resolve(onWatchEvent(event, path))
-      .then(triggerBuild)
-      .catch(e => logger.error(e));
-  }
-
-  function onModuleEvent(path: string) {
-    if (running) return;
-    if (MODULE_WATCH_IGNORE.some(re => re.test(path))) return;
-    Promise.resolve(onWatchEvent('change', path))
-      .then(triggerBuild)
-      .catch(e => logger.error(e));
-  }
-
-  function onAssetEvent(event: string, path: string) {
-    if (running) return;
-    console.log(event, path);
-    if (event === 'unlink') {
-      assetWatcher.unwatch(path);
-      return;
-    }
-    if (event === 'add') {
-      assetWatcher.add(path);
-    }
-    copyAssets(path).catch(e => logger.error(e));
-  }
 
   function copyAssets(fromPath?: string) {
     return Promise.all(
@@ -154,35 +140,25 @@ export async function incrementalBuild({
     );
   }
 
-  function startWatchers() {
-    setTimeout(() => {
-      if (running) return;
-      inputWatcher.once('all', onInputEvent);
-      moduleWatcher.once('change', onModuleEvent);
-      assetWatcher.on('all', onAssetEvent);
-
-      const inputCount = Object.keys(inputWatcher.getWatched()).length;
-      const modCount = Object.keys(moduleWatcher.getWatched()).length;
-      logger.debug(`Started watching for changes (${inputCount} inputs, ${modCount} modules)`);
-    }, 100);
-  }
-
-  async function triggerBuild() {
-    running = true;
-    logger.debug('Stopped watching for changes');
-    await inputWatcher.close();
-    await moduleWatcher.close();
-    await assetWatcher.close();
-
+  async function triggerBuild(): Promise<BuildIncrementalResult> {
     let result: BuildIncremental;
     try {
+      logger.debug('Starting build');
       result = await rebuild();
       validateResult(result);
       if (absOutDir) await mkdirp(absOutDir);
       await copyAssets();
       await onBuildResult(result, options);
+
+      logger.debug('Build successful');
+      rebuild = result.rebuild;
+      if (watchForChanges) {
+        updateWatchedFiles(result.metafile);
+      }
+
+      return result;
     } catch (e) {
-      running = false;
+      logger.debug('Build failed', e);
       result = {
         ...NULL_RESULT,
         errors: (e as any).errors ?? [],
@@ -192,29 +168,25 @@ export async function incrementalBuild({
       validateResult(result);
       await onBuildResult(result, options);
 
-      evt.emit('end');
-
-      // Watch the files & modules from the last successful build result
-      if (watchForChanges) {
-        inputWatcher.add(Array.from(watchedInputs));
-        moduleWatcher.add(Array.from(watchedModules));
-        assetWatcher.add(normalizedCopy.map(c => c[0]));
-        startWatchers();
-      } else {
+      if (!watchForChanges) {
         throw e;
       }
       return result;
+    } finally {
+      evt.emit('end');
     }
+  }
+  triggerBuild.dispose = async () => {
+    if (rebuild?.dispose) rebuild.dispose();
+    await inputWatcher.close();
+    await moduleWatcher.close();
+    await assetWatcher.close();
+  };
 
-    running = false;
-    rebuild = result.rebuild;
-
-    if (!watchForChanges) return result;
-
-    watchedInputs.clear();
-    watchedModules.clear();
-
-    const inputs = Object.keys(result.metafile.inputs);
+  function updateWatchedFiles(metafile: Metafile): void {
+    const nextInputs = new Set<string>();
+    const nextModules = new Set<string>();
+    const inputs = Object.keys(metafile.inputs);
     for (const inputKey of inputs) {
       const input = inputKey.includes(':') ? inputKey.split(':')[1] : inputKey;
 
@@ -233,30 +205,43 @@ export async function incrementalBuild({
           }
 
           const mod = input.slice(0, modIndex);
-          watchedModules.add(mod);
+          nextModules.add(mod);
         }
       } else {
         // For source files, watch each file individually
-        watchedInputs.add(input);
+        nextInputs.add(input);
       }
     }
 
-    inputWatcher.add(Array.from(watchedInputs));
-    moduleWatcher.add(Array.from(watchedModules));
-    assetWatcher.add(normalizedCopy.map(c => c[0]));
-
-    evt.emit('end');
-    startWatchers();
-
-    return result;
+    for (const addedInput of nextInputs) {
+      if (!watchedInputs.has(addedInput)) {
+        logger.debug(`Watching ${addedInput}`);
+        inputWatcher.add(addedInput);
+        watchedInputs.add(addedInput);
+      }
+    }
+    for (const deletedInput of watchedInputs) {
+      if (!nextInputs.has(deletedInput)) {
+        logger.debug(`Un-watching ${deletedInput}`);
+        inputWatcher.unwatch(deletedInput);
+        watchedInputs.delete(deletedInput);
+      }
+    }
+    for (const addedModule of nextModules) {
+      if (!watchedModules.has(addedModule)) {
+        logger.debug(`Watching ${addedModule}`);
+        moduleWatcher.add(addedModule);
+        watchedModules.add(addedModule);
+      }
+    }
+    for (const deletedModule of watchedModules) {
+      if (!nextModules.has(deletedModule)) {
+        logger.debug(`Un-watching ${deletedModule}`);
+        moduleWatcher.unwatch(deletedModule);
+        watchedModules.delete(deletedModule);
+      }
+    }
   }
-
-  triggerBuild.dispose = async () => {
-    if (rebuild?.dispose) rebuild.dispose();
-    await inputWatcher.close();
-    await moduleWatcher.close();
-    await assetWatcher.close();
-  };
 
   function wait(): Promise<void> {
     if (!running) return Promise.resolve();
@@ -265,8 +250,57 @@ export async function incrementalBuild({
     });
   }
 
+  const throttledBuild = createThrottled((watchEvents: WatchEvent[]) => {
+    running = true;
+    Promise.resolve(onWatchEvent(watchEvents))
+      .then(triggerBuild)
+      .catch(logger.error)
+      .finally(() => {
+        running = false;
+      });
+  }, 25);
+
+  function triggerBuildOrQueue(watchEvent: WatchEvent) {
+    wait()
+      .then(() => throttledBuild(watchEvent))
+      .catch(logger.error);
+  }
+
+  function onInputEvent(event: string, path: string) {
+    if (INPUT_WATCH_IGNORE.some(re => re.test(path))) return;
+    triggerBuildOrQueue([event, path]);
+  }
+
+  function onModuleEvent(path: string) {
+    if (MODULE_WATCH_IGNORE.some(re => re.test(path))) return;
+    triggerBuildOrQueue(['change', path]);
+  }
+
+  function onAssetEvent(event: string, path: string) {
+    if (event === 'unlink') {
+      assetWatcher.unwatch(path);
+      return;
+    }
+    if (event === 'add') {
+      assetWatcher.add(path);
+    }
+    copyAssets(path).catch(logger.error);
+  }
+
   const initialResult = await triggerBuild();
   validateResult(initialResult);
+
+  if (watchForChanges) {
+    assetWatcher.add(normalizedCopy.map(([from]) => from));
+
+    inputWatcher.on('all', onInputEvent);
+    moduleWatcher.on('change', onModuleEvent);
+    assetWatcher.on('all', onAssetEvent);
+
+    const inputCount = Object.keys(inputWatcher.getWatched()).length;
+    const modCount = Object.keys(moduleWatcher.getWatched()).length;
+    logger.debug(`Started watching for changes (${inputCount} inputs, ${modCount} modules)`);
+  }
 
   return { ...initialResult, rebuild: triggerBuild, wait };
 }
