@@ -53,7 +53,7 @@ const test = base.extend<ServerTestFixtures>({
   },
 
   startServer: async ({ port, absWorkingDir, writeFiles }, use) => {
-    let proc: ExecaChildProcess;
+    let proc: ExecaChildProcess | undefined;
 
     const startServer = async (serverConfig: ServerConfig) => {
       const { args = [], config, files, respawn, onStderr, onStdout } = serverConfig;
@@ -86,7 +86,7 @@ const test = base.extend<ServerTestFixtures>({
 
       await Promise.all([writeBundle, writeFiles(initialFiles)]);
 
-      proc = node(bundleFile, ['node-dev', '-l', 'verbose', respawn && '-r', ...args], {
+      proc = node(bundleFile, ['node-dev', '-l', 'verbose', respawn ? '-r' : '', ...args], {
         encoding: 'utf8',
         reject: false,
         cwd: absWorkingDir,
@@ -95,15 +95,16 @@ const test = base.extend<ServerTestFixtures>({
 
       await waitOn({ resources: [`http-get://127.0.0.1:${port}`], timeout: 10000 });
 
-      proc.stdout.on('data', (chunk: Buffer) => {
+      proc.stdout!.on('data', (chunk: Buffer) => {
+        // console.log(chunk.toString());
         const str = chunk.toString();
-        if (/rebuilding and restarting/.exec(str)) {
+        if (/rebuilding/.exec(str)) {
           evt.emit('done');
         }
-        if (/Started watching for changes/.exec(str)) {
+        if (/(Started watching for changes|Updated watched files)/.exec(str)) {
           evt.emit('watch-on');
         }
-        if (/Stopped watching for changes/.exec(str)) {
+        if (/Starting build/.exec(str)) {
           evt.emit('watch-off');
         }
         onStdout?.(str);
@@ -111,7 +112,7 @@ const test = base.extend<ServerTestFixtures>({
 
       await waitForWatcher();
 
-      proc.stderr.on('data', (chunk: Buffer) => {
+      proc.stderr!.on('data', (chunk: Buffer) => {
         const str = chunk.toString();
         if (/Maximum keep-alive count reached, dying/.exec(str)) {
           evt.emit('err');
@@ -137,9 +138,9 @@ const test = base.extend<ServerTestFixtures>({
     // Tests execute here
     await use(startServer);
 
-    proc.cancel();
+    proc!.cancel();
     try {
-      const { stderr } = await proc;
+      const { stderr } = await proc!;
       if (stderr) {
         console.error('Error output from esbd:');
         console.error(stderr);

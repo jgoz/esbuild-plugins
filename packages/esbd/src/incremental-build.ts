@@ -241,6 +241,7 @@ export async function incrementalBuild({
         watchedModules.delete(deletedModule);
       }
     }
+    logger.debug('Updated watched files');
   }
 
   function wait(): Promise<void> {
