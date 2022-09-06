@@ -32,6 +32,7 @@ export default async function esbdNodeDev(
   let child: ChildProcess & ExecaChildPromise<string>;
   let keepAliveCount = 0;
   let keepAliveResetTimeout: NodeJS.Timeout;
+  let running = false;
 
   const entries = Array.isArray(config.entryPoints)
     ? config.entryPoints.map(entry => [entry, entry] as const)
@@ -42,6 +43,7 @@ export default async function esbdNodeDev(
   const defaultTarget = `node${process.versions.node}`;
 
   async function handleExit(exitCode = 0) {
+    running = false;
     clearTimeout(keepAliveResetTimeout);
 
     if (!respawn) {
@@ -79,6 +81,10 @@ export default async function esbdNodeDev(
       child.removeAllListeners();
       logger.error('Uncaught program error', err.toString(), err.stack);
       void handleExit(1);
+    });
+
+    child.once('spawn', () => {
+      running = true;
     });
   }
 
@@ -141,11 +147,14 @@ export default async function esbdNodeDev(
         logger.info(pc.gray(`${events.length} files changed, rebuilding`));
       }
       child.removeAllListeners();
-      await new Promise<void>((resolve, reject) => {
-        child.on('exit', resolve);
-        child.on('error', reject);
-        child.cancel();
-      });
+      if (running) {
+        await new Promise<void>((resolve, reject) => {
+          child.on('exit', resolve);
+          child.on('error', reject);
+          child.cancel();
+        });
+        running = false;
+      }
     },
   });
 
