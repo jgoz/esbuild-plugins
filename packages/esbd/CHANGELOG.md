@@ -1,5 +1,11 @@
 # esbd
 
+## 2.4.1
+
+### Patch Changes
+
+- 3da0dd9: Ensure node-dev restarts after error
+
 ## 2.4.0
 
 ### Minor Changes
