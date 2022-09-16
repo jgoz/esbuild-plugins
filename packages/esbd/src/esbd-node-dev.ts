@@ -11,6 +11,7 @@ import type { BuildMode, ResolvedEsbdConfig, TsBuildMode } from './config';
 import { getBuildOptions } from './get-build-options';
 import { incrementalBuild } from './incremental-build';
 import type { Logger } from './log';
+import { splitArgsString } from './split-args-string';
 import { timingPlugin } from './timing-plugin';
 
 interface EsbdNodeDevConfig {
@@ -66,8 +67,10 @@ export default async function esbdNodeDev(
   }
 
   function runProgram(scriptPath: string, argv: string[]) {
+    const NODE_OPTIONS = splitArgsString(process.env.NODE_OPTIONS ?? '');
+
     child = execaNode(scriptPath, argv, {
-      nodeOptions: ['--enable-source-maps'],
+      nodeOptions: ['--enable-source-maps', ...NODE_OPTIONS],
       stdio: 'inherit',
     });
 
