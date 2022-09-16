@@ -1,5 +1,11 @@
 # esbd
 
+## 2.5.0
+
+### Minor Changes
+
+- 9014e49: Pass NODE_OPTIONS through to node-dev process
+
 ## 2.4.1
 
 ### Patch Changes
