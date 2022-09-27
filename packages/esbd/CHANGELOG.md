@@ -1,5 +1,11 @@
 # esbd
 
+## 2.5.1
+
+### Patch Changes
+
+- b49c1e6: Allow overriding some options
+
 ## 2.5.0
 
 ### Minor Changes
