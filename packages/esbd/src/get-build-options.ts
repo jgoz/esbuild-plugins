@@ -75,17 +75,22 @@ export async function getHtmlBuildOptions(
 
   return [
     {
-      ...options,
-      absWorkingDir: config.absWorkingDir,
-      bundle: true,
-      entryPoints: allEntryPoints,
+      // Overridable options
       format,
       minify: mode === 'production',
-      outdir,
-      metafile: true,
       publicPath,
       target,
       sourcemap: config.sourcemap ?? (mode === 'development' ? true : undefined),
+
+      // User-defined options
+      ...options,
+
+      // Invariant options
+      absWorkingDir: config.absWorkingDir,
+      bundle: true,
+      entryPoints: allEntryPoints,
+      metafile: true,
+      outdir,
       write: false,
     },
     allWriteOptions,
@@ -116,14 +121,19 @@ export function getBuildOptions(
   }
 
   return {
+    // Overridable options
+    minify: mode === 'production',
+    sourcemap: config.sourcemap ?? (mode === 'development' ? true : undefined),
+
+    // User-defined options
     ...options,
+
+    // Invariant options
     absWorkingDir: config.absWorkingDir,
     bundle: true,
     entryPoints: allEntryPoints,
-    minify: mode === 'production',
     metafile: true,
     outdir,
-    sourcemap: config.sourcemap ?? (mode === 'development' ? true : undefined),
     write: false,
   };
 }
