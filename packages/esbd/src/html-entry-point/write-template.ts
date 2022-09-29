@@ -134,11 +134,6 @@ export async function writeTemplate(
     const candidateInputs = new Set(Object.keys(metafile.outputs[candidatePathKey]?.inputs ?? {}));
     if (!candidateInputs.size) return false;
 
-    // A candidate is a "CSS from JS" entry point if at least one input of the CSS output file
-    // overlaps with an input from a JS entry point referenced in the HTML. This roundabout
-    // heuristic is necessary because esbuild doesn't indicate which CSS files are bound to
-    // JS entry points. We also can't rely on input/output filename matching because the user
-    // might be using [hash], [dir], etc., in the "entryNames" option.
     for (const absSourceFilePath of htmlEntryPathsAbs) {
       const outputFilePath = jsOutput.get(absSourceFilePath);
       if (!outputFilePath) continue;
@@ -147,6 +142,20 @@ export async function writeTemplate(
         basedir,
         path.resolve(absTemplateDir, outputFilePath),
       );
+
+      // esbuild >= 0.15.10
+      // Check "cssBundle" on the output file. This will be set if a JS entry point imports
+      // a CSS file and therefore produces a CSS bundle.
+      if (metafile.outputs[outputFilePathKey]?.cssBundle === candidatePathKey) {
+        return true;
+      }
+
+      // esbuild < 0.15.10
+      // A candidate is a "CSS from JS" entry point if at least one input of the CSS output file
+      // overlaps with an input from a JS entry point referenced in the HTML. This roundabout
+      // heuristic is necessary because esbuild doesn't indicate which CSS files are bound to
+      // JS entry points. We also can't rely on input/output filename matching because the user
+      // might be using [hash], [dir], etc., in the "entryNames" option.
       const inputs = Object.keys(metafile.outputs[outputFilePathKey]?.inputs ?? {});
       if (!inputs.length) continue;
 
