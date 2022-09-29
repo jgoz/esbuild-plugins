@@ -1,5 +1,11 @@
 # esbd
 
+## 2.5.2
+
+### Patch Changes
+
+- b596cac: Use 'cssBundle' if available on metafile output
+
 ## 2.5.1
 
 ### Patch Changes
