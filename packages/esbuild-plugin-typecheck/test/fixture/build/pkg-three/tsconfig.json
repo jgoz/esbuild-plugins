@@ -9,7 +9,8 @@
       "pkg-one": ["../pkg-one/one.ts"],
       "pkg-two": ["../pkg-two/two.ts"]
     },
-    "strict": true
+    "strict": true,
+    "types": ["node"]
   },
   "files": ["./three.ts"],
   "references": [{ "path": "../pkg-one" }, { "path": "../pkg-two" }]

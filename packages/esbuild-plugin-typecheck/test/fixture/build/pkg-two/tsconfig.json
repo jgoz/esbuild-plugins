@@ -3,7 +3,8 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "build",
-    "declarationDir": "types"
+    "declarationDir": "types",
+    "types": ["node"]
   },
   "files": ["./two.ts"]
 }
