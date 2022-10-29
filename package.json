@@ -52,7 +52,7 @@
     "changeset:version": "changeset version && pnpm i --lockfile-only",
     "clobber": "rm -rf node_modules packages/*/{dist,lib,node_modules} **/*.tsbuildinfo",
     "docker:build": "docker build -t esbuild-plugins-tests .",
-    "docker:run": "docker run -it --rm --ipc=host -v $(pwd)/packages/esbd/test:/app/packages/esbd/test esbuild-plugins-tests",
+    "docker:run": "docker run -it --rm --ipc=host -v $(pwd)/packages/esbd/test:/app/packages/esbd/test -v $(pwd)/packages/esbuild-plugin-livereload/test:/app/packages/esbuild-plugin-livereload/test esbuild-plugins-tests",
     "docs": "pnpm run -r --if-present docs",
     "lint": "eslint \"packages/**/*.ts\"",
     "node-check": "node -v && arch",

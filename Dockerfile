@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.22.0-focal
+FROM mcr.microsoft.com/playwright:v1.27.1-focal
 
 RUN npm i -g pnpm
 COPY ./ /app/
