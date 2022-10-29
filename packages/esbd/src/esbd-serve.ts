@@ -191,11 +191,8 @@ export default async function esbdServe(
       }
 
       staticHandler(req, res, () => {
-        const isExtensionlessRequest =
-          url.pathname.startsWith(publicPath) && !path.extname(url.pathname);
-
-        if (rewrite && isExtensionlessRequest) {
-          // rewrite extensionless requests to the index file if requested (SPA mode)
+        if (rewrite) {
+          // rewrite not-found requests to the index file if requested (SPA mode)
           // TODO: how do we handle multiple HTML files here?
           fs.createReadStream(path.resolve(absOutDir, allWriteOptions[0].template.outputPath)).pipe(
             res.setHeader('Content-Type', 'text/html'),
