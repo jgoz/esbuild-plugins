@@ -1,5 +1,11 @@
 # esbd
 
+## 2.5.3
+
+### Patch Changes
+
+- ed67a98: Don't check for extensions when rewriting requests
+
 ## 2.5.2
 
 ### Patch Changes
