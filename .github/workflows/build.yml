@@ -11,7 +11,11 @@ env:
 
 jobs:
   build:
-    name: Build & Test
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [16, 18]
+    name: Build & Test (Node v${{ matrix.node-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -23,7 +27,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version-file: 'package.json'
+          node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
       - name: Cache browsers
         id: browser_cache
