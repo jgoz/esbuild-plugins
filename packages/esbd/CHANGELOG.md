@@ -1,5 +1,11 @@
 # esbd
 
+## 2.6.0
+
+### Minor Changes
+
+- c87f0a4: Add node 18 support
+
 ## 2.5.3
 
 ### Patch Changes
