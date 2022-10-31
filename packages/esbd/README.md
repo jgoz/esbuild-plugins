@@ -224,7 +224,7 @@ Parameters:
 
 Flags:
 
-- `--host, -s` &mdash; Development server IP/host name (default: `localhost`)
+- `--host, -s` &mdash; Development server IP/host name (default: `127.0.0.1`)
 - `--port, -p` &mdash; Development server port (default: `8000`)
 - `--livereload, -r` &mdash; Reload the current page when source changes cause a rebuild. Build errors (and TypeScript errors if using `--check`) will be piped to the browser.
 - `--livereload-host` &mdash; Specify the host to use for the livereload server (default: `127.0.0.1`)

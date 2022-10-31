@@ -156,7 +156,7 @@ function parseArgv(programName: string) {
             host: {
               type: String,
               alias: 's',
-              default: 'localhost',
+              default: '127.0.0.1',
               description: 'Development server IP/host name',
             },
             port: {

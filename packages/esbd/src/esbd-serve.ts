@@ -1,6 +1,7 @@
 import type { notify as notifyFn } from '@jgoz/esbuild-plugin-livereload';
 import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
 import { createHash } from 'crypto';
+import dns from 'dns';
 import fs from 'fs';
 import type { Server, ServerResponse } from 'http';
 import { createServer } from 'http';
@@ -41,7 +42,7 @@ export default async function esbdServe(
   config: ResolvedEsbdConfig,
   {
     mode,
-    host = 'localhost',
+    host = '127.0.0.1',
     port = 8000,
     livereload,
     livereloadHost = '127.0.0.1',
@@ -210,6 +211,9 @@ export default async function esbdServe(
       res.writeHead(500).write(err.toString());
     });
   });
+
+  // https://github.com/nodejs/node/issues/40537
+  dns.setDefaultResultOrder('ipv4first');
 
   server.listen(port, host, () => {
     const url = pc.cyan(`http://${host}:${port}`);

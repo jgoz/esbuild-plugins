@@ -82,9 +82,9 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
         write: true,
       });
 
-      const server = await serve({ host: 'localhost', port, servedir: absWorkingDir }, {});
+      const server = await serve({ host: '127.0.0.1', port, servedir: absWorkingDir }, {});
 
-      console.log(`Server ready at http://localhost:${server.port}`);
+      console.log(`Server ready at http://127.0.0.1:${server.port}`);
 
       // Use the server in the tests.
       await use(server);
