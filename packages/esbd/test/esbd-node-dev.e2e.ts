@@ -122,7 +122,7 @@ test('retries 3 times if server crashes', async ({ port, startServer, request })
       },
     ],
     onStderr: output => {
-      stderr.push(output);
+      stderr.push(...output.split('\n'));
     },
   });
 
