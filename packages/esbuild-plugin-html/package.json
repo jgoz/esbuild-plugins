@@ -34,7 +34,7 @@
     "prettier": "^2.7.1",
     "typescript": "^4.8.4",
     "vite": "^3.2.1",
-    "vitest": "^0.24.3"
+    "vitest": "^0.25.0"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
