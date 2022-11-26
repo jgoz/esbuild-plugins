@@ -1,5 +1,11 @@
 # esbd
 
+## 2.6.1
+
+### Patch Changes
+
+- cb500cf: Allow shutdown if server already closed
+
 ## 2.6.0
 
 ### Minor Changes
