@@ -223,8 +223,15 @@ export default async function esbdServe(
   async function shutdown(exitCode = 0) {
     logger.info('Shutting down…');
 
-    await promisify(server.close)();
-    if (lrserver) await promisify(lrserver.close)();
+    const shutdownPromises: Promise<void>[] = [];
+    if (server) shutdownPromises.push(promisify(server.close)());
+    if (lrserver) shutdownPromises.push(promisify(lrserver.close)());
+    try {
+      await Promise.all(shutdownPromises);
+    } catch {
+      // ignore errors on 'close'
+    }
+
     if (build) build.stop?.();
     if (build) build.rebuild.dispose();
     clients.forEach(res => {
