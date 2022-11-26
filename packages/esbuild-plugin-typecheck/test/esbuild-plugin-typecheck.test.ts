@@ -245,15 +245,18 @@ describe('eslint-plugin-typecheck', () => {
 
     it('produces no output by default', async () => {
       const { output } = await build.run('pkg-three/build.js', [], { watch: true });
-      expect(output).toEqual([
-        '✔  Typecheck passed',
-        'ℹ  Typecheck finished in TIME',
 
+      try {
+        expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
+      } catch {
         // TODO: remove after https://github.com/microsoft/TypeScript/pull/51626 is released
-        '✔  Typecheck passed',
-        'ℹ  Typecheck finished in TIME',
-        // /TODO
-      ]);
+        expect(output).toEqual([
+          '✔  Typecheck passed',
+          'ℹ  Typecheck finished in TIME',
+          '✔  Typecheck passed',
+          'ℹ  Typecheck finished in TIME',
+        ]);
+      }
 
       await expect(build.findTSOutput()).resolves.toEqual([]);
     });
@@ -322,15 +325,17 @@ describe('eslint-plugin-typecheck', () => {
         watch: true,
       });
 
-      expect(output).toEqual([
-        '✔  Typecheck passed',
-        'ℹ  Typecheck finished in TIME',
-
+      try {
+        expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
+      } catch {
         // TODO: remove after https://github.com/microsoft/TypeScript/pull/51626 is released
-        '✔  Typecheck passed',
-        'ℹ  Typecheck finished in TIME',
-        // /TODO
-      ]);
+        expect(output).toEqual([
+          '✔  Typecheck passed',
+          'ℹ  Typecheck finished in TIME',
+          '✔  Typecheck passed',
+          'ℹ  Typecheck finished in TIME',
+        ]);
+      }
 
       await expect(build.findTSOutput()).resolves.toEqual([
         'pkg-one/build/one.js',
