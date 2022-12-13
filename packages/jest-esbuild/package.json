@@ -20,7 +20,7 @@
     "esbuild",
     "jest"
   ],
-  "main": "dist/esbuild-jest.js",
+  "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "dependencies": {
     "babel-plugin-jest-hoist": "28 || 29",
