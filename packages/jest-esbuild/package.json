@@ -1,6 +1,6 @@
 {
   "name": "@jgoz/jest-esbuild",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0",
   "author": "John Gozde <john@gozde.ca>",
   "description": "Esbuild transformer for Jest",
   "license": "MIT",
