@@ -27,14 +27,14 @@
     "esbuild": ">= 0.13.0"
   },
   "devDependencies": {
-    "@types/node": "^16.18.3",
-    "esbuild": "^0.15.15",
-    "esbuild-node-externals": "^1.5.0",
+    "@types/node": "^16.18.8",
+    "esbuild": "^0.16.0",
+    "esbuild-node-externals": "^1.6.0",
     "parse5": "^7.1.2",
-    "prettier": "^2.8.0",
-    "typescript": "^4.9.3",
-    "vite": "^3.2.4",
-    "vitest": "^0.25.3"
+    "prettier": "^2.8.1",
+    "typescript": "^4.9.4",
+    "vite": "^4.0.1",
+    "vitest": "^0.25.7"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
