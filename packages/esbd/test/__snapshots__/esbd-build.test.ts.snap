@@ -112,9 +112,7 @@ import ReactDOM from "react-dom";
 // src/app.tsx
 import { jsx } from "react/jsx-runtime";
 function App() {
-  return /* @__PURE__ */ jsx("div", {
-    children: "Hello world",
-  });
+  return /* @__PURE__ */ jsx("div", { children: "Hello world" });
 }
 
 // src/entry.tsx
