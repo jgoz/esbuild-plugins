@@ -1,5 +1,13 @@
 # esbd
 
+## 2.6.2
+
+### Patch Changes
+
+- Updated dependencies [b577e27]
+  - @jgoz/esbuild-plugin-livereload@1.1.1
+  - @jgoz/esbuild-plugin-typecheck@2.0.0
+
 ## 2.6.1
 
 ### Patch Changes
