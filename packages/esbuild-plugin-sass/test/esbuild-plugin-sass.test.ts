@@ -5,7 +5,7 @@ import path from 'path';
 import prettier from 'prettier';
 import { describe, expect, test } from 'vitest';
 
-import { sassPlugin } from '../src';
+import { sassPlugin } from '../lib';
 
 describe('esbuild-plugin-sass ', () => {
   test('react application (css loader)', async () => {
