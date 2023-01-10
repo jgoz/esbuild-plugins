@@ -63,7 +63,7 @@ from esbuild, the page will be sent a reload request.
 | ---- | ---- | ------- | ----------- |
 | errorSource (*) | `string` | - | Key to use when identifying these errors and warnings.                      Previous results will be overwritten for the same `errorSource`. |
 | msg (*) | `ClientMessage` | - | Object containing errors and warnings from the given source |
-| connectedClients | `Set<ServerResponse>` | `clients` | Set of long-lived server responses representing                           clients currently connected to the livereload                           server. Only required if you are implementing your                           own livereload server.  |
+| connectedClients | `Set<ServerResponse<IncomingMessage>>` | `clients` | Set of long-lived server responses representing                           clients currently connected to the livereload                           server. Only required if you are implementing your                           own livereload server.  |
 <!-- end -->
 <!-- prettier-ignore-end -->
 

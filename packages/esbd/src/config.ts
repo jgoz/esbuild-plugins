@@ -7,12 +7,22 @@ export type HashAlgorithm = 'sha256' | 'sha384' | 'sha512';
 export const BUILD_MODES = ['development', 'production'] as const;
 export const TS_BUILD_MODES = ['readonly', 'write-output'] as const;
 
-export type TsBuildMode = typeof TS_BUILD_MODES[number];
+export type TsBuildMode = (typeof TS_BUILD_MODES)[number];
 
 type BuildOptionsWithEntryPoints = Omit<BuildOptions, 'entryPoints' | 'bundle' | 'write'> &
   Required<Pick<BuildOptions, 'entryPoints'>>;
 
 export interface EsbdSpecificOptions {
+  /**
+   * When true, the output directory will be deleted before the initial build.
+   *
+   * When in watch mode (either directly or via `node-dev`/`serve`), the output directory
+   * will only be cleaned when the process is started.
+   *
+   * @default false
+   */
+  cleanOutdir?: boolean;
+
   /**
    * Files to copy to the output directory during the build.
    *

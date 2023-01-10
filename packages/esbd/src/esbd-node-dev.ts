@@ -110,6 +110,7 @@ export default async function esbdNodeDev(
 
   const build = await incrementalBuild({
     ...buildOptions,
+    cleanOutdir: config.cleanOutdir,
     incremental: true,
     logger,
     minify: mode === 'production',

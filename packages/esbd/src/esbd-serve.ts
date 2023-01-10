@@ -118,6 +118,7 @@ export default async function esbdServe(
     banner: banner
       ? { ...config.banner, js: `${config.banner?.js ?? ''};${banner}` }
       : config.banner,
+    cleanOutdir: config.cleanOutdir,
     copy: config.copy,
     incremental: true,
     logger,

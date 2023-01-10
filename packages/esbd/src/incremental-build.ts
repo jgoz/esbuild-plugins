@@ -9,7 +9,7 @@ import type {
 } from 'esbuild';
 import { build } from 'esbuild';
 import { EventEmitter } from 'events';
-import { copyFile } from 'fs/promises';
+import { copyFile, rm } from 'fs/promises';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import pc from 'picocolors';
@@ -33,6 +33,7 @@ export type WatchEvent = [event: string, path: string];
 
 interface IncrementalBuildOptions extends BuildIncrementalOptions {
   absWorkingDir: string;
+  cleanOutdir?: boolean;
   copy?: [from: string, to?: string][];
   logger: Logger;
   onBuildResult: (
@@ -76,6 +77,7 @@ function createThrottled<T>(fn: (args: T[]) => any, delay: number) {
 }
 
 export async function incrementalBuild({
+  cleanOutdir,
   copy,
   logger,
   onBuildResult,
@@ -286,6 +288,10 @@ export async function incrementalBuild({
       assetWatcher.add(path);
     }
     copyAssets(path).catch(logger.error);
+  }
+
+  if (cleanOutdir && absOutDir) {
+    await rm(absOutDir, { recursive: true, force: true });
   }
 
   const initialResult = await triggerBuild();

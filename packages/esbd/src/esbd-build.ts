@@ -80,6 +80,7 @@ async function esbdBuildHtml(
   const [buildOptions, allWriteOptions] = await getHtmlBuildOptions(htmlEntries, mode, config);
   const build = await incrementalBuild({
     ...buildOptions,
+    cleanOutdir: config.cleanOutdir,
     copy: config.copy,
     incremental: true,
     logger,
@@ -122,6 +123,7 @@ async function esbdBuildSource(
 
   const build = await incrementalBuild({
     ...getBuildOptions(sourceEntries, mode, config),
+    cleanOutdir: config.cleanOutdir,
     copy: config.copy,
     incremental: true,
     logger,
