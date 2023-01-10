@@ -1,5 +1,11 @@
 # esbd
 
+## 2.7.0
+
+### Minor Changes
+
+- 660212a: Add cleanOutdir option
+
 ## 2.6.2
 
 ### Patch Changes
