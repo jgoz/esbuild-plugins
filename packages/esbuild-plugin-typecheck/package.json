@@ -27,6 +27,7 @@
   "types": "lib/index.d.ts",
   "peerDependencies": {
     "@jgoz/esbuild-plugin-livereload": ">=1.1.1",
+    "esbuild": "0.17.x",
     "typescript": ">= 3.5"
   },
   "peerDependenciesMeta": {

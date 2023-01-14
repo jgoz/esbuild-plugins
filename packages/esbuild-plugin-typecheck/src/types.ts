@@ -79,9 +79,7 @@ export interface TypecheckPluginOptions {
   omitStartLog?: boolean;
 
   /**
-   * Force operation in watch mode.
-   *
-   * By default, watch mode will be inferred from esbuild's "watch" option.
+   * Enable typescript's watch mode
    */
   watch?: boolean;
 }

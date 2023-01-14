@@ -2,7 +2,6 @@ lockfileVersion: 5.4
 
 overrides:
   esbuild@0.16.x: ^0.17.0
-  esbuild-svelte>esbuild: ^0.17.0
   tslib@2.x: ^2.4.0
 
 importers:

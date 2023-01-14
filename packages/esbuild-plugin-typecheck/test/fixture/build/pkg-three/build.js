@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 const { typecheckPlugin } = require('../../../lib');
-const { build } = require('esbuild');
+const esbuild = require('esbuild');
 
 async function main() {
   try {
-    const result = await build({
+    const context = await esbuild.context({
       absWorkingDir: __dirname,
       entryPoints: ['./three.ts'],
       bundle: true,
@@ -15,14 +15,22 @@ async function main() {
       plugins: [
         typecheckPlugin({
           buildMode: process.env.BUILD_MODE,
+          watch: !!process.env.WATCH,
         }),
       ],
-      watch: !!process.env.WATCH,
       write: false,
     });
+
     process.on('SIGTERM', () => {
-      result.stop();
+      context.dispose();
     });
+
+    if (process.env.WATCH) {
+      context.watch();
+    } else {
+      await context.rebuild();
+      await context.dispose();
+    }
   } catch (error) {
     process.exit(1);
   }

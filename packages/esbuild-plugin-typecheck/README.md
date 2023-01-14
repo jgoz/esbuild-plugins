@@ -44,6 +44,6 @@ await esbuild.build({
 | configFile | `string` | - | Path to "tsconfig.json". If not specified, this will use ESBuild's "tsconfig" option, finally falling back to TypeScript's config file resolution algorithm. |
 | logger | `Logger` | - | Logger to use instead of the default. |
 | omitStartLog | `boolean` | `false` | Omit "Typecheck started" messages. |
-| watch | `boolean` | - | Force operation in watch mode.<br><br>By default, watch mode will be inferred from esbuild's "watch" option.  |
+| watch | `boolean` | - | Enable typescript's watch mode |
 <!-- end -->
 <!-- prettier-ignore-end -->
