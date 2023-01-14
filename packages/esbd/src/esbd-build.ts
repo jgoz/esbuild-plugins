@@ -7,7 +7,7 @@ import prettyBytes from 'pretty-bytes';
 import type { BuildMode, ResolvedEsbdConfig, TsBuildMode } from './config';
 import { getBuildOptions, getHtmlBuildOptions } from './get-build-options';
 import { writeTemplate } from './html-entry-point';
-import type { BuildIncrementalResult, WatchEvent } from './incremental-build';
+import type { IncrementalBuildResult, WatchEvent } from './incremental-build';
 import { incrementalBuild } from './incremental-build';
 import type { Logger } from './log';
 import { timingPlugin } from './timing-plugin';
@@ -78,11 +78,10 @@ async function esbdBuildHtml(
   const name = config.name ? `"${config.name}" (${entryNames})` : entryNames;
 
   const [buildOptions, allWriteOptions] = await getHtmlBuildOptions(htmlEntries, mode, config);
-  const build = await incrementalBuild({
+  const context = await incrementalBuild({
     ...buildOptions,
     cleanOutdir: config.cleanOutdir,
     copy: config.copy,
-    incremental: true,
     logger,
     plugins: [...config.plugins, timingPlugin(logger, name)],
     watch,
@@ -108,7 +107,10 @@ async function esbdBuildHtml(
     onWatchEvent: events => onWatchEvent(logger, events),
   });
 
-  if (!watch) build.rebuild.dispose();
+  // Trigger the first build
+  await context.rebuild();
+
+  if (!watch) await context.dispose();
 }
 
 async function esbdBuildSource(
@@ -121,11 +123,10 @@ async function esbdBuildSource(
   const entryNames = sourceEntries.map(([name]) => name).join(', ');
   const name = config.name ? `"${config.name}" (${entryNames})` : entryNames;
 
-  const build = await incrementalBuild({
+  const context = await incrementalBuild({
     ...getBuildOptions(sourceEntries, mode, config),
     cleanOutdir: config.cleanOutdir,
     copy: config.copy,
-    incremental: true,
     logger,
     plugins: [...config.plugins, timingPlugin(logger, name)],
     watch,
@@ -143,10 +144,13 @@ async function esbdBuildSource(
     onWatchEvent: events => onWatchEvent(logger, events),
   });
 
-  if (!watch) build.rebuild.dispose();
+  // Trigger the first build
+  await context.rebuild();
+
+  if (!watch) await context.dispose();
 }
 
-function logOutput(result: BuildIncrementalResult, logger: Logger) {
+function logOutput(result: IncrementalBuildResult, logger: Logger) {
   for (const file of result.outputFiles) {
     logger.info(
       pc.gray(

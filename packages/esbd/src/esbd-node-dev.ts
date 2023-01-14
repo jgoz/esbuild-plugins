@@ -48,18 +48,18 @@ export default async function esbdNodeDev(
     clearTimeout(keepAliveResetTimeout);
 
     if (!respawn) {
-      shutdown(exitCode);
+      await shutdown(exitCode);
       return;
     }
 
     if (++keepAliveCount === MAX_RETRIES) {
       logger.error('Maximum keep-alive count reached, dying');
-      shutdown(1);
+      await shutdown(1);
       return;
     }
 
     logger.info('Keep-alive requested, rebuilding and restarting');
-    await build.rebuild();
+    await context.rebuild();
 
     keepAliveResetTimeout = setTimeout(() => {
       keepAliveCount = 0;
@@ -108,10 +108,9 @@ export default async function esbdNodeDev(
     runner.start();
   }
 
-  const build = await incrementalBuild({
+  const context = await incrementalBuild({
     ...buildOptions,
     cleanOutdir: config.cleanOutdir,
-    incremental: true,
     logger,
     minify: mode === 'production',
     plugins: [...config.plugins, timingPlugin(logger, config.name && `"${config.name}"`)],
@@ -162,13 +161,15 @@ export default async function esbdNodeDev(
     },
   });
 
-  function shutdown(exitCode = 0) {
+  async function shutdown(exitCode = 0) {
     logger.info('Shutting down…');
     if (child) child.cancel();
-    if (build) build.stop?.();
-    if (build) build.rebuild.dispose();
+    if (context) await context.dispose();
     process.exitCode = exitCode;
   }
 
   Graceful.on('exit', () => shutdown());
+
+  // Trigger the first build
+  await context.rebuild();
 }

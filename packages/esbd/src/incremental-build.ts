@@ -1,13 +1,6 @@
 import { watch } from 'chokidar';
-import type {
-  BuildIncremental,
-  BuildInvalidate,
-  BuildOptions,
-  BuildResult,
-  Metafile,
-  OutputFile,
-} from 'esbuild';
-import { build } from 'esbuild';
+import type { BuildContext, BuildOptions, BuildResult, Metafile } from 'esbuild';
+import { context as createContext } from 'esbuild';
 import { EventEmitter } from 'events';
 import { copyFile, rm } from 'fs/promises';
 import mkdirp from 'mkdirp';
@@ -16,40 +9,38 @@ import pc from 'picocolors';
 
 import type { Logger } from './log';
 
-export interface BuildIncrementalResult extends BuildIncremental {
-  metafile: Metafile;
-  outputFiles: OutputFile[];
-}
+type RequiredBuildOptions = BuildOptions & { metafile: true; write: false };
 
-function validateResult(result: BuildResult): asserts result is BuildIncrementalResult {
+export type IncrementalBuildResult = BuildResult<RequiredBuildOptions>;
+
+function validateResult(result: BuildResult): asserts result is IncrementalBuildResult {
   if (!result.metafile) throw new Error('incrementalBuild: "metafile" option must be "true"');
   if (!result.outputFiles) throw new Error('incrementalBuild: "write" option must be "false"');
-  if (!result.rebuild) throw new Error('incrementalBuild: "incremental" option must be "true"');
 }
-
-type BuildIncrementalOptions = BuildOptions & { incremental: true; metafile: true; write: false };
 
 export type WatchEvent = [event: string, path: string];
 
-interface IncrementalBuildOptions extends BuildIncrementalOptions {
+interface IncrementalBuildOptions extends RequiredBuildOptions {
   absWorkingDir: string;
   cleanOutdir?: boolean;
   copy?: [from: string, to?: string][];
   logger: Logger;
   onBuildResult: (
-    result: BuildIncrementalResult,
-    options: BuildIncrementalOptions,
+    result: IncrementalBuildResult,
+    options: RequiredBuildOptions,
   ) => Promise<void> | void;
   onWatchEvent: (events: WatchEvent[]) => Promise<void> | void;
+  watch?: boolean;
 }
 
-interface IncrementalBuildResult extends BuildIncrementalResult {
+interface IncrementalBuildContext extends BuildContext<RequiredBuildOptions> {
   wait(): Promise<void>;
 }
 
-const NULL_RESULT: Omit<BuildIncrementalResult, 'rebuild'> = {
+const NULL_RESULT: IncrementalBuildResult = {
   errors: [],
   warnings: [],
+  mangleCache: undefined,
   metafile: { inputs: {}, outputs: {} },
   outputFiles: [],
 };
@@ -84,8 +75,7 @@ export async function incrementalBuild({
   onWatchEvent,
   watch: watchForChanges,
   ...options
-}: IncrementalBuildOptions): Promise<IncrementalBuildResult> {
-  let rebuild = (() => build(options)) as BuildInvalidate;
+}: IncrementalBuildOptions): Promise<IncrementalBuildContext> {
   let running = false;
 
   const basedir = options.absWorkingDir;
@@ -131,6 +121,8 @@ export async function incrementalBuild({
     ignoreInitial: true,
   });
 
+  const context = await createContext(options);
+
   function copyAssets(fromPath?: string) {
     return Promise.all(
       normalizedCopy
@@ -142,18 +134,17 @@ export async function incrementalBuild({
     );
   }
 
-  async function triggerBuild(): Promise<BuildIncrementalResult> {
-    let result: BuildIncremental;
+  async function triggerBuild(): Promise<IncrementalBuildResult> {
+    let result: IncrementalBuildResult;
     try {
       logger.debug('Starting build');
-      result = await rebuild();
+      result = await context.rebuild();
       validateResult(result);
       if (absOutDir) await mkdirp(absOutDir);
       await copyAssets();
       await onBuildResult(result, options);
 
       logger.debug('Build successful');
-      rebuild = result.rebuild;
       if (watchForChanges) {
         updateWatchedFiles(result.metafile);
       }
@@ -165,7 +156,6 @@ export async function incrementalBuild({
         ...NULL_RESULT,
         errors: (e as any).errors ?? [],
         warnings: (e as any).warnings ?? [],
-        rebuild,
       };
       validateResult(result);
       await onBuildResult(result, options);
@@ -179,7 +169,7 @@ export async function incrementalBuild({
     }
   }
   triggerBuild.dispose = async () => {
-    if (rebuild?.dispose) rebuild.dispose();
+    await context.dispose();
     await inputWatcher.close();
     await moduleWatcher.close();
     await assetWatcher.close();
@@ -294,9 +284,6 @@ export async function incrementalBuild({
     await rm(absOutDir, { recursive: true, force: true });
   }
 
-  const initialResult = await triggerBuild();
-  validateResult(initialResult);
-
   if (watchForChanges) {
     assetWatcher.add(normalizedCopy.map(([from]) => from));
 
@@ -309,5 +296,5 @@ export async function incrementalBuild({
     logger.debug(`Started watching for changes (${inputCount} inputs, ${modCount} modules)`);
   }
 
-  return { ...initialResult, rebuild: triggerBuild, wait };
+  return { ...context, wait };
 }

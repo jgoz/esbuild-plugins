@@ -113,14 +113,13 @@ export default async function esbdServe(
   }
 
   // TODO: watch HTML entry points
-  const build = await incrementalBuild({
+  const context = await incrementalBuild({
     ...buildOptions,
     banner: banner
       ? { ...config.banner, js: `${config.banner?.js ?? ''};${banner}` }
       : config.banner,
     cleanOutdir: config.cleanOutdir,
     copy: config.copy,
-    incremental: true,
     logger,
     plugins: [...config.plugins, timingPlugin(logger, config.name && `"${config.name}"`)],
     watch: true,
@@ -181,7 +180,7 @@ export default async function esbdServe(
     const url = new URL(req.url, rootUrl);
 
     async function handleRequest() {
-      await build.wait();
+      await context.wait();
 
       if (publicPath) {
         // Strip "publicPath" from the beginning of the URL because
@@ -233,8 +232,7 @@ export default async function esbdServe(
       // ignore errors on 'close'
     }
 
-    if (build) build.stop?.();
-    if (build) build.rebuild.dispose();
+    if (context) await context.dispose();
     clients.forEach(res => {
       res.end();
     });
@@ -242,4 +240,7 @@ export default async function esbdServe(
   }
 
   Graceful.on('exit', () => shutdown());
+
+  // Trigger the first build
+  await context.rebuild();
 }
