@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { build } from 'esbuild';
+import { build, context as createContext } from 'esbuild';
 import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
@@ -196,31 +196,39 @@ describe('esbuild-plugin-sass ', () => {
     writeInitial();
     let count = 0;
 
-    const result = await build({
+    const context = await createContext({
       entryPoints: ['./src/index.js'],
       absWorkingDir,
       outdir: `./out`,
       bundle: true,
-      plugins: [sassPlugin()],
-      watch: {
-        onRebuild(_error, _result) {
-          count++;
+      plugins: [
+        sassPlugin(),
+        {
+          name: 'test',
+          setup(build) {
+            build.onEnd(_result => {
+              count++;
+            });
+          },
         },
-      },
+      ],
     });
+
+    await context.rebuild();
+    context.watch();
 
     try {
       expect(fs.readFileSync(path.resolve(absWorkingDir, './out/index.css'), 'utf-8')).toMatch(
         /crimson/,
       );
 
-      const { mtimeMs } = fs.statSync(path.resolve(absWorkingDir, './out/index.js'));
+      const { mtimeMs } = fs.statSync(path.resolve(absWorkingDir, './out/index.css'));
 
       await new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(reject, 10000);
 
         setTimeout(function tryAgain() {
-          if (mtimeMs < fs.statSync(path.resolve(absWorkingDir, './out/index.js')).mtimeMs) {
+          if (mtimeMs < fs.statSync(path.resolve(absWorkingDir, './out/index.css')).mtimeMs) {
             clearTimeout(timeout);
             resolve();
           } else {
@@ -231,13 +239,13 @@ describe('esbuild-plugin-sass ', () => {
         writeUpdated();
       });
 
-      expect(count).toBe(1);
+      expect(count).toBe(2);
 
       expect(fs.readFileSync(path.resolve(absWorkingDir, './out/index.css'), 'utf-8')).toMatch(
         /cornflowerblue/,
       );
     } finally {
-      result.stop?.();
+      await context.dispose();
     }
   });
 
