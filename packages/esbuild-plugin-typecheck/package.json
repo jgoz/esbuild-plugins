@@ -37,8 +37,7 @@
   "devDependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
     "@types/node": "^16.18.11",
-    "esbuild": "^0.16.16",
-    "esbuild-node-externals": "^1.6.0",
+    "esbuild": "^0.17.0",
     "execa": "^5.0.0",
     "memfs": "^3.4.13",
     "picocolors": "^1.0.0",
