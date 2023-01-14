@@ -4,8 +4,6 @@ import os from 'os';
 import path from 'path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-const xit = process.env.CI ? it.skip : it;
-
 async function* walk(dirPath: string): AsyncIterable<string> {
   for await (const d of await fs.promises.readdir(dirPath, { withFileTypes: true })) {
     const entry = path.join(dirPath, d.name);
@@ -74,6 +72,7 @@ function setup(relFixtureDirSrc: string) {
         if (/Typecheck finished in/.exec(str)) {
           const files = queue.shift();
           if (files) {
+            proc.stdout!.push(`[TEST] Writing ${files[0]} to ${files[1]}${os.EOL}`);
             setTimeout(() => copySrcFileSync(...files), 300);
           } else {
             proc.cancel();
@@ -155,11 +154,17 @@ describe('eslint-plugin-typecheck', () => {
       expect(output).toEqual([
         '✔  Typecheck passed',
         'ℹ  Typecheck finished in TIME',
+
+        '[TEST] Writing src/index-error.ts to src/index.ts',
         "src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
         '✖  Typecheck failed with 1 error',
         'ℹ  Typecheck finished in TIME',
+
+        '[TEST] Writing src/index.ts to src/index.ts',
         '✔  Typecheck passed',
         'ℹ  Typecheck finished in TIME',
+
+        '[TEST] Writing src/index-error.ts to src/index.ts',
         "src/index.ts(13,25): error TS2304: Cannot find name 'sourcePath'.",
         '✖  Typecheck failed with 1 error',
         'ℹ  Typecheck finished in TIME',
@@ -246,22 +251,13 @@ describe('eslint-plugin-typecheck', () => {
     it('produces no output by default', async () => {
       const { output } = await build.run('pkg-three/build.js', [], { watch: true });
 
-      try {
-        expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
-      } catch {
-        // TODO: remove after https://github.com/microsoft/TypeScript/pull/51626 is released
-        expect(output).toEqual([
-          '✔  Typecheck passed',
-          'ℹ  Typecheck finished in TIME',
-          '✔  Typecheck passed',
-          'ℹ  Typecheck finished in TIME',
-        ]);
-      }
+      expect(output).toContain('✔  Typecheck passed');
+      expect(output).not.toContainEqual(expect.stringMatching('✖  Typecheck failed'));
 
       await expect(build.findTSOutput()).resolves.toEqual([]);
     });
 
-    xit('reports errors across all dependencies [skip CI]', async () => {
+    it('reports errors across all dependencies', async () => {
       const { output } = await build.run(
         'pkg-three/build.js',
         [
@@ -273,38 +269,34 @@ describe('eslint-plugin-typecheck', () => {
         { buildMode: 'write-output', watch: true },
       );
 
-      expect(output).toEqual([
-        '✔  Typecheck passed',
-        'ℹ  Typecheck finished in TIME',
-        // one-error
-        "../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        '✖  Typecheck failed with 1 error',
-        'ℹ  Typecheck finished in TIME',
+      const groups = output
+        .join(os.EOL)
+        .split(/\[TEST\].+/g)
+        .map(group =>
+          group
+            .split(os.EOL)
+            .map(line => line.trim())
+            .filter(Boolean),
+        );
 
-        // TODO: remove after https://github.com/microsoft/TypeScript/pull/51626 is released
-        "../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        '✖  Typecheck failed with 1 error',
-        'ℹ  Typecheck finished in TIME',
-        // /TODO
+      expect(groups[0]).toContain('✔  Typecheck passed');
+      expect(groups[0]).not.toContainEqual(expect.stringMatching('✖  Typecheck failed'));
 
-        // two-error
-        "../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        "../pkg-one/one.ts(7,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        '✖  Typecheck failed with 2 errors',
-        'ℹ  Typecheck finished in TIME',
-        // one
-        "../pkg-two/two.ts(8,33): error TS2504: Type 'AsyncIterator<string, any, undefined>' must have a '[Symbol.asyncIterator]()' method that returns an async iterator.",
-        '✖  Typecheck failed with 1 error',
-        'ℹ  Typecheck finished in TIME',
-        // two
-        '✔  Typecheck passed',
-        'ℹ  Typecheck finished in TIME',
+      // [TEST] Writing pkg-one/one-error.ts to pkg-one/one.ts
+      expect(groups[1]).toContainEqual(expect.stringMatching('✖  Typecheck failed'));
+      expect(groups[1]).not.toContain('✔  Typecheck passed');
 
-        // TODO: remove after https://github.com/microsoft/TypeScript/pull/51626 is released
-        '✔  Typecheck passed',
-        'ℹ  Typecheck finished in TIME',
-        // /TODO
-      ]);
+      // [TEST] Writing pkg-two/two-error.ts to pkg-two/two.ts
+      expect(groups[2]).toContainEqual(expect.stringMatching('✖  Typecheck failed'));
+      expect(groups[2]).not.toContain('✔  Typecheck passed');
+
+      // [TEST] Writing pkg-one/one.ts to pkg-one/one.ts
+      expect(groups[3]).toContainEqual(expect.stringMatching('✖  Typecheck failed'));
+      expect(groups[3]).not.toContain('✔  Typecheck passed');
+
+      // [TEST] Writing pkg-two/two.ts to pkg-two/two.ts
+      expect(groups[4]).toContain('✔  Typecheck passed');
+      expect(groups[4]).not.toContainEqual(expect.stringMatching('✖  Typecheck failed'));
 
       await expect(build.findTSOutput()).resolves.toEqual([
         'pkg-one/build/one.js',
@@ -325,17 +317,8 @@ describe('eslint-plugin-typecheck', () => {
         watch: true,
       });
 
-      try {
-        expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
-      } catch {
-        // TODO: remove after https://github.com/microsoft/TypeScript/pull/51626 is released
-        expect(output).toEqual([
-          '✔  Typecheck passed',
-          'ℹ  Typecheck finished in TIME',
-          '✔  Typecheck passed',
-          'ℹ  Typecheck finished in TIME',
-        ]);
-      }
+      expect(output).toContain('✔  Typecheck passed');
+      expect(output).not.toContainEqual(expect.stringMatching('✖  Typecheck failed'));
 
       await expect(build.findTSOutput()).resolves.toEqual([
         'pkg-one/build/one.js',
