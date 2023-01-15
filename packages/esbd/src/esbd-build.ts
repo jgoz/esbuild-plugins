@@ -7,7 +7,7 @@ import prettyBytes from 'pretty-bytes';
 import type { BuildMode, ResolvedEsbdConfig, TsBuildMode } from './config';
 import { getBuildOptions, getHtmlBuildOptions } from './get-build-options';
 import { writeTemplate } from './html-entry-point';
-import type { IncrementalBuildResult, WatchEvent } from './incremental-build';
+import type { IncrementalBuildResult } from './incremental-build';
 import { incrementalBuild } from './incremental-build';
 import type { Logger } from './log';
 import { timingPlugin } from './timing-plugin';
@@ -86,7 +86,8 @@ async function esbdBuildHtml(
     plugins: [...config.plugins, timingPlugin(logger, name)],
     write: false,
 
-    onBuildResult: async result => {
+    onBuildStart: options => onBuildStart(logger, options.buildCount),
+    onBuildEnd: async result => {
       if (!result.errors?.length) {
         await Promise.all([
           ...allWriteOptions.map(writeOptions =>
@@ -103,7 +104,6 @@ async function esbdBuildHtml(
       }
       logOutput(result, logger);
     },
-    onWatchEvent: events => onWatchEvent(logger, events),
   });
 
   if (watch) {
@@ -132,7 +132,8 @@ async function esbdBuildSource(
     plugins: [...config.plugins, timingPlugin(logger, name)],
     write: false,
 
-    onBuildResult: async result => {
+    onBuildStart: options => onBuildStart(logger, options.buildCount),
+    onBuildEnd: async result => {
       await Promise.all(
         result.outputFiles.map(async file => {
           await fs.promises.mkdir(dirname(file.path), { recursive: true });
@@ -141,7 +142,6 @@ async function esbdBuildSource(
       );
       logOutput(result, logger);
     },
-    onWatchEvent: events => onWatchEvent(logger, events),
   });
 
   if (watch) {
@@ -164,11 +164,8 @@ function logOutput(result: IncrementalBuildResult, logger: Logger) {
   }
 }
 
-function onWatchEvent(logger: Logger, events: WatchEvent[]): void {
-  if (events.length === 1) {
-    const [event, filePath] = events[0];
-    logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
-  } else {
-    logger.info(pc.gray(`${events.length} files changed, rebuilding`));
+function onBuildStart(logger: Logger, buildCount: number): void {
+  if (buildCount >= 1) {
+    logger.info(pc.gray('Source files changed, rebuilding'));
   }
 }

@@ -116,7 +116,22 @@ export default async function esbdNodeDev(
     plugins: [...config.plugins, timingPlugin(logger, config.name && `"${config.name}"`)],
     platform: 'node',
     target: config.target ?? defaultTarget,
-    onBuildResult: async result => {
+
+    onBuildStart: async options => {
+      if (options.buildCount >= 1) {
+        logger.info(pc.gray('Source files changed, rebuilding'));
+      }
+      child.removeAllListeners();
+      if (running) {
+        await new Promise<void>((resolve, reject) => {
+          child.on('exit', resolve);
+          child.on('error', reject);
+          child.cancel();
+        });
+        running = false;
+      }
+    },
+    onBuildEnd: async result => {
       if (result.errors?.length) {
         logger.info(`Not starting program due to ${result.errors.length} error(s)`);
         return;
@@ -140,23 +155,6 @@ export default async function esbdNodeDev(
 
       logger.info(`Starting ${pc.cyan(entryOutputFile.path)} ${pc.gray(args.join(' '))}`);
       runProgram(entryOutputFile.path, args);
-    },
-    onWatchEvent: async events => {
-      if (events.length === 1) {
-        const [event, filePath] = events[0];
-        logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
-      } else {
-        logger.info(pc.gray(`${events.length} files changed, rebuilding`));
-      }
-      child.removeAllListeners();
-      if (running) {
-        await new Promise<void>((resolve, reject) => {
-          child.on('exit', resolve);
-          child.on('error', reject);
-          child.cancel();
-        });
-        running = false;
-      }
     },
   });
 

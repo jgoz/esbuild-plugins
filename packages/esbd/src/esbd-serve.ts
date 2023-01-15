@@ -122,7 +122,12 @@ export default async function esbdServe(
     copy: config.copy,
     logger,
     plugins: [...config.plugins, timingPlugin(logger, config.name && `"${config.name}"`)],
-    onBuildResult: async (result, options) => {
+    onBuildStart: ({ buildCount }) => {
+      if (buildCount >= 1) {
+        logger.info(pc.gray(`Source files changed, rebuilding`));
+      }
+    },
+    onBuildEnd: async (result, options) => {
       if (!result.errors?.length) {
         // Re-parse the HTML files to pick up any changes to the template and because
         // the parse5 document is mutable, so successive builds may continue adding
@@ -154,14 +159,6 @@ export default async function esbdServe(
           }
         }
         notify('esbuild', { cssUpdate, errors: result.errors, warnings: result.warnings }, clients);
-      }
-    },
-    onWatchEvent: events => {
-      if (events.length === 1) {
-        const [event, filePath] = events[0];
-        logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
-      } else {
-        logger.info(pc.gray(`${events.length} files changed, rebuilding`));
       }
     },
   });
