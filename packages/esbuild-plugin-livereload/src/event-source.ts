@@ -37,7 +37,7 @@ async function init() {
       return;
     }
 
-    if (updated.length === 1 && updated[0].endsWith('.css')) {
+    if (updated.length === 1) {
       for (const link of Array.from(document.getElementsByTagName('link'))) {
         const url = new URL(link.href);
 
