@@ -1,6 +1,8 @@
-import type { notify as notifyFn } from '@jgoz/esbuild-plugin-livereload';
+import type {
+  clientMessageBuilder as clientMessageBuilderFn,
+  notify as notifyFn,
+} from '@jgoz/esbuild-plugin-livereload';
 import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
-import { createHash } from 'crypto';
 import dns from 'dns';
 import fs from 'fs';
 import type { Server, ServerResponse } from 'http';
@@ -30,12 +32,6 @@ interface EsbdServeConfig {
   rewrite: boolean;
   servedir?: string;
   tsBuildMode?: TsBuildMode;
-}
-
-function calculateHash(contents: Uint8Array): string {
-  const hash = createHash('md5');
-  hash.update(contents);
-  return hash.digest('base64');
 }
 
 export default async function esbdServe(
@@ -72,15 +68,17 @@ export default async function esbdServe(
   const absOutDir = path.resolve(basedir, buildOptions.outdir);
 
   const clients = new Set<ServerResponse>();
-  const outputHashes = new Map<string, string>();
 
   let banner: string | undefined;
   let lrserver: Server | undefined;
   let notify: typeof notifyFn | undefined;
+  let messageBuilder: ReturnType<typeof clientMessageBuilderFn> | undefined;
   if (livereload) {
-    const { createLivereloadServer, notify: notifyLR } = await import(
-      '@jgoz/esbuild-plugin-livereload'
-    );
+    const {
+      clientMessageBuilder,
+      createLivereloadServer,
+      notify: notifyLR,
+    } = await import('@jgoz/esbuild-plugin-livereload');
     const bannerTemplate = await fs.promises.readFile(
       require.resolve('@jgoz/esbuild-plugin-livereload/banner.js'),
       'utf-8',
@@ -93,6 +91,7 @@ export default async function esbdServe(
       port: 53099,
     });
     notify = notifyLR;
+    messageBuilder = clientMessageBuilder(buildOptions);
   }
 
   if (check) {
@@ -148,17 +147,9 @@ export default async function esbdServe(
         ]);
       }
 
-      if (livereload && notify) {
-        let cssUpdate = false;
-        for (const outputFile of result.outputFiles.filter(o => o.path.endsWith('.css'))) {
-          const prevHash = outputHashes.get(outputFile.path);
-          const hash = calculateHash(outputFile.contents);
-          if (prevHash !== hash) {
-            outputHashes.set(outputFile.path, hash);
-            cssUpdate = true;
-          }
-        }
-        notify('esbuild', { cssUpdate, errors: result.errors, warnings: result.warnings }, clients);
+      if (livereload && notify && messageBuilder) {
+        const message = await messageBuilder(result);
+        notify('esbuild', message, clients);
       }
     },
   });

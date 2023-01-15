@@ -1,4 +1,4 @@
-import type { BuildResult } from 'esbuild';
+import type { ClientMessage } from './livereload-plugin';
 
 declare global {
   interface Window {
@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-function writeWarnings(result: BuildResult | undefined) {
+function writeWarnings(result: ClientMessage | undefined) {
   if (!result?.warnings) return;
   for (const warning of result.warnings) {
     if (!warning.location) {
@@ -25,41 +25,45 @@ async function init() {
   const evt = new EventSource(window.__ESBUILD_LR_PLUGIN__ + '/esbuild');
   let removeOverlay: (() => void) | undefined;
 
-  evt.addEventListener('reload', e => {
-    writeWarnings(JSON.parse((e as MessageEvent)?.data ?? '{}'));
-    console.log('esbuild-plugin-livereload: reloading...');
-    location.reload();
-  });
+  evt.addEventListener('change', e => {
+    const msg: ClientMessage = JSON.parse(e?.data ?? '{}');
+    writeWarnings(msg);
 
-  evt.addEventListener('reload-css', e => {
-    const result = JSON.parse((e as MessageEvent)?.data ?? '{}');
+    const { forceReload, added, removed, updated } = msg;
 
-    writeWarnings(result);
-    console.log('esbuild-plugin-livereload: reloading CSS...');
-
-    const links = document.getElementsByTagName('link');
-    for (let i = 0; i < links.length; i++) {
-      const link = links.item(i);
-      if (!link || link.rel !== 'stylesheet' || !link.href) continue;
-
-      const url = new URL(link.href);
-      url.searchParams.set('_hash', Date.now().toString());
-
-      link.href = url.href;
+    if (forceReload || added.length || removed.length || updated.length > 1) {
+      console.log('esbuild-plugin-livereload: reloading...');
+      location.reload();
+      return;
     }
-  });
 
-  evt.addEventListener('build-result', e => {
-    const result = JSON.parse((e as MessageEvent)?.data ?? '{}');
-    writeWarnings(result);
-    if (removeOverlay && !result.errors.length) {
+    if (updated.length === 1 && updated[0].endsWith('.css')) {
+      for (const link of Array.from(document.getElementsByTagName('link'))) {
+        const url = new URL(link.href);
+
+        if (url.host === location.host && url.pathname === msg.updated[0]) {
+          console.log(`esbuild-plugin-livereload: reloading CSS file ${msg.updated[0]}...`);
+
+          const next = link.cloneNode() as HTMLLinkElement;
+          next.href = msg.updated[0] + '?' + Math.random().toString(36).slice(2);
+          next.onload = () => link.remove();
+          link.parentNode!.insertBefore(next, link.nextSibling);
+          return;
+        }
+      }
+      console.log('esbuild-plugin-livereload: reloading...');
+      location.reload();
+    }
+
+    if (removeOverlay && !msg.errors?.length) {
       removeOverlay();
       removeOverlay = undefined;
     }
-    if (result.errors?.length) {
+
+    if (msg.errors?.length) {
       removeOverlay = overlay({
-        errors: result.errors,
-        openFileURL: window.__ESBUILD_LR_PLUGIN__ + '/open-editor',
+        errors: msg.errors.slice(),
+        openFileURL: window.__ESBUILD_LR_PLUGIN__ + '/esbuild/open-editor',
       });
     }
   });

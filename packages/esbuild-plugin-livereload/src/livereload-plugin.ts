@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import type { Message, Plugin } from 'esbuild';
+import type { BuildOptions, BuildResult, Message, Plugin } from 'esbuild';
 import { createReadStream, promises as fsp } from 'fs';
 import type { ServerResponse } from 'http';
 import path from 'path';
@@ -8,9 +8,24 @@ import { createLivereloadServer } from './server';
 
 export interface ClientMessage {
   /**
-   * Does the current message represent a CSS-only update?
+   * Output files that were added since the last build.
    */
-  cssUpdate?: boolean;
+  added: readonly string[];
+
+  /**
+   * Output files that were removed since the last build.
+   */
+  removed: readonly string[];
+
+  /**
+   * Output files that were changed since the last build.
+   */
+  updated: readonly string[];
+
+  /**
+   * Reload the page even if a hot update is possible.
+   */
+  forceReload?: boolean;
 
   /**
    * Error messages.
@@ -25,7 +40,6 @@ export interface ClientMessage {
 
 const clients = new Set<ServerResponse>();
 const errorSources = new Map<string, ClientMessage>();
-const outputHashes = new Map<string, string>();
 
 export interface LivereloadPluginOptions {
   /**
@@ -41,7 +55,7 @@ export interface LivereloadPluginOptions {
    * @default 53099
    */
   port?: number;
-  
+
   /**
    * Host that the livereload server will run on.
    *
@@ -72,9 +86,9 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
 
       let fullReloadOnCssUpdates = options.fullReloadOnCssUpdates;
 
-      if (!build.initialOptions.metafile && !options.fullReloadOnCssUpdates) {
+      if (!build.initialOptions.metafile) {
         console.warn(
-          '[esbuild-plugin-livereload]: "metafile" option is disabled, so CSS updates will trigger a full reload',
+          '[esbuild-plugin-livereload]: "metafile" option is disabled, so all changes will trigger a full reload',
         );
         fullReloadOnCssUpdates = true;
       }
@@ -85,28 +99,85 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
         fullReloadOnCssUpdates = true;
       }
 
+      const messageBuilder = clientMessageBuilder(build.initialOptions, fullReloadOnCssUpdates);
+
       build.onEnd(async result => {
-        let cssUpdate = false;
-        if (result.metafile && !fullReloadOnCssUpdates) {
-          const outputs = Object.keys(result.metafile.outputs).map(o => path.resolve(basedir, o));
-
-          for (const outputFile of outputs.filter(o => o.endsWith('.css'))) {
-            const prevHash = outputHashes.get(outputFile);
-            const hash = await calculateHash(outputFile);
-            if (prevHash !== hash) {
-              outputHashes.set(outputFile, hash);
-              cssUpdate = true;
-            }
-          }
-        }
-
-        notify('esbuild', {
-          warnings: result.warnings,
-          errors: result.errors,
-          cssUpdate,
-        });
+        const message = await messageBuilder(result);
+        notify('esbuild', message);
       });
     },
+  };
+}
+
+/**
+ * Creates a stateful function that generates messages for connected clients.
+ *
+ * Build outputs are tracked between builds and differentials are calculated
+ * with each subsequent build.
+ *
+ * @param options - esbuild build options
+ * @param fullReloadOnCssUpdates - If true, CSS updates will always trigger a full page reload
+ * @returns - A function that generates messages for connected clients
+ */
+export function clientMessageBuilder(options: BuildOptions, fullReloadOnCssUpdates = false) {
+  const outputHashes = new Map<string, string>();
+  const { absWorkingDir: basedir = process.cwd(), outdir } = options;
+
+  const absOutDir = outdir ? path.resolve(basedir, outdir) : undefined;
+
+  function publicPath(file: string) {
+    if (absOutDir) {
+      const relative = path.relative(absOutDir, file);
+      return relative.startsWith('/') ? relative : `/${relative}`;
+    }
+    return file;
+  }
+
+  return async function buildMessage(result: BuildResult): Promise<ClientMessage> {
+    const added: string[] = [];
+    const removed: string[] = [];
+    const updated: string[] = [];
+    const nextHashes: [string, string][] = [];
+
+    if (result.metafile) {
+      const absOutputs = Object.keys(result.metafile.outputs)
+        .filter(o => !o.endsWith('.map'))
+        .map(o => path.resolve(basedir, o));
+
+      for (const outputFile of absOutputs) {
+        const prevHash = outputHashes.get(outputFile);
+        const hash = await calculateHash(outputFile);
+
+        if (prevHash) {
+          outputHashes.delete(outputFile);
+          if (prevHash !== hash) {
+            updated.push(publicPath(outputFile));
+          }
+        } else {
+          added.push(publicPath(outputFile));
+        }
+
+        nextHashes.push([outputFile, hash]);
+      }
+
+      for (const outputFile of outputHashes.keys()) {
+        removed.push(publicPath(outputFile));
+      }
+
+      outputHashes.clear();
+      for (const [outputFile, hash] of nextHashes) {
+        outputHashes.set(outputFile, hash);
+      }
+    }
+
+    return {
+      added,
+      removed,
+      updated,
+      warnings: result.warnings,
+      errors: result.errors,
+      forceReload: fullReloadOnCssUpdates,
+    };
   };
 }
 
@@ -131,24 +202,31 @@ export function notify(
   errorSources.set(errorSource, msg);
 
   const values = Array.from(errorSources.values());
+  const added = values.flatMap(v => v.added);
+  const removed = values.flatMap(v => v.removed);
+  const updated = values.flatMap(v => v.updated);
   const errors = values.flatMap(v => v.errors ?? []);
   const warnings = values.flatMap(v => v.warnings ?? []);
+  const forceReload = values.some(v => v.forceReload);
 
-  const reloadCss = msg.cssUpdate;
-  const reloadPage = !reloadCss && errorSource === 'esbuild' && errors.length === 0;
-  const event = reloadCss
-    ? 'event: reload-css\n'
-    : reloadPage
-    ? 'event: reload\n'
-    : 'event: build-result\n';
-  const data = `data: ${JSON.stringify({ warnings, errors })}\n\n`;
+  const data = `data: ${JSON.stringify({
+    added,
+    removed,
+    updated,
+    warnings,
+    errors,
+    forceReload,
+  })}\n\n`;
 
   connectedClients.forEach(res => {
-    res.write(event);
-    res.write(data);
+    if (res.socket?.destroyed) {
+      connectedClients.delete(res);
+    }
+    try {
+      res.write('event: change\n');
+      res.write(data);
+    } catch {}
   });
-
-  if (reloadPage) connectedClients.clear();
 }
 
 async function calculateHash(filePath: string): Promise<string> {

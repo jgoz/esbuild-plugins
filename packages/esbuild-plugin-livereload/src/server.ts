@@ -38,7 +38,7 @@ export function createLivereloadServer(options: ServerOptions): Server {
       fs.createReadStream(sourcePath).pipe(res);
       return;
     }
-    if (url.pathname === '/open-editor') {
+    if (url.pathname === '/esbuild/open-editor') {
       const file = url.searchParams.get('file');
       const line = Number(url.searchParams.get('line') ?? 0);
       const column = Number(url.searchParams.get('column') ?? 0);
