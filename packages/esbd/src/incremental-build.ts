@@ -168,12 +168,13 @@ export async function incrementalBuild({
       evt.emit('end');
     }
   }
-  triggerBuild.dispose = async () => {
+
+  async function dispose() {
     await context.dispose();
     await inputWatcher.close();
     await moduleWatcher.close();
     await assetWatcher.close();
-  };
+  }
 
   function updateWatchedFiles(metafile: Metafile): void {
     const nextInputs = new Set<string>();
@@ -296,5 +297,5 @@ export async function incrementalBuild({
     logger.debug(`Started watching for changes (${inputCount} inputs, ${modCount} modules)`);
   }
 
-  return { ...context, wait };
+  return { ...context, rebuild: triggerBuild, dispose, wait };
 }
