@@ -28,6 +28,7 @@ interface IncrementalBuildOptions extends RequiredBuildOptions {
 }
 
 interface IncrementalBuildContext extends BuildContext<RequiredBuildOptions> {
+  watch(): Promise<void>;
   wait(): Promise<void>;
 }
 
@@ -112,8 +113,9 @@ export async function incrementalBuild({
     abort.abort();
   }
 
-  function watch(): void {
-    context.watch();
+  async function watch(): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/await-thenable, @typescript-eslint/no-confusing-void-expression -- esbuild types are wrong; watch() returns a Promise<void>
+    await context.watch();
 
     for (const [from] of normalizedCopy) {
       fsWatch(from, { persistent: false, signal }, event => {

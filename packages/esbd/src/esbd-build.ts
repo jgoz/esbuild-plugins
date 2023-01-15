@@ -107,7 +107,7 @@ async function esbdBuildHtml(
   });
 
   if (watch) {
-    context.watch();
+    await context.watch();
   } else {
     await context.rebuild();
     await context.dispose();
@@ -145,7 +145,7 @@ async function esbdBuildSource(
   });
 
   if (watch) {
-    context.watch();
+    await context.watch();
   } else {
     await context.rebuild();
     await context.dispose();

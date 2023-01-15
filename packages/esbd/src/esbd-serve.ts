@@ -228,5 +228,5 @@ export default async function esbdServe(
 
   Graceful.on('exit', () => shutdown());
 
-  context.watch();
+  await context.watch();
 }
