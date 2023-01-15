@@ -1,4 +1,4 @@
-import { watch } from 'chokidar';
+import { watch as watcher } from 'chokidar';
 import type { BuildContext, BuildOptions, BuildResult, Metafile } from 'esbuild';
 import { context as createContext } from 'esbuild';
 import { EventEmitter } from 'events';
@@ -30,7 +30,6 @@ interface IncrementalBuildOptions extends RequiredBuildOptions {
     options: RequiredBuildOptions,
   ) => Promise<void> | void;
   onWatchEvent: (events: WatchEvent[]) => Promise<void> | void;
-  watch?: boolean;
 }
 
 interface IncrementalBuildContext extends BuildContext<RequiredBuildOptions> {
@@ -73,7 +72,6 @@ export async function incrementalBuild({
   logger,
   onBuildResult,
   onWatchEvent,
-  watch: watchForChanges,
   ...options
 }: IncrementalBuildOptions): Promise<IncrementalBuildContext> {
   let running = false;
@@ -99,14 +97,14 @@ export async function incrementalBuild({
     }
   }
 
-  const inputWatcher = watch([], {
+  const inputWatcher = watcher([], {
     cwd: basedir,
     disableGlobbing: true,
     ignored: INPUT_WATCH_IGNORE,
     ignoreInitial: true,
   });
 
-  const moduleWatcher = watch([], {
+  const moduleWatcher = watcher([], {
     cwd: basedir,
     depth: 2,
     disableGlobbing: true,
@@ -116,7 +114,7 @@ export async function incrementalBuild({
     usePolling: true,
   });
 
-  const assetWatcher = watch([], {
+  const assetWatcher = watcher([], {
     disableGlobbing: true,
     ignoreInitial: true,
   });
@@ -134,7 +132,7 @@ export async function incrementalBuild({
     );
   }
 
-  async function triggerBuild(): Promise<IncrementalBuildResult> {
+  async function rebuild(): Promise<IncrementalBuildResult> {
     let result: IncrementalBuildResult;
     try {
       logger.debug('Starting build');
@@ -145,12 +143,9 @@ export async function incrementalBuild({
       await onBuildResult(result, options);
 
       logger.debug('Build successful');
-      if (watchForChanges) {
-        updateWatchedFiles(result.metafile);
-      }
-
       return result;
     } catch (e) {
+      console.log(e);
       logger.debug('Build failed', e);
       result = {
         ...NULL_RESULT,
@@ -160,10 +155,7 @@ export async function incrementalBuild({
       validateResult(result);
       await onBuildResult(result, options);
 
-      if (!watchForChanges) {
-        throw e;
-      }
-      return result;
+      throw e;
     } finally {
       evt.emit('end');
     }
@@ -247,7 +239,10 @@ export async function incrementalBuild({
   const throttledBuild = createThrottled((watchEvents: WatchEvent[]) => {
     running = true;
     Promise.resolve(onWatchEvent(watchEvents))
-      .then(triggerBuild)
+      .then(async () => {
+        const result = await rebuild();
+        updateWatchedFiles(result.metafile);
+      })
       .catch(logger.error)
       .finally(() => {
         running = false;
@@ -281,11 +276,7 @@ export async function incrementalBuild({
     copyAssets(path).catch(logger.error);
   }
 
-  if (cleanOutdir && absOutDir) {
-    await rm(absOutDir, { recursive: true, force: true });
-  }
-
-  if (watchForChanges) {
+  function watch(): void {
     assetWatcher.add(normalizedCopy.map(([from]) => from));
 
     inputWatcher.on('all', onInputEvent);
@@ -295,7 +286,15 @@ export async function incrementalBuild({
     const inputCount = Object.keys(inputWatcher.getWatched()).length;
     const modCount = Object.keys(moduleWatcher.getWatched()).length;
     logger.debug(`Started watching for changes (${inputCount} inputs, ${modCount} modules)`);
+
+    rebuild()
+      .then(result => updateWatchedFiles(result.metafile))
+      .catch(logger.error);
   }
 
-  return { ...context, rebuild: triggerBuild, dispose, wait };
+  if (cleanOutdir && absOutDir) {
+    await rm(absOutDir, { recursive: true, force: true });
+  }
+
+  return { ...context, dispose, rebuild, wait, watch };
 }

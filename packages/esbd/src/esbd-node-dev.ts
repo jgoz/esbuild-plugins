@@ -116,7 +116,6 @@ export default async function esbdNodeDev(
     plugins: [...config.plugins, timingPlugin(logger, config.name && `"${config.name}"`)],
     platform: 'node',
     target: config.target ?? defaultTarget,
-    watch: true,
     onBuildResult: async result => {
       if (result.errors?.length) {
         logger.info(`Not starting program due to ${result.errors.length} error(s)`);
@@ -170,6 +169,5 @@ export default async function esbdNodeDev(
 
   Graceful.on('exit', () => shutdown());
 
-  // Trigger the first build
-  await context.rebuild();
+  context.watch();
 }

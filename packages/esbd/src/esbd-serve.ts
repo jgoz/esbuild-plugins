@@ -122,7 +122,6 @@ export default async function esbdServe(
     copy: config.copy,
     logger,
     plugins: [...config.plugins, timingPlugin(logger, config.name && `"${config.name}"`)],
-    watch: true,
     onBuildResult: async (result, options) => {
       if (!result.errors?.length) {
         // Re-parse the HTML files to pick up any changes to the template and because
@@ -241,6 +240,5 @@ export default async function esbdServe(
 
   Graceful.on('exit', () => shutdown());
 
-  // Trigger the first build
-  await context.rebuild();
+  context.watch();
 }

@@ -84,7 +84,6 @@ async function esbdBuildHtml(
     copy: config.copy,
     logger,
     plugins: [...config.plugins, timingPlugin(logger, name)],
-    watch,
     write: false,
 
     onBuildResult: async result => {
@@ -107,10 +106,12 @@ async function esbdBuildHtml(
     onWatchEvent: events => onWatchEvent(logger, events),
   });
 
-  // Trigger the first build
-  await context.rebuild();
-
-  if (!watch) await context.dispose();
+  if (watch) {
+    context.watch();
+  } else {
+    await context.rebuild();
+    await context.dispose();
+  }
 }
 
 async function esbdBuildSource(
@@ -129,7 +130,6 @@ async function esbdBuildSource(
     copy: config.copy,
     logger,
     plugins: [...config.plugins, timingPlugin(logger, name)],
-    watch,
     write: false,
 
     onBuildResult: async result => {
@@ -144,10 +144,12 @@ async function esbdBuildSource(
     onWatchEvent: events => onWatchEvent(logger, events),
   });
 
-  // Trigger the first build
-  await context.rebuild();
-
-  if (!watch) await context.dispose();
+  if (watch) {
+    context.watch();
+  } else {
+    await context.rebuild();
+    await context.dispose();
+  }
 }
 
 function logOutput(result: IncrementalBuildResult, logger: Logger) {
