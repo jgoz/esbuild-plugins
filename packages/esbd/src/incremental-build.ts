@@ -89,6 +89,7 @@ export async function incrementalBuild({
 
   const context = await createContext({
     ...options,
+    logLevel: logger.logLevel === 'info' ? 'warning' : options.logLevel,
     plugins: [resultPlugin, ...(options.plugins ?? [])],
   });
 
