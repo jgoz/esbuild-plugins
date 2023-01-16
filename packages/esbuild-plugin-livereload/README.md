@@ -73,8 +73,11 @@ from esbuild, the page will be sent a reload request.
 <!-- markdown-interpolate: node ../../scripts/docs.mjs ./src/livereload-plugin.ts ClientMessage -->
 | Name | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| cssUpdate | `boolean` | - | Does the current message represent a CSS-only update? |
+| added (*) | `readonly string[]` | - | Output files that were added since the last build. |
+| removed (*) | `readonly string[]` | - | Output files that were removed since the last build. |
+| updated (*) | `readonly string[]` | - | Output files that were changed since the last build. |
 | errors | `readonly Message[]` | - | Error messages. |
+| forceReload | `boolean` | - | Reload the page even if a hot update is possible. |
 | warnings | `readonly Message[]` | - | Warning messages. |
 <!-- end -->
 <!-- prettier-ignore-end -->

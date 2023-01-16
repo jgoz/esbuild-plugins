@@ -92,7 +92,7 @@ export class TypecheckRunner {
           break;
         }
         case 'done': {
-          notify('typecheck-plugin', { errors, warnings });
+          notify('typecheck-plugin', { added: [], removed: [], updated: [], errors, warnings });
 
           if (msg.errorCount) {
             logFailed(
