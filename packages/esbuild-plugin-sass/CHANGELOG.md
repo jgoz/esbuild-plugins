@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-sass
 
+## 2.0.1
+
+### Patch Changes
+
+- 3d5d90d: Transform sass errors into esbuild errors when possible
+
 ## 2.0.0
 
 ### Major Changes
