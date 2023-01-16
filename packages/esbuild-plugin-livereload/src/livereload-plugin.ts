@@ -64,6 +64,13 @@ export interface LivereloadPluginOptions {
   host?: string;
 }
 
+/**
+ * An esbuild plugin that sets up a livereload server and modifies the
+ * build options to enable reload-on-change behavior and error reporting.
+ *
+ * @param options - Options for the livereload plugin.
+ * @returns - An esbuild plugin that enables livereload.
+ */
 export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin {
   const { port = 53099, host = '127.0.0.1' } = options;
   const baseUrl = `http://${host}:${port}/`;

@@ -9,6 +9,12 @@ An esbuild plugin that reloads the browser window after you make changes. CSS-on
 - Adds a dismissable error/warning overlay for esbuild output
   - Can be used by other plugins by importing the `notify` function
 
+#### How is this different from esbuild's built-in livereload (0.17.0+)?
+
+- Doesn't require use of esbuild's `serve()` API
+- Doesn't require any extra code &mdash; client script is injected into the bundle
+- Includes an overlay for displaying error messages in the browser
+
 ### Install
 
 ```console

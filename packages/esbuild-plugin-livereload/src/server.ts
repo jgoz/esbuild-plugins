@@ -15,6 +15,12 @@ export interface LivereloadServerOptions {
 
 export type LivereloadRequestHandler = (req: IncomingMessage, res: ServerResponse) => boolean;
 
+/**
+ * Creates a request handler for http.createServer() that handles livereload requests.
+ *
+ * @param options - Options for the livereload server.
+ * @returns - A request handler for handling livereload requests.
+ */
 export async function createLivereloadRequestHandler(
   options: LivereloadServerOptions,
 ): Promise<LivereloadRequestHandler> {
@@ -70,6 +76,12 @@ export async function createLivereloadRequestHandler(
   };
 }
 
+/**
+ * Creates a livereload server.
+ *
+ * @param options - Options for the livereload server.
+ * @returns - The server instance.
+ */
 export async function createLivereloadServer(options: LivereloadServerOptions): Promise<Server> {
   const handler = await createLivereloadRequestHandler(options);
   return createServer(handler).listen(options.port, options.host);
