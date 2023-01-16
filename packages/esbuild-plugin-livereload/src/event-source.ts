@@ -22,7 +22,7 @@ function writeWarnings(result: ClientMessage | undefined) {
 async function init() {
   const { overlay } = await import('@jgoz/esbuild-overlay');
 
-  const evt = new EventSource(window.__ESBUILD_LR_PLUGIN__ + '/esbuild');
+  const evt = new EventSource(window.__ESBUILD_LR_PLUGIN__ + 'esbuild');
   let removeOverlay: (() => void) | undefined;
 
   evt.addEventListener('change', e => {
@@ -63,7 +63,7 @@ async function init() {
     if (msg.errors?.length) {
       removeOverlay = overlay({
         errors: msg.errors.slice(),
-        openFileURL: window.__ESBUILD_LR_PLUGIN__ + '/esbuild/open-editor',
+        openFileURL: window.__ESBUILD_LR_PLUGIN__ + 'esbuild/open-editor',
       });
     }
   });

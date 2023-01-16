@@ -227,7 +227,6 @@ Flags:
 - `--host, -s` &mdash; Development server IP/host name (default: `127.0.0.1`)
 - `--port, -p` &mdash; Development server port (default: `8000`)
 - `--livereload, -r` &mdash; Reload the current page when source changes cause a rebuild. Build errors (and TypeScript errors if using `--check`) will be piped to the browser.
-- `--livereload-host` &mdash; Specify the host to use for the livereload server (default: `127.0.0.1`)
 - `--no-rewrite` &mdash; Disable rewriting of all requests to "index.html" (SPA mode). When disabled, any request that doesn't match a physical file on disk (either served from the build output directory or servedir) will return a 404.
 - `--servedir, -d <path>` &mdash; Directory of additional static assets to serve from the server root
 

@@ -1,11 +1,12 @@
 import type {
   clientMessageBuilder as clientMessageBuilderFn,
+  LivereloadRequestHandler,
   notify as notifyFn,
 } from '@jgoz/esbuild-plugin-livereload';
 import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
 import dns from 'dns';
 import fs from 'fs';
-import type { Server, ServerResponse } from 'http';
+import type { ServerResponse } from 'http';
 import { createServer } from 'http';
 import Graceful from 'node-graceful';
 import path from 'path';
@@ -25,7 +26,6 @@ interface EsbdServeConfig {
   check?: boolean;
   host?: string;
   livereload?: boolean;
-  livereloadHost?: string;
   logger: Logger;
   mode: BuildMode;
   port?: number;
@@ -41,7 +41,6 @@ export default async function esbdServe(
     host = '127.0.0.1',
     port = 8000,
     livereload,
-    livereloadHost = '127.0.0.1',
     logger,
     servedir,
     rewrite,
@@ -70,25 +69,25 @@ export default async function esbdServe(
   const clients = new Set<ServerResponse>();
 
   let banner: string | undefined;
-  let lrserver: Server | undefined;
+  let lrHandler: LivereloadRequestHandler | undefined;
   let notify: typeof notifyFn | undefined;
   let messageBuilder: ReturnType<typeof clientMessageBuilderFn> | undefined;
   if (livereload) {
     const {
       clientMessageBuilder,
-      createLivereloadServer,
+      createLivereloadRequestHandler,
       notify: notifyLR,
     } = await import('@jgoz/esbuild-plugin-livereload');
     const bannerTemplate = await fs.promises.readFile(
       require.resolve('@jgoz/esbuild-plugin-livereload/banner.js'),
       'utf-8',
     );
-    banner = bannerTemplate.replace(/{baseUrl}/g, `http://${livereloadHost}:53099`);
-    lrserver = createLivereloadServer({
+    banner = bannerTemplate.replace(/{baseUrl}/g, publicPath);
+    lrHandler = await createLivereloadRequestHandler({
       basedir,
+      host,
+      port,
       onSSE: res => clients.add(res),
-      host: livereloadHost,
-      port: 53099,
     });
     notify = notifyLR;
     messageBuilder = clientMessageBuilder(buildOptions);
@@ -193,10 +192,13 @@ export default async function esbdServe(
       });
     }
 
-    handleRequest().catch(err => {
-      logger.error(err, err.stack);
-      res.writeHead(500).write(err.toString());
-    });
+    const handled = lrHandler?.(req, res) ?? false;
+    if (!handled) {
+      handleRequest().catch(err => {
+        logger.error(err, err.stack);
+        res.writeHead(500).write(err.toString());
+      });
+    }
   });
 
   // https://github.com/nodejs/node/issues/40537
@@ -212,7 +214,6 @@ export default async function esbdServe(
 
     const shutdownPromises: Promise<void>[] = [];
     if (server) shutdownPromises.push(promisify(server.close)());
-    if (lrserver) shutdownPromises.push(promisify(lrserver.close)());
     try {
       await Promise.all(shutdownPromises);
     } catch {
