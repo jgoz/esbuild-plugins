@@ -30,7 +30,7 @@ export default async function esbdNodeDev(
   config: ResolvedEsbdConfig,
   { args, logger, mode, respawn, check, tsBuildMode }: EsbdNodeDevConfig,
 ) {
-  let child: ChildProcess & ExecaChildPromise<string>;
+  let child: (ChildProcess & ExecaChildPromise<string>) | undefined;
   let keepAliveCount = 0;
   let keepAliveResetTimeout: NodeJS.Timeout;
   let running = false;
@@ -75,13 +75,13 @@ export default async function esbdNodeDev(
     });
 
     child.once('exit', exitCode => {
-      child.removeAllListeners();
+      child?.removeAllListeners();
       if (exitCode) logger.error(`Program exited with code ${exitCode}`);
       void handleExit(exitCode ?? 0);
     });
 
     child.once('error', err => {
-      child.removeAllListeners();
+      child?.removeAllListeners();
       logger.error('Uncaught program error', err.toString(), err.stack);
       void handleExit(1);
     });
@@ -121,9 +121,13 @@ export default async function esbdNodeDev(
       if (options.buildCount >= 1) {
         logger.info(pc.gray('Source files changed, rebuilding'));
       }
-      child.removeAllListeners();
+      child?.removeAllListeners();
       if (running) {
         await new Promise<void>((resolve, reject) => {
+          if (!child) {
+            resolve();
+            return;
+          }
           child.on('exit', resolve);
           child.on('error', reject);
           child.cancel();
