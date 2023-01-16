@@ -16,11 +16,11 @@ Turn your esbuild config files into CLIs with enhanced DX for browser and Node a
 
 Esbuild is an incredible tool with the potential to supplant Webpack as the dominant bundler in the JS ecosystem. But for many, it lacks a handful of features that prevent full adoption.
 
-Tools like [Vite](https://vitejs.dev), [Parcel](https://parceljs.org), [Snowpack](https://www.snowpack.dev), and others have embraced esbuild largely as a transpiler for JS dialects, i.e., as an alternative to Babel or TypeScript. These tools offer a diverse set of features, such as fast startup, HMR, low/zero configuration, and the option to eschew bundling altogether and serve ES modules directly to the browser.
+Tools like [Vite](https://vitejs.dev), [Parcel](https://parceljs.org), [Snowpack](https://www.snowpack.dev) (RIP), and others have embraced esbuild largely as a transpiler for JS dialects, i.e., as an alternative to Babel or TypeScript. These tools offer a diverse set of features, such as fast startup, HMR, low/zero configuration, and the option to eschew bundling altogether and serve ES modules directly to the browser.
 
 But by only using esbuild as a transpiler, these tools exist in the same performance ballpark as Webpack with [esbuild-loader](https://github.com/privatenumber/esbuild-loader). For smaller projects, this might be more than sufficient. And with a small enough internal dependency graph, unbundled development (or even production!) might offer better performance over bundled development via webpack-dev-server + esbuild-loader without losing any features.
 
-Esbd uses a different approach. It delegates as much as possible to esbuild's (incredibly fast) bundler and augments it with a few nice-to-have DX enhancements that the core tool currently lacks. Features such as live-reload, error reporting, HTML entry points, and sideband type-checking enrich the core featureset without slowing esbuild down in any meaningful way.
+Esbd uses a different approach. It delegates as much as possible to esbuild's (incredibly fast) bundler and augments it with a few nice-to-have DX enhancements that the core tool currently lacks. Features such as live-reload with error reporting, HTML entry points, and sideband type-checking enrich the core featureset without slowing esbuild down in any meaningful way.
 
 The difference in performance is staggering. The quoted "10-100x" figure on esbuild's website is not exaggeration, but it's only true when using esbuild as both a bundler and a transpiler. By fully embracing esbuild's bundler, however, esbd is limited in what features it can reasonably offer without sacrificing build performance or significantly increasing complexity. This means HMR or other advanced features that involve source-level transformations that aren't suppored by esbuild can never be supported by esbd.
 
@@ -227,7 +227,6 @@ Flags:
 - `--host, -s` &mdash; Development server IP/host name (default: `127.0.0.1`)
 - `--port, -p` &mdash; Development server port (default: `8000`)
 - `--livereload, -r` &mdash; Reload the current page when source changes cause a rebuild. Build errors (and TypeScript errors if using `--check`) will be piped to the browser.
-- `--livereload-host` &mdash; Specify the host to use for the livereload server (default: `127.0.0.1`)
 - `--no-rewrite` &mdash; Disable rewriting of all requests to "index.html" (SPA mode). When disabled, any request that doesn't match a physical file on disk (either served from the build output directory or servedir) will return a 404.
 - `--servedir, -d <path>` &mdash; Directory of additional static assets to serve from the server root
 
@@ -344,6 +343,14 @@ configure({
 
 Note that _glob patterns are not supported_, so if you need to copy an unknown number of assets that match a pattern, you will need to use a glob library like `glob` or `globby`.
 
+#### How does this relate to esbuild's `copy` loader?
+
+The [`copy` loader](https://esbuild.github.io/content-types/#copy) works on imported files based on their extension. You might use this if you wanted all imports of a specific filetype to be copied into the output directory without changing their import semantics.
+
+It's also possible to use the `copy` loader on filetypes that aren't parseable by esbuild, such as HTML files, and to specify those files as entry points to the build. For example, you might specify `{ '.html': 'copy' }` and specify `index.html` as an entry point, which will copy `index.html` to the output directory.
+
+`esbd`'s `copy` option is similar to the latter use case above except it works for individual files, not file extensions, and it doesn't require those files to be specified as entry points. There are many scenarios where both the `copy` option and the `copy` loader would make sense to use in the same build config; they are entirely complementary.
+
 ### API
 
 #### `function configure(config: EsbdConfigResult | ConfigFn): void`
@@ -362,7 +369,7 @@ Note that these esbuild options are ignored:
 <!-- markdown-interpolate: node ../../scripts/docs.mjs ./src/config.ts EsbdSpecificOptions -->
 | Name | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| cleanOutdir | `boolean` | `false` | When true, the output directory will be deleted before the initial build.<br><br>When in watch mode (either directly or via `node-dev`/`serve`), the output directory will only be cleaned when the process is started.  |
+| cleanOutdir | `boolean` | `false` | Keep the output directory clean.<br><br>On the initial build, the output directory will be cleaned before the build starts.<br><br>When in watch mode (either directly or via `node-dev`/`serve`), output files will be tracked across builds and any files that are no longer produced by esbuild will be removed from the output directory. This ensures that no stale files are left behind when content hash changes cause files to be renamed or removed. Note that this is usually only relevant when ESM/splitting is enabled.  |
 | copy | `[from: string, to?: string][]` | - | Files to copy to the output directory during the build.<br><br>Each entry is a tuple representing the source file path to copy and, optionally, the destination file path.<br><br>Source paths may be absolute or relative to `absWorkingDir`. Destination paths may be absolute or relative to `outdir`. If no destination path is provided, the source file will be copied to `outdir` with the same name.<br><br>If `esbd` is started in a watch mode (serve, node-dev, or build --watch), source files will be watched and copied whenever they change.<br><br>Note that `copy` does not support glob patterns.  |
 | ignoreAssets | `boolean` | - | By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and `<script>` tags in the HTML template will be collected as esbuild assets if their `src` attributes are specified as relative paths. The asset paths will be resolved relative to the *template file* and will be copied to the output directory, taking `publicPath` into consideration if it has been set.<br><br>Absolute paths or URIs will be ignored.<br><br>To ignore all `src` attributes and avoid collecting discovered assets, set this option to `true`.  |
 | [integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) | `"sha256" \| "sha384" \| "sha512"` | - | If specified, a cryptographic digest for each file referenced by a `<link>` or `<script>` tag will be calculated using the specified algorithm and added as an `integrity` attribute on the associated tag. |

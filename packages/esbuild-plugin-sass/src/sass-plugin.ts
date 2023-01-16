@@ -1,7 +1,7 @@
 import type { OnLoadArgs, OnLoadResult, OnResolveArgs, Plugin } from 'esbuild';
 import { promises as fsp } from 'fs';
 import { dirname, resolve } from 'path';
-import type { LegacyFunction, LegacyImporter } from 'sass';
+import type { LegacyException, LegacyFunction, LegacyImporter } from 'sass';
 
 import { createSassImporter } from './create-sass-importer';
 import { loadSass } from './load-sass';
@@ -213,10 +213,55 @@ export function sassPlugin({
   }
 
   async function transform(path: string): Promise<OnLoadResult> {
-    let { css, watchFiles } = await (path.endsWith('.css') ? readCssFile(path) : renderSass(path));
-    if (options.transform) {
-      css = await options.transform(css, dirname(path));
+    let css: string;
+    let watchFiles: string[];
+
+    try {
+      const result = await (path.endsWith('.css') ? readCssFile(path) : renderSass(path));
+      css = result.css;
+      watchFiles = result.watchFiles;
+    } catch (error) {
+      const exception = error as LegacyException;
+      const lineText = exception.formatted?.split('│')[1];
+      return {
+        errors: [
+          {
+            pluginName: 'sass-plugin',
+            text: exception.formatted ?? exception.message,
+            detail: exception,
+            id: exception.name,
+            location: {
+              file: exception.file,
+              column: exception.column,
+              line: exception.line,
+              lineText,
+            },
+          },
+        ],
+        watchFiles: [path],
+      };
     }
+
+    if (options.transform) {
+      try {
+        css = await options.transform(css, dirname(path));
+      } catch (error) {
+        return {
+          errors: [
+            {
+              pluginName: 'sass-plugin',
+              text: error instanceof Error ? error.message : 'Sass transform error',
+              detail: error,
+              location: {
+                file: path,
+              },
+            },
+          ],
+          watchFiles,
+        };
+      }
+    }
+
     return {
       contents: css,
       loader: 'css',

@@ -34,7 +34,7 @@ test('page replaces stylesheets without reloading', async ({ page, port, writeFi
   test.expect(bg).toBe('rgb(255, 255, 255)');
 
   await writeFile(['style-2.css', 'style.css']);
-  await page.waitForRequest(/\.css\?_hash=/);
+  await page.waitForRequest(/\.css\?/);
   await page.waitForFunction(
     bg => window.getComputedStyle(document.body).backgroundColor !== bg,
     bg,
@@ -44,7 +44,7 @@ test('page replaces stylesheets without reloading', async ({ page, port, writeFi
   test.expect(bg).toBe('rgb(135, 206, 250)');
 
   await writeFile(['style-1.css', 'style.css']);
-  await page.waitForRequest(/\.css\?_hash=/);
+  await page.waitForRequest(/\.css\?/);
   await page.waitForFunction(
     bg => window.getComputedStyle(document.body).backgroundColor !== bg,
     bg,

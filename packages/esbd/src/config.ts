@@ -14,10 +14,15 @@ type BuildOptionsWithEntryPoints = Omit<BuildOptions, 'entryPoints' | 'bundle' |
 
 export interface EsbdSpecificOptions {
   /**
-   * When true, the output directory will be deleted before the initial build.
+   * Keep the output directory clean.
    *
-   * When in watch mode (either directly or via `node-dev`/`serve`), the output directory
-   * will only be cleaned when the process is started.
+   * On the initial build, the output directory will be cleaned before the build starts.
+   *
+   * When in watch mode (either directly or via `node-dev`/`serve`), output files will be
+   * tracked across builds and any files that are no longer produced by esbuild will be
+   * removed from the output directory. This ensures that no stale files are left behind
+   * when content hash changes cause files to be renamed or removed. Note that this is usually
+   * only relevant when ESM/splitting is enabled.
    *
    * @default false
    */

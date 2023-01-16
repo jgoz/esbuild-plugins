@@ -1,7 +1,7 @@
 /* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
 import type { ServeResult } from 'esbuild';
-import { build, serve } from 'esbuild';
+import { context as createContext } from 'esbuild';
 import esbuildSvelte from 'esbuild-svelte';
 import { promises as fsp } from 'fs';
 import getPort from 'get-port';
@@ -64,7 +64,7 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
       await writeFile(['1-initial.svelte', 'entry.svelte']);
       await writeFile(['style-1.css', 'style.css']);
 
-      const watcher = await build({
+      const context = await createContext({
         absWorkingDir,
         bundle: true,
         entryPoints: ['entry.svelte', 'style.css'],
@@ -78,11 +78,12 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
           }),
           livereloadPlugin({ port: lrPort }),
         ],
-        watch: true,
         write: true,
       });
 
-      const server = await serve({ host: '127.0.0.1', port, servedir: absWorkingDir }, {});
+      await context.rebuild();
+      context.watch();
+      const server = await context.serve({ host: '127.0.0.1', port, servedir: absWorkingDir });
 
       console.log(`Server ready at http://127.0.0.1:${server.port}`);
 
@@ -91,8 +92,7 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
 
       // Cleanup.
       console.log('Stopping server...');
-      server.stop();
-      watcher.stop?.();
+      await context.dispose();
       console.log('Server stopped');
 
       await fsp.rm(absWorkingDir, { recursive: true, force: true });

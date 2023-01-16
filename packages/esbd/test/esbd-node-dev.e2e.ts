@@ -49,8 +49,8 @@ test('passes extra args to program', async ({ port, startServer, request }) => {
   test.expect(await res.text()).toBe('Hello one,--respawn,-v');
 });
 
-test('reloads server if requested [skip CI]', async ({ port, startServer, request }) => {
-  const { write } = await startServer({
+test('reloads server if requested', async ({ port, startServer, request }) => {
+  const { write, stop } = await startServer({
     respawn: true,
     config: {
       platform: 'node',
@@ -91,6 +91,8 @@ test('reloads server if requested [skip CI]', async ({ port, startServer, reques
   const res2 = await request.get(`http://127.0.0.1:${port}`);
   test.expect(res2.status()).toBe(200);
   test.expect(await res2.text()).toBe('Goodbye, cruel world');
+
+  stop();
 });
 
 test('retries 3 times if server crashes', async ({ port, startServer, request }) => {

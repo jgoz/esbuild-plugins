@@ -7,7 +7,7 @@ import prettyBytes from 'pretty-bytes';
 import type { BuildMode, ResolvedEsbdConfig, TsBuildMode } from './config';
 import { getBuildOptions, getHtmlBuildOptions } from './get-build-options';
 import { writeTemplate } from './html-entry-point';
-import type { BuildIncrementalResult, WatchEvent } from './incremental-build';
+import type { IncrementalBuildResult } from './incremental-build';
 import { incrementalBuild } from './incremental-build';
 import type { Logger } from './log';
 import { timingPlugin } from './timing-plugin';
@@ -78,17 +78,16 @@ async function esbdBuildHtml(
   const name = config.name ? `"${config.name}" (${entryNames})` : entryNames;
 
   const [buildOptions, allWriteOptions] = await getHtmlBuildOptions(htmlEntries, mode, config);
-  const build = await incrementalBuild({
+  const context = await incrementalBuild({
     ...buildOptions,
     cleanOutdir: config.cleanOutdir,
     copy: config.copy,
-    incremental: true,
     logger,
     plugins: [...config.plugins, timingPlugin(logger, name)],
-    watch,
     write: false,
 
-    onBuildResult: async result => {
+    onBuildStart: options => onBuildStart(logger, options.buildCount),
+    onBuildEnd: async result => {
       if (!result.errors?.length) {
         await Promise.all([
           ...allWriteOptions.map(writeOptions =>
@@ -105,10 +104,14 @@ async function esbdBuildHtml(
       }
       logOutput(result, logger);
     },
-    onWatchEvent: events => onWatchEvent(logger, events),
   });
 
-  if (!watch) build.rebuild.dispose();
+  if (watch) {
+    await context.watch();
+  } else {
+    await context.rebuild();
+    await context.dispose();
+  }
 }
 
 async function esbdBuildSource(
@@ -121,17 +124,16 @@ async function esbdBuildSource(
   const entryNames = sourceEntries.map(([name]) => name).join(', ');
   const name = config.name ? `"${config.name}" (${entryNames})` : entryNames;
 
-  const build = await incrementalBuild({
+  const context = await incrementalBuild({
     ...getBuildOptions(sourceEntries, mode, config),
     cleanOutdir: config.cleanOutdir,
     copy: config.copy,
-    incremental: true,
     logger,
     plugins: [...config.plugins, timingPlugin(logger, name)],
-    watch,
     write: false,
 
-    onBuildResult: async result => {
+    onBuildStart: options => onBuildStart(logger, options.buildCount),
+    onBuildEnd: async result => {
       await Promise.all(
         result.outputFiles.map(async file => {
           await fs.promises.mkdir(dirname(file.path), { recursive: true });
@@ -140,13 +142,17 @@ async function esbdBuildSource(
       );
       logOutput(result, logger);
     },
-    onWatchEvent: events => onWatchEvent(logger, events),
   });
 
-  if (!watch) build.rebuild.dispose();
+  if (watch) {
+    await context.watch();
+  } else {
+    await context.rebuild();
+    await context.dispose();
+  }
 }
 
-function logOutput(result: BuildIncrementalResult, logger: Logger) {
+function logOutput(result: IncrementalBuildResult, logger: Logger) {
   for (const file of result.outputFiles) {
     logger.info(
       pc.gray(
@@ -158,11 +164,8 @@ function logOutput(result: BuildIncrementalResult, logger: Logger) {
   }
 }
 
-function onWatchEvent(logger: Logger, events: WatchEvent[]): void {
-  if (events.length === 1) {
-    const [event, filePath] = events[0];
-    logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
-  } else {
-    logger.info(pc.gray(`${events.length} files changed, rebuilding`));
+function onBuildStart(logger: Logger, buildCount: number): void {
+  if (buildCount >= 1) {
+    logger.info(pc.gray('Source files changed, rebuilding'));
   }
 }

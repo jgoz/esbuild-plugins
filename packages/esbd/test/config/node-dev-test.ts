@@ -15,6 +15,7 @@ interface ServerTestFixtures {
   port: number;
   writeFiles(files: { [relativePath: string]: string | Buffer }): Promise<void>;
   startServer(config: ServerConfig): Promise<{
+    stop: () => void;
     write: (fileIndex: number) => Promise<void>;
   }>;
 }
@@ -96,13 +97,10 @@ const test = base.extend<ServerTestFixtures>({
       await waitOn({ resources: [`http-get://127.0.0.1:${port}`], timeout: 10000 });
 
       proc.stdout!.on('data', (chunk: Buffer) => {
-        // console.log(chunk.toString());
         const str = chunk.toString();
+        // console.log('[stdout] ' + str);
         if (/rebuilding/.exec(str)) {
           evt.emit('done');
-        }
-        if (/(Started watching for changes|Updated watched files)/.exec(str)) {
-          evt.emit('watch-on');
         }
         if (/Starting build/.exec(str)) {
           evt.emit('watch-off');
@@ -110,17 +108,24 @@ const test = base.extend<ServerTestFixtures>({
         onStdout?.(str);
       });
 
-      await waitForWatcher();
-
       proc.stderr!.on('data', (chunk: Buffer) => {
         const str = chunk.toString();
+        // console.log('[stderr] ' + str);
+        if (/\[watch\] build finished/.exec(str)) {
+          evt.emit('watch-on');
+        }
         if (/Maximum keep-alive count reached, dying/.exec(str)) {
           evt.emit('err');
         }
         onStderr?.(str);
       });
 
+      await waitForWatcher();
+
       return {
+        stop: () => {
+          proc?.cancel();
+        },
         write: async (fileIndex: number) => {
           await writeFiles(files[fileIndex]);
           try {

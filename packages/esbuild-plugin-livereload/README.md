@@ -9,6 +9,12 @@ An esbuild plugin that reloads the browser window after you make changes. CSS-on
 - Adds a dismissable error/warning overlay for esbuild output
   - Can be used by other plugins by importing the `notify` function
 
+#### How is this different from esbuild's built-in livereload (0.17.0+)?
+
+- Doesn't require use of esbuild's `serve()` API
+- Doesn't require any extra code &mdash; client script is injected into the bundle
+- Includes an overlay for displaying error messages in the browser
+
 ### Install
 
 ```console
@@ -73,8 +79,11 @@ from esbuild, the page will be sent a reload request.
 <!-- markdown-interpolate: node ../../scripts/docs.mjs ./src/livereload-plugin.ts ClientMessage -->
 | Name | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| cssUpdate | `boolean` | - | Does the current message represent a CSS-only update? |
+| added (*) | `readonly string[]` | - | Output files that were added since the last build. |
+| removed (*) | `readonly string[]` | - | Output files that were removed since the last build. |
+| updated (*) | `readonly string[]` | - | Output files that were changed since the last build. |
 | errors | `readonly Message[]` | - | Error messages. |
+| forceReload | `boolean` | - | Reload the page even if a hot update is possible. |
 | warnings | `readonly Message[]` | - | Warning messages. |
 <!-- end -->
 <!-- prettier-ignore-end -->

@@ -1,14 +1,7 @@
-import { watch } from 'chokidar';
-import type {
-  BuildIncremental,
-  BuildInvalidate,
-  BuildOptions,
-  BuildResult,
-  Metafile,
-  OutputFile,
-} from 'esbuild';
-import { build } from 'esbuild';
+import type { BuildContext, BuildOptions, BuildResult, Plugin } from 'esbuild';
+import { context as createContext } from 'esbuild';
 import { EventEmitter } from 'events';
+import { watch as fsWatch } from 'fs';
 import { copyFile, rm } from 'fs/promises';
 import mkdirp from 'mkdirp';
 import path from 'path';
@@ -16,84 +9,64 @@ import pc from 'picocolors';
 
 import type { Logger } from './log';
 
-export interface BuildIncrementalResult extends BuildIncremental {
-  metafile: Metafile;
-  outputFiles: OutputFile[];
-}
+type RequiredBuildOptions = BuildOptions & { metafile: true; write: false };
 
-function validateResult(result: BuildResult): asserts result is BuildIncrementalResult {
-  if (!result.metafile) throw new Error('incrementalBuild: "metafile" option must be "true"');
-  if (!result.outputFiles) throw new Error('incrementalBuild: "write" option must be "false"');
-  if (!result.rebuild) throw new Error('incrementalBuild: "incremental" option must be "true"');
-}
-
-type BuildIncrementalOptions = BuildOptions & { incremental: true; metafile: true; write: false };
+export type IncrementalBuildResult = BuildResult<RequiredBuildOptions>;
 
 export type WatchEvent = [event: string, path: string];
 
-interface IncrementalBuildOptions extends BuildIncrementalOptions {
+interface IncrementalBuildOptions extends RequiredBuildOptions {
   absWorkingDir: string;
   cleanOutdir?: boolean;
   copy?: [from: string, to?: string][];
   logger: Logger;
-  onBuildResult: (
-    result: BuildIncrementalResult,
-    options: BuildIncrementalOptions,
+  onBuildStart?: (options: RequiredBuildOptions & { buildCount: number }) => Promise<void> | void;
+  onBuildEnd: (
+    result: IncrementalBuildResult,
+    options: RequiredBuildOptions,
   ) => Promise<void> | void;
-  onWatchEvent: (events: WatchEvent[]) => Promise<void> | void;
 }
 
-interface IncrementalBuildResult extends BuildIncrementalResult {
+interface IncrementalBuildContext extends BuildContext<RequiredBuildOptions> {
+  watch(): Promise<void>;
   wait(): Promise<void>;
 }
 
-const NULL_RESULT: Omit<BuildIncrementalResult, 'rebuild'> = {
-  errors: [],
-  warnings: [],
-  metafile: { inputs: {}, outputs: {} },
-  outputFiles: [],
-};
-
-const MODULE_WATCH_IGNORE = [/[/\\]\.git[/\\]/, /\.tsbuildinfo$/, /\.d.ts$/, /\.map$/];
-const INPUT_WATCH_IGNORE = MODULE_WATCH_IGNORE.concat(/[/\\]node_modules[/\\]/);
-
-const NODE_MODULES_LEN = 'node_modules'.length;
-
-function createThrottled<T>(fn: (args: T[]) => any, delay: number) {
-  let timeout: NodeJS.Timeout | null = null;
-  let queuedArgs: T[] = [];
-
-  return (arg: T) => {
-    if (!timeout) {
-      timeout = setTimeout(() => {
-        const argsToCall = queuedArgs.slice();
-        timeout = null;
-        queuedArgs = [];
-        fn(argsToCall);
-      }, delay);
-    }
-    queuedArgs.push(arg);
-  };
+async function syncOutputs(
+  result: IncrementalBuildResult,
+  previousOutputs: Set<string>,
+  logger: Logger,
+): Promise<Set<string>> {
+  const outputFiles = new Set(result.outputFiles.map(file => file.path));
+  const staleOutputs = Array.from(previousOutputs.values()).filter(file => !outputFiles.has(file));
+  await Promise.allSettled(
+    staleOutputs.map(async file => {
+      logger.debug(pc.gray(`Removing stale output ${file}`));
+      try {
+        await rm(file);
+      } catch {
+        logger.debug(pc.gray(`Failed to remove stale output ${file}; ignoring`));
+      }
+    }),
+  );
+  return outputFiles;
 }
 
 export async function incrementalBuild({
   cleanOutdir,
   copy,
   logger,
-  onBuildResult,
-  onWatchEvent,
-  watch: watchForChanges,
+  onBuildEnd,
+  onBuildStart,
   ...options
-}: IncrementalBuildOptions): Promise<IncrementalBuildResult> {
-  let rebuild = (() => build(options)) as BuildInvalidate;
+}: IncrementalBuildOptions): Promise<IncrementalBuildContext> {
   let running = false;
 
   const basedir = options.absWorkingDir;
   const evt = new EventEmitter();
-  const watchedInputs = new Set<string>();
-  const watchedModules = new Set<string>();
   const outdir = options.outdir;
   const absOutDir = outdir ? path.resolve(basedir, outdir) : undefined;
+  let previousOutputs = new Set<string>();
 
   const normalizedCopy: [string, string][] = [];
   if (copy) {
@@ -109,28 +82,6 @@ export async function incrementalBuild({
     }
   }
 
-  const inputWatcher = watch([], {
-    cwd: basedir,
-    disableGlobbing: true,
-    ignored: INPUT_WATCH_IGNORE,
-    ignoreInitial: true,
-  });
-
-  const moduleWatcher = watch([], {
-    cwd: basedir,
-    depth: 2,
-    disableGlobbing: true,
-    ignored: MODULE_WATCH_IGNORE,
-    ignoreInitial: true,
-    interval: 2000,
-    usePolling: true,
-  });
-
-  const assetWatcher = watch([], {
-    disableGlobbing: true,
-    ignoreInitial: true,
-  });
-
   function copyAssets(fromPath?: string) {
     return Promise.all(
       normalizedCopy
@@ -142,108 +93,60 @@ export async function incrementalBuild({
     );
   }
 
-  async function triggerBuild(): Promise<BuildIncrementalResult> {
-    let result: BuildIncremental;
-    try {
-      logger.debug('Starting build');
-      result = await rebuild();
-      validateResult(result);
-      if (absOutDir) await mkdirp(absOutDir);
-      await copyAssets();
-      await onBuildResult(result, options);
+  const resultPlugin: Plugin = {
+    name: 'incremental-build',
+    setup(build) {
+      let buildCount = 0;
+      build.onStart(async () => {
+        logger.debug('Starting build');
+        if (onBuildStart) await onBuildStart({ ...options, buildCount: buildCount++ });
+        running = true;
+      });
 
-      logger.debug('Build successful');
-      rebuild = result.rebuild;
-      if (watchForChanges) {
-        updateWatchedFiles(result.metafile);
-      }
+      build.onEnd(async result => {
+        if (!result.errors.length) {
+          logger.debug('Build successful');
+          if (absOutDir) await mkdirp(absOutDir);
+          if (cleanOutdir) {
+            previousOutputs = await syncOutputs(result, previousOutputs, logger);
+          }
+          await copyAssets();
+        } else {
+          logger.debug('Build failed');
+        }
 
-      return result;
-    } catch (e) {
-      logger.debug('Build failed', e);
-      result = {
-        ...NULL_RESULT,
-        errors: (e as any).errors ?? [],
-        warnings: (e as any).warnings ?? [],
-        rebuild,
-      };
-      validateResult(result);
-      await onBuildResult(result, options);
+        await onBuildEnd(result, options);
 
-      if (!watchForChanges) {
-        throw e;
-      }
-      return result;
-    } finally {
-      evt.emit('end');
-    }
-  }
-  triggerBuild.dispose = async () => {
-    if (rebuild?.dispose) rebuild.dispose();
-    await inputWatcher.close();
-    await moduleWatcher.close();
-    await assetWatcher.close();
+        running = false;
+        evt.emit('end');
+      });
+    },
   };
 
-  function updateWatchedFiles(metafile: Metafile): void {
-    const nextInputs = new Set<string>();
-    const nextModules = new Set<string>();
-    const inputs = Object.keys(metafile.inputs);
-    for (const inputKey of inputs) {
-      const input = inputKey.includes(':') ? inputKey.split(':')[1] : inputKey;
+  const context = await createContext({
+    ...options,
+    logLevel: logger.logLevel === 'info' ? 'warning' : options.logLevel,
+    plugins: [resultPlugin, ...(options.plugins ?? [])],
+  });
 
-      const index = input.indexOf('node_modules');
-      if (index >= 0) {
-        // For paths in node_modules, we don't want to watch each file individually,
-        // so try to find the first level of depth after the first "node_modules/".
-        // E.g., "../node_modules/some-library/"
+  const watchAbort = new AbortController();
 
-        let modIndex = input.indexOf('/', index + NODE_MODULES_LEN + 1);
+  async function dispose(): Promise<void> {
+    await context.dispose();
+    watchAbort.abort();
+  }
 
-        if (modIndex > 0) {
-          if (input[index + NODE_MODULES_LEN + 1] === '@') {
-            // Descend into scoped modules to avoid watching the entire scope
-            modIndex = input.indexOf('/', modIndex + 1);
-          }
+  async function watch(): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/await-thenable, @typescript-eslint/no-confusing-void-expression -- esbuild types are wrong; watch() returns a Promise<void>
+    await context.watch();
 
-          const mod = input.slice(0, modIndex);
-          nextModules.add(mod);
+    for (const [from] of normalizedCopy) {
+      fsWatch(from, { persistent: false, signal: watchAbort.signal }, event => {
+        if (event === 'change') {
+          copyAssets(from).catch(logger.error);
         }
-      } else {
-        // For source files, watch each file individually
-        nextInputs.add(input);
-      }
+      });
     }
-
-    for (const addedInput of nextInputs) {
-      if (!watchedInputs.has(addedInput)) {
-        logger.debug(`Watching ${addedInput}`);
-        inputWatcher.add(addedInput);
-        watchedInputs.add(addedInput);
-      }
-    }
-    for (const deletedInput of watchedInputs) {
-      if (!nextInputs.has(deletedInput)) {
-        logger.debug(`Un-watching ${deletedInput}`);
-        inputWatcher.unwatch(deletedInput);
-        watchedInputs.delete(deletedInput);
-      }
-    }
-    for (const addedModule of nextModules) {
-      if (!watchedModules.has(addedModule)) {
-        logger.debug(`Watching ${addedModule}`);
-        moduleWatcher.add(addedModule);
-        watchedModules.add(addedModule);
-      }
-    }
-    for (const deletedModule of watchedModules) {
-      if (!nextModules.has(deletedModule)) {
-        logger.debug(`Un-watching ${deletedModule}`);
-        moduleWatcher.unwatch(deletedModule);
-        watchedModules.delete(deletedModule);
-      }
-    }
-    logger.debug('Updated watched files');
   }
 
   function wait(): Promise<void> {
@@ -253,61 +156,9 @@ export async function incrementalBuild({
     });
   }
 
-  const throttledBuild = createThrottled((watchEvents: WatchEvent[]) => {
-    running = true;
-    Promise.resolve(onWatchEvent(watchEvents))
-      .then(triggerBuild)
-      .catch(logger.error)
-      .finally(() => {
-        running = false;
-      });
-  }, 25);
-
-  function triggerBuildOrQueue(watchEvent: WatchEvent) {
-    wait()
-      .then(() => throttledBuild(watchEvent))
-      .catch(logger.error);
-  }
-
-  function onInputEvent(event: string, path: string) {
-    if (INPUT_WATCH_IGNORE.some(re => re.test(path))) return;
-    triggerBuildOrQueue([event, path]);
-  }
-
-  function onModuleEvent(path: string) {
-    if (MODULE_WATCH_IGNORE.some(re => re.test(path))) return;
-    triggerBuildOrQueue(['change', path]);
-  }
-
-  function onAssetEvent(event: string, path: string) {
-    if (event === 'unlink') {
-      assetWatcher.unwatch(path);
-      return;
-    }
-    if (event === 'add') {
-      assetWatcher.add(path);
-    }
-    copyAssets(path).catch(logger.error);
-  }
-
   if (cleanOutdir && absOutDir) {
     await rm(absOutDir, { recursive: true, force: true });
   }
 
-  const initialResult = await triggerBuild();
-  validateResult(initialResult);
-
-  if (watchForChanges) {
-    assetWatcher.add(normalizedCopy.map(([from]) => from));
-
-    inputWatcher.on('all', onInputEvent);
-    moduleWatcher.on('change', onModuleEvent);
-    assetWatcher.on('all', onAssetEvent);
-
-    const inputCount = Object.keys(inputWatcher.getWatched()).length;
-    const modCount = Object.keys(moduleWatcher.getWatched()).length;
-    logger.debug(`Started watching for changes (${inputCount} inputs, ${modCount} modules)`);
-  }
-
-  return { ...initialResult, rebuild: triggerBuild, wait };
+  return { ...context, dispose, wait, watch };
 }

@@ -1,5 +1,5 @@
 import type { notify as lrNotify } from '@jgoz/esbuild-plugin-livereload';
-import type { Message, WatchMode } from 'esbuild';
+import type { Message } from 'esbuild';
 import path from 'path';
 import pc from 'picocolors';
 import { Worker } from 'worker_threads';
@@ -35,9 +35,8 @@ try {
   notify = require('@jgoz/esbuild-plugin-livereload').notify;
 } catch {}
 
-export interface TypecheckRunnerOptions extends Omit<TypecheckPluginOptions, 'watch'> {
+export interface TypecheckRunnerOptions extends TypecheckPluginOptions {
   absWorkingDir: string;
-  watch?: boolean | WatchMode;
 }
 
 export class TypecheckRunner {
@@ -93,7 +92,7 @@ export class TypecheckRunner {
           break;
         }
         case 'done': {
-          notify('typecheck-plugin', { errors, warnings });
+          notify('typecheck-plugin', { added: [], removed: [], updated: [], errors, warnings });
 
           if (msg.errorCount) {
             logFailed(

@@ -1,9 +1,12 @@
-import type { notify as notifyFn } from '@jgoz/esbuild-plugin-livereload';
+import type {
+  clientMessageBuilder as clientMessageBuilderFn,
+  LivereloadRequestHandler,
+  notify as notifyFn,
+} from '@jgoz/esbuild-plugin-livereload';
 import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
-import { createHash } from 'crypto';
 import dns from 'dns';
 import fs from 'fs';
-import type { Server, ServerResponse } from 'http';
+import type { ServerResponse } from 'http';
 import { createServer } from 'http';
 import Graceful from 'node-graceful';
 import path from 'path';
@@ -23,19 +26,12 @@ interface EsbdServeConfig {
   check?: boolean;
   host?: string;
   livereload?: boolean;
-  livereloadHost?: string;
   logger: Logger;
   mode: BuildMode;
   port?: number;
   rewrite: boolean;
   servedir?: string;
   tsBuildMode?: TsBuildMode;
-}
-
-function calculateHash(contents: Uint8Array): string {
-  const hash = createHash('md5');
-  hash.update(contents);
-  return hash.digest('base64');
 }
 
 export default async function esbdServe(
@@ -45,7 +41,6 @@ export default async function esbdServe(
     host = '127.0.0.1',
     port = 8000,
     livereload,
-    livereloadHost = '127.0.0.1',
     logger,
     servedir,
     rewrite,
@@ -72,27 +67,30 @@ export default async function esbdServe(
   const absOutDir = path.resolve(basedir, buildOptions.outdir);
 
   const clients = new Set<ServerResponse>();
-  const outputHashes = new Map<string, string>();
 
   let banner: string | undefined;
-  let lrserver: Server | undefined;
+  let lrHandler: LivereloadRequestHandler | undefined;
   let notify: typeof notifyFn | undefined;
+  let messageBuilder: ReturnType<typeof clientMessageBuilderFn> | undefined;
   if (livereload) {
-    const { createLivereloadServer, notify: notifyLR } = await import(
-      '@jgoz/esbuild-plugin-livereload'
-    );
+    const {
+      clientMessageBuilder,
+      createLivereloadRequestHandler,
+      notify: notifyLR,
+    } = await import('@jgoz/esbuild-plugin-livereload');
     const bannerTemplate = await fs.promises.readFile(
       require.resolve('@jgoz/esbuild-plugin-livereload/banner.js'),
       'utf-8',
     );
-    banner = bannerTemplate.replace(/{baseUrl}/g, `http://${livereloadHost}:53099`);
-    lrserver = createLivereloadServer({
+    banner = bannerTemplate.replace(/{baseUrl}/g, publicPath);
+    lrHandler = await createLivereloadRequestHandler({
       basedir,
+      host,
+      port,
       onSSE: res => clients.add(res),
-      host: livereloadHost,
-      port: 53099,
     });
     notify = notifyLR;
+    messageBuilder = clientMessageBuilder(buildOptions);
   }
 
   if (check) {
@@ -113,18 +111,21 @@ export default async function esbdServe(
   }
 
   // TODO: watch HTML entry points
-  const build = await incrementalBuild({
+  const context = await incrementalBuild({
     ...buildOptions,
     banner: banner
       ? { ...config.banner, js: `${config.banner?.js ?? ''};${banner}` }
       : config.banner,
     cleanOutdir: config.cleanOutdir,
     copy: config.copy,
-    incremental: true,
     logger,
     plugins: [...config.plugins, timingPlugin(logger, config.name && `"${config.name}"`)],
-    watch: true,
-    onBuildResult: async (result, options) => {
+    onBuildStart: ({ buildCount }) => {
+      if (buildCount >= 1) {
+        logger.info(pc.gray(`Source files changed, rebuilding`));
+      }
+    },
+    onBuildEnd: async (result, options) => {
       if (!result.errors?.length) {
         // Re-parse the HTML files to pick up any changes to the template and because
         // the parse5 document is mutable, so successive builds may continue adding
@@ -145,25 +146,9 @@ export default async function esbdServe(
         ]);
       }
 
-      if (livereload && notify) {
-        let cssUpdate = false;
-        for (const outputFile of result.outputFiles.filter(o => o.path.endsWith('.css'))) {
-          const prevHash = outputHashes.get(outputFile.path);
-          const hash = calculateHash(outputFile.contents);
-          if (prevHash !== hash) {
-            outputHashes.set(outputFile.path, hash);
-            cssUpdate = true;
-          }
-        }
-        notify('esbuild', { cssUpdate, errors: result.errors, warnings: result.warnings }, clients);
-      }
-    },
-    onWatchEvent: events => {
-      if (events.length === 1) {
-        const [event, filePath] = events[0];
-        logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
-      } else {
-        logger.info(pc.gray(`${events.length} files changed, rebuilding`));
+      if (livereload && notify && messageBuilder) {
+        const message = await messageBuilder(result);
+        notify('esbuild', message, clients);
       }
     },
   });
@@ -181,7 +166,7 @@ export default async function esbdServe(
     const url = new URL(req.url, rootUrl);
 
     async function handleRequest() {
-      await build.wait();
+      await context.wait();
 
       if (publicPath) {
         // Strip "publicPath" from the beginning of the URL because
@@ -207,10 +192,13 @@ export default async function esbdServe(
       });
     }
 
-    handleRequest().catch(err => {
-      logger.error(err, err.stack);
-      res.writeHead(500).write(err.toString());
-    });
+    const handled = lrHandler?.(req, res) ?? false;
+    if (!handled) {
+      handleRequest().catch(err => {
+        logger.error(err, err.stack);
+        res.writeHead(500).write(err.toString());
+      });
+    }
   });
 
   // https://github.com/nodejs/node/issues/40537
@@ -226,15 +214,13 @@ export default async function esbdServe(
 
     const shutdownPromises: Promise<void>[] = [];
     if (server) shutdownPromises.push(promisify(server.close)());
-    if (lrserver) shutdownPromises.push(promisify(lrserver.close)());
     try {
       await Promise.all(shutdownPromises);
     } catch {
       // ignore errors on 'close'
     }
 
-    if (build) build.stop?.();
-    if (build) build.rebuild.dispose();
+    if (context) await context.dispose();
     clients.forEach(res => {
       res.end();
     });
@@ -242,4 +228,6 @@ export default async function esbdServe(
   }
 
   Graceful.on('exit', () => shutdown());
+
+  await context.watch();
 }

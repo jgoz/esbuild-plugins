@@ -30,7 +30,7 @@ export default async function esbdNodeDev(
   config: ResolvedEsbdConfig,
   { args, logger, mode, respawn, check, tsBuildMode }: EsbdNodeDevConfig,
 ) {
-  let child: ChildProcess & ExecaChildPromise<string>;
+  let child: (ChildProcess & ExecaChildPromise<string>) | undefined;
   let keepAliveCount = 0;
   let keepAliveResetTimeout: NodeJS.Timeout;
   let running = false;
@@ -48,18 +48,18 @@ export default async function esbdNodeDev(
     clearTimeout(keepAliveResetTimeout);
 
     if (!respawn) {
-      shutdown(exitCode);
+      await shutdown(exitCode);
       return;
     }
 
     if (++keepAliveCount === MAX_RETRIES) {
       logger.error('Maximum keep-alive count reached, dying');
-      shutdown(1);
+      await shutdown(1);
       return;
     }
 
     logger.info('Keep-alive requested, rebuilding and restarting');
-    await build.rebuild();
+    await context.rebuild();
 
     keepAliveResetTimeout = setTimeout(() => {
       keepAliveCount = 0;
@@ -75,13 +75,13 @@ export default async function esbdNodeDev(
     });
 
     child.once('exit', exitCode => {
-      child.removeAllListeners();
+      child?.removeAllListeners();
       if (exitCode) logger.error(`Program exited with code ${exitCode}`);
       void handleExit(exitCode ?? 0);
     });
 
     child.once('error', err => {
-      child.removeAllListeners();
+      child?.removeAllListeners();
       logger.error('Uncaught program error', err.toString(), err.stack);
       void handleExit(1);
     });
@@ -108,17 +108,34 @@ export default async function esbdNodeDev(
     runner.start();
   }
 
-  const build = await incrementalBuild({
+  const context = await incrementalBuild({
     ...buildOptions,
     cleanOutdir: config.cleanOutdir,
-    incremental: true,
     logger,
     minify: mode === 'production',
     plugins: [...config.plugins, timingPlugin(logger, config.name && `"${config.name}"`)],
     platform: 'node',
     target: config.target ?? defaultTarget,
-    watch: true,
-    onBuildResult: async result => {
+
+    onBuildStart: async options => {
+      if (options.buildCount >= 1) {
+        logger.info(pc.gray('Source files changed, rebuilding'));
+      }
+      child?.removeAllListeners();
+      if (running) {
+        await new Promise<void>((resolve, reject) => {
+          if (!child) {
+            resolve();
+            return;
+          }
+          child.on('exit', resolve);
+          child.on('error', reject);
+          child.cancel();
+        });
+        running = false;
+      }
+    },
+    onBuildEnd: async result => {
       if (result.errors?.length) {
         logger.info(`Not starting program due to ${result.errors.length} error(s)`);
         return;
@@ -143,32 +160,16 @@ export default async function esbdNodeDev(
       logger.info(`Starting ${pc.cyan(entryOutputFile.path)} ${pc.gray(args.join(' '))}`);
       runProgram(entryOutputFile.path, args);
     },
-    onWatchEvent: async events => {
-      if (events.length === 1) {
-        const [event, filePath] = events[0];
-        logger.info(pc.gray(`${filePath} ${event}, rebuilding`));
-      } else {
-        logger.info(pc.gray(`${events.length} files changed, rebuilding`));
-      }
-      child.removeAllListeners();
-      if (running) {
-        await new Promise<void>((resolve, reject) => {
-          child.on('exit', resolve);
-          child.on('error', reject);
-          child.cancel();
-        });
-        running = false;
-      }
-    },
   });
 
-  function shutdown(exitCode = 0) {
+  async function shutdown(exitCode = 0) {
     logger.info('Shutting down…');
     if (child) child.cancel();
-    if (build) build.stop?.();
-    if (build) build.rebuild.dispose();
+    if (context) await context.dispose();
     process.exitCode = exitCode;
   }
 
   Graceful.on('exit', () => shutdown());
+
+  await context.watch();
 }
