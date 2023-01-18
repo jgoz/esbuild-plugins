@@ -36,7 +36,9 @@ export default async function esbdNodeDev(
   let running = false;
 
   const entries = Array.isArray(config.entryPoints)
-    ? config.entryPoints.map(entry => [entry, entry] as const)
+    ? config.entryPoints.map(entry =>
+        typeof entry === 'object' ? ([entry.out, entry.in] as const) : ([entry, entry] as const),
+      )
     : Object.entries(config.entryPoints);
 
   const buildOptions = getBuildOptions(entries, mode, config);

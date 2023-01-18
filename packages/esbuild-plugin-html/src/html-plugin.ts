@@ -240,7 +240,9 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
       const useModuleType = format === 'esm';
       const templatePath = path.resolve(basedir, template);
       const entries = Array.isArray(entryPoints)
-        ? entryPoints.map(entry => path.resolve(basedir, entry))
+        ? entryPoints.map(entry =>
+            path.resolve(basedir, typeof entry === 'object' ? entry.in : entry),
+          )
         : Object.keys(entryPoints).map(entry => path.resolve(basedir, entryPoints[entry]));
 
       let templateContent: string;

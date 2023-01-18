@@ -2,8 +2,7 @@ import type { BuildContext, BuildOptions, BuildResult, Plugin } from 'esbuild';
 import { context as createContext } from 'esbuild';
 import { EventEmitter } from 'events';
 import { watch as fsWatch } from 'fs';
-import { copyFile, rm } from 'fs/promises';
-import mkdirp from 'mkdirp';
+import { copyFile, mkdir, rm } from 'fs/promises';
 import path from 'path';
 import pc from 'picocolors';
 
@@ -106,7 +105,7 @@ export async function incrementalBuild({
       build.onEnd(async result => {
         if (!result.errors.length) {
           logger.debug('Build successful');
-          if (absOutDir) await mkdirp(absOutDir);
+          if (absOutDir) await mkdir(absOutDir, { recursive: true });
           if (cleanOutdir) {
             previousOutputs = await syncOutputs(result, previousOutputs, logger);
           }
