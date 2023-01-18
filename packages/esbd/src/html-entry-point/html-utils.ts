@@ -69,7 +69,11 @@ export function isTextNode(node: ChildNode): node is TextNode {
   return node.nodeName === '#text';
 }
 
-function createElement(parentNode: ParentNode, tagName: string, attrs: Attribute[] = []): Element {
+export function createElement(
+  parentNode: ParentNode,
+  tagName: string,
+  attrs: Attribute[] = [],
+): Element {
   return {
     attrs,
     childNodes: [],

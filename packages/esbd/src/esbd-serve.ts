@@ -17,7 +17,9 @@ import { promisify } from 'util';
 
 import type { BuildMode, ResolvedEsbdConfig, TsBuildMode } from './config';
 import { getHtmlBuildOptions } from './get-build-options';
-import { writeTemplate } from './html-entry-point/write-template';
+import { createElement } from './html-entry-point/html-utils';
+import { TextNode } from './html-entry-point/parse5';
+import { writeTemplate, WriteTemplateOptions } from './html-entry-point/write-template';
 import { incrementalBuild } from './incremental-build';
 import type { Logger } from './log';
 import { timingPlugin } from './timing-plugin';
@@ -32,6 +34,27 @@ interface EsbdServeConfig {
   rewrite: boolean;
   servedir?: string;
   tsBuildMode?: TsBuildMode;
+}
+
+function appendLivereloadScripts(writeOptions: WriteTemplateOptions, baseUrl: string): void {
+  const { head } = writeOptions.template;
+
+  const windowScript = createElement(head, 'script', [{ name: 'type', value: 'text/javascript' }]);
+  const scriptContent: TextNode = {
+    nodeName: '#text',
+    parentNode: windowScript,
+    value: `window.__ESBUILD_LR_PLUGIN__ = '${baseUrl}'`,
+  };
+
+  windowScript.childNodes.push(scriptContent);
+  head.childNodes.push(windowScript);
+
+  head.childNodes.push(
+    createElement(head, 'script', [
+      { name: 'src', value: `${baseUrl}livereload-event-source.js` },
+      { name: 'type', value: 'module' },
+    ]),
+  );
 }
 
 export default async function esbdServe(
@@ -70,7 +93,7 @@ export default async function esbdServe(
 
   const clients = new Set<ServerResponse>();
 
-  let banner: string | undefined;
+  const livereloadBaseUrl = `//${host}:${port}/`;
   let lrHandler: LivereloadRequestHandler | undefined;
   let notify: typeof notifyFn | undefined;
   let messageBuilder: ReturnType<typeof clientMessageBuilderFn> | undefined;
@@ -80,11 +103,7 @@ export default async function esbdServe(
       createLivereloadRequestHandler,
       notify: notifyLR,
     } = await import('@jgoz/esbuild-plugin-livereload');
-    const bannerTemplate = await fs.promises.readFile(
-      require.resolve('@jgoz/esbuild-plugin-livereload/banner.js'),
-      'utf-8',
-    );
-    banner = bannerTemplate.replace(/{baseUrl}/g, publicPath);
+
     lrHandler = await createLivereloadRequestHandler({
       basedir,
       host,
@@ -115,9 +134,7 @@ export default async function esbdServe(
   // TODO: watch HTML entry points
   const context = await incrementalBuild({
     ...buildOptions,
-    banner: banner
-      ? { ...config.banner, js: `${config.banner?.js ?? ''};${banner}` }
-      : config.banner,
+    banner: config.banner,
     cleanOutdir: config.cleanOutdir,
     copy: config.copy,
     logger,
@@ -135,12 +152,13 @@ export default async function esbdServe(
         [, allWriteOptions] = await getHtmlBuildOptions(entries, mode, config);
 
         await Promise.all([
-          ...allWriteOptions.map(writeOptions =>
-            writeTemplate(result, options, writeOptions, {
+          ...allWriteOptions.map(writeOptions => {
+            if (livereload) appendLivereloadScripts(writeOptions, livereloadBaseUrl);
+            return writeTemplate(result, options, writeOptions, {
               copyFile: fs.promises.copyFile,
               writeFile: fs.promises.writeFile,
-            }),
-          ),
+            });
+          }),
           ...result.outputFiles.map(async file => {
             await fs.promises.mkdir(path.dirname(file.path), { recursive: true });
             await fs.promises.writeFile(file.path, file.contents);
