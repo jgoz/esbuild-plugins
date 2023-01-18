@@ -55,7 +55,9 @@ async function esbdBuild(config: ResolvedEsbdConfig, options: EsbdBuildOptions) 
   const { entryPoints } = config;
 
   const entries = Array.isArray(entryPoints)
-    ? entryPoints.map(p => [basename(p), p] as const)
+    ? entryPoints.map(p =>
+        typeof p === 'object' ? ([basename(p.out), p.in] as const) : ([basename(p), p] as const),
+      )
     : Object.entries(entryPoints);
 
   const htmlEntries = entries.filter(([, entryPath]) => entryPath.endsWith('.html'));
