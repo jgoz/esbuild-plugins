@@ -1,6 +1,6 @@
 {
   "name": "esbd",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "author": "John Gozde <john@gozde.ca>",
   "description": "CLI wrapper for esbuild in dev and prod",
   "license": "MIT",

@@ -1,5 +1,13 @@
 # @jgoz/esbuild-plugin-typecheck
 
+## 3.0.1
+
+### Patch Changes
+
+- 8a685b5: Support esbuild 0.17.2 entry format
+- Updated dependencies [8a685b5]
+  - @jgoz/esbuild-plugin-livereload@2.0.1
+
 ## 3.0.0
 
 ### Major Changes

@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-sass
 
+## 2.0.2
+
+### Patch Changes
+
+- 8a685b5: Support esbuild 0.17.2 entry format
+
 ## 2.0.1
 
 ### Patch Changes
