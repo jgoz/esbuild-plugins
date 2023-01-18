@@ -28,12 +28,12 @@
   },
   "devDependencies": {
     "@types/node": "^16.18.11",
-    "esbuild": "^0.17.0",
+    "esbuild": "^0.17.2",
     "parse5": "^7.1.2",
-    "prettier": "^2.8.2",
+    "prettier": "^2.8.3",
     "typescript": "^4.9.4",
     "vite": "^4.0.4",
-    "vitest": "^0.27.0"
+    "vitest": "^0.27.2"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",

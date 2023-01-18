@@ -38,14 +38,14 @@
     "@types/sass": "^1.43.1",
     "autoprefixer": "^10.4.13",
     "enhanced-resolve": "^5.12.0",
-    "esbuild": "^0.17.0",
+    "esbuild": "^0.17.2",
     "postcss": "^8.4.21",
     "postcss-preset-env": "^7.8.3",
-    "prettier": "^2.8.2",
+    "prettier": "^2.8.3",
     "sass": "^1.57.1",
     "typescript": "^4.9.4",
     "vite": "^4.0.4",
-    "vitest": "^0.27.0"
+    "vitest": "^0.27.2"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
