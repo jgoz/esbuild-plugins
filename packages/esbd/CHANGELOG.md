@@ -1,5 +1,11 @@
 # esbd
 
+## 3.0.2
+
+### Patch Changes
+
+- 18ba6ab: Emit livereload script directly to html
+
 ## 3.0.1
 
 ### Patch Changes
