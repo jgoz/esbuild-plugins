@@ -82,7 +82,7 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
       });
 
       await context.rebuild();
-      context.watch();
+      await context.watch();
       const server = await context.serve({ host: '127.0.0.1', port, servedir: absWorkingDir });
 
       console.log(`Server ready at http://127.0.0.1:${server.port}`);

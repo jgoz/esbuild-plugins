@@ -215,7 +215,7 @@ describe('esbuild-plugin-sass ', () => {
     });
 
     await context.rebuild();
-    context.watch();
+    await context.watch();
 
     try {
       expect(fs.readFileSync(path.resolve(absWorkingDir, './out/index.css'), 'utf-8')).toMatch(
