@@ -48,3 +48,38 @@ jobs:
         env:
           CHOKIDAR_USEPOLLING: '1'
           TSC_WATCHFILE: 'DynamicPriorityPolling'
+
+  release:
+    needs: [build]
+    # prevents this action from running on forks
+    if: github.repository == 'jgoz/esbuild-plugins'
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: 'package.json'
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+      - run: pnpm build
+
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: pnpm release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
