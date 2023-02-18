@@ -3,7 +3,7 @@ import { test as base } from '@playwright/test';
 import { EventEmitter } from 'events';
 import type { ExecaChildProcess } from 'execa';
 import { node } from 'execa';
-import { promises as fsp } from 'fs';
+import fsp from 'fs/promises';
 import getPort from 'get-port';
 import path from 'path';
 import waitOn from 'wait-on';
@@ -144,15 +144,6 @@ const test = base.extend<ServerTestFixtures>({
     await use(startServer);
 
     proc!.cancel();
-    try {
-      const { stderr } = await proc!;
-      if (stderr) {
-        console.error('Error output from esbd:');
-        console.error(stderr);
-      }
-    } catch (e) {
-      console.error('Server stopped with error', e);
-    }
 
     await fsp.rm(absWorkingDir, { recursive: true, force: true });
   },

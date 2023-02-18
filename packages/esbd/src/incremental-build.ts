@@ -136,7 +136,6 @@ export async function incrementalBuild({
   }
 
   async function watch(): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/await-thenable, @typescript-eslint/no-confusing-void-expression -- esbuild types are wrong; watch() returns a Promise<void>
     await context.watch();
 
     for (const [from] of normalizedCopy) {
