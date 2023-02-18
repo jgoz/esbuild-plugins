@@ -43,6 +43,7 @@ jobs:
       - run: pnpx playwright install
         if: steps.browser_cache.outputs.cache-hit != 'true'
       - run: pnpm build
+      - run: pnpm lint
       - run: pnpm test
         env:
           CHOKIDAR_USEPOLLING: '1'
