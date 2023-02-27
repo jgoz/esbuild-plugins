@@ -52,7 +52,7 @@ jobs:
   release:
     needs: [build]
     # prevents this action from running on forks
-    if: github.repository == 'jgoz/esbuild-plugins'
+    if: github.repository == 'jgoz/esbuild-plugins' && github.event_name == 'push'
     name: Release
     runs-on: ubuntu-latest
 
