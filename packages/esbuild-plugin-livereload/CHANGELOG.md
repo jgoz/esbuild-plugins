@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-livereload
 
+## 2.0.2
+
+### Patch Changes
+
+- 257acff: Update dependencies
+
 ## 2.0.1
 
 ### Patch Changes
