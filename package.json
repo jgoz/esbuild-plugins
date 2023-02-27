@@ -12,7 +12,7 @@
     "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
   "volta": {
-    "node": "18.14.0"
+    "node": "18.14.2"
   },
   "jest": {
     "projects": [
