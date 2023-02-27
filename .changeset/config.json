@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "jgoz/esbuild-plugins" }],
+  "changelog": "@changesets/cli/changelog",
   "commit": false,
   "linked": [],
   "access": "public",
