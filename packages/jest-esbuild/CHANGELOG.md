@@ -1,5 +1,11 @@
 # @jgoz/jest-esbuild
 
+## 1.0.3
+
+### Patch Changes
+
+- 257acff: Update dependencies
+
 ## 1.0.2
 
 ### Patch Changes

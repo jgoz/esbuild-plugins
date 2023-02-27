@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-html
 
+## 1.0.4
+
+### Patch Changes
+
+- 257acff: Update dependencies
+
 ## 1.0.3
 
 ### Patch Changes

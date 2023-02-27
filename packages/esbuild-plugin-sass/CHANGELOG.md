@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-sass
 
+## 2.0.3
+
+### Patch Changes
+
+- 257acff: Update dependencies
+
 ## 2.0.2
 
 ### Patch Changes
