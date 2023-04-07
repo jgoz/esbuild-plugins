@@ -28,15 +28,15 @@
     "esbuild": ">= 0.13.0"
   },
   "devDependencies": {
-    "@tsconfig/svelte": "^3.0.0",
-    "esbuild": "^0.17.10",
+    "@tsconfig/svelte": "^4.0.1",
+    "esbuild": "^0.17.15",
     "esbuild-svelte": "^0.7.3",
-    "prettier": "^2.8.4",
-    "svelte": "^3.55.1",
-    "svelte-check": "^3.0.4",
-    "svelte-preprocess": "^5.0.1",
+    "prettier": "^2.8.7",
+    "svelte": "^3.58.0",
+    "svelte-check": "^3.2.0",
+    "svelte-preprocess": "^5.0.3",
     "tslib": "^2.5.0",
-    "typescript": "^4.9.5"
+    "typescript": "^5.0.3"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
