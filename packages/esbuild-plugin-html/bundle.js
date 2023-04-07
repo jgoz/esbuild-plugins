@@ -10,5 +10,5 @@ configure({
   external: ['esbuild'],
   outdir: './dist',
   platform: 'node',
-  target: 'node14',
+  target: 'node16',
 });
