@@ -44,6 +44,7 @@
   "pnpm": {
     "overrides": {
       "esbuild@0.16.x": "$esbuild",
+      "tsconfig-paths@3.x": "^3.14.2",
       "tslib@2.x": "^2.4.0"
     }
   },
