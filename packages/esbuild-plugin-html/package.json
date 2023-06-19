@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@types/node": "^16.18.11",
-    "esbuild": "^0.17.15",
+    "esbuild": "^0.18.0",
     "parse5": "^7.1.2",
     "prettier": "^2.8.7",
     "typescript": "^5.0.3",
