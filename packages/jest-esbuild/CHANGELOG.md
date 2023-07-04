@@ -1,5 +1,11 @@
 # @jgoz/jest-esbuild
 
+## 1.0.4
+
+### Patch Changes
+
+- 2dcf438: esbuild 18 support
+
 ## 1.0.3
 
 ### Patch Changes

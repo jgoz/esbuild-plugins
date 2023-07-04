@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-html
 
+## 1.0.5
+
+### Patch Changes
+
+- 2dcf438: esbuild 18 support
+
 ## 1.0.4
 
 ### Patch Changes
