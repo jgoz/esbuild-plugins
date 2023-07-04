@@ -1,5 +1,15 @@
 # esbd
 
+## 3.0.4
+
+### Patch Changes
+
+- 2a7f404: Add Content-Type header to static responses
+- 2dcf438: esbuild 18 support
+- Updated dependencies [2dcf438]
+  - @jgoz/esbuild-plugin-livereload@2.0.3
+  - @jgoz/esbuild-plugin-typecheck@3.0.3
+
 ## 3.0.3
 
 ### Patch Changes

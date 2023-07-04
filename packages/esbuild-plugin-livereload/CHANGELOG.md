@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-livereload
 
+## 2.0.3
+
+### Patch Changes
+
+- 2dcf438: esbuild 18 support
+
 ## 2.0.2
 
 ### Patch Changes

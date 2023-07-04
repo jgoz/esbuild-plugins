@@ -1,6 +1,6 @@
 {
   "name": "@jgoz/esbuild-overlay",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "John Gozde <john@gozde.ca>",
   "description": "Browser overlay for esbuild errors and warnings",
   "license": "MIT",
