@@ -27,7 +27,7 @@
   "types": "lib/index.d.ts",
   "peerDependencies": {
     "@jgoz/esbuild-plugin-livereload": ">=2.0.2",
-    "esbuild": "0.17.x",
+    "esbuild": "0.17.x || 0.18.x",
     "typescript": ">= 3.5"
   },
   "peerDependenciesMeta": {
@@ -38,7 +38,7 @@
   "devDependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
     "@types/node": "^16.18.11",
-    "esbuild": "^0.17.15",
+    "esbuild": "^0.18.11",
     "execa": "^5.0.0",
     "memfs": "^3.5.0",
     "picocolors": "^1.0.0",

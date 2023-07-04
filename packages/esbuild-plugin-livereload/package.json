@@ -30,7 +30,7 @@
     "@jgoz/esbuild-overlay": "workspace:*",
     "@playwright/test": "^1.32.2",
     "@types/node": "^16.18.11",
-    "esbuild": "^0.17.15",
+    "esbuild": "^0.18.11",
     "esbuild-svelte": "^0.7.3",
     "get-port": "^5.0.0",
     "open-editor": "^4.0.0",
