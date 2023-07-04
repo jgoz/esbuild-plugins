@@ -174,8 +174,17 @@ export default async function esbdServe(
     },
   });
 
-  const outputHandler = serveStatic(absOutDir, { fallthrough: false });
-  const servedirHandler = servedir ? serveStatic(servedir, { fallthrough: true }) : undefined;
+  const setHeaders: serveStatic.ServeStaticOptions['setHeaders'] = (res, path) => {
+    if (res.hasHeader('content-type')) return;
+
+    const contentType = serveStatic.mime.lookup(path);
+    if (contentType) res.setHeader('content-type', contentType);
+  };
+
+  const outputHandler = serveStatic(absOutDir, { fallthrough: false, setHeaders });
+  const servedirHandler = servedir
+    ? serveStatic(servedir, { fallthrough: true, setHeaders })
+    : undefined;
 
   const staticHandler: ReturnType<typeof serveStatic> = servedirHandler
     ? (req, res, next) => servedirHandler(req, res, () => outputHandler(req, res, next))

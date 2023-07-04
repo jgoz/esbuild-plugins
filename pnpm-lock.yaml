@@ -51,7 +51,7 @@ importers:
       '@jgoz/esbuild-plugin-typecheck': workspace:*
       '@playwright/test': ^1.35.1
       '@types/pretty-time': ^1.1.2
-      '@types/serve-static': ^1.15.2
+      '@types/serve-static': ~1.13.0
       '@types/wait-on': ^5.3.1
       cleye: ^1.3.2
       esbuild: ^0.18.11
@@ -79,7 +79,7 @@ importers:
     devDependencies:
       '@playwright/test': 1.35.1
       '@types/pretty-time': 1.1.2
-      '@types/serve-static': 1.15.2
+      '@types/serve-static': 1.13.10
       '@types/wait-on': 5.3.1
       cleye: 1.3.2
       esbuild: 0.18.11
@@ -2102,10 +2102,6 @@ packages:
       '@types/node': 16.18.11
     dev: true
 
-  /@types/http-errors/2.0.1:
-    resolution: {integrity: sha512-/K3ds8TRAfBvi5vfjuz8y6+GiAYBZ0x4tXv1Av6CWBWn0IlADc+ZX9pMq7oU0fNQPnBwIZl3rmeLp6SBApbxSQ==}
-    dev: true
-
   /@types/is-ci/3.0.0:
     resolution: {integrity: sha512-Q0Op0hdWbYd1iahB+IFNQcWXFq4O0Q5MwQP7uN0souuQ4rPg1vEYcnIOfr1gY+M+6rc8FGoRaBO1mOOvL29sEQ==}
     dependencies:
@@ -2140,8 +2136,8 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
-  /@types/mime/3.0.1:
-    resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
+  /@types/mime/1.3.2:
+    resolution: {integrity: sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw==}
     dev: true
 
   /@types/minimist/1.2.2:
@@ -2185,12 +2181,11 @@ packages:
     resolution: {integrity: sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==}
     dev: true
 
-  /@types/serve-static/1.15.2:
-    resolution: {integrity: sha512-J2LqtvFYCzaj8pVYKw8klQXrLLk7TBZmQ4ShlcdkELFKGwGMfevMLneMMRkMgZxotOD9wg497LpC7O8PcvAmfw==}
+  /@types/serve-static/1.13.10:
+    resolution: {integrity: sha512-nCkHGI4w7ZgAdNkrEu0bv+4xNV/XDqW+DydknebMOQwkpDGx8G+HTlj7R7ABI8i8nKxVw0wtKPi1D+lPOkh4YQ==}
     dependencies:
-      '@types/http-errors': 2.0.1
-      '@types/mime': 3.0.1
-      '@types/node': 20.3.3
+      '@types/mime': 1.3.2
+      '@types/node': 16.18.11
     dev: true
 
   /@types/stack-utils/2.0.1:
