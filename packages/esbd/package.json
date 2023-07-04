@@ -49,8 +49,8 @@
     "serve-static": "^1.15.0",
     "tslib": "^2.5.0",
     "typescript": "^5.0.3",
-    "vite": "^4.2.1",
-    "vitest": "^0.29.8",
+    "vite": "^4.3.9",
+    "vitest": "^0.32.4",
     "wait-on": "^7.0.1"
   },
   "scripts": {
