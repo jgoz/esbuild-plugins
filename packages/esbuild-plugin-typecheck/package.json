@@ -42,12 +42,12 @@
     "execa": "^5.0.0",
     "memfs": "^3.5.0",
     "picocolors": "^1.0.0",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.0",
     "tslib": "^2.6.0",
     "typescript": "^5.1.6",
     "unionfs": "^4.5.1",
-    "vite": "^4.3.9",
-    "vitest": "^0.32.4"
+    "vite": "^4.4.2",
+    "vitest": "^0.33.0"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
