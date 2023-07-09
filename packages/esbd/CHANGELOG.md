@@ -1,5 +1,11 @@
 # esbd
 
+## 3.1.0
+
+### Minor Changes
+
+- af3b259: Rewrite asset paths if they reference actual esbuild outputs
+
 ## 3.0.4
 
 ### Patch Changes
