@@ -617,4 +617,36 @@ describe('build command (html entry)', () => {
       }),
     ).resolves.toMatchSnapshot();
   });
+
+  it('includes referenced assets from HTML using their esbuild-generated output paths', () => {
+    return expect(
+      buildWithHTML({
+        config: {
+          external: ['react', 'react-dom'],
+          loader: {
+            '.svg': 'file',
+          },
+        },
+        files: {
+          'index.html': `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <link rel="apple-touch-icon" href="./assets/icon.svg"/>
+                <script defer type="module" src="./src/entry.tsx"></script>
+              </head>
+              <body><div id='root'></div></body>
+            </html>
+          `,
+          'assets/icon.svg': '<svg></svg>',
+          'src/entry.tsx': `
+            import ReactDOM from 'react-dom';
+            import icon from '../assets/icon.svg';
+            function App() { return <div>Hello world <img src={icon} /></div>; }
+            ReactDOM.render(<App />, document.getElementById('root'));
+          `,
+        },
+      }),
+    ).resolves.toMatchSnapshot();
+  });
 });

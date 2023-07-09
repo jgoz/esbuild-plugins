@@ -403,6 +403,54 @@ index.html
 
 `;
 
+exports[`build command (html entry) > includes referenced assets from HTML using their esbuild-generated output paths 1`] = `
+---------------------------------
+STDOUT
+---------------------------------
+✔  Finished index.html with 0 error(s) and 0 warning(s) in XX time
+---------------------------------
+entry.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react-dom";
+
+// assets/icon.svg
+var icon_default = "./icon-IPILGNO5.svg";
+
+// src/entry.tsx
+function App() {
+  return /* @__PURE__ */ React.createElement(
+    "div",
+    null,
+    "Hello world ",
+    /* @__PURE__ */ React.createElement("img", { src: icon_default })
+  );
+}
+ReactDOM.render(
+  /* @__PURE__ */ React.createElement(App, null),
+  document.getElementById("root")
+);
+
+---------------------------------
+icon-IPILGNO5.svg
+---------------------------------
+<svg></svg>
+---------------------------------
+index.html
+---------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="apple-touch-icon" href="icon-IPILGNO5.svg" />
+    <script defer="" type="module" src="entry.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+`;
+
 exports[`build command (html entry) > includes referenced assets from style tags 1`] = `
 ---------------------------------
 STDOUT

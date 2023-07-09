@@ -34,8 +34,8 @@ export interface WriteTemplateOptions extends EsbuildHtmlOptions {
 }
 
 interface FileSystem {
-  copyFile: typeof fsp['copyFile'];
-  writeFile: typeof fsp['writeFile'];
+  copyFile: (typeof fsp)['copyFile'];
+  writeFile: (typeof fsp)['writeFile'];
 }
 
 export async function writeTemplate(
@@ -64,7 +64,6 @@ export async function writeTemplate(
   }
 
   const copyFile = cachedCopyFile(fs.copyFile);
-  const outputCache = new Set<string>();
 
   const { document, head, body } = template;
 
@@ -73,7 +72,10 @@ export async function writeTemplate(
   const templateOutputPath = path.resolve(absOutDir, template.outputPath);
   const needsModuleType = format === 'esm';
 
-  const outputs: [entryPoint: string, outputPath: string][] = Object.keys(metafile.outputs)
+  const outputFilenames = Object.keys(metafile.outputs);
+
+  // Find emitted entry points and convert them to absolute paths
+  const entryOutputs: [entryPoint: string, outputPath: string][] = outputFilenames
     .map(o => [metafile.outputs[o], o] as const)
     .filter(([output]) => !!output.entryPoint)
     .map(([output, outputPath]) => [
@@ -81,32 +83,27 @@ export async function writeTemplate(
       path.relative(absTemplateDir, path.resolve(basedir, outputPath)),
     ]);
 
-  const cssOutput = new Map(outputs.filter(([, o]) => o.endsWith('.css')));
-  const jsOutput = new Map(outputs.filter(([, o]) => o.endsWith('.js')));
+  // Find any output files that were produced from inputs with matching "href"
+  // attributes in any <link> or <style> tags. If any are found, this indicates
+  // that the files were referenced elsewhere in the dependency graph and esbuild
+  // has copied them to the output directory, possibly with a different basename.
+  // But if they _also_ appear in the HTML template, it might be for preloading/
+  // prefetching purposes. In that case, we don't want to copy them again; rather,
+  // we want to use the output path that esbuild has already produced.
+  const tagOutputs = tagAssets.map(([element, url]) => {
+    const matchingOutput = outputFilenames.find(o => {
+      const inputs = Object.keys(metafile.outputs[o].inputs);
+      if (inputs.length !== 1) return false;
 
-  // Check whether any of the output file names have changed since the last
-  // build finished
-  let modified = false;
-  const currentOutputs = new Set([
-    ...Array.from(cssOutput.values()),
-    ...Array.from(jsOutput.values()),
-  ]);
-  for (const output of currentOutputs) {
-    if (!outputCache.has(output)) {
-      outputCache.add(output);
-      modified = true;
-    }
-  }
-  for (const output of outputCache) {
-    if (!currentOutputs.has(output)) {
-      outputCache.delete(output);
-      modified = true;
-    }
-  }
+      const absInputPath = path.resolve(basedir, inputs[0]);
+      const absHrefPath = path.resolve(absTemplateDir, url);
+      return absInputPath === absHrefPath;
+    });
+    return [element, url, matchingOutput] as const;
+  });
 
-  // If no output filenames have changed, then there is no need to emit
-  // the HTML
-  if (!modified) return;
+  const cssOutput = new Map(entryOutputs.filter(([, o]) => o.endsWith('.css')));
+  const jsOutput = new Map(entryOutputs.filter(([, o]) => o.endsWith('.js')));
 
   const htmlEntryPathsAbs = Object.values(htmlEntryPoints).map(filePath =>
     path.resolve(basedir, filePath),
@@ -251,27 +248,32 @@ export async function writeTemplate(
   // Rebase collected asset paths for tag assets (from <link> tags) and
   // text assets (from <style> tags)
   const assetPaths: [string, string][] = [];
-  for (const [node, url] of tagAssets) {
+  for (const [node, url, outputPath] of tagOutputs) {
+    const href = node.attrs.find(a => a.name === 'href');
+    if (!href) continue;
+
     const { basename, inputPath, rebasedURL } = rebaseAssetURL(
-      substituteDefines(url, define),
+      outputPath ?? substituteDefines(url, define),
       template.inputPath,
       publicPath,
     );
-    const href = node.attrs.find(a => a.name === 'href');
-    if (href) {
-      href.value = rebasedURL;
 
-      if (inputPath && basename) {
-        // TODO: parallelize this?
-        if (integrity) {
-          node.attrs.push({
-            name: 'integrity',
-            value: await calculateFileIntegrityHash(
-              path.resolve(absTemplateDir, inputPath),
-              integrity,
-            ),
-          });
-        }
+    href.value = rebasedURL;
+
+    if (inputPath && basename) {
+      // TODO: parallelize this?
+      if (integrity) {
+        node.attrs.push({
+          name: 'integrity',
+          value: await calculateFileIntegrityHash(
+            path.resolve(absTemplateDir, inputPath),
+            integrity,
+          ),
+        });
+      }
+      // If outputPath is defined, this file was already copied to the output directory
+      // by esbuild, so we don't need to copy it again.
+      if (!outputPath) {
         assetPaths.push([inputPath, path.resolve(absOutDir, basename)]);
       }
     }
