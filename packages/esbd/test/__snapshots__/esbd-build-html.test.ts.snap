@@ -112,20 +112,20 @@ index.html
   <head>
     <link rel="stylesheet" href="css/style-NCKSKVOY.css">
     <link href="entry-6DB2HAOI.css" rel="stylesheet">
-    <script defer="" type="module" src="js/entry-EUOJ5BOK.js"></script>
+    <script defer="" type="module" src="js/entry-QFZL2TWK.js"></script>
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
 ---------------------------------
-js/entry-EUOJ5BOK.js
+js/entry-QFZL2TWK.js
 ---------------------------------
 // src/entry.tsx
 import ReactDOM from "react-dom";
 
 // src/app.tsx
-var Route = import("../route-M5ZSN7S2.js").then(({
+var Route = import("../route-QVSA3B7Z.js").then(({
   default: Route2
 }) => Route2);
 
@@ -143,7 +143,7 @@ route-FIDLIZGC.css
   background: blue;
 }
 ---------------------------------
-route-M5ZSN7S2.js
+route-QVSA3B7Z.js
 ---------------------------------
 // src/route.tsx
 function Route() {
@@ -251,23 +251,6 @@ STDOUT
 ---------------------------------
 ✔  Finished index.html with 0 error(s) and 0 warning(s) in XX time
 ---------------------------------
-entry-3GUKJLPG.js
----------------------------------
-// src/entry.tsx
-import ReactDOM from "react-dom";
-
-// src/app.tsx
-var Route = import("./route-M5ZSN7S2.js").then(({
-  default: Route2
-}) => Route2);
-
-function App() {
-  return /* @__PURE__ */ React.createElement(Suspense, null, /* @__PURE__ */ React.createElement(Route, null, "Hello world"));
-}
-
-// src/entry.tsx
-ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
----------------------------------
 entry-ANTTFN3R.css
 ---------------------------------
 /* src/route.css */
@@ -285,12 +268,29 @@ body {
   background: red;
 }
 ---------------------------------
+entry-EKKSV2ZN.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react-dom";
+
+// src/app.tsx
+var Route = import("./route-QVSA3B7Z.js").then(({
+  default: Route2
+}) => Route2);
+
+function App() {
+  return /* @__PURE__ */ React.createElement(Suspense, null, /* @__PURE__ */ React.createElement(Route, null, "Hello world"));
+}
+
+// src/entry.tsx
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
+---------------------------------
 index.html
 ---------------------------------
 <!DOCTYPE html>
 <html>
   <head>
-    <script defer="" type="module" src="entry-3GUKJLPG.js"></script>
+    <script defer="" type="module" src="entry-EKKSV2ZN.js"></script>
     <link href="entry-ANTTFN3R.css" rel="stylesheet">
   </head>
   <body>
@@ -305,7 +305,7 @@ route-FIDLIZGC.css
   background: blue;
 }
 ---------------------------------
-route-M5ZSN7S2.js
+route-QVSA3B7Z.js
 ---------------------------------
 // src/route.tsx
 function Route() {
@@ -435,23 +435,6 @@ STDOUT
 ---------------------------------
 ✔  Finished index.html with 0 error(s) and 0 warning(s) in XX time
 ---------------------------------
-entry-3GUKJLPG.js
----------------------------------
-// src/entry.tsx
-import ReactDOM from "react-dom";
-
-// src/app.tsx
-var Route = import("./route-M5ZSN7S2.js").then(({
-  default: Route2
-}) => Route2);
-
-function App() {
-  return /* @__PURE__ */ React.createElement(Suspense, null, /* @__PURE__ */ React.createElement(Route, null, "Hello world"));
-}
-
-// src/entry.tsx
-ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
----------------------------------
 entry-OSY7SPHL.css
 ---------------------------------
 /* sass:./route.css */
@@ -469,12 +452,29 @@ body {
   background: red;
 }
 ---------------------------------
+entry-S6VY6RBV.js
+---------------------------------
+// src/entry.tsx
+import ReactDOM from "react-dom";
+
+// src/app.tsx
+var Route = import("./route-5DIYUT2I.js").then(({
+  default: Route2
+}) => Route2);
+
+function App() {
+  return /* @__PURE__ */ React.createElement(Suspense, null, /* @__PURE__ */ React.createElement(Route, null, "Hello world"));
+}
+
+// src/entry.tsx
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
+---------------------------------
 index.html
 ---------------------------------
 <!DOCTYPE html>
 <html>
   <head>
-    <script defer="" type="module" src="entry-3GUKJLPG.js"></script>
+    <script defer="" type="module" src="entry-S6VY6RBV.js"></script>
     <link href="entry-OSY7SPHL.css" rel="stylesheet">
   </head>
   <body>
@@ -482,7 +482,7 @@ index.html
   </body>
 </html>
 ---------------------------------
-route-M5ZSN7S2.js
+route-5DIYUT2I.js
 ---------------------------------
 // src/route.tsx
 function Route() {
