@@ -285,7 +285,7 @@ export {
 };
 
 ---------------------------------
-chunk-P5OBPOC4.js
+chunk-7EVPSHPU.js
 ---------------------------------
 
 ---------------------------------
@@ -299,7 +299,7 @@ template-basic.css
 ---------------------------------
 template-basic.js
 ---------------------------------
-import "./chunk-P5OBPOC4.js";
+import "./chunk-7EVPSHPU.js";
 
 // fixture/template-basic.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -321,7 +321,7 @@ template-complex.css
 ---------------------------------
 template-complex.js
 ---------------------------------
-import "./chunk-P5OBPOC4.js";
+import "./chunk-7EVPSHPU.js";
 
 // fixture/template-complex.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -379,7 +379,7 @@ export {
 };
 
 ---------------------------------
-chunk-P5OBPOC4.js
+chunk-7EVPSHPU.js
 ---------------------------------
 
 ---------------------------------
@@ -393,7 +393,7 @@ template-basic.css
 ---------------------------------
 template-basic.js
 ---------------------------------
-import "./chunk-P5OBPOC4.js";
+import "./chunk-7EVPSHPU.js";
 
 // fixture/template-basic.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -415,7 +415,7 @@ template-complex.css
 ---------------------------------
 template-complex.js
 ---------------------------------
-import "./chunk-P5OBPOC4.js";
+import "./chunk-7EVPSHPU.js";
 
 // fixture/template-complex.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -436,7 +436,7 @@ template-basic.html
 <html>
   <head>
     <link href="template-basic-style-LCZ4I64V.css" rel="stylesheet">
-    <script src="template-basic-script-EXALUX7T.js" type="module"></script>
+    <script src="template-basic-script-UKADQS6X.js" type="module"></script>
   </head>
   <body>
   </body>
@@ -481,7 +481,7 @@ template-basic-script-EOY7FBT3.css
 }
 
 ---------------------------------
-template-basic-script-EXALUX7T.js
+template-basic-script-UKADQS6X.js
 ---------------------------------
 // fixture/template-basic.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -549,7 +549,7 @@ export {
 };
 
 ---------------------------------
-chunk-P5OBPOC4.js
+chunk-7EVPSHPU.js
 ---------------------------------
 
 ---------------------------------
@@ -576,7 +576,7 @@ template-basic.css
 ---------------------------------
 template-basic.js
 ---------------------------------
-import "./chunk-P5OBPOC4.js";
+import "./chunk-7EVPSHPU.js";
 
 // fixture/template-basic.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {
@@ -598,7 +598,7 @@ template-complex.css
 ---------------------------------
 template-complex.js
 ---------------------------------
-import "./chunk-P5OBPOC4.js";
+import "./chunk-7EVPSHPU.js";
 
 // fixture/template-complex.js
 import("./c-RYJBTEBJ.js").then(({ C }) => {

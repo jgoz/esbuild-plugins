@@ -27,7 +27,7 @@
   "types": "lib/index.d.ts",
   "peerDependencies": {
     "@jgoz/esbuild-plugin-livereload": ">=2.0.3",
-    "esbuild": "0.17.x || 0.18.x",
+    "esbuild": "0.17.x || 0.18.x || 0.19.x",
     "typescript": ">= 3.5"
   },
   "peerDependenciesMeta": {
@@ -38,7 +38,7 @@
   "devDependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
     "@types/node": "^16.18.48",
-    "esbuild": "^0.18.11",
+    "esbuild": "^0.19.2",
     "execa": "^5.0.0",
     "memfs": "^3.5.3",
     "picocolors": "^1.0.0",
@@ -47,7 +47,7 @@
     "typescript": "^5.2.2",
     "unionfs": "^4.5.1",
     "vite": "^4.4.9",
-    "vitest": "^0.33.0"
+    "vitest": "^0.34.3"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",

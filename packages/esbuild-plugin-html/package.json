@@ -29,12 +29,12 @@
   "devDependencies": {
     "@types/js-beautify": "^1.14.0",
     "@types/node": "^16.18.48",
-    "esbuild": "^0.18.11",
+    "esbuild": "^0.19.2",
     "js-beautify": "^1.14.9",
     "parse5": "^7.1.2",
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
-    "vitest": "^0.33.0"
+    "vitest": "^0.34.3"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
