@@ -1,7 +1,7 @@
 /* eslint-env jest */
 import fs from 'fs';
+import { css_beautify, html_beautify, js_beautify } from 'js-beautify';
 import path from 'path';
-import prettier from 'prettier';
 import { expect } from 'vitest';
 
 const SEPARATOR = '---------------------------------';
@@ -48,11 +48,16 @@ expect.addSnapshotSerializer({
       const content = fs.readFileSync(file, 'utf-8').replaceAll(value.cwd, '<CWD>');
 
       const formatted = file.endsWith('.html')
-        ? prettier.format(content, { parser: 'html' })
+        ? html_beautify(content, {
+            indent_size: 2,
+            indent_inner_html: true,
+            extra_liners: [],
+            preserve_newlines: false,
+          })
         : file.endsWith('.js')
-        ? prettier.format(content, { parser: 'babel' })
+        ? js_beautify(content, { indent_size: 2 })
         : file.endsWith('.css')
-        ? prettier.format(content, { parser: 'css' })
+        ? css_beautify(content, { indent_size: 2 })
         : content;
 
       output.push(formatted);

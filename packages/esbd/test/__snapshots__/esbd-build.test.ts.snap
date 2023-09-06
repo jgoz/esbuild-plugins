@@ -17,11 +17,7 @@ function App() {
 }
 
 // src/entry.tsx
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 `;
 
 exports[`build command > includes referenced CSS from JS 1`] = `
@@ -41,7 +37,6 @@ entry.css
 body {
   background: red;
 }
-
 ---------------------------------
 entry.js
 ---------------------------------
@@ -54,11 +49,7 @@ function App() {
 }
 
 // src/entry.tsx
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 `;
 
 exports[`build command > includes referenced CSS from entry point 1`] = `
@@ -78,11 +69,7 @@ function App() {
 }
 
 // src/entry.tsx
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 style.css
 ---------------------------------
@@ -95,7 +82,6 @@ style.css
 body {
   background: red;
 }
-
 `;
 
 exports[`build command > supports automatic react runtime 1`] = `
@@ -110,13 +96,19 @@ entry.js
 import ReactDOM from "react-dom";
 
 // src/app.tsx
-import { jsx } from "react/jsx-runtime";
+import {
+  jsx
+} from "react/jsx-runtime";
+
 function App() {
-  return /* @__PURE__ */ jsx("div", { children: "Hello world" });
+  return /* @__PURE__ */ jsx("div", {
+    children: "Hello world"
+  });
 }
 
 // src/entry.tsx
-import { jsx as jsx2 } from "react/jsx-runtime";
-ReactDOM.render(/* @__PURE__ */ jsx2(App, {}), document.getElementById("root"));
-
+import {
+  jsx as jsx2
+} from "react/jsx-runtime";
+ReactDOM.render( /* @__PURE__ */ jsx2(App, {}), document.getElementById("root"));
 `;

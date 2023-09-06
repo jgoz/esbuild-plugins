@@ -1,12 +1,12 @@
-FROM mcr.microsoft.com/playwright:v1.35.1-focal
+FROM mcr.microsoft.com/playwright:v1.37.1-focal
 
 RUN apt-get update && \
-    # Install node18
-    apt-get install -y curl wget gpg && \
-    curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs && \
-    # clean apt cache
-    rm -rf /var/lib/apt/lists/*
+  # Install node18
+  apt-get install -y curl wget gpg && \
+  curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
+  apt-get install -y nodejs && \
+  # clean apt cache
+  rm -rf /var/lib/apt/lists/*
 
 RUN npm i -g pnpm
 COPY ./ /app/

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { build, context as createContext } from 'esbuild';
 import fs from 'fs';
+import { css_beautify } from 'js-beautify';
 import path from 'path';
-import prettier from 'prettier';
 import { describe, expect, test } from 'vitest';
 
 import { sassPlugin } from '../lib';
@@ -138,11 +138,10 @@ describe('esbuild-plugin-sass ', () => {
       .readFileSync(path.resolve(absWorkingDir, './out/app.css'), 'utf-8')
       .split('\n')
       .join('\n')
-      .replace(__dirname, '.');
+      .replace(__dirname, '.')
+      .replace(/,\)/g, ')');
 
-    expect(prettier.format(actual, { parser: 'css' })).toEqual(
-      prettier.format(expected, { parser: 'css' }),
-    );
+    expect(css_beautify(actual, {})).toEqual(css_beautify(expected));
   });
 
   test('watched files', async () => {

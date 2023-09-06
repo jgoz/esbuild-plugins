@@ -23,8 +23,8 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "dependencies": {
-    "babel-plugin-jest-hoist": "^29.5.0",
-    "jest-util": "^29.6.1"
+    "babel-plugin-jest-hoist": "^29.6.3",
+    "jest-util": "^29.6.3"
   },
   "peerDependencies": {
     "@babel/core": ">= 7.0.0",
@@ -32,16 +32,16 @@
     "jest": "28 || 29"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.8",
-    "@jest/transform": "^29.6.1",
+    "@babel/core": "^7.22.15",
+    "@jest/transform": "^29.6.4",
     "@types/babel__core": "^7.20.1",
-    "@types/jest": "^29.5.2",
-    "@types/node": "^16.18.11",
+    "@types/jest": "^29.5.4",
+    "@types/node": "^16.18.48",
     "esbuild": "^0.18.11",
-    "jest": "^29.6.1",
+    "jest": "^29.6.4",
     "prettier": "^3.0.3",
-    "tslib": "^2.6.0",
-    "typescript": "^5.1.6"
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",

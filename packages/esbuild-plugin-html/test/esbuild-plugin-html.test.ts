@@ -1,8 +1,8 @@
 import type { BuildOptions } from 'esbuild';
 import { build } from 'esbuild';
 import fs from 'fs';
+import { html_beautify } from 'js-beautify';
 import path from 'path';
-import prettier from 'prettier';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { HtmlPluginOptions } from '../lib';
@@ -35,7 +35,14 @@ expect.addSnapshotSerializer({
       output.push(SEPARATOR);
 
       const content = fs.readFileSync(html, 'utf-8');
-      output.push(prettier.format(content, { parser: 'html' }));
+      output.push(
+        html_beautify(content, {
+          indent_size: 2,
+          indent_inner_html: true,
+          extra_liners: [],
+          preserve_newlines: false,
+        }),
+      );
     }
 
     for (const asset of value.assets) {

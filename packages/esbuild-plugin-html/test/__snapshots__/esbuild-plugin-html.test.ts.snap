@@ -7,20 +7,12 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link
-      href="template-basic-style.css"
-      rel="stylesheet"
-      integrity="sha256-BfR1CuRF/pbXkkgIozp+ci3pdwfrJlfESd8GhuRtW6Q="
-    />
-    <script
-      src="template-basic-script.js"
-      type="module"
-      integrity="sha256-QAamFdBResqMLdiEYs1XFcWxujo9AQQUdb++c8DCQcE="
-    ></script>
+    <link href="template-basic-style.css" rel="stylesheet" integrity="sha256-BfR1CuRF/pbXkkgIozp+ci3pdwfrJlfESd8GhuRtW6Q=">
+    <script src="template-basic-script.js" type="module" integrity="sha256-QAamFdBResqMLdiEYs1XFcWxujo9AQQUdb++c8DCQcE="></script>
   </head>
-  <body></body>
+  <body>
+  </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -89,12 +81,11 @@ template-empty.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-empty-style.css" rel="stylesheet" />
+    <link href="template-empty-style.css" rel="stylesheet">
     <script src="template-empty-script.js" type="module"></script>
   </head>
   <body></body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -155,12 +146,12 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic-style.css" rel="stylesheet" />
+    <link href="template-basic-style.css" rel="stylesheet">
     <script src="template-basic-script.js" type="module"></script>
   </head>
-  <body></body>
+  <body>
+  </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -229,36 +220,29 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic.css" rel="stylesheet" />
+    <link href="template-basic.css" rel="stylesheet">
     <script src="template-basic.js" type="module"></script>
   </head>
-  <body></body>
+  <body>
+  </body>
 </html>
-
 ---------------------------------
 template-complex.html
 ---------------------------------
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Description" />
-    <meta name="author" content="John Gozde" />
-    <meta name="google" value="notranslate" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="http://icons.com/icon.png"
-    />
-    <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
-    />
+    <meta charset="utf-8">
+    <meta name="description" content="Description">
+    <meta name="author" content="John Gozde">
+    <meta name="google" value="notranslate">
+    <link rel="apple-touch-icon" sizes="180x180" href="http://icons.com/icon.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <title>Complex Template</title>
     <style type="text/css" media="screen, print"></style>
-    <link rel="stylesheet" href="https://google.com/fonts" />
-    <link href="template-complex.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://google.com/fonts">
+    <link href="template-complex.css" rel="stylesheet">
     <script>
       window.global = window;
     </script>
@@ -269,7 +253,6 @@ template-complex.html
     <script src="http://google.com/analytics"></script>
   </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -358,12 +341,12 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic.css" rel="stylesheet" />
+    <link href="template-basic.css" rel="stylesheet">
     <script src="template-basic.js" type="module"></script>
   </head>
-  <body></body>
+  <body>
+  </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -452,12 +435,12 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic-style-LCZ4I64V.css" rel="stylesheet" />
+    <link href="template-basic-style-LCZ4I64V.css" rel="stylesheet">
     <script src="template-basic-script-EXALUX7T.js" type="module"></script>
   </head>
-  <body></body>
+  <body>
+  </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -526,14 +509,14 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-assets.css" rel="stylesheet" />
-    <link href="template-define.css" rel="stylesheet" />
+    <link href="template-assets.css" rel="stylesheet">
+    <link href="template-define.css" rel="stylesheet">
     <script src="template-basic.js" type="module"></script>
     <script src="template-complex.js" type="module"></script>
   </head>
-  <body></body>
+  <body>
+  </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -643,24 +626,17 @@ template-complex.html
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Description" />
-    <meta name="author" content="John Gozde" />
-    <meta name="google" value="notranslate" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="http://icons.com/icon.png"
-    />
-    <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
-    />
+    <meta charset="utf-8">
+    <meta name="description" content="Description">
+    <meta name="author" content="John Gozde">
+    <meta name="google" value="notranslate">
+    <link rel="apple-touch-icon" sizes="180x180" href="http://icons.com/icon.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <title>Complex Template</title>
     <style type="text/css" media="screen, print"></style>
-    <link rel="stylesheet" href="https://google.com/fonts" />
-    <link href="template-complex-style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://google.com/fonts">
+    <link href="template-complex-style.css" rel="stylesheet">
     <script>
       window.global = window;
     </script>
@@ -671,7 +647,6 @@ template-complex.html
     <script src="http://google.com/analytics"></script>
   </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -745,25 +720,18 @@ template-complex.html
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Description" />
-    <meta name="author" content="John Gozde" />
-    <meta name="google" value="notranslate" />
+    <meta charset="utf-8">
+    <meta name="description" content="Description">
+    <meta name="author" content="John Gozde">
+    <meta name="google" value="notranslate">
     <script src="template-complex-script.js" type="module"></script>
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="http://icons.com/icon.png"
-    />
-    <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
-    />
+    <link rel="apple-touch-icon" sizes="180x180" href="http://icons.com/icon.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <title>Complex Template</title>
     <style type="text/css" media="screen, print"></style>
-    <link rel="stylesheet" href="https://google.com/fonts" />
-    <link href="template-complex-style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://google.com/fonts">
+    <link href="template-complex-style.css" rel="stylesheet">
     <script>
       window.global = window;
     </script>
@@ -773,7 +741,6 @@ template-complex.html
     <script src="http://google.com/analytics"></script>
   </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -847,24 +814,17 @@ template-complex.html
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Description" />
-    <meta name="author" content="John Gozde" />
-    <meta name="google" value="notranslate" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="http://icons.com/icon.png"
-    />
-    <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
-    />
+    <meta charset="utf-8">
+    <meta name="description" content="Description">
+    <meta name="author" content="John Gozde">
+    <meta name="google" value="notranslate">
+    <link rel="apple-touch-icon" sizes="180x180" href="http://icons.com/icon.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <title>Complex Template</title>
     <style type="text/css" media="screen, print"></style>
-    <link rel="stylesheet" href="https://google.com/fonts" />
-    <link href="template-complex-style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://google.com/fonts">
+    <link href="template-complex-style.css" rel="stylesheet">
     <script>
       window.global = window;
     </script>
@@ -875,7 +835,6 @@ template-complex.html
     <script src="template-complex-script.js" type="module"></script>
   </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -949,24 +908,17 @@ template-complex.html
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Description" />
-    <meta name="author" content="John Gozde" />
-    <meta name="google" value="notranslate" />
-    <link href="template-complex-style.css" rel="stylesheet" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="http://icons.com/icon.png"
-    />
-    <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
-    />
+    <meta charset="utf-8">
+    <meta name="description" content="Description">
+    <meta name="author" content="John Gozde">
+    <meta name="google" value="notranslate">
+    <link href="template-complex-style.css" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="http://icons.com/icon.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <title>Complex Template</title>
     <style type="text/css" media="screen, print"></style>
-    <link rel="stylesheet" href="https://google.com/fonts" />
+    <link rel="stylesheet" href="https://google.com/fonts">
     <script>
       window.global = window;
     </script>
@@ -977,7 +929,6 @@ template-complex.html
     <script src="http://google.com/analytics"></script>
   </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -1051,13 +1002,12 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic-style.css" rel="stylesheet" />
+    <link href="template-basic-style.css" rel="stylesheet">
   </head>
   <body>
     <script src="template-basic-script.js" type="module"></script>
   </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -1126,13 +1076,12 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic-style.css" rel="stylesheet" />
+    <link href="template-basic-style.css" rel="stylesheet">
   </head>
   <body>
     <script src="template-basic-script.js" defer=""></script>
   </body>
 </html>
-
 ---------------------------------
 template-basic-script.css
 ---------------------------------
@@ -1225,39 +1174,40 @@ template-assets.html
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Description" />
-    <meta name="author" content="John Gozde" />
-    <meta name="google" value="notranslate" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/icon.png" />
-    <link rel="mask-icon" href="/static/mask.svg" color="#5bbad5" />
-    <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
-    />
+    <meta charset="utf-8">
+    <meta name="description" content="Description">
+    <meta name="author" content="John Gozde">
+    <meta name="google" value="notranslate">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icon.png">
+    <link rel="mask-icon" href="/static/mask.svg" color="#5bbad5">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <title>Complex Template</title>
     <style type="text/css" media="screen, print">
       @font-face {
-        font-family: "Open Sans";
+        font-family: 'Open Sans';
         font-weight: 400;
         font-style: normal;
-        src: url("/static/font.svg#OpenSans") format("svg");
+        src: url('/static/font.svg#OpenSans') format('svg');
       }
+
       @font-face {
-        font-family: "Open Sans";
+        font-family: 'Open Sans';
         font-weight: 600;
         font-style: normal;
-        src: url("/static/font.svg?OpenSans") format("svg");
+        src: url('/static/font.svg?OpenSans'
+          ) format('svg');
       }
+
       body {
-        background: url(/static/bg.png?test#foo);
-        content: "url";
+        background: url(/static/bg.png?test#foo
+);
+        content: 'url';
       }
     </style>
-    <link rel="stylesheet" href="https://google.com/fonts" />
-    <link rel="stylesheet" href="/static/custom.css" />
-    <link href="/static/template-assets-style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://google.com/fonts">
+    <link rel="stylesheet" href="/static/custom.css">
+    <link href="/static/template-assets-style.css" rel="stylesheet">
     <script>
       window.global = window;
     </script>
@@ -1268,7 +1218,6 @@ template-assets.html
     <script src="http://google.com/analytics"></script>
   </body>
 </html>
-
 ---------------------------------
 a-FL7LSOX5.js
 ---------------------------------
@@ -1361,60 +1310,50 @@ template-assets.html
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Description" />
-    <meta name="author" content="John Gozde" />
-    <meta name="google" value="notranslate" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="http://test.com/icon.png"
-    />
-    <link rel="mask-icon" href="http://test.com/mask.svg" color="#5bbad5" />
-    <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
-    />
+    <meta charset="utf-8">
+    <meta name="description" content="Description">
+    <meta name="author" content="John Gozde">
+    <meta name="google" value="notranslate">
+    <link rel="apple-touch-icon" sizes="180x180" href="http://test.com/icon.png">
+    <link rel="mask-icon" href="http://test.com/mask.svg" color="#5bbad5">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <title>Complex Template</title>
     <style type="text/css" media="screen, print">
       @font-face {
-        font-family: "Open Sans";
+        font-family: 'Open Sans';
         font-weight: 400;
         font-style: normal;
-        src: url("http://test.com/font.svg#OpenSans") format("svg");
+        src: url('http://test.com/font.svg#OpenSans') format('svg');
       }
+
       @font-face {
-        font-family: "Open Sans";
+        font-family: 'Open Sans';
         font-weight: 600;
         font-style: normal;
-        src: url("http://test.com/font.svg?OpenSans") format("svg");
+        src: url('http://test.com/font.svg?OpenSans'
+          ) format('svg');
       }
+
       body {
-        background: url(http://test.com/bg.png?test#foo);
-        content: "url";
+        background: url(http://test.com/bg.png?test#foo
+);
+        content: 'url';
       }
     </style>
-    <link rel="stylesheet" href="https://google.com/fonts" />
-    <link rel="stylesheet" href="http://test.com/custom.css" />
-    <link
-      href="http:/test.com/static/template-assets-style.css"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="https://google.com/fonts">
+    <link rel="stylesheet" href="http://test.com/custom.css">
+    <link href="http:/test.com/static/template-assets-style.css" rel="stylesheet">
     <script>
       window.global = window;
     </script>
-    <script
-      src="http:/test.com/static/template-assets-script.js"
-      type="module"
-    ></script>
+    <script src="http:/test.com/static/template-assets-script.js" type="module"></script>
   </head>
   <body>
     <div class="app-container"></div>
     <script src="http://google.com/analytics"></script>
   </body>
 </html>
-
 ---------------------------------
 a-WSH4KWPM.js
 ---------------------------------
@@ -1507,39 +1446,40 @@ template-assets.html
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Description" />
-    <meta name="author" content="John Gozde" />
-    <meta name="google" value="notranslate" />
-    <link rel="apple-touch-icon" sizes="180x180" href="icon.png" />
-    <link rel="mask-icon" href="mask.svg" color="#5bbad5" />
-    <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
-    />
+    <meta charset="utf-8">
+    <meta name="description" content="Description">
+    <meta name="author" content="John Gozde">
+    <meta name="google" value="notranslate">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+    <link rel="mask-icon" href="mask.svg" color="#5bbad5">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <title>Complex Template</title>
     <style type="text/css" media="screen, print">
       @font-face {
-        font-family: "Open Sans";
+        font-family: 'Open Sans';
         font-weight: 400;
         font-style: normal;
-        src: url("font.svg#OpenSans") format("svg");
+        src: url('font.svg#OpenSans') format('svg');
       }
+
       @font-face {
-        font-family: "Open Sans";
+        font-family: 'Open Sans';
         font-weight: 600;
         font-style: normal;
-        src: url("font.svg?OpenSans") format("svg");
+        src: url('font.svg?OpenSans'
+          ) format('svg');
       }
+
       body {
-        background: url(bg.png?test#foo);
-        content: "url";
+        background: url(bg.png?test#foo
+);
+        content: 'url';
       }
     </style>
-    <link rel="stylesheet" href="https://google.com/fonts" />
-    <link rel="stylesheet" href="custom.css" />
-    <link href="template-assets-style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://google.com/fonts">
+    <link rel="stylesheet" href="custom.css">
+    <link href="template-assets-style.css" rel="stylesheet">
     <script>
       window.global = window;
     </script>
@@ -1550,7 +1490,6 @@ template-assets.html
     <script src="http://google.com/analytics"></script>
   </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -1643,12 +1582,12 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic-style.css" rel="stylesheet" />
+    <link href="template-basic-style.css" rel="stylesheet">
     <script src="template-basic-script.js" type="module"></script>
   </head>
-  <body></body>
+  <body>
+  </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -1717,24 +1656,17 @@ template-complex.html
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Description" />
-    <meta name="author" content="John Gozde" />
-    <meta name="google" value="notranslate" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="http://icons.com/icon.png"
-    />
-    <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
-    />
+    <meta charset="utf-8">
+    <meta name="description" content="Description">
+    <meta name="author" content="John Gozde">
+    <meta name="google" value="notranslate">
+    <link rel="apple-touch-icon" sizes="180x180" href="http://icons.com/icon.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <title>Complex Template</title>
     <style type="text/css" media="screen, print"></style>
-    <link rel="stylesheet" href="https://google.com/fonts" />
-    <link href="template-complex-style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://google.com/fonts">
+    <link href="template-complex-style.css" rel="stylesheet">
     <script>
       window.global = window;
     </script>
@@ -1745,7 +1677,6 @@ template-complex.html
     <script src="http://google.com/analytics"></script>
   </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -1819,39 +1750,40 @@ template-assets.html
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Description" />
-    <meta name="author" content="John Gozde" />
-    <meta name="google" value="notranslate" />
-    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icon.png" />
-    <link rel="mask-icon" href="./assets/mask.svg" color="#5bbad5" />
-    <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
-    />
+    <meta charset="utf-8">
+    <meta name="description" content="Description">
+    <meta name="author" content="John Gozde">
+    <meta name="google" value="notranslate">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icon.png">
+    <link rel="mask-icon" href="./assets/mask.svg" color="#5bbad5">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <title>Complex Template</title>
     <style type="text/css" media="screen, print">
       @font-face {
-        font-family: "Open Sans";
+        font-family: 'Open Sans';
         font-weight: 400;
         font-style: normal;
-        src: url("./assets/font.svg#OpenSans") format("svg");
+        src: url('./assets/font.svg#OpenSans') format('svg');
       }
+
       @font-face {
-        font-family: "Open Sans";
+        font-family: 'Open Sans';
         font-weight: 600;
         font-style: normal;
-        src: url("./assets/font.svg?OpenSans") format("svg");
+        src: url('./assets/font.svg?OpenSans'
+          ) format('svg');
       }
+
       body {
-        background: url(./assets/bg.png?test#foo);
-        content: "url";
+        background: url(./assets/bg.png?test#foo
+);
+        content: 'url';
       }
     </style>
-    <link rel="stylesheet" href="https://google.com/fonts" />
-    <link rel="stylesheet" href="./assets/custom.css" />
-    <link href="/static/template-assets-style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://google.com/fonts">
+    <link rel="stylesheet" href="./assets/custom.css">
+    <link href="/static/template-assets-style.css" rel="stylesheet">
     <script>
       window.global = window;
     </script>
@@ -1862,7 +1794,6 @@ template-assets.html
     <script src="http://google.com/analytics"></script>
   </body>
 </html>
-
 ---------------------------------
 a-FL7LSOX5.js
 ---------------------------------
@@ -1928,28 +1859,21 @@ template-define.html
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Description" />
-    <meta name="author" content="John Gozde" />
-    <meta name="google" value="notranslate" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="http://icons.com/icon.png?development"
-    />
-    <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"
-    />
+    <meta charset="utf-8">
+    <meta name="description" content="Description">
+    <meta name="author" content="John Gozde">
+    <meta name="google" value="notranslate">
+    <link rel="apple-touch-icon" sizes="180x180" href="http://icons.com/icon.png?development">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <title>Complex Template</title>
     <style type="text/css" media="screen, print"></style>
-    <link rel="stylesheet" href="https://google.com/fonts?1.2.3" />
-    <link href="template-define-style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://google.com/fonts?1.2.3">
+    <link href="template-define-style.css" rel="stylesheet">
     <script>
       window.global = window;
-      window.version = "1.2.3";
-      window.environment = "development";
+      window.version = '1.2.3';
+      window.environment = 'development';
     </script>
     <script src="template-define-script.js" type="module"></script>
   </head>
@@ -1958,7 +1882,6 @@ template-define.html
     <script src="http://google.com/analytics"></script>
   </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -2027,20 +1950,12 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link
-      href="template-basic-style.css"
-      rel="stylesheet"
-      crossorigin="anonymous"
-    />
-    <script
-      src="template-basic-script.js"
-      type="module"
-      crossorigin="anonymous"
-    ></script>
+    <link href="template-basic-style.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="template-basic-script.js" type="module" crossorigin="anonymous"></script>
   </head>
-  <body></body>
+  <body>
+  </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -2109,20 +2024,12 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link
-      href="template-basic-style.css"
-      rel="stylesheet"
-      crossorigin="use-credentials"
-    />
-    <script
-      src="template-basic-script.js"
-      type="module"
-      crossorigin="use-credentials"
-    ></script>
+    <link href="template-basic-style.css" rel="stylesheet" crossorigin="use-credentials">
+    <script src="template-basic-script.js" type="module" crossorigin="use-credentials"></script>
   </head>
-  <body></body>
+  <body>
+  </body>
 </html>
-
 ---------------------------------
 a-LTDY5RBP.js
 ---------------------------------
@@ -2191,12 +2098,12 @@ template-basic.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="template-basic-style.css" rel="stylesheet" />
+    <link href="template-basic-style.css" rel="stylesheet">
     <script src="template-basic-script.js" defer=""></script>
   </head>
-  <body></body>
+  <body>
+  </body>
 </html>
-
 ---------------------------------
 template-basic-script.css
 ---------------------------------

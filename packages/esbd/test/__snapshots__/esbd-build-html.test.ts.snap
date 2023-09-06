@@ -15,31 +15,18 @@ index.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link
-      rel="preload"
-      as="fetch"
-      crossorigin="anonymous"
-      type="application/json"
-      href="/abs-manifest.json"
-    />
-    <link
-      rel="preload"
-      as="fetch"
-      crossorigin="anonymous"
-      type="application/json"
-      href="manifest.json"
-    />
-    <link rel="apple-touch-icon" href="favicon.png?v=1.2.3" />
+    <link rel="preload" as="fetch" crossorigin="anonymous" type="application/json" href="/abs-manifest.json">
+    <link rel="preload" as="fetch" crossorigin="anonymous" type="application/json" href="manifest.json">
+    <link rel="apple-touch-icon" href="favicon.png?v=1.2.3">
     <script defer="" type="module" src="my-entry-1.2.3.js"></script>
     <script>
-      window.__app_version__ = "1.2.3";
+      window.__app_version__ = '1.2.3';
     </script>
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
-
 ---------------------------------
 manifest.json
 ---------------------------------
@@ -49,14 +36,11 @@ my-entry-1.2.3.js
 ---------------------------------
 // src/entry.tsx
 import ReactDOM from "react-dom";
+
 function App() {
   return /* @__PURE__ */ React.createElement("div", null, "Hello world");
 }
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 `;
 
 exports[`build command (html entry) > builds a simple HTML entry point 1`] = `
@@ -76,11 +60,7 @@ function App() {
 }
 
 // src/entry.tsx
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 index.html
 ---------------------------------
@@ -93,7 +73,6 @@ index.html
     <div id="root"></div>
   </body>
 </html>
-
 `;
 
 exports[`build command (html entry) > includes CSS entries and referenced CSS from JS with content hashes and path segments 1`] = `
@@ -118,7 +97,6 @@ css/entry-6DB2HAOI.css
 body {
   background: red;
 }
-
 ---------------------------------
 css/style-NCKSKVOY.css
 ---------------------------------
@@ -126,22 +104,20 @@ css/style-NCKSKVOY.css
 body {
   background: yellow;
 }
-
 ---------------------------------
 index.html
 ---------------------------------
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="css/style-NCKSKVOY.css" />
-    <link href="entry-6DB2HAOI.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style-NCKSKVOY.css">
+    <link href="entry-6DB2HAOI.css" rel="stylesheet">
     <script defer="" type="module" src="js/entry-EUOJ5BOK.js"></script>
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
-
 ---------------------------------
 js/entry-EUOJ5BOK.js
 ---------------------------------
@@ -149,23 +125,16 @@ js/entry-EUOJ5BOK.js
 import ReactDOM from "react-dom";
 
 // src/app.tsx
-var Route = import("../route-M5ZSN7S2.js").then(
-  ({ default: Route2 }) => Route2
-);
+var Route = import("../route-M5ZSN7S2.js").then(({
+  default: Route2
+}) => Route2);
+
 function App() {
-  return /* @__PURE__ */ React.createElement(
-    Suspense,
-    null,
-    /* @__PURE__ */ React.createElement(Route, null, "Hello world")
-  );
+  return /* @__PURE__ */ React.createElement(Suspense, null, /* @__PURE__ */ React.createElement(Route, null, "Hello world"));
 }
 
 // src/entry.tsx
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 route-FIDLIZGC.css
 ---------------------------------
@@ -173,7 +142,6 @@ route-FIDLIZGC.css
 .route {
   background: blue;
 }
-
 ---------------------------------
 route-M5ZSN7S2.js
 ---------------------------------
@@ -181,8 +149,10 @@ route-M5ZSN7S2.js
 function Route() {
   return /* @__PURE__ */ React.createElement("div", null, "Hello world");
 }
-export { Route as default };
-
+export {
+  Route as
+  default
+};
 `;
 
 exports[`build command (html entry) > includes referenced CSS from HTML 1`] = `
@@ -202,7 +172,6 @@ entry.0.css
 body {
   background: red;
 }
-
 ---------------------------------
 entry.1.js
 ---------------------------------
@@ -215,25 +184,20 @@ function App() {
 }
 
 // src/entry.tsx
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 index.html
 ---------------------------------
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="entry.0.css" />
+    <link rel="stylesheet" href="entry.0.css">
     <script defer="" type="module" src="entry.1.js"></script>
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
-
 `;
 
 exports[`build command (html entry) > includes referenced CSS from JS 1`] = `
@@ -253,7 +217,6 @@ entry.css
 body {
   background: red;
 }
-
 ---------------------------------
 entry.js
 ---------------------------------
@@ -266,11 +229,7 @@ function App() {
 }
 
 // src/entry.tsx
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 index.html
 ---------------------------------
@@ -278,13 +237,12 @@ index.html
 <html>
   <head>
     <script defer="" type="module" src="entry.js"></script>
-    <link href="entry.css" rel="stylesheet" />
+    <link href="entry.css" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
-
 `;
 
 exports[`build command (html entry) > includes referenced CSS from JS with content hashes 1`] = `
@@ -299,21 +257,16 @@ entry-3GUKJLPG.js
 import ReactDOM from "react-dom";
 
 // src/app.tsx
-var Route = import("./route-M5ZSN7S2.js").then(({ default: Route2 }) => Route2);
+var Route = import("./route-M5ZSN7S2.js").then(({
+  default: Route2
+}) => Route2);
+
 function App() {
-  return /* @__PURE__ */ React.createElement(
-    Suspense,
-    null,
-    /* @__PURE__ */ React.createElement(Route, null, "Hello world")
-  );
+  return /* @__PURE__ */ React.createElement(Suspense, null, /* @__PURE__ */ React.createElement(Route, null, "Hello world"));
 }
 
 // src/entry.tsx
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 entry-ANTTFN3R.css
 ---------------------------------
@@ -331,7 +284,6 @@ entry-ANTTFN3R.css
 body {
   background: red;
 }
-
 ---------------------------------
 index.html
 ---------------------------------
@@ -339,13 +291,12 @@ index.html
 <html>
   <head>
     <script defer="" type="module" src="entry-3GUKJLPG.js"></script>
-    <link href="entry-ANTTFN3R.css" rel="stylesheet" />
+    <link href="entry-ANTTFN3R.css" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
-
 ---------------------------------
 route-FIDLIZGC.css
 ---------------------------------
@@ -353,7 +304,6 @@ route-FIDLIZGC.css
 .route {
   background: blue;
 }
-
 ---------------------------------
 route-M5ZSN7S2.js
 ---------------------------------
@@ -361,8 +311,10 @@ route-M5ZSN7S2.js
 function Route() {
   return /* @__PURE__ */ React.createElement("div", null, "Hello world");
 }
-export { Route as default };
-
+export {
+  Route as
+  default
+};
 `;
 
 exports[`build command (html entry) > includes referenced assets from HTML 1`] = `
@@ -375,14 +327,11 @@ entry.js
 ---------------------------------
 // src/entry.tsx
 import ReactDOM from "react-dom";
+
 function App() {
   return /* @__PURE__ */ React.createElement("div", null, "Hello world");
 }
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 favicon.png
 ---------------------------------
@@ -393,14 +342,13 @@ index.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="apple-touch-icon" href="favicon.png" />
+    <link rel="apple-touch-icon" href="favicon.png">
     <script defer="" type="module" src="entry.js"></script>
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
-
 `;
 
 exports[`build command (html entry) > includes referenced assets from HTML using their esbuild-generated output paths 1`] = `
@@ -419,18 +367,11 @@ var icon_default = "./icon-IPILGNO5.svg";
 
 // src/entry.tsx
 function App() {
-  return /* @__PURE__ */ React.createElement(
-    "div",
-    null,
-    "Hello world ",
-    /* @__PURE__ */ React.createElement("img", { src: icon_default })
-  );
+  return /* @__PURE__ */ React.createElement("div", null, "Hello world ", /* @__PURE__ */ React.createElement("img", {
+    src: icon_default
+  }));
 }
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 icon-IPILGNO5.svg
 ---------------------------------
@@ -441,14 +382,13 @@ index.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="apple-touch-icon" href="icon-IPILGNO5.svg" />
+    <link rel="apple-touch-icon" href="icon-IPILGNO5.svg">
     <script defer="" type="module" src="entry.js"></script>
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
-
 `;
 
 exports[`build command (html entry) > includes referenced assets from style tags 1`] = `
@@ -465,14 +405,11 @@ entry.js
 ---------------------------------
 // src/entry.tsx
 import ReactDOM from "react-dom";
+
 function App() {
   return /* @__PURE__ */ React.createElement("div", null, "Hello world");
 }
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 index.html
 ---------------------------------
@@ -490,7 +427,6 @@ index.html
     <div id="root"></div>
   </body>
 </html>
-
 `;
 
 exports[`build command (html entry) > includes referenced compile-to-CSS from JS with content hashes 1`] = `
@@ -505,21 +441,16 @@ entry-3GUKJLPG.js
 import ReactDOM from "react-dom";
 
 // src/app.tsx
-var Route = import("./route-M5ZSN7S2.js").then(({ default: Route2 }) => Route2);
+var Route = import("./route-M5ZSN7S2.js").then(({
+  default: Route2
+}) => Route2);
+
 function App() {
-  return /* @__PURE__ */ React.createElement(
-    Suspense,
-    null,
-    /* @__PURE__ */ React.createElement(Route, null, "Hello world")
-  );
+  return /* @__PURE__ */ React.createElement(Suspense, null, /* @__PURE__ */ React.createElement(Route, null, "Hello world"));
 }
 
 // src/entry.tsx
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 entry-OSY7SPHL.css
 ---------------------------------
@@ -537,7 +468,6 @@ entry-OSY7SPHL.css
 body {
   background: red;
 }
-
 ---------------------------------
 index.html
 ---------------------------------
@@ -545,13 +475,12 @@ index.html
 <html>
   <head>
     <script defer="" type="module" src="entry-3GUKJLPG.js"></script>
-    <link href="entry-OSY7SPHL.css" rel="stylesheet" />
+    <link href="entry-OSY7SPHL.css" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
-
 ---------------------------------
 route-M5ZSN7S2.js
 ---------------------------------
@@ -559,8 +488,10 @@ route-M5ZSN7S2.js
 function Route() {
   return /* @__PURE__ */ React.createElement("div", null, "Hello world");
 }
-export { Route as default };
-
+export {
+  Route as
+  default
+};
 ---------------------------------
 route-SG2FYVD5.css
 ---------------------------------
@@ -568,7 +499,6 @@ route-SG2FYVD5.css
 .route {
   background: blue;
 }
-
 `;
 
 exports[`build command (html entry) > substitutes defined values in output HTML 1`] = `
@@ -581,14 +511,11 @@ entry.js
 ---------------------------------
 // src/entry.tsx
 import ReactDOM from "react-dom";
+
 function App() {
   return /* @__PURE__ */ React.createElement("div", null, "Hello world");
 }
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 favicon.png
 ---------------------------------
@@ -599,31 +526,18 @@ index.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link
-      rel="preload"
-      as="fetch"
-      crossorigin="anonymous"
-      type="application/json"
-      href="/abs-manifest.json"
-    />
-    <link
-      rel="preload"
-      as="fetch"
-      crossorigin="anonymous"
-      type="application/json"
-      href="manifest.json"
-    />
-    <link rel="apple-touch-icon" href="favicon.png?v=1.2.3" />
+    <link rel="preload" as="fetch" crossorigin="anonymous" type="application/json" href="/abs-manifest.json">
+    <link rel="preload" as="fetch" crossorigin="anonymous" type="application/json" href="manifest.json">
+    <link rel="apple-touch-icon" href="favicon.png?v=1.2.3">
     <script defer="" type="module" src="entry.js"></script>
     <script>
-      window.__app_version__ = "1.2.3";
+      window.__app_version__ = '1.2.3';
     </script>
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
-
 ---------------------------------
 manifest.json
 ---------------------------------
@@ -640,14 +554,11 @@ entry.js
 ---------------------------------
 // src/entry.tsx
 import ReactDOM from "react-dom";
+
 function App() {
   return /* @__PURE__ */ React.createElement("div", null, "Hello world");
 }
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 favicon.png
 ---------------------------------
@@ -658,31 +569,18 @@ index.html
 <!DOCTYPE html>
 <html>
   <head>
-    <link
-      rel="preload"
-      as="fetch"
-      crossorigin="anonymous"
-      type="application/json"
-      href="/abs-manifest.json"
-    />
-    <link
-      rel="preload"
-      as="fetch"
-      crossorigin="anonymous"
-      type="application/json"
-      href="/public/manifest.json"
-    />
-    <link rel="apple-touch-icon" href="/public/favicon.png?v=1.2.3" />
+    <link rel="preload" as="fetch" crossorigin="anonymous" type="application/json" href="/abs-manifest.json">
+    <link rel="preload" as="fetch" crossorigin="anonymous" type="application/json" href="/public/manifest.json">
+    <link rel="apple-touch-icon" href="/public/favicon.png?v=1.2.3">
     <script defer="" type="module" src="/public/entry.js"></script>
     <script>
-      window.__app_version__ = "1.2.3";
+      window.__app_version__ = '1.2.3';
     </script>
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
-
 ---------------------------------
 manifest.json
 ---------------------------------
@@ -701,15 +599,21 @@ entry.js
 import ReactDOM from "react-dom";
 
 // src/app.tsx
-import { jsx } from "react/jsx-runtime";
+import {
+  jsx
+} from "react/jsx-runtime";
+
 function App() {
-  return /* @__PURE__ */ jsx("div", { children: "Hello world" });
+  return /* @__PURE__ */ jsx("div", {
+    children: "Hello world"
+  });
 }
 
 // src/entry.tsx
-import { jsx as jsx2 } from "react/jsx-runtime";
-ReactDOM.render(/* @__PURE__ */ jsx2(App, {}), document.getElementById("root"));
-
+import {
+  jsx as jsx2
+} from "react/jsx-runtime";
+ReactDOM.render( /* @__PURE__ */ jsx2(App, {}), document.getElementById("root"));
 ---------------------------------
 index.html
 ---------------------------------
@@ -722,7 +626,6 @@ index.html
     <div id="root"></div>
   </body>
 </html>
-
 `;
 
 exports[`build command (html entry) > writes integrity hashes if requested 1`] = `
@@ -741,20 +644,16 @@ entry.0.css
 body {
   background: red;
 }
-
 ---------------------------------
 entry.1.js
 ---------------------------------
 // src/entry.tsx
 import ReactDOM from "react-dom";
+
 function App() {
   return /* @__PURE__ */ React.createElement("div", null, "Hello world");
 }
-ReactDOM.render(
-  /* @__PURE__ */ React.createElement(App, null),
-  document.getElementById("root")
-);
-
+ReactDOM.render( /* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));
 ---------------------------------
 favicon.png
 ---------------------------------
@@ -770,26 +669,12 @@ index.html
         background: url(cats.jpg);
       }
     </style>
-    <link
-      rel="apple-touch-icon"
-      href="favicon.png"
-      integrity="sha256-m/XpYP27F4yCq5KBTKxEzP5x4gZBZjo5zeuDXbm+ypw="
-    />
-    <link
-      rel="stylesheet"
-      href="entry.0.css"
-      integrity="sha256-h7N0aRQFgi82y9VoYyAN3AlXuyhJ58bQ1uWjjffOWm4="
-    />
-    <script
-      defer=""
-      type="module"
-      src="entry.1.js"
-      integrity="sha256-NvQobgjBDGRnA/TwQI2waRjuU25hnAjteV1NhFBmjbo="
-    ></script>
+    <link rel="apple-touch-icon" href="favicon.png" integrity="sha256-m/XpYP27F4yCq5KBTKxEzP5x4gZBZjo5zeuDXbm+ypw=">
+    <link rel="stylesheet" href="entry.0.css" integrity="sha256-h7N0aRQFgi82y9VoYyAN3AlXuyhJ58bQ1uWjjffOWm4=">
+    <script defer="" type="module" src="entry.1.js" integrity="sha256-NvQobgjBDGRnA/TwQI2waRjuU25hnAjteV1NhFBmjbo="></script>
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
-
 `;

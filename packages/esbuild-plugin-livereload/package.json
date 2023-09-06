@@ -28,18 +28,18 @@
   },
   "devDependencies": {
     "@jgoz/esbuild-overlay": "workspace:*",
-    "@playwright/test": "^1.35.1",
-    "@types/node": "^16.18.11",
+    "@playwright/test": "^1.37.1",
+    "@types/node": "^16.18.48",
     "esbuild": "^0.18.11",
     "esbuild-svelte": "^0.7.4",
     "get-port": "^5.0.0",
-    "open-editor": "^4.0.0",
+    "open-editor": "^4.1.1",
     "prettier": "^3.0.3",
     "svelte": "^3.58.0",
-    "svelte-check": "^3.4.5",
+    "svelte-check": "^3.5.1",
     "svelte-preprocess": "^5.0.4",
-    "tslib": "^2.6.0",
-    "typescript": "^5.1.6"
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
