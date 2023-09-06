@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-typecheck
 
+## 3.1.0
+
+### Minor Changes
+
+- 64365b9: Support esbuild 0.19
+
 ## 3.0.3
 
 ### Patch Changes
