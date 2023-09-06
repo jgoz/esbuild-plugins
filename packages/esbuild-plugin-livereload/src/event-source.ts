@@ -29,7 +29,7 @@ async function init() {
     const msg: ClientMessage = JSON.parse(e?.data ?? '{}');
     writeWarnings(msg);
 
-    const { forceReload, added, removed, updated } = msg;
+    const { forceReload = false, added, removed, updated } = msg;
 
     if (forceReload || added.length || removed.length || updated.length > 1) {
       console.log('esbuild-plugin-livereload: reloading...');

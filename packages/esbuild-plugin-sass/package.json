@@ -40,7 +40,7 @@
     "esbuild": "^0.18.11",
     "postcss": "^8.4.25",
     "postcss-preset-env": "^9.0.0",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.3",
     "sass": "^1.63.6",
     "typescript": "^5.1.6",
     "vite": "^4.4.2",

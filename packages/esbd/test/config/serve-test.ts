@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 /* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
 import { EventEmitter } from 'events';

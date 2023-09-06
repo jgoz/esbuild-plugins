@@ -248,7 +248,7 @@ function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
 
 if (!isMainThread && parentPort) {
   const workerOptions = workerData as TypescriptWorkerOptions;
-  if (!workerOptions || !workerOptions.basedir) {
+  if (!workerOptions?.basedir) {
     throw new Error(
       `compiler-builder (worker) expected valid builder options as workerData, got "${JSON.stringify(
         workerData,

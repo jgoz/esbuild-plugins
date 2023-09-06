@@ -9,7 +9,7 @@ import type { BuildWithHTMLOutput } from './config/serializer';
 
 interface BuildWithHTMLOptions {
   config: Omit<EsbdConfig, 'absWorkingDir' | 'outdir'>;
-  files: { [file: string]: string };
+  files: Record<string, string>;
 }
 
 const TEST_ROOT = path.join(__dirname, '..', 'test-results', 'build');

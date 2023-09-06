@@ -91,15 +91,21 @@ describe('esbuild-plugin-sass ', () => {
   test('postcss', async () => {
     const absWorkingDir = path.resolve(__dirname, 'fixture/postcss');
 
-    const postcss = require(require.resolve('postcss', {
-      paths: [absWorkingDir],
-    }));
-    const autoprefixer = require(require.resolve('autoprefixer', {
-      paths: [absWorkingDir],
-    }));
-    const postcssPresetEnv = require(require.resolve('postcss-preset-env', {
-      paths: [absWorkingDir],
-    }));
+    const postcss = require(
+      require.resolve('postcss', {
+        paths: [absWorkingDir],
+      }),
+    );
+    const autoprefixer = require(
+      require.resolve('autoprefixer', {
+        paths: [absWorkingDir],
+      }),
+    );
+    const postcssPresetEnv = require(
+      require.resolve('postcss-preset-env', {
+        paths: [absWorkingDir],
+      }),
+    );
 
     const postCSS = postcss([autoprefixer, postcssPresetEnv({ stage: 0 })]);
 

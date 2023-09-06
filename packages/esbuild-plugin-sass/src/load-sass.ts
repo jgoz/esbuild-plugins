@@ -7,9 +7,7 @@ export function loadSass(basedir: string = process.cwd()): typeof DartSass {
     const sass = require(require.resolve('sass', { paths: [basedir] }));
     return sass;
   } catch (e) {
-    console.error(
-      `Cannot find module '${module}', make sure it's installed. e.g. npm install -D ${module}`,
-    );
+    console.error(`Cannot find module "sass", make sure it's installed. e.g. npm install -D sass`);
     process.exit(1);
   }
 }

@@ -57,7 +57,7 @@ const handleResult = (
       code: esbuildResult.code,
       map: esbuildResult.map,
     };
-  } else if (babelResult === null || babelResult.code === null || babelResult.code === undefined) {
+  } else if (!babelResult?.code) {
     throw new Error(`babel transform returned empty result`);
   } else {
     result = {
@@ -73,7 +73,7 @@ const handleResult = (
 };
 
 const matcher = (path: string, options: EsbuildTransformOptions): boolean =>
-  globsToMatcher(options?.transformerConfig?.hoistMatch || options.config.testMatch)(path);
+  globsToMatcher(options?.transformerConfig?.hoistMatch ?? options.config.testMatch)(path);
 
 const createTransformer: TransformerCreator<
   Transformer<TransformerConfig>,

@@ -9,7 +9,7 @@ import type { BuildWithHTMLOutput } from './config/serializer';
 
 interface BuildWithHTMLOptions {
   config: Partial<EsbdConfig>;
-  files: { [file: string]: string };
+  files: Record<string, string>;
   pluginsStr?: string;
 }
 
