@@ -43,13 +43,13 @@ function setup(relFixtureDirSrc: string) {
 
   async function run(
     script: string,
-    copyQueue: [string, string][],
+    copyQueue: [string, string, result?: 'passed' | 'failed'][],
     { buildMode, watch }: RunOptions = {},
   ) {
     const queue = [...copyQueue];
 
     if (!watch) {
-      await Promise.all(queue.map(files => copySrcFile(...files)));
+      await Promise.all(queue.map(files => copySrcFile(files[0], files[1])));
     }
 
     const scriptPath = path.join(fixtureDirOut, script);
@@ -66,14 +66,22 @@ function setup(relFixtureDirSrc: string) {
       },
     });
 
+    let expectedResult: 'passed' | 'failed' | undefined;
+
     if (watch) {
       proc.all!.on('data', (chunk: Buffer) => {
         const str = chunk.toString();
-        if (/Typecheck finished in/.exec(str)) {
+        if (expectedResult && new RegExp(`Typecheck ${expectedResult}`).exec(str)) {
+          expectedResult = undefined;
+        }
+
+        if (!expectedResult && /Typecheck finished in/.exec(str)) {
           const files = queue.shift();
           if (files) {
+            expectedResult = files[2];
+
             proc.stdout!.push(`[TEST] Writing ${files[0]} to ${files[1]}${os.EOL}`);
-            setTimeout(() => copySrcFileSync(...files), 300);
+            copySrcFileSync(files[0], files[1]);
           } else {
             proc.cancel();
           }
@@ -261,10 +269,10 @@ describe('eslint-plugin-typecheck', () => {
       const { output } = await build.run(
         'pkg-three/build.js',
         [
-          ['pkg-one/one-error.ts', 'pkg-one/one.ts'],
-          ['pkg-two/two-error.ts', 'pkg-two/two.ts'],
-          ['pkg-one/one.ts', 'pkg-one/one.ts'],
-          ['pkg-two/two.ts', 'pkg-two/two.ts'],
+          ['pkg-one/one-error.ts', 'pkg-one/one.ts', 'failed'],
+          ['pkg-two/two-error.ts', 'pkg-two/two.ts', 'failed'],
+          ['pkg-one/one.ts', 'pkg-one/one.ts', 'failed'],
+          ['pkg-two/two.ts', 'pkg-two/two.ts', 'passed'],
         ],
         { buildMode: 'write-output', watch: true },
       );
@@ -272,12 +280,25 @@ describe('eslint-plugin-typecheck', () => {
       const groups = output
         .join(os.EOL)
         .split(/\[TEST\].+/g)
-        .map(group =>
-          group
+        .map(group => {
+          const lines = group
             .split(os.EOL)
             .map(line => line.trim())
-            .filter(Boolean),
-        );
+            .filter(Boolean);
+
+          // TypeScript might emit multiple result messages per change, so only
+          // keep the last one.
+          let resultIndex = 0;
+          for (let i = lines.length - 1; i >= 0; i--) {
+            if (lines[i].match(/Typecheck (passed|failed)/)) {
+              resultIndex = i;
+              break;
+            }
+          }
+          return lines.slice(resultIndex);
+        });
+
+      expect(groups).toHaveLength(5);
 
       expect(groups[0]).toContain('✔  Typecheck passed');
       expect(groups[0]).not.toContainEqual(expect.stringMatching('✖  Typecheck failed'));

@@ -63,7 +63,7 @@ describe('esbuild-plugin-sass ', () => {
 
     const outCSS = fs.readFileSync(path.resolve(absWorkingDir, './out/styles.css'), 'utf-8');
     expect(outCSS).toMatch(
-      /url\(\.\/open-iconic-[^.]+\.eot\?#iconic-sm\) format\("embedded-opentype"\)/,
+      /url\("\.\/open-iconic-[^.]+\.eot\?#iconic-sm"\) format\("embedded-opentype"\)/,
     );
 
     await build({
