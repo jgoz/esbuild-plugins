@@ -95,8 +95,8 @@ export class Reporter {
         diagnostic.category === ts.DiagnosticCategory.Error
           ? 'error'
           : diagnostic.category === ts.DiagnosticCategory.Warning
-          ? 'warning'
-          : undefined;
+            ? 'warning'
+            : undefined;
 
       if (!type) continue;
 

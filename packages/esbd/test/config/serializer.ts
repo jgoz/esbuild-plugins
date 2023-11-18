@@ -55,10 +55,10 @@ expect.addSnapshotSerializer({
             preserve_newlines: false,
           })
         : file.endsWith('.js')
-        ? js_beautify(content, { indent_size: 2 })
-        : file.endsWith('.css')
-        ? css_beautify(content, { indent_size: 2 })
-        : content;
+          ? js_beautify(content, { indent_size: 2 })
+          : file.endsWith('.css')
+            ? css_beautify(content, { indent_size: 2 })
+            : content;
 
       output.push(formatted);
     }
