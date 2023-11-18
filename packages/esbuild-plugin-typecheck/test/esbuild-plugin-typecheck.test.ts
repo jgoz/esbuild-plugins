@@ -81,7 +81,7 @@ function setup(relFixtureDirSrc: string) {
             expectedResult = files[2];
 
             proc.stdout!.push(`[TEST] Writing ${files[0]} to ${files[1]}${os.EOL}`);
-            copySrcFileSync(files[0], files[1]);
+            setTimeout(() => copySrcFileSync(files[0], files[1]), 300);
           } else {
             proc.cancel();
           }
