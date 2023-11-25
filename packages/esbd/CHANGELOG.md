@@ -1,5 +1,15 @@
 # esbd
 
+## 3.3.0
+
+### Minor Changes
+
+- 316a835: Rewrite to appropriate HTML file based on longest matching pathname prefix
+
+### Patch Changes
+
+- a84a597: Ensure full path to HTML output file is created
+
 ## 3.2.0
 
 ### Minor Changes
