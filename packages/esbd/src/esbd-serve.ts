@@ -4,16 +4,16 @@ import type {
   notify as notifyFn,
 } from '@jgoz/esbuild-plugin-livereload';
 import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
-import dns from 'dns';
-import fs from 'fs';
-import type { ServerResponse } from 'http';
-import { createServer } from 'http';
 import Graceful from 'node-graceful';
-import path from 'path';
+import dns from 'node:dns';
+import fs from 'node:fs';
+import type { ServerResponse } from 'node:http';
+import { createServer } from 'node:http';
+import path from 'node:path';
+import { URL } from 'node:url';
+import { promisify } from 'node:util';
 import pc from 'picocolors';
 import serveStatic from 'serve-static';
-import { URL } from 'url';
-import { promisify } from 'util';
 
 import type { BuildMode, ResolvedEsbdConfig, TsBuildMode } from './config';
 import { getHtmlBuildOptions } from './get-build-options';
@@ -198,20 +198,50 @@ export default async function esbdServe(
     async function handleRequest() {
       await context.wait();
 
+      let normalizedUrl = url;
       if (publicPath) {
         // Strip "publicPath" from the beginning of the URL because
         // serve-static doesn't support path remapping
-        req.url = new URL(
-          url.pathname.replace(new RegExp(`^${publicPath}`), ''),
-          rootUrl,
-        ).toString();
+        normalizedUrl = new URL(url.pathname.replace(new RegExp(`^${publicPath}`), ''), rootUrl);
+        req.url = normalizedUrl.toString();
       }
 
       staticHandler(req, res, () => {
+        // If requested, rewrite not-found requests to the best index file based on the longest
+        // matching patch segment between the request URL and the template output file (SPA mode)
         if (rewrite) {
-          // rewrite not-found requests to the index file if requested (SPA mode)
-          // TODO: how do we handle multiple HTML files here?
-          fs.createReadStream(path.resolve(absOutDir, allWriteOptions[0].template.outputPath)).pipe(
+          let templateOutputPath: string | undefined;
+          if (allWriteOptions.length === 1) {
+            templateOutputPath = allWriteOptions[0].template.outputPath;
+          } else {
+            const pathParts = normalizedUrl.pathname.replace(/^\//, '').split('/');
+            let templateSegmentMatchLength: Record<string, number> = {};
+
+            for (const { template } of allWriteOptions) {
+              const templatePathParts = template.outputPath.replace(/^[\\/]/, '').split(path.sep);
+              for (let i = 0; i < templatePathParts.length; i++) {
+                if (templatePathParts[i] === pathParts[i]) {
+                  templateSegmentMatchLength[template.outputPath] = i;
+                } else {
+                  break;
+                }
+              }
+            }
+
+            const bestMatch = Object.entries(templateSegmentMatchLength).sort(
+              ([, a], [, b]) => b - a,
+            )[0];
+
+            if (bestMatch) {
+              logger.debug(`Best match for ${url.pathname}: ${bestMatch[0]}`);
+            }
+
+            templateOutputPath = bestMatch?.[0] ?? allWriteOptions[0].template.outputPath;
+          }
+
+          logger.debug(`Rewriting ${url.pathname} to ${templateOutputPath}`);
+
+          fs.createReadStream(path.resolve(absOutDir, templateOutputPath)).pipe(
             res.setHeader('Content-Type', 'text/html'),
           );
           return;
