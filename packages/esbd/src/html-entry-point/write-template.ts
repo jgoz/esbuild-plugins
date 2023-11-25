@@ -293,7 +293,7 @@ export async function writeTemplate(
   const htmlOutput = substituteDefines(serialize(document), define);
 
   const writeHTMLOutput = fsp
-    .mkdir(absOutDir, { recursive: true })
+    .mkdir(path.dirname(templateOutputPath), { recursive: true })
     .then(() => fs.writeFile(templateOutputPath, htmlOutput));
 
   await Promise.all([writeHTMLOutput, ...assetPaths.map(paths => copyFile(...paths))]);
