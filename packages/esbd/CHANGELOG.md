@@ -1,5 +1,12 @@
 # esbd
 
+## 3.3.2
+
+### Patch Changes
+
+- f09a43a: Add cors header to static assets
+- 1bf8999: Fix URL joining in html
+
 ## 3.3.1
 
 ### Patch Changes
