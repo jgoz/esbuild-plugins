@@ -1,5 +1,11 @@
 # esbd
 
+## 3.3.1
+
+### Patch Changes
+
+- f087a83: Fix html output paths in "build"
+
 ## 3.3.0
 
 ### Minor Changes
