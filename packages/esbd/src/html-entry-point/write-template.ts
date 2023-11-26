@@ -17,6 +17,7 @@ import {
   cachedCopyFile,
   calculateContentIntegrityHash,
   calculateFileIntegrityHash,
+  joinUrlPath,
   substituteDefines,
 } from './utils';
 
@@ -195,7 +196,7 @@ export async function writeTemplate(
     if (outputPath && isElement(node)) {
       const absOutputPath = path.resolve(absTemplateDir, outputPath);
       const relativeOutputPath = path.relative(absOutDir, absOutputPath);
-      const outputUrl = path.posix.join(publicPath, relativeOutputPath);
+      const outputUrl = joinUrlPath(publicPath, relativeOutputPath);
 
       node.attrs = node.attrs?.filter(a => a.name !== 'data-entry-name') ?? [];
       if (node.nodeName === 'link') {

@@ -45,6 +45,26 @@ export function collect<T>(values: (T | false | undefined | null)[]): T[] {
   return values.filter((v): v is T => !!v);
 }
 
+export function joinUrlPath(...parts: string[]): string {
+  const segments = parts.filter(Boolean);
+
+  let result = '';
+  for (let i = 0; i < segments.length; i++) {
+    const part = segments[i];
+    if (!part) continue;
+
+    let normalized = part.replace(/\/+$/, '');
+    if (i > 0) {
+      normalized = normalized.replace(/^\/+/, '');
+    }
+    result += normalized;
+    if (i < segments.length - 1) {
+      result += '/';
+    }
+  }
+  return result;
+}
+
 export function substituteDefines(
   value: string,
   define: Record<string, string> | undefined,

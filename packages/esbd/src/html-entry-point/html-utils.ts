@@ -2,7 +2,7 @@ import path from 'path';
 
 import type { Attribute, ChildNode, DocumentType, Element, ParentNode, TextNode } from './parse5';
 import type { Crossorigin, HashAlgorithm } from './types';
-import { calculateFileIntegrityHash, collect } from './utils';
+import { calculateFileIntegrityHash, collect, joinUrlPath } from './utils';
 
 export const defaultDoctype: DocumentType = {
   nodeName: '#documentType' as DocumentType['nodeName'],
@@ -103,7 +103,7 @@ export async function createLinkElement({
 }: CreateLinkElementOptions): Promise<Element> {
   const absOutputPath = path.resolve(basedir, outputPath);
   const filename = path.basename(absOutputPath);
-  const url = path.posix.join(publicPath, filename);
+  const url = joinUrlPath(publicPath, filename);
   const attrs: Attribute[] = collect([
     { name: 'href', value: url },
     { name: 'rel', value: 'stylesheet' },
