@@ -179,6 +179,8 @@ export default async function esbdServe(
 
     const contentType = serveStatic.mime.lookup(path);
     if (contentType) res.setHeader('content-type', contentType);
+
+    res.setHeader('access-control-allow-origin', '*');
   };
 
   const outputHandler = serveStatic(absOutDir, { fallthrough: false, setHeaders });
