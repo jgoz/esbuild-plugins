@@ -1,6 +1,6 @@
 import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
 import fs from 'fs';
-import { basename, dirname, relative } from 'path';
+import { dirname, relative } from 'path';
 import pc from 'picocolors';
 import prettyBytes from 'pretty-bytes';
 
@@ -55,9 +55,7 @@ async function esbdBuild(config: ResolvedEsbdConfig, options: EsbdBuildOptions) 
   const { entryPoints } = config;
 
   const entries = Array.isArray(entryPoints)
-    ? entryPoints.map(p =>
-        typeof p === 'object' ? ([basename(p.out), p.in] as const) : ([basename(p), p] as const),
-      )
+    ? entryPoints.map(p => (typeof p === 'object' ? ([p.out, p.in] as const) : ([p, p] as const)))
     : Object.entries(entryPoints);
 
   const htmlEntries = entries.filter(([, entryPath]) => entryPath.endsWith('.html'));
