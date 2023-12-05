@@ -141,8 +141,8 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
       vite:
-        specifier: ^5.0.0
-        version: 5.0.0(@types/node@20.9.1)(sass@1.69.5)
+        specifier: ^5.0.5
+        version: 5.0.5(@types/node@20.9.1)(sass@1.69.5)
       vitest:
         specifier: ^0.34.6
         version: 0.34.6(sass@1.69.5)
@@ -201,8 +201,8 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
       vite:
-        specifier: ^5.0.0
-        version: 5.0.0(@types/node@20.9.1)(sass@1.69.5)
+        specifier: ^5.0.5
+        version: 5.0.5(@types/node@20.9.1)(sass@1.69.5)
       vitest:
         specifier: ^0.34.6
         version: 0.34.6(sass@1.69.5)
@@ -282,8 +282,8 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
       vite:
-        specifier: ^5.0.0
-        version: 5.0.0(@types/node@20.9.1)(sass@1.69.5)
+        specifier: ^5.0.5
+        version: 5.0.5(@types/node@20.9.1)(sass@1.69.5)
       vitest:
         specifier: ^0.34.6
         version: 0.34.6(sass@1.69.5)
@@ -321,8 +321,8 @@ importers:
         specifier: ^4.5.1
         version: 4.5.1
       vite:
-        specifier: ^5.0.0
-        version: 5.0.0(@types/node@20.9.1)(sass@1.69.5)
+        specifier: ^5.0.5
+        version: 5.0.5(@types/node@20.9.1)(sass@1.69.5)
       vitest:
         specifier: ^0.34.6
         version: 0.34.6(sass@1.69.5)
@@ -3297,7 +3297,7 @@ packages:
     resolution: {integrity: sha512-uKcPf1kl2UGMjrfHChv4dLxGAvCNhf9s72mHo19ZhKP+LrVOuQkOM/g8GE7MiGpoqjpk8UHqL08uLRbSKXhmhw==}
     engines: {node: '>=14'}
     peerDependencies:
-      esbuild: '>=0.9.6'
+      esbuild: ^0.19.5
       svelte: '>=3.43.0 <5'
     dependencies:
       '@jridgewell/trace-mapping': 0.3.20
@@ -5842,6 +5842,15 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
+  /postcss@8.4.32:
+    resolution: {integrity: sha512-D/kj5JNu6oo2EIy+XL/26JEDTlIbB8hw85G8StOE6L74RQAVVP5rej6wxCNqyMbR4RkPfqvezVbPw81Ngd6Kcw==}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.7
+      picocolors: 1.0.0
+      source-map-js: 1.0.2
+    dev: true
+
   /preferred-pm@3.0.3:
     resolution: {integrity: sha512-+wZgbxNES/KlJs9q40F/1sfOd/j7f1O9JaHcW5Dsn3aUUOZg3L2bjpVUcKV2jvtElYfoTuQiNeMfQJ4kwUAhCQ==}
     engines: {node: '>=10'}
@@ -6882,7 +6891,7 @@ packages:
       mlly: 1.4.2
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.0.0(@types/node@20.9.1)(sass@1.69.5)
+      vite: 5.0.5(@types/node@20.9.1)(sass@1.69.5)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -6894,8 +6903,8 @@ packages:
       - terser
     dev: true
 
-  /vite@5.0.0(@types/node@20.9.1)(sass@1.69.5):
-    resolution: {integrity: sha512-ESJVM59mdyGpsiNAeHQOR/0fqNoOyWPYesFto8FFZugfmhdHx8Fzd8sF3Q/xkVhZsyOxHfdM7ieiVAorI9RjFw==}
+  /vite@5.0.5(@types/node@20.9.1)(sass@1.69.5):
+    resolution: {integrity: sha512-OekeWqR9Ls56f3zd4CaxzbbS11gqYkEiBtnWFFgYR2WV8oPJRRKq0mpskYy/XaoCL3L7VINDhqqOMNDiYdGvGg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -6924,7 +6933,7 @@ packages:
     dependencies:
       '@types/node': 20.9.1
       esbuild: 0.19.5
-      postcss: 8.4.31
+      postcss: 8.4.32
       rollup: 4.5.0
       sass: 1.69.5
     optionalDependencies:
@@ -6983,7 +6992,7 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.1
       tinypool: 0.7.0
-      vite: 5.0.0(@types/node@20.9.1)(sass@1.69.5)
+      vite: 5.0.5(@types/node@20.9.1)(sass@1.69.5)
       vite-node: 0.34.6(@types/node@20.9.1)(sass@1.69.5)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:

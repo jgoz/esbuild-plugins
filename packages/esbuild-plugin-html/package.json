@@ -33,7 +33,7 @@
     "js-beautify": "^1.14.11",
     "parse5": "^7.1.2",
     "typescript": "^5.2.2",
-    "vite": "^5.0.0",
+    "vite": "^5.0.5",
     "vitest": "^0.34.6"
   },
   "scripts": {
