@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  esbuild@0.16.x: ^0.19.5
+  esbuild@0.16.x: ^0.19.10
   tsconfig-paths@3.x: ^3.14.2
   tslib@2.x: ^2.4.0
 
@@ -3369,7 +3369,7 @@ packages:
     resolution: {integrity: sha512-uKcPf1kl2UGMjrfHChv4dLxGAvCNhf9s72mHo19ZhKP+LrVOuQkOM/g8GE7MiGpoqjpk8UHqL08uLRbSKXhmhw==}
     engines: {node: '>=14'}
     peerDependencies:
-      esbuild: ^0.19.5
+      esbuild: ^0.19.10
       svelte: '>=3.43.0 <5'
     dependencies:
       '@jridgewell/trace-mapping': 0.3.20
