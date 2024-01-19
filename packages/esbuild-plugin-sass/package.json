@@ -44,7 +44,7 @@
     "postcss-preset-env": "^9.3.0",
     "sass": "^1.69.5",
     "typescript": "^5.3.3",
-    "vite": "^5.0.10",
+    "vite": "^5.0.12",
     "vitest": "^1.1.0"
   },
   "scripts": {
