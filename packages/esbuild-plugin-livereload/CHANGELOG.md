@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-livereload
 
+## 2.0.4
+
+### Patch Changes
+
+- 25c5d69: Support esbuild 0.20.x
+
 ## 2.0.3
 
 ### Patch Changes
