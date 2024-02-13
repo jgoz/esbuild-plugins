@@ -1,5 +1,13 @@
 # @jgoz/esbuild-plugin-typecheck
 
+## 3.1.1
+
+### Patch Changes
+
+- 25c5d69: Support esbuild 0.20.x
+- Updated dependencies [25c5d69]
+  - @jgoz/esbuild-plugin-livereload@2.0.4
+
 ## 3.1.0
 
 ### Minor Changes

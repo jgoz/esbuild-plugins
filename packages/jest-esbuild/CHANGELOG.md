@@ -1,5 +1,11 @@
 # @jgoz/jest-esbuild
 
+## 1.0.5
+
+### Patch Changes
+
+- 25c5d69: Support esbuild 0.20.x
+
 ## 1.0.4
 
 ### Patch Changes
