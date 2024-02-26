@@ -106,7 +106,7 @@ importers:
         version: 0.4.1
       js-beautify:
         specifier: ^1.14.11
-        version: 1.14.11
+        version: 1.15.1
       memfs:
         specifier: ^3.5.3
         version: 3.5.3
@@ -193,7 +193,7 @@ importers:
         version: 0.20.0
       js-beautify:
         specifier: ^1.14.11
-        version: 1.14.11
+        version: 1.15.1
       parse5:
         specifier: ^7.1.2
         version: 7.1.2
@@ -268,7 +268,7 @@ importers:
         version: 0.20.0
       js-beautify:
         specifier: ^1.14.11
-        version: 1.14.11
+        version: 1.15.1
       postcss:
         specifier: ^8.4.35
         version: 8.4.35
@@ -3464,7 +3464,7 @@ packages:
       '@one-ini/wasm': 0.1.1
       commander: 10.0.1
       minimatch: 9.0.1
-      semver: 7.5.4
+      semver: 7.6.0
     dev: true
 
   /ee-first@1.1.1:
@@ -5140,15 +5140,21 @@ packages:
       '@sideway/pinpoint': 2.0.0
     dev: true
 
-  /js-beautify@1.14.11:
-    resolution: {integrity: sha512-rPogWqAfoYh1Ryqqh2agUpVfbxAhbjuN1SmU86dskQUKouRiggUTCO4+2ym9UPXllc2WAp0J+T5qxn7Um3lCdw==}
+  /js-beautify@1.15.1:
+    resolution: {integrity: sha512-ESjNzSlt/sWE8sciZH8kBF8BPlwXPwhR6pWKAw8bw4Bwj+iZcnKW6ONWUutJ7eObuBZQpiIb8S7OYspWrKt7rA==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
       config-chain: 1.1.13
       editorconfig: 1.0.4
       glob: 10.3.10
+      js-cookie: 3.0.5
       nopt: 7.2.0
+    dev: true
+
+  /js-cookie@3.0.5:
+    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
+    engines: {node: '>=14'}
     dev: true
 
   /js-tokens@4.0.0:
@@ -5320,11 +5326,9 @@ packages:
       get-func-name: 2.0.2
     dev: true
 
-  /lru-cache@10.0.2:
-    resolution: {integrity: sha512-Yj9mA8fPiVgOUpByoTZO5pNrcl5Yk37FcSHsUINpAsaBIEZIuqcCclDZJCVxqQShDsmYX8QG63svJiTbOATZwg==}
+  /lru-cache@10.2.0:
+    resolution: {integrity: sha512-2bIM8x+VAf6JT4bKAljS1qUWgMsqZRPGJS6FSahIMPVvctcNhyVp7AJu7quxOW9jwkryBReKZY5tY5JYv2n/7Q==}
     engines: {node: 14 || >=16.14}
-    dependencies:
-      semver: 7.5.4
     dev: true
 
   /lru-cache@4.1.5:
@@ -5839,7 +5843,7 @@ packages:
     resolution: {integrity: sha512-MkhCqzzBEpPvxxQ71Md0b1Kk51W01lrYvlMzSUaIzNsODdd7mqhiimSZlr+VegAz5Z6Vzt9Xg2ttE//XBhH3EQ==}
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
-      lru-cache: 10.0.2
+      lru-cache: 10.2.0
       minipass: 7.0.4
     dev: true
 
