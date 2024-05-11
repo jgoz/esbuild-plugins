@@ -88,7 +88,9 @@ export class TypecheckRunner {
         case 'diagnostic': {
           errors.push(...msg.diagnostics.filter(d => d.type === 'error').map(d => d.message));
           warnings.push(...msg.diagnostics.filter(d => d.type === 'warning').map(d => d.message));
-          console.error(pc.isColorSupported ? msg.output.pretty : msg.output.standard);
+
+          const err = pc.isColorSupported ? msg.output.pretty : msg.output.standard;
+          if (err) console.error(err);
           break;
         }
         case 'done': {
