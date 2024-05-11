@@ -1,7 +1,7 @@
 import type { Message } from 'esbuild';
 import * as realFS from 'fs';
 import { fs as memfs } from 'memfs';
-import { dirname } from 'path';
+import path, { dirname } from 'path';
 import ts from 'typescript';
 import { ufs } from 'unionfs';
 import type { MessagePort } from 'worker_threads';
@@ -204,7 +204,7 @@ function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
   const { config } = ts.readConfigFile(configFile, ts.sys.readFile);
   config.compilerOptions = { ...config.compilerOptions, ...options.compilerOptions };
 
-  const commandLine = ts.parseJsonConfigFileContent(config, ts.sys, basedir);
+  const commandLine = ts.parseJsonConfigFileContent(config, ts.sys, path.dirname(configFile));
   const build = options.build ?? commandLine.options.composite ?? false;
 
   const { options: compilerOptions } = commandLine;
