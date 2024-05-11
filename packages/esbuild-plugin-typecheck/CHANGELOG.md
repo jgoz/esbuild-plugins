@@ -1,5 +1,13 @@
 # @jgoz/esbuild-plugin-typecheck
 
+## 3.1.3
+
+### Patch Changes
+
+- 5a50176: Expand esbuild peer dep range
+- Updated dependencies [5a50176]
+  - @jgoz/esbuild-plugin-livereload@2.0.5
+
 ## 3.1.2
 
 ### Patch Changes

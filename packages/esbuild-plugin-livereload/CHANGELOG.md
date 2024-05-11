@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-livereload
 
+## 2.0.5
+
+### Patch Changes
+
+- 5a50176: Expand esbuild peer dep range
+
 ## 2.0.4
 
 ### Patch Changes
