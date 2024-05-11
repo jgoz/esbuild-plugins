@@ -214,7 +214,7 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
 
   return {
     name: 'html-plugin',
-    setup: async build => {
+    setup: build => {
       const {
         absWorkingDir: basedir = process.cwd(),
         entryPoints,
@@ -245,14 +245,6 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
           )
         : Object.keys(entryPoints).map(entry => path.resolve(basedir, entryPoints[entry]));
 
-      let templateContent: string;
-
-      try {
-        templateContent = await fsp.readFile(templatePath, { encoding: 'utf-8' });
-      } catch (e) {
-        throw new Error(`html-plugin: Unable to read template at ${templatePath}`);
-      }
-
       build.onEnd(async result => {
         const { metafile } = result;
         if (!metafile) {
@@ -260,6 +252,12 @@ export function htmlPlugin(options: HtmlPluginOptions): Plugin {
           return;
         }
 
+        let templateContent: string;
+        try {
+          templateContent = await fsp.readFile(templatePath, { encoding: 'utf-8' });
+        } catch (e) {
+          throw new Error(`html-plugin: Unable to read template at ${templatePath}`);
+        }
         const document = parse(templateContent);
 
         // parse5 will create these for us if they're missing
