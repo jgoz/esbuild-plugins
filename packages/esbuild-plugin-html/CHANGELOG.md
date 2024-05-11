@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-html
 
+## 1.0.7
+
+### Patch Changes
+
+- fe1072f: Read template file in onEnd to pick up changes between builds
+
 ## 1.0.6
 
 ### Patch Changes
