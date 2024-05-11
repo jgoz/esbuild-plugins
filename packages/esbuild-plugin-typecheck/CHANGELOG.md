@@ -1,5 +1,13 @@
 # @jgoz/esbuild-plugin-typecheck
 
+## 3.1.2
+
+### Patch Changes
+
+- 43765db: Use proper basePath for relative 'extends' config
+- 9976307: Ensure non-string messageText errors are reported
+- 60af049: Avoid printing empty lines to console.error
+
 ## 3.1.1
 
 ### Patch Changes

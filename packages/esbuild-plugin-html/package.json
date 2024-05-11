@@ -1,6 +1,6 @@
 {
   "name": "@jgoz/esbuild-plugin-html",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": "John Gozde <john@gozde.ca>",
   "description": "HTML plugin for esbuild",
   "license": "MIT",
