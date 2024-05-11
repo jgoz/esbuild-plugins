@@ -28,7 +28,7 @@
   },
   "peerDependencies": {
     "@babel/core": ">= 7.0.0",
-    "esbuild": "^0.20.0",
+    "esbuild": "0.20.x || 0.21.x",
     "jest": "28 || 29"
   },
   "devDependencies": {

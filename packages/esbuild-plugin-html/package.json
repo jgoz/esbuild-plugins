@@ -24,7 +24,7 @@
   "main": "dist/plugin-html.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
-    "esbuild": "^0.20.0"
+    "esbuild": "0.20.x || 0.21.x"
   },
   "devDependencies": {
     "@types/js-beautify": "^1.14.3",
