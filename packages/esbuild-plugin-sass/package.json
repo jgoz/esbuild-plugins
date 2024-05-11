@@ -25,7 +25,7 @@
   "main": "dist/plugin-sass.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
-    "esbuild": ">= 0.13.0",
+    "esbuild": "^0.20.0",
     "sass": ">= 1.x"
   },
   "peerDependenciesMeta": {
@@ -36,16 +36,16 @@
   "devDependencies": {
     "@types/js-beautify": "^1.14.3",
     "@types/node-sass": "^4.11.7",
-    "autoprefixer": "^10.4.17",
-    "enhanced-resolve": "^5.15.0",
-    "esbuild": "^0.20.0",
-    "js-beautify": "^1.14.11",
-    "postcss": "^8.4.35",
-    "postcss-preset-env": "^9.3.0",
-    "sass": "^1.70.0",
-    "typescript": "^5.3.3",
-    "vite": "^5.1.1",
-    "vitest": "^1.2.2"
+    "autoprefixer": "^10.4.19",
+    "enhanced-resolve": "^5.16.1",
+    "esbuild": "^0.21.1",
+    "js-beautify": "^1.15.1",
+    "postcss": "^8.4.38",
+    "postcss-preset-env": "^9.5.11",
+    "sass": "^1.77.1",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.11",
+    "vitest": "^1.6.0"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",

@@ -37,17 +37,17 @@
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
-    "@types/node": "^20.11.17",
-    "esbuild": "^0.20.0",
+    "@types/node": "^20.12.11",
+    "esbuild": "^0.21.1",
     "execa": "^5.0.0",
     "memfs": "^3.5.3",
     "picocolors": "^1.0.0",
     "prettier": "^3.2.5",
-    "tslib": "^2.6.2",
-    "typescript": "^5.3.3",
-    "unionfs": "^4.5.1",
-    "vite": "^5.1.1",
-    "vitest": "^1.2.2"
+    "tslib": "^2.4.0",
+    "typescript": "^5.4.5",
+    "unionfs": "^4.5.4",
+    "vite": "^5.2.11",
+    "vitest": "^1.6.0"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
