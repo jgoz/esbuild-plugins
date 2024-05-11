@@ -1,5 +1,11 @@
 # @jgoz/esbuild-overlay
 
+## 1.0.6
+
+### Patch Changes
+
+- 5a50176: Expand esbuild peer dep range
+
 ## 1.0.5
 
 ### Patch Changes

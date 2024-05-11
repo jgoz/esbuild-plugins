@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-sass
 
+## 2.0.6
+
+### Patch Changes
+
+- 5a50176: Expand esbuild peer dep range
+
 ## 2.0.5
 
 ### Patch Changes

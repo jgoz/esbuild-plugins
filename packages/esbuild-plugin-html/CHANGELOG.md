@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-html
 
+## 1.0.8
+
+### Patch Changes
+
+- 5a50176: Expand esbuild peer dep range
+
 ## 1.0.7
 
 ### Patch Changes
