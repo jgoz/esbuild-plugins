@@ -100,9 +100,9 @@ export class Reporter {
 
       if (!type) continue;
 
-      const { file, length, messageText, start } = diagnostic;
+      const { file, length, start } = diagnostic;
+      const messageText = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n\n');
       if (!file) continue;
-      if (typeof messageText !== 'string') continue;
 
       if (start === undefined || length === undefined) {
         yield {
