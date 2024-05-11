@@ -37,7 +37,9 @@
     "overrides": {
       "esbuild@0.16.x": "$esbuild",
       "tsconfig-paths@3.x": "^3.14.2",
-      "tslib@2.x": "^2.4.0"
+      "tslib@2.x": "^2.4.0",
+      "follow-redirects@<1.15.4": ">=1.15.4",
+      "follow-redirects@<=1.15.5": ">=1.15.6"
     }
   },
   "scripts": {

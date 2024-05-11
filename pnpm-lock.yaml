@@ -8,6 +8,8 @@ overrides:
   esbuild@0.16.x: ^0.21.1
   tsconfig-paths@3.x: ^3.14.2
   tslib@2.x: ^2.4.0
+  follow-redirects@<1.15.4: '>=1.15.4'
+  follow-redirects@<=1.15.5: '>=1.15.6'
 
 importers:
 
@@ -2349,8 +2351,8 @@ packages:
   flatted@3.2.9:
     resolution: {integrity: sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==}
 
-  follow-redirects@1.15.3:
-    resolution: {integrity: sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==}
+  follow-redirects@1.15.6:
+    resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -5743,7 +5745,7 @@ snapshots:
 
   axios@1.6.2:
     dependencies:
-      follow-redirects: 1.15.3
+      follow-redirects: 1.15.6
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -6493,7 +6495,7 @@ snapshots:
 
   flatted@3.2.9: {}
 
-  follow-redirects@1.15.3: {}
+  follow-redirects@1.15.6: {}
 
   for-each@0.3.3:
     dependencies:
