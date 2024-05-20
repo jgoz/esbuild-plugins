@@ -62,6 +62,13 @@ export interface LivereloadPluginOptions {
    * @default 127.0.0.1
    */
   host?: string;
+
+  /**
+   * Override server to allow connection from any IP
+   *
+   * @default false
+   */
+  allowExternalConnections?: false;
 }
 
 /**
@@ -72,7 +79,7 @@ export interface LivereloadPluginOptions {
  * @returns - An esbuild plugin that enables livereload.
  */
 export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin {
-  const { port = 53099, host = '127.0.0.1' } = options;
+  const { port = 53099, host = '127.0.0.1', allowExternalConnections = false } = options;
   const baseUrl = `http://${host}:${port}/`;
 
   return {
@@ -82,7 +89,7 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
       const bannerTemplate = await fsp.readFile(require.resolve('../banner.js'), 'utf-8');
       const banner = bannerTemplate.replace(/{baseUrl}/g, baseUrl);
 
-      await createLivereloadServer({ basedir, host, port, onSSE: res => clients.add(res) });
+      await createLivereloadServer({ basedir, host, port, allowExternalConnections, onSSE: res => clients.add(res) });
 
       build.initialOptions.banner ??= {};
       if (build.initialOptions.banner.js) {

@@ -10,6 +10,7 @@ export interface LivereloadServerOptions {
   basedir: string;
   port: number;
   host: string;
+  allowExternalConnections: boolean;
   onSSE: (res: ServerResponse) => void;
 }
 
@@ -84,5 +85,8 @@ export async function createLivereloadRequestHandler(
  */
 export async function createLivereloadServer(options: LivereloadServerOptions): Promise<Server> {
   const handler = await createLivereloadRequestHandler(options);
-  return createServer(handler).listen(options.port, options.host);
+  const host = options.allowExternalConnections
+    ? '0.0.0.0'
+    : options.host;
+  return createServer(handler).listen(options.port, host);
 }
