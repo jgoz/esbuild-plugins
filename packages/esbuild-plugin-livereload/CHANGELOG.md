@@ -1,5 +1,13 @@
 # @jgoz/esbuild-plugin-livereload
 
+## 2.1.0
+
+### Minor Changes
+
+- b23f695: Expose urlHostname option
+
+  Fixes #114
+
 ## 2.0.5
 
 ### Patch Changes

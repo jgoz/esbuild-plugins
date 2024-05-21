@@ -1,5 +1,12 @@
 # @jgoz/esbuild-plugin-typecheck
 
+## 4.0.0
+
+### Patch Changes
+
+- Updated dependencies [b23f695]
+  - @jgoz/esbuild-plugin-livereload@2.1.0
+
 ## 3.1.3
 
 ### Patch Changes
