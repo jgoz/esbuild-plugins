@@ -60,7 +60,7 @@ export interface SassPluginOptions {
   functions?: Record<string, LegacyFunction<'sync'>>;
 
   /**
-   * An array of paths that should be looked in to attempt to resolve your @import declarations.
+   * An array of paths that should be looked in to attempt to resolve your \@import declarations.
    * When using `data`, it is recommended that you use this.
    * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#includePaths}
    *

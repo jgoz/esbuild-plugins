@@ -70,17 +70,16 @@ export interface HtmlPluginOptions {
 
   /**
    * Defines how generated `<link>` and `<script>` tags handle cross-origin requests.
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin}
    *
    * If left undefined, no attribute will be emitted.
    *
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin}
    * @default undefined
    */
   crossorigin?: Crossorigin;
 
   /**
    * Sets the `defer` attribute on generated script tags.
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer}
    *
    * If `scriptPlacement` is set to `head-*`, this will default to `true` but
    * it can be set explicitly to `false` to override that behavior.
@@ -89,6 +88,7 @@ export interface HtmlPluginOptions {
    * as `type="module"` which implicitly sets `defer`. In that case, this setting
    * will have no effect.
    *
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer}
    * @default undefined
    */
   defer?: boolean;
@@ -151,8 +151,8 @@ export interface HtmlPluginOptions {
    * If specified, a cryptographic digest for each file referenced by a `<link>` or
    * `<script>` tag will be calculated using the specified algorithm and added as an
    * `integrity` attribute on the associated tag.
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity}
    *
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity}
    * @default undefined
    */
   integrity?: HashAlgorithm;

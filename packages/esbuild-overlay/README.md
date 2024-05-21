@@ -48,6 +48,6 @@ Displays an overlay with the supplied error messages and returns a function that
 | Name | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | errors (*) | `Message[]` | - | Error messages to display. |
-| openFileURL | `string` | - | If provided, this URL will be opened when the user clicks on the overlay.<br><br>This can be used to open the source file of the error or warning.  |
+| openFileURL | `string` | - | If provided, this URL will be opened when the user clicks on the overlay.<br><br>This can be used to open the source file of the error or warning. |
 <!-- end -->
 <!-- prettier-ignore-end -->
