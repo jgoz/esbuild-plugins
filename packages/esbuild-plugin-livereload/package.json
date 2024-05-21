@@ -29,9 +29,9 @@
   "devDependencies": {
     "@jgoz/esbuild-overlay": "workspace:*",
     "@playwright/test": "^1.44.0",
-    "@types/node": "^20.12.11",
-    "esbuild": "^0.21.1",
-    "esbuild-svelte": "^0.8.0",
+    "@types/node": "^20.12.12",
+    "esbuild": "^0.21.3",
+    "esbuild-svelte": "^0.8.1",
     "get-port": "^5.0.0",
     "open-editor": "^4.1.1",
     "prettier": "^3.2.5",

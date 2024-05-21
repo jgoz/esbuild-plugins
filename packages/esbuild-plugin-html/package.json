@@ -28,8 +28,8 @@
   },
   "devDependencies": {
     "@types/js-beautify": "^1.14.3",
-    "@types/node": "^20.12.11",
-    "esbuild": "^0.21.1",
+    "@types/node": "^20.12.12",
+    "esbuild": "^0.21.3",
     "js-beautify": "^1.15.1",
     "parse5": "^7.1.2",
     "typescript": "^5.4.5",
