@@ -10,6 +10,7 @@ export interface LivereloadServerOptions {
   basedir: string;
   port: number;
   host: string;
+  urlHostname?: string;
   onSSE: (res: ServerResponse) => void;
 }
 
@@ -24,13 +25,13 @@ export type LivereloadRequestHandler = (req: IncomingMessage, res: ServerRespons
 export async function createLivereloadRequestHandler(
   options: LivereloadServerOptions,
 ): Promise<LivereloadRequestHandler> {
-  const { port, host, onSSE, basedir } = options;
+  const { port, host, onSSE, basedir, urlHostname = host } = options;
 
   const distFiles = await fs.promises.readdir(__dirname);
 
   return function handleLivereloadRequest(req, res): boolean {
     if (!req.url) return false;
-    const url = new URL(req.url, `http://${host}:${port}/`);
+    const url = new URL(req.url, `http://${urlHostname}:${port}/`);
 
     if (url.pathname === '/esbuild') {
       onSSE(

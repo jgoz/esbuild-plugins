@@ -48,8 +48,9 @@ Note that this will have no effect for Node programs.
 | Name | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | fullReloadOnCssUpdates | `boolean` | `false` | Instead of hot-reloading CSS files, trigger a full page reload when CSS is updated. |
-| host | `string` | `127.0.0.1` | Host that the livereload server will run on. |
+| host | `string` | `127.0.0.1` | Host that the livereload server will run on.<br><br>Setting this value to '0.0.0.0' will allow external connections, e.g., when running the livereload server on a different system from the connecting web browser. This setup likely requires setting `urlHostname` to the either the IP address or local DNS name of the livereload system. |
 | port | `number` | `53099` | Port that the livereload server will run on. |
+| urlHostname | `string` | - | Hostname to use when connecting to the livereload server.<br><br>This option might be useful when running the livereload server on a different system from the connecting web browser.<br><br>Defaults to the value specified in `host`. |
 <!-- end -->
 <!-- prettier-ignore-end -->
 
@@ -69,7 +70,7 @@ from esbuild, the page will be sent a reload request.
 | ---- | ---- | ------- | ----------- |
 | errorSource (*) | `string` | - | Key to use when identifying these errors and warnings.                      Previous results will be overwritten for the same `errorSource`. |
 | msg (*) | `ClientMessage` | - | Object containing errors and warnings from the given source |
-| connectedClients | `Set<ServerResponse<IncomingMessage>>` | `clients` | Set of long-lived server responses representing                           clients currently connected to the livereload                           server. Only required if you are implementing your                           own livereload server.  |
+| connectedClients | `Set<ServerResponse<IncomingMessage>>` | `clients` | Set of long-lived server responses representing                           clients currently connected to the livereload                           server. Only required if you are implementing your                           own livereload server. |
 <!-- end -->
 <!-- prettier-ignore-end -->
 

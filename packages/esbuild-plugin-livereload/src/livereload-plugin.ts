@@ -59,9 +59,25 @@ export interface LivereloadPluginOptions {
   /**
    * Host that the livereload server will run on.
    *
+   * Setting this value to '0.0.0.0' will allow external
+   * connections, e.g., when running the livereload server
+   * on a different system from the connecting web browser.
+   * This setup likely requires setting `urlHostname` to the
+   * either the IP address or local DNS name of the livereload system.
+   *
    * @default 127.0.0.1
    */
   host?: string;
+
+  /**
+   * Hostname to use when connecting to the livereload server.
+   *
+   * This option might be useful when running the livereload
+   * server on a different system from the connecting web browser.
+   *
+   * Defaults to the value specified in `host`.
+   */
+  urlHostname?: string;
 }
 
 /**
@@ -72,8 +88,8 @@ export interface LivereloadPluginOptions {
  * @returns - An esbuild plugin that enables livereload.
  */
 export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin {
-  const { port = 53099, host = '127.0.0.1' } = options;
-  const baseUrl = `http://${host}:${port}/`;
+  const { port = 53099, host = '127.0.0.1', urlHostname = host } = options;
+  const baseUrl = `http://${urlHostname}:${port}/`;
 
   return {
     name: 'livereload-plugin',
@@ -82,7 +98,13 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
       const bannerTemplate = await fsp.readFile(require.resolve('../banner.js'), 'utf-8');
       const banner = bannerTemplate.replace(/{baseUrl}/g, baseUrl);
 
-      await createLivereloadServer({ basedir, host, port, onSSE: res => clients.add(res) });
+      await createLivereloadServer({
+        basedir,
+        host,
+        port,
+        urlHostname,
+        onSSE: res => clients.add(res),
+      });
 
       build.initialOptions.banner ??= {};
       if (build.initialOptions.banner.js) {
