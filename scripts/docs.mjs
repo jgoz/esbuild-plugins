@@ -19,8 +19,27 @@ function escape(str) {
   );
 }
 
+/**
+ * @param {string} str
+ * @returns string
+ */
+function unescapeTsCode(str) {
+  return str.startsWith('```ts\n') ? str.replace(/^```ts\n/, '').replace(/\n```$/, '') : str;
+}
+
+/**
+ * @param {string} str
+ * @returns {string}
+ */
 function escapeCode(str) {
   return str?.trim().replace(/\|/g, '\\|').replace(/\n/g, '<br>') ?? '';
+}
+
+/**
+ * @param {import('typedoc').CommentDisplayPart[] | undefined} display
+ */
+function extractText(display) {
+  return display?.map(part => part.text).join('') ?? '';
 }
 
 /**
@@ -63,7 +82,7 @@ function getType(decl) {
 function extractLink(text) {
   if (!text) return undefined;
   const match = /\{@link (.*)\}/.exec(text);
-  return match.at(1);
+  return match?.at(1) ?? text;
 }
 
 /**
@@ -84,14 +103,12 @@ function formatComment(comment) {
     return '-';
   }
 
-  let text = escape(comment.shortText);
-  if (comment.text) {
-    text += `<br><br>${escape(comment.text)}`;
-  }
+  let text = escape(extractText(comment.summary));
 
-  if (comment.hasTag('example')) {
+  const example = comment.getTag('@example');
+  if (example) {
     text += `<br><br><details><summary>Example</summary><pre>${escapeCode(
-      comment.getTag('example').text,
+      unescapeTsCode(extractText(example.content)),
     )}</pre></details>`;
   }
 
@@ -103,12 +120,14 @@ function formatComment(comment) {
  */
 function printDecl(decl, required) {
   const name = required ? `${decl.name} (*)` : decl.name;
-  const nameLink = extractLink(decl.comment?.getTag('see')?.text);
+  const nameLink = extractLink(extractText(decl.comment?.getTag('@see')?.content));
   const nameWithLink = nameLink ? `[${name}](${nameLink})` : name;
 
   const type = `\`${escape(getType(decl))}\``;
 
-  const defaultValue = decl.defaultValue ?? extractDefault(decl.comment?.getTag('default')?.text);
+  const defaultValue =
+    decl.defaultValue ??
+    extractDefault(unescapeTsCode(extractText(decl.comment?.getTag('@default')?.content)));
   const default_ = defaultValue ? `\`${defaultValue}\`` : '-';
 
   const comment = formatComment(decl.comment);
@@ -120,22 +139,23 @@ function printDecl(decl, required) {
  * @param {string} entryPoint
  * @param {string} name
  */
-function writeTable(entryPoint, name) {
-  const app = new Application();
-  app.options.addReader(new TSConfigReader());
-  app.bootstrap({
-    entryPoints: [entryPoint],
-    readme: 'none',
-  });
-  const project = app.convert();
-  let reflection = project.findReflectionByName(name);
+async function writeTable(entryPoint, name) {
+  const app = await Application.bootstrap(
+    {
+      entryPoints: [entryPoint],
+      readme: 'none',
+    },
+    [new TSConfigReader()],
+  );
+  const project = await app.convert();
+  let reflection = project?.getChildByName(name);
 
   if (!reflection) {
     console.warn(`Could not find reflection for ${name}`);
     return;
   }
 
-  /** @type DeclarationReflection[] */
+  /** @type DeclarationReflection[] | undefined */
   let children;
   if (reflection.kind === ReflectionKind.Interface) {
     children = /** @type {DeclarationReflection} */ (reflection).children;
@@ -147,8 +167,8 @@ function writeTable(entryPoint, name) {
     return;
   }
 
-  if (reflection.comment?.shortText) {
-    console.log(reflection.comment.shortText + reflection.comment.text);
+  if (reflection.comment?.summary?.length) {
+    console.log(extractText(reflection.comment.summary));
     console.log();
   }
 
@@ -173,4 +193,4 @@ function writeTable(entryPoint, name) {
   }
 }
 
-writeTable(process.argv[2], process.argv[3]);
+writeTable(process.argv[2], process.argv[3]).catch(e => console.error(e));

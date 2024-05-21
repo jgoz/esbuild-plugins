@@ -30,7 +30,7 @@
     "execa": "^5.0.0",
     "prettier": "^3.2.5",
     "tslib": "^2.4.0",
-    "typedoc": "~0.22.0",
+    "typedoc": "^0.25.13",
     "typescript": "^5.4.5"
   },
   "pnpm": {
