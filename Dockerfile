@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.44.0-focal
+FROM mcr.microsoft.com/playwright:v1.45.1-focal
 
 RUN apt-get update && \
   # Install node18
