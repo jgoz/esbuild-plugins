@@ -113,6 +113,7 @@ export default async function esbdNodeDev(
   const context = await incrementalBuild({
     ...buildOptions,
     cleanOutdir: config.cleanOutdir,
+    copy: config.copy,
     logger,
     minify: mode === 'production',
     plugins: [...config.plugins, timingPlugin(logger, config.name && `"${config.name}"`)],
