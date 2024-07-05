@@ -27,7 +27,7 @@
     "esbuild": "0.17.x || 0.18.x || 0.19.x || 0.20.x || 0.21.x"
   },
   "devDependencies": {
-    "@playwright/test": "^1.44.0",
+    "@playwright/test": "^1.45.1",
     "@types/js-beautify": "^1.14.3",
     "@types/pretty-time": "^1.1.5",
     "@types/serve-static": "1.15.7",

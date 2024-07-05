@@ -40,9 +40,7 @@ jobs:
           path: '~/.cache/ms-playwright'
           key: chromium-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
-      - run: pnpx playwright install-deps
-        if: steps.browser_cache.outputs.cache-hit != 'true'
-      - run: pnpx playwright install
+      - run: pnpx playwright install --with-deps
         if: steps.browser_cache.outputs.cache-hit != 'true'
       - run: pnpm build
       - run: pnpm lint
