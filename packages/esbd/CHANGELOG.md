@@ -1,5 +1,11 @@
 # esbd
 
+## 3.3.7
+
+### Patch Changes
+
+- 4474ba0: Support 'copy' option in node-dev
+
 ## 3.3.6
 
 ### Patch Changes
