@@ -1,5 +1,14 @@
 # esbd
 
+## 3.3.8
+
+### Patch Changes
+
+- 60ec0df: Expand esbuild peer dependency range
+- Updated dependencies [60ec0df]
+  - @jgoz/esbuild-plugin-livereload@2.1.1
+  - @jgoz/esbuild-plugin-typecheck@4.0.1
+
 ## 3.3.7
 
 ### Patch Changes
