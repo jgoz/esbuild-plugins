@@ -24,13 +24,13 @@
   "main": "dist/plugin-livereload.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
-    "esbuild": "0.20.x || 0.21.x"
+    "esbuild": "0.20.x || 0.21.x || 0.22.x || 0.23.x"
   },
   "devDependencies": {
     "@jgoz/esbuild-overlay": "workspace:*",
     "@playwright/test": "^1.45.1",
     "@types/node": "^20.12.12",
-    "esbuild": "^0.21.3",
+    "esbuild": "^0.23.0",
     "esbuild-svelte": "^0.8.1",
     "get-port": "^5.0.0",
     "open-editor": "^4.1.1",

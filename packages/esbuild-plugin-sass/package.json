@@ -25,7 +25,7 @@
   "main": "dist/plugin-sass.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
-    "esbuild": "0.20.x || 0.21.x",
+    "esbuild": "0.20.x || 0.21.x || 0.22.x || 0.23.x",
     "sass": ">= 1.x"
   },
   "peerDependenciesMeta": {
@@ -38,7 +38,7 @@
     "@types/node-sass": "^4.11.7",
     "autoprefixer": "^10.4.19",
     "enhanced-resolve": "^5.16.1",
-    "esbuild": "^0.21.3",
+    "esbuild": "^0.23.0",
     "js-beautify": "^1.15.1",
     "postcss": "^8.4.38",
     "postcss-preset-env": "^9.5.13",

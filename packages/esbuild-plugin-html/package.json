@@ -24,12 +24,12 @@
   "main": "dist/plugin-html.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
-    "esbuild": "0.20.x || 0.21.x"
+    "esbuild": "0.20.x || 0.21.x || 0.22.x || 0.23.x"
   },
   "devDependencies": {
     "@types/js-beautify": "^1.14.3",
     "@types/node": "^20.12.12",
-    "esbuild": "^0.21.3",
+    "esbuild": "^0.23.0",
     "js-beautify": "^1.15.1",
     "parse5": "^7.1.2",
     "typescript": "^5.4.5",
