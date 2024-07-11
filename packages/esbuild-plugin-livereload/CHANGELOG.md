@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-livereload
 
+## 2.1.1
+
+### Patch Changes
+
+- 60ec0df: Expand esbuild peer dependency range
+
 ## 2.1.0
 
 ### Minor Changes

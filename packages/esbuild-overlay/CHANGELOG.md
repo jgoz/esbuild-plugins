@@ -1,5 +1,11 @@
 # @jgoz/esbuild-overlay
 
+## 1.0.7
+
+### Patch Changes
+
+- 60ec0df: Expand esbuild peer dependency range
+
 ## 1.0.6
 
 ### Patch Changes
