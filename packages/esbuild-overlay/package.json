@@ -25,11 +25,11 @@
   "module": "dist/overlay.js",
   "types": "lib/overlay.d.ts",
   "peerDependencies": {
-    "esbuild": "0.20.x || 0.21.x || 0.22.x || 0.23.x"
+    "esbuild": "0.20.x || 0.21.x || 0.22.x || 0.23.x || 0.24.x"
   },
   "devDependencies": {
     "@tsconfig/svelte": "^5.0.4",
-    "esbuild": "^0.23.0",
+    "esbuild": "^0.24.0",
     "esbuild-svelte": "^0.8.1",
     "prettier": "^3.2.5",
     "svelte": "^3.58.0",
