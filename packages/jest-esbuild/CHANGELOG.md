@@ -1,5 +1,11 @@
 # @jgoz/jest-esbuild
 
+## 1.0.8
+
+### Patch Changes
+
+- ec0ef7c: Expand esbuild peer dependency range
+
 ## 1.0.7
 
 ### Patch Changes
