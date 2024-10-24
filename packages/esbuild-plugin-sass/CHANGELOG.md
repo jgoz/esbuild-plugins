@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-sass
 
+## 2.0.8
+
+### Patch Changes
+
+- ec0ef7c: Expand esbuild peer dependency range
+
 ## 2.0.7
 
 ### Patch Changes

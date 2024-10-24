@@ -1,6 +1,6 @@
 {
   "name": "@jgoz/esbuild-plugin-livereload",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "author": "John Gozde <john@gozde.ca>",
   "description": "Livereload plugin for esbuild",
   "license": "MIT",
