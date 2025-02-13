@@ -48,6 +48,11 @@ jobs:
         env:
           CHOKIDAR_USEPOLLING: '1'
           TSC_WATCHFILE: 'DynamicPriorityPolling'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-output
+          path: '**/test/**/*.png'
 
   release:
     needs: [build]
