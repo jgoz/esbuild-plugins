@@ -1,5 +1,16 @@
 # esbd
 
+## 3.3.10
+
+### Patch Changes
+
+- cb8851e: Support esbuild 0.25.x
+- b59e53c: Support esbuild 0.25.0
+- Updated dependencies [cb8851e]
+- Updated dependencies [b59e53c]
+  - @jgoz/esbuild-plugin-typecheck@4.0.3
+  - @jgoz/esbuild-plugin-livereload@2.1.3
+
 ## 3.3.9
 
 ### Patch Changes

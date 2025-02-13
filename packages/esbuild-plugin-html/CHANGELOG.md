@@ -1,5 +1,12 @@
 # @jgoz/esbuild-plugin-html
 
+## 1.0.11
+
+### Patch Changes
+
+- cb8851e: Support esbuild 0.25.x
+- b59e53c: Support esbuild 0.25.0
+
 ## 1.0.10
 
 ### Patch Changes
