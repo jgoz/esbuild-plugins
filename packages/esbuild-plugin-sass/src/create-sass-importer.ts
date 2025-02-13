@@ -127,7 +127,7 @@ export function createSassImporter(
     if (isFileScheme) {
       try {
         url = fileURLToPath(originalRequest);
-      } catch (ignoreError) {
+      } catch {
         url = url.slice(7);
       }
     }

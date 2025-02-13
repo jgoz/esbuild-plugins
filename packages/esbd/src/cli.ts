@@ -17,6 +17,7 @@ import nodeDev from './esbd-node-dev';
 import serve from './esbd-serve';
 import { createLogger, LOG_LEVELS, LogLevelType } from './log';
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const version = require('../package.json').version;
 
 function updateConfig(config: EsbdConfig, logLevel: LogLevel): ResolvedEsbdConfig {
@@ -36,7 +37,7 @@ function getSingleConfigResult(
   const config = Array.isArray(configResult)
     ? configResult.length === 1
       ? configResult[0]
-      : predicates.map(predicate => configResult.find(predicate)).filter(Boolean)[0]
+      : predicates.map(predicate => configResult.find(predicate)).find(Boolean)
     : configResult;
 
   if (!config) {

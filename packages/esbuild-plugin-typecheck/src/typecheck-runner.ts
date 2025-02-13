@@ -31,7 +31,7 @@ const BUILD_MSG: WorkerMessage = { type: 'build' };
 
 let notify: typeof lrNotify = () => {};
 try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   notify = require('@jgoz/esbuild-plugin-livereload').notify;
 } catch {}
 

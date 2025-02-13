@@ -27,14 +27,15 @@
     "esbuild": "0.20.x || 0.21.x || 0.22.x || 0.23.x || 0.24.x"
   },
   "devDependencies": {
+    "@awesome-code-style/eslint-config": "^6.0.1",
     "@types/js-beautify": "^1.14.3",
     "@types/node": "^20.12.12",
-    "esbuild": "^0.24.0",
-    "js-beautify": "^1.15.1",
-    "parse5": "^7.2.0",
-    "typescript": "^5.6.3",
-    "vite": "^5.4.10",
-    "vitest": "^2.1.3"
+    "esbuild": "^0.25.0",
+    "js-beautify": "^1.15.3",
+    "parse5": "^7.2.1",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0",
+    "vitest": "^3.0.5"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",

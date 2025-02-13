@@ -9,7 +9,7 @@ import type { HtmlPluginOptions } from '../lib';
 import { htmlPlugin } from '../lib';
 
 async function* walk(dirPath: string): AsyncIterable<string> {
-  for await (const d of await fs.promises.readdir(dirPath, { withFileTypes: true })) {
+  for (const d of await fs.promises.readdir(dirPath, { withFileTypes: true })) {
     const entry = path.join(dirPath, d.name);
     if (d.isDirectory()) yield* walk(entry);
     else if (d.isFile()) yield entry;

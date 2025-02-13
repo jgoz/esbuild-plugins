@@ -18,9 +18,10 @@ test('serves content from entry point', async ({ page, port, startServer }) => {
           </html>
         `,
         'src/entry.tsx': `
-          import ReactDOM from 'react-dom';
+          import ReactDOM from 'react-dom/client';
           import { App } from './app';
-          ReactDOM.render(<App />, document.getElementById('root'));
+          const root = ReactDOM.createRoot(document.getElementById('root'))
+          root.render(<App />);
         `,
         'src/app.tsx': `
           export function App() {
@@ -54,9 +55,10 @@ test('can disable index rewriting', async ({ page, port, startServer }) => {
           </html>
         `,
         'src/entry.tsx': `
-          import ReactDOM from 'react-dom';
+          import ReactDOM from 'react-dom/client';
           import { App } from './app';
-          ReactDOM.render(<App />, document.getElementById('root'));
+          const root = ReactDOM.createRoot(document.getElementById('root'))
+          root.render(<App />);
         `,
         'src/app.tsx': `
           export function App() {
@@ -91,9 +93,10 @@ test('reloads page on file update if livereload enabled', async ({ page, port, s
           </html>
         `,
         'src/entry.tsx': `
-          import ReactDOM from 'react-dom';
+          import ReactDOM from 'react-dom/client';
           import { App } from './app';
-          ReactDOM.render(<App />, document.getElementById('root'));
+          const root = ReactDOM.createRoot(document.getElementById('root'))
+          root.render(<App />);
         `,
         'src/app.tsx': `
           export function App() {
@@ -144,9 +147,10 @@ test('can serve from publicPath', async ({ page, port, startServer }) => {
           </html>
         `,
         'src/entry.tsx': `
-          import ReactDOM from 'react-dom';
+          import ReactDOM from 'react-dom/client';
           import { App } from './app';
-          ReactDOM.render(<App />, document.getElementById('root'));
+          const root = ReactDOM.createRoot(document.getElementById('root'))
+          root.render(<App />);
         `,
         'src/app.tsx': `
           import cat from '../img/cat.png';
@@ -189,9 +193,10 @@ test('can disable index rewriting with publicPath', async ({ page, port, startSe
           </html>
         `,
         'src/entry.tsx': `
-          import ReactDOM from 'react-dom';
+          import ReactDOM from 'react-dom/client';
           import { App } from './app';
-          ReactDOM.render(<App />, document.getElementById('root'));
+          const root = ReactDOM.createRoot(document.getElementById('root'))
+          root.render(<App />);
         `,
         'src/app.tsx': `
           import cat from '../img/cat.png';
@@ -235,9 +240,10 @@ test('can serve static files from a given directory', async ({ page, port, start
           </html>
         `,
         'src/entry.tsx': `
-          import ReactDOM from 'react-dom';
+          import ReactDOM from 'react-dom/client';
           import { App } from './app';
-          ReactDOM.render(<App />, document.getElementById('root'));
+          const root = ReactDOM.createRoot(document.getElementById('root'))
+          root.render(<App />);
         `,
         'src/app.tsx': `
           export function App() {
@@ -274,10 +280,11 @@ test('page replaces stylesheets without reloading', async ({ page, port, startSe
           </html>
         `,
         'src/entry.tsx': `
-          import ReactDOM from 'react-dom';
+          import ReactDOM from 'react-dom/client';
           import './style.css';
           function App() { return <div>Hello world</div>; }
-          ReactDOM.render(<App />, document.getElementById('root'));
+          const root = ReactDOM.createRoot(document.getElementById('root'))
+          root.render(<App />);
         `,
         'src/style.css': `
           body { background: white; }

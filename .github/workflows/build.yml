@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18, 20]
+        node-version: [20, 22]
     name: Build & Test (Node v${{ matrix.node-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -48,6 +48,11 @@ jobs:
         env:
           CHOKIDAR_USEPOLLING: '1'
           TSC_WATCHFILE: 'DynamicPriorityPolling'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-output-${{ matrix.node-version }}
+          path: '**/test-results/**/*.png'
 
   release:
     needs: [build]

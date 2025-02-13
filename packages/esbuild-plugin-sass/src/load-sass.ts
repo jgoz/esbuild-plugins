@@ -3,7 +3,7 @@ import type DartSass from 'sass';
 
 export function loadSass(basedir: string = process.cwd()): typeof DartSass {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const sass = require(require.resolve('sass', { paths: [basedir] }));
     return sass;
   } catch (e) {
