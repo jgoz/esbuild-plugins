@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-livereload
 
+## 2.1.3
+
+### Patch Changes
+
+- b59e53c: Support esbuild 0.25.0
+
 ## 2.1.2
 
 ### Patch Changes

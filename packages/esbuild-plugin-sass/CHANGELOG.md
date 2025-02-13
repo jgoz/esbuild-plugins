@@ -1,5 +1,12 @@
 # @jgoz/esbuild-plugin-sass
 
+## 2.0.9
+
+### Patch Changes
+
+- cb8851e: Support esbuild 0.25.x
+- b59e53c: Support esbuild 0.25.0
+
 ## 2.0.8
 
 ### Patch Changes

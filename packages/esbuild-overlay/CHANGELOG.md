@@ -1,5 +1,11 @@
 # @jgoz/esbuild-overlay
 
+## 1.0.9
+
+### Patch Changes
+
+- b59e53c: Support esbuild 0.25.0
+
 ## 1.0.8
 
 ### Patch Changes
