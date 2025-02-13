@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18, 20]
+        node-version: [20, 22]
     name: Build & Test (Node v${{ matrix.node-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
