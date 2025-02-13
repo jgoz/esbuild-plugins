@@ -24,7 +24,7 @@
   "main": "dist/plugin-html.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
-    "esbuild": "0.20.x || 0.21.x || 0.22.x || 0.23.x || 0.24.x"
+    "esbuild": "0.20.x || 0.21.x || 0.22.x || 0.23.x || 0.24.x || 0.25.x"
   },
   "devDependencies": {
     "@awesome-code-style/eslint-config": "^6.0.1",
