@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { build, context as createContext } from 'esbuild';
 import fs from 'fs';
 import { css_beautify } from 'js-beautify';

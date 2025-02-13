@@ -117,6 +117,7 @@ export default async function esbdServe(
 
   if (check) {
     const TypecheckRunner: typeof TypecheckRunnerCls =
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       require('@jgoz/esbuild-plugin-typecheck').TypecheckRunner;
 
     const runner = new TypecheckRunner({

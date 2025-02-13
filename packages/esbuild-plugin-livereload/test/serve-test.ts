@@ -10,6 +10,7 @@ import sveltePreprocess from 'svelte-preprocess';
 
 import { livereloadPlugin } from '../';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ServerTestFixtures {}
 
 interface ServerWorkerFixtures {
@@ -41,6 +42,7 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
           path.join(absWorkingDir, fixture[1]),
         );
       }
+
       await use(writeFile);
     },
     { scope: 'worker' },
