@@ -14,7 +14,7 @@ configure({
   outdir: './dist',
   plugins: [
     esbuildSvelte({
-      compilerOptions: { css: true },
+      compilerOptions: { css: 'injected' },
       preprocess: sveltePreprocess(),
     }),
   ],

@@ -15,24 +15,25 @@
     "node": "20.18.3"
   },
   "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.0.1",
+    "@awesome-code-style/eslint-config": "^6.1.1",
     "@awesome-code-style/prettier-config": "^5.0.1",
-    "@changesets/cli": "^2.27.12",
-    "@tsconfig/node16": "^16.1.3",
-    "@typescript-eslint/eslint-plugin": "^8.24.0",
-    "@typescript-eslint/parser": "^8.24.0",
-    "esbuild": "^0.25.0",
-    "eslint": "^9.20.1",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-import": "^2.31.0",
+    "@changesets/cli": "^2.29.7",
+    "@tsconfig/node16": "^16.1.6",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
+    "esbuild": "^0.25.11",
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-unused-imports": "^4.1.4",
+    "eslint-plugin-unused-imports": "^4.3.0",
     "execa": "^5.0.0",
-    "globals": "^15.15.0",
-    "prettier": "^3.5.1",
-    "tslib": "^2.8.1",
+    "globals": "^16.4.0",
+    "playwright": "^1.56.1",
+    "prettier": "^3.6.2",
+    "tslib": "^2.4.0",
     "typedoc": "^0.25.13",
-    "typescript": "^5.7.3"
+    "typescript": "^5.9.3"
   },
   "pnpm": {
     "overrides": {
@@ -40,7 +41,10 @@
       "tslib@2.x": "^2.4.0",
       "follow-redirects@<1.15.4": ">=1.15.4",
       "follow-redirects@<=1.15.5": ">=1.15.6"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "svelte-preprocess"
+    ]
   },
   "scripts": {
     "build": "tsc -b && pnpm run -r --if-present prepack",
@@ -53,7 +57,7 @@
     "node-check": "node -v && arch",
     "prepare": "tsc -b",
     "release": "pnpm publish -r --filter=\"@jgoz/*\" --filter=\"esbd\" --filter=\"!@jgoz/esbuild-plugins\"",
-    "test": "pnpm test -r",
+    "test": "pnpm run -r --if-present test",
     "watch": "pnpm run -r --if-present --stream --parallel watch"
   }
 }

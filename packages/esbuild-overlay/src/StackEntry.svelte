@@ -37,7 +37,7 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="stack-entry" on:click={onClick}>
+<div class="stack-entry" on:click={onClick} role="link" tabindex="0">
   <div class="file">
     <strong>{file}</strong>
   </div>

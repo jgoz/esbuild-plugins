@@ -1,3 +1,4 @@
+import type { BinaryLike } from 'crypto';
 import { createHash } from 'crypto';
 import { createReadStream, promises as fsp } from 'fs';
 
@@ -33,7 +34,7 @@ export async function calculateFileIntegrityHash(
     const hash = createHash(integrity);
     const stream = createReadStream(filePath);
 
-    stream.on('data', d => hash.update(d));
+    stream.on('data', d => hash.update(d as BinaryLike));
     stream.on('end', () => {
       resolve(`${integrity}-${hash.digest('base64')}`);
     });

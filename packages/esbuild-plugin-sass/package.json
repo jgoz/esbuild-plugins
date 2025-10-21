@@ -25,7 +25,7 @@
   "main": "dist/plugin-sass.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
-    "esbuild": "0.20.x || 0.21.x || 0.22.x || 0.23.x || 0.24.x || 0.25.x",
+    "esbuild": ">=0.25.0",
     "sass": ">= 1.x"
   },
   "peerDependenciesMeta": {
@@ -34,19 +34,19 @@
     }
   },
   "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.0.1",
+    "@awesome-code-style/eslint-config": "^6.1.1",
     "@types/js-beautify": "^1.14.3",
     "@types/node-sass": "^4.11.8",
-    "autoprefixer": "^10.4.20",
-    "enhanced-resolve": "^5.18.1",
-    "esbuild": "^0.25.0",
-    "js-beautify": "^1.15.3",
-    "postcss": "^8.5.2",
-    "postcss-preset-env": "^10.1.4",
-    "sass": "^1.84.0",
-    "typescript": "^5.7.3",
-    "vite": "^6.1.0",
-    "vitest": "^3.0.5"
+    "autoprefixer": "^10.4.21",
+    "enhanced-resolve": "^5.18.3",
+    "esbuild": "^0.25.11",
+    "js-beautify": "^1.15.4",
+    "postcss": "^8.5.6",
+    "postcss-preset-env": "^10.4.0",
+    "sass": "^1.93.2",
+    "typescript": "^5.9.3",
+    "vite": ">=6.4.1",
+    "vitest": "^3.2.4"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",

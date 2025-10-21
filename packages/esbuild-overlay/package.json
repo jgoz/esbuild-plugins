@@ -25,19 +25,19 @@
   "module": "dist/overlay.js",
   "types": "lib/overlay.d.ts",
   "peerDependencies": {
-    "esbuild": "0.20.x || 0.21.x || 0.22.x || 0.23.x || 0.24.x || 0.25.x"
+    "esbuild": ">=0.25.0"
   },
   "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.0.1",
-    "@tsconfig/svelte": "^5.0.4",
-    "esbuild": "^0.25.0",
-    "esbuild-svelte": "^0.9.0",
-    "prettier": "^3.5.1",
+    "@awesome-code-style/eslint-config": "^6.1.1",
+    "@tsconfig/svelte": "^5.0.5",
+    "esbuild": "^0.25.11",
+    "esbuild-svelte": "^0.9.3",
+    "prettier": "^3.6.2",
     "svelte": "^3.58.0",
     "svelte-check": "^3.7.1",
     "svelte-preprocess": "^5.1.4",
-    "tslib": "^2.8.1",
-    "typescript": "^5.7.3"
+    "tslib": "^2.4.0",
+    "typescript": "^5.9.3"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",

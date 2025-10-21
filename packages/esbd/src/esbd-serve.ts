@@ -209,7 +209,7 @@ export default async function esbdServe(
         req.url = normalizedUrl.toString();
       }
 
-      staticHandler(req, res, () => {
+      staticHandler(req, res as ServerResponse, () => {
         // If requested, rewrite not-found requests to the best index file based on the longest
         // matching patch segment between the request URL and the template output file (SPA mode)
         if (rewrite) {
@@ -255,7 +255,7 @@ export default async function esbdServe(
       });
     }
 
-    const handled = lrHandler?.(req, res) ?? false;
+    const handled = lrHandler?.(req, res as ServerResponse) ?? false;
     if (!handled) {
       handleRequest().catch(err => {
         logger.error(err, err.stack);
