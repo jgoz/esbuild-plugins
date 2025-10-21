@@ -60,6 +60,9 @@ jobs:
     if: github.repository == 'jgoz/esbuild-plugins' && github.event_name == 'push'
     name: Release
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Needed for OIDC
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -79,6 +82,9 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
       - run: pnpm build
+
+      - name: Update npm for OIDC publishing
+        run: npm install -g npm@latest
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
