@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.56.1-jammy
+FROM mcr.microsoft.com/playwright:v1.56.1-noble
 
 RUN apt-get update && \
   # Install node18
