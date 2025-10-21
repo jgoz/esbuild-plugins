@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-sass
 
+## 2.0.10
+
+### Patch Changes
+
+- b6c6ed5: No-op to test OIDC publishing
+
 ## 2.0.9
 
 ### Patch Changes

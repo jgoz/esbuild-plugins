@@ -1,5 +1,11 @@
 # @jgoz/jest-esbuild
 
+## 1.0.10
+
+### Patch Changes
+
+- b6c6ed5: No-op to test OIDC publishing
+
 ## 1.0.9
 
 ### Patch Changes

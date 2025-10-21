@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-html
 
+## 1.0.12
+
+### Patch Changes
+
+- b6c6ed5: No-op to test OIDC publishing
+
 ## 1.0.11
 
 ### Patch Changes
