@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-livereload
 
+## 2.1.4
+
+### Patch Changes
+
+- b6c6ed5: No-op to test OIDC publishing
+
 ## 2.1.3
 
 ### Patch Changes

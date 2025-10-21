@@ -1,5 +1,13 @@
 # @jgoz/esbuild-plugin-typecheck
 
+## 4.0.4
+
+### Patch Changes
+
+- b6c6ed5: No-op to test OIDC publishing
+- Updated dependencies [b6c6ed5]
+  - @jgoz/esbuild-plugin-livereload@2.1.4
+
 ## 4.0.3
 
 ### Patch Changes
