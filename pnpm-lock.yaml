@@ -19,7 +19,7 @@ importers:
         version: 6.1.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
       '@awesome-code-style/prettier-config':
         specifier: ^5.0.1
-        version: 5.0.1(prettier@3.6.2)
+        version: 5.0.2(prettier@3.6.2)
       '@changesets/cli':
         specifier: ^2.29.7
         version: 2.29.7(@types/node@24.9.1)
@@ -409,8 +409,8 @@ packages:
       eslint-plugin-react-hooks:
         optional: true
 
-  '@awesome-code-style/prettier-config@5.0.1':
-    resolution: {integrity: sha512-sRgBmK9HsXsa5IO5cL3B/hSaWTSm7cjfxpExlDBCrzcbOkVU2/FGjIrDhw6ZpcgZhiGItkO8PzU9L5HqQUneJw==}
+  '@awesome-code-style/prettier-config@5.0.2':
+    resolution: {integrity: sha512-fTwdHBlNsyJ1HuOAk2HlD8hrZV+Myt/nF1w2f1o/FSH214FSheBjlvMpPGZjt7j8961kDlppZnCcfVls9pXe9w==}
     peerDependencies:
       prettier: '>= 3.0.0'
 
@@ -4237,7 +4237,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@awesome-code-style/prettier-config@5.0.1(prettier@3.6.2)':
+  '@awesome-code-style/prettier-config@5.0.2(prettier@3.6.2)':
     dependencies:
       prettier: 3.6.2
 
