@@ -16,7 +16,7 @@ importers:
     devDependencies:
       '@awesome-code-style/eslint-config':
         specifier: ^6.1.1
-        version: 6.1.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
+        version: 6.2.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
       '@awesome-code-style/prettier-config':
         specifier: ^5.0.1
         version: 5.0.1(prettier@3.6.2)
@@ -83,7 +83,7 @@ importers:
     devDependencies:
       '@awesome-code-style/eslint-config':
         specifier: ^6.1.1
-        version: 6.1.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
+        version: 6.2.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
       '@playwright/test':
         specifier: ^1.56.1
         version: 1.56.1
@@ -164,7 +164,7 @@ importers:
     devDependencies:
       '@awesome-code-style/eslint-config':
         specifier: ^6.1.1
-        version: 6.1.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
+        version: 6.2.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
       '@tsconfig/svelte':
         specifier: ^5.0.5
         version: 5.0.5
@@ -197,7 +197,7 @@ importers:
     devDependencies:
       '@awesome-code-style/eslint-config':
         specifier: ^6.1.1
-        version: 6.1.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
+        version: 6.2.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
       '@types/js-beautify':
         specifier: ^1.14.3
         version: 1.14.3
@@ -227,7 +227,7 @@ importers:
     devDependencies:
       '@awesome-code-style/eslint-config':
         specifier: ^6.1.1
-        version: 6.1.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
+        version: 6.2.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
       '@jgoz/esbuild-overlay':
         specifier: workspace:*
         version: link:../esbuild-overlay
@@ -272,7 +272,7 @@ importers:
     devDependencies:
       '@awesome-code-style/eslint-config':
         specifier: ^6.1.1
-        version: 6.1.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
+        version: 6.2.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
       '@types/js-beautify':
         specifier: ^1.14.3
         version: 1.14.3
@@ -314,7 +314,7 @@ importers:
     devDependencies:
       '@awesome-code-style/eslint-config':
         specifier: ^6.1.1
-        version: 6.1.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
+        version: 6.2.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
       '@jgoz/esbuild-plugin-livereload':
         specifier: workspace:*
         version: link:../esbuild-plugin-livereload
@@ -363,7 +363,7 @@ importers:
     devDependencies:
       '@awesome-code-style/eslint-config':
         specifier: ^6.1.1
-        version: 6.1.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
+        version: 6.2.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
       '@babel/core':
         specifier: ^7.28.4
         version: 7.28.4
@@ -397,12 +397,12 @@ importers:
 
 packages:
 
-  '@awesome-code-style/eslint-config@6.1.1':
-    resolution: {integrity: sha512-KsqvUTyvIdQ0M719j2EccQLl6VpIYG3EkppkYXvqfJwOUNyHELV2UypQ/GiNKjv6310jcviZBmCKjYll+1pqmA==}
+  '@awesome-code-style/eslint-config@6.2.1':
+    resolution: {integrity: sha512-oNcIS3nJ1cNHfC8+rFv9Vhr+zMwBAR975M+RYOPXzqN8apRqwma1T1/Zs/S1X4N81Tjc1g8Wh+yc4R95KjH54g==}
     peerDependencies:
       eslint: '>= 9'
       eslint-plugin-react: ^7.37.1
-      eslint-plugin-react-hooks: ^6.0.0
+      eslint-plugin-react-hooks: ^6.1.1 || ^7.0.0
     peerDependenciesMeta:
       eslint-plugin-react:
         optional: true
@@ -4218,7 +4218,7 @@ packages:
 
 snapshots:
 
-  '@awesome-code-style/eslint-config@6.1.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)':
+  '@awesome-code-style/eslint-config@6.2.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)':
     dependencies:
       '@eslint/js': 9.38.0
       '@jgoz/eslint-plugin-jsx-expressions': 2.0.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
