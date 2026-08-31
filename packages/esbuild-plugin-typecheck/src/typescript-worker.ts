@@ -189,6 +189,10 @@ function runCompiler(
   return program;
 }
 
+export function applyCompilerOptionDefaults(compilerOptions: ts.CompilerOptions): void {
+  if (compilerOptions.noEmit === undefined && !compilerOptions.emitDeclarationOnly) compilerOptions.noEmit = true;
+}
+
 function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
   const {
     basedir,
@@ -209,7 +213,7 @@ function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
 
   const { options: compilerOptions } = commandLine;
 
-  if (compilerOptions.noEmit === undefined) compilerOptions.noEmit = true;
+  applyCompilerOptionDefaults(compilerOptions);
 
   const reporter = new Reporter(basedir, msg => port.postMessage(msg));
   const listen = watch ? port.on.bind(port) : port.once.bind(port);
