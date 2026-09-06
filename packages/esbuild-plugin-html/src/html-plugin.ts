@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import type { Metafile, Plugin } from 'esbuild';
+import type { ImportKind, Plugin } from 'esbuild';
 import { createReadStream, promises as fsp } from 'fs';
 import type { DefaultTreeAdapterMap, Token } from 'parse5';
 import { parse, serialize } from 'parse5';
@@ -40,7 +40,22 @@ export type TagPlacement = `${EmitTarget}-${EmitPosition}`;
 /**
  * Output file metadata from esbuiid.
  */
-export type MetafileOutput = Metafile['outputs'][string];
+export interface MetafileOutput {
+  bytes: number;
+  inputs: {
+    [path: string]: {
+      bytesInOutput: number;
+    };
+  };
+  imports: {
+    path: string;
+    kind: ImportKind | 'file-loader';
+    external?: boolean;
+  }[];
+  exports: string[];
+  entryPoint?: string;
+  cssBundle?: string;
+}
 
 const defaultDoctype: DocumentType = {
   nodeName: '#documentType',
