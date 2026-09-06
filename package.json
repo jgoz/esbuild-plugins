@@ -15,17 +15,17 @@
     "runtime": [
       {
         "name": "node",
-        "version": "20.18.3"
+        "version": "^24"
       }
     ],
     "packageManager": [
       {
         "name": "pnpm",
-        "version": "9.15.9"
+        "version": "^12"
       }
     ]
   },
-  "packageManager": "pnpm@9.15.9",
+  "packageManager": "pnpm@12.3.4",
   "devDependencies": {
     "@awesome-code-style/eslint-config": "^6.1.1",
     "@awesome-code-style/prettier-config": "^5.0.1",
@@ -46,17 +46,6 @@
     "tslib": "^2.4.0",
     "typedoc": "^0.25.13",
     "typescript": "^5.9.3"
-  },
-  "pnpm": {
-    "overrides": {
-      "tsconfig-paths@3.x": "^3.14.2",
-      "tslib@2.x": "^2.4.0",
-      "follow-redirects@<1.15.4": ">=1.15.4",
-      "follow-redirects@<=1.15.5": ">=1.15.6"
-    },
-    "onlyBuiltDependencies": [
-      "svelte-preprocess"
-    ]
   },
   "scripts": {
     "build": "tsc -b && pnpm run -r --if-present prepack",
