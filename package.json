@@ -29,7 +29,7 @@
   "devDependencies": {
     "@awesome-code-style/eslint-config": "^6.2.1",
     "@awesome-code-style/prettier-config": "^5.0.2",
-    "@changesets/cli": "^2.31.1",
+    "@changesets/cli": "^3.0.2",
     "@tsconfig/node24": "^24.0.5",
     "@types/node": "^24.13.3",
     "@typescript-eslint/eslint-plugin": "^8.69.0",
