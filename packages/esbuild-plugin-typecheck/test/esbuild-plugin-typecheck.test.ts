@@ -355,4 +355,18 @@ describe('eslint-plugin-typecheck', () => {
       ]);
     });
   });
+
+  describe('emitDeclarationOnly without noEmit', () => {
+    const build = setup('fixture/emit-declaration-only');
+
+    beforeEach(async () => await build.init());
+    afterEach(async () => await build.cleanup());
+
+    it('does not surface TS5053 when emitDeclarationOnly is set', async () => {
+      const { code, output } = await build.run('build.js', [['src/index.ts', 'src/index.ts']]);
+      expect(output.join('\n')).not.toMatch(/TS5053/);
+      expect(code).toBe(0);
+      expect(output).toEqual(['✔  Typecheck passed', 'ℹ  Typecheck finished in TIME']);
+    });
+  });
 });

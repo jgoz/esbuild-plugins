@@ -209,7 +209,9 @@ function startWorker(options: TypescriptWorkerOptions, port: MessagePort) {
 
   const { options: compilerOptions } = commandLine;
 
-  if (compilerOptions.noEmit === undefined) compilerOptions.noEmit = true;
+  if (compilerOptions.noEmit === undefined && !compilerOptions.emitDeclarationOnly) {
+    compilerOptions.noEmit = true;
+  }
 
   const reporter = new Reporter(basedir, msg => port.postMessage(msg));
   const listen = watch ? port.on.bind(port) : port.once.bind(port);
