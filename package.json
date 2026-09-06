@@ -11,9 +11,21 @@
   "bugs": {
     "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
-  "volta": {
-    "node": "20.18.3"
+  "devEngines": {
+    "runtime": [
+      {
+        "name": "node",
+        "version": "20.18.3"
+      }
+    ],
+    "packageManager": [
+      {
+        "name": "pnpm",
+        "version": "9.15.9"
+      }
+    ]
   },
+  "packageManager": "pnpm@9.15.9",
   "devDependencies": {
     "@awesome-code-style/eslint-config": "^6.1.1",
     "@awesome-code-style/prettier-config": "^5.0.1",
