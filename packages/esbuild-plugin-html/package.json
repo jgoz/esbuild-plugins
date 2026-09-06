@@ -29,13 +29,13 @@
   "devDependencies": {
     "@awesome-code-style/eslint-config": "^6.2.1",
     "@types/js-beautify": "^1.14.3",
-    "@types/node": "^20.19.0",
-    "esbuild": "^0.25.11",
+    "@types/node": "^20.19.43",
+    "esbuild": "^0.25.12",
     "js-beautify": "^1.15.4",
-    "parse5": "^7.2.1",
+    "parse5": "^7.3.0",
     "typescript": "^6.0.3",
-    "vite": ">=6.4.1",
-    "vitest": "^3.2.4"
+    "vite": "^8.2.2",
+    "vitest": "^3.2.7"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",

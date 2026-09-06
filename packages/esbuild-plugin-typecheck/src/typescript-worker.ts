@@ -44,10 +44,7 @@ export interface WorkerDoneMessage {
 }
 
 export type WorkerMessage =
-  | WorkerDiagnosticsMessage
-  | WorkerBuildMessage
-  | WorkerStartMessage
-  | WorkerDoneMessage;
+  WorkerDiagnosticsMessage | WorkerBuildMessage | WorkerStartMessage | WorkerDoneMessage;
 
 export interface TypescriptWorkerOptions {
   basedir: string;
