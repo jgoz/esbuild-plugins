@@ -270,14 +270,14 @@ importers:
         specifier: ^6.2.1
         version: 6.2.1(@typescript-eslint/eslint-plugin@8.69.0(@typescript-eslint/parser@8.69.0(eslint@9.38.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(eslint@9.38.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(@typescript-eslint/parser@8.69.0(eslint@9.38.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(eslint@9.38.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       '@tsconfig/svelte':
-        specifier: ^5.0.5
-        version: 5.0.5
+        specifier: ^5.0.8
+        version: 5.0.8
       esbuild:
         specifier: ^0.25.11
         version: 0.25.11
       esbuild-svelte:
-        specifier: ^0.9.3
-        version: 0.9.3(esbuild@0.25.11)(svelte@3.59.2)
+        specifier: ^0.9.5
+        version: 0.9.5(esbuild@0.25.11)(svelte@3.59.2)
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -285,11 +285,11 @@ importers:
         specifier: ^3.58.0
         version: 3.59.2
       svelte-check:
-        specifier: ^3.7.1
-        version: 3.7.1(@babel/core@7.28.4(supports-color@8.1.1))(postcss@8.5.6)(sass@1.93.2)(svelte@3.59.2)
+        specifier: ^4.7.6
+        version: 4.7.6(picomatch@4.0.3)(svelte@3.59.2)(typescript@6.0.3)
       svelte-preprocess:
-        specifier: ^5.1.4
-        version: 5.1.4(@babel/core@7.28.4(supports-color@8.1.1))(postcss@8.5.6)(sass@1.93.2)(svelte@3.59.2)(typescript@6.0.3)
+        specifier: ^6.0.5
+        version: 6.0.5(@babel/core@7.28.4(supports-color@8.1.1))(postcss@8.5.6)(sass@1.93.2)(svelte@3.59.2)(typescript@6.0.3)
       tslib:
         specifier: ^2.4.0
         version: 2.8.1
@@ -345,8 +345,8 @@ importers:
         specifier: ^0.25.11
         version: 0.25.11
       esbuild-svelte:
-        specifier: ^0.9.3
-        version: 0.9.3(esbuild@0.25.11)(svelte@3.59.2)
+        specifier: ^0.9.5
+        version: 0.9.5(esbuild@0.25.11)(svelte@3.59.2)
       get-port:
         specifier: ^5.0.0
         version: 5.1.1
@@ -360,11 +360,11 @@ importers:
         specifier: ^3.58.0
         version: 3.59.2
       svelte-check:
-        specifier: ^3.7.1
-        version: 3.7.1(@babel/core@7.28.4(supports-color@8.1.1))(postcss@8.5.6)(sass@1.93.2)(svelte@3.59.2)
+        specifier: ^4.7.6
+        version: 4.7.6(picomatch@4.0.3)(svelte@3.59.2)(typescript@6.0.3)
       svelte-preprocess:
-        specifier: ^5.1.4
-        version: 5.1.4(@babel/core@7.28.4(supports-color@8.1.1))(postcss@8.5.6)(sass@1.93.2)(svelte@3.59.2)(typescript@6.0.3)
+        specifier: ^6.0.5
+        version: 6.0.5(@babel/core@7.28.4(supports-color@8.1.1))(postcss@8.5.6)(sass@1.93.2)(svelte@3.59.2)(typescript@6.0.3)
       tslib:
         specifier: ^2.4.0
         version: 2.8.1
@@ -1659,11 +1659,15 @@ packages:
     peerDependencies:
       eslint: '>=9.0.0'
 
+  '@sveltejs/load-config@0.2.3':
+    resolution: {integrity: sha512-VT3qmUb8pRV2QrZjd8iAmtg8lf4W0TIjZbvXtz5MKei/q96teWZgGJyyidJzOjzZzvdq616eSRVeMYIQChUTAQ==}
+    engines: {node: '>= 18.0.0'}
+
   '@tsconfig/node24@24.0.5':
     resolution: {integrity: sha512-DWC54fGPuhZgg3Ighg4Y/A/bA3ZdB5hnzAuv/MkQ/X85sVsBsMQxu8t7khutdYeiNksBbFdDyeqv1HSW2Zl8aA==}
 
-  '@tsconfig/svelte@5.0.5':
-    resolution: {integrity: sha512-48fAnUjKye38FvMiNOj0J9I/4XlQQiZlpe9xaNPfe8vy2Y1hFBt8g1yqf2EGjVvHavo4jf2lC+TQyENCr4BJBQ==}
+  '@tsconfig/svelte@5.0.8':
+    resolution: {integrity: sha512-UkNnw1/oFEfecR8ypyHIQuWYdkPvHiwcQ78sh+ymIiYoF+uc5H1UBetbjyqT+vgGJ3qQN6nhucJviX6HesWtKQ==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -1736,9 +1740,6 @@ packages:
 
   '@types/pretty-time@1.1.5':
     resolution: {integrity: sha512-5yl+BYwmnRWZb783W8YYoHXvPY8q/rp7ctHBVaGBB9RxlzGpHNJ72tGQMK7TrUSnxzl1dbDcBDuBCSbtfnSQGg==}
-
-  '@types/pug@2.0.10':
-    resolution: {integrity: sha512-Sk/uYFOBAB7mb74XcpizmH0KOR2Pv3D2Hmrh1Dmy5BmK3MpdSa5kqZcg6EKBdklU0bFXX9gCfzvpnyUehrPIuA==}
 
   '@types/send@0.17.5':
     resolution: {integrity: sha512-z6F2D3cOStZvuk2SaP6YrwkNO65iTZcwA2ZkSABegdkAh/lf+Aa/YQndZVfmEXT5vgAp6zv06VQ3ejSVjAny4w==}
@@ -2082,10 +2083,6 @@ packages:
     resolution: {integrity: sha512-OAlb+T7V4Op9OwdkjmguYRqncdlx5JiofwOAUkmTF+jNdHwzTaTs4sRAGpzLF3oOz5xAyDGrPgeIDFQmDOTiJw==}
     engines: {node: '>= 16'}
 
-  chokidar@3.6.0:
-    resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
-    engines: {node: '>= 8.10.0'}
-
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
     engines: {node: '>= 14.16.0'}
@@ -2373,8 +2370,8 @@ packages:
   es6-promise@3.3.1:
     resolution: {integrity: sha512-SOp9Phqvqn7jtEUxPWdWfWoLmyt2VaJ6MpvP9Comy1MceMXqE6bxvaTu4iaxpYYPzhny28Lc+M87/c2cPK6lDg==}
 
-  esbuild-svelte@0.9.3:
-    resolution: {integrity: sha512-CgEcGY1r/d16+aggec3czoFBEBaYIrFOnMxpsO6fWNaNEqHregPN5DLAPZDqrL7rXDNplW+WMu8s3GMq9FqgJA==}
+  esbuild-svelte@0.9.5:
+    resolution: {integrity: sha512-16FUSj64aiS28CCxYeK3hVxCyU4PwGBSkeArawAtnWSV7l0Gc+frIOP88MNj8Q7tDAGyEJAHT6OpOvM24BG46w==}
     engines: {node: '>=18'}
     peerDependencies:
       esbuild: '>=0.17.0'
@@ -3218,9 +3215,6 @@ packages:
   lunr@2.3.9:
     resolution: {integrity: sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==}
 
-  magic-string@0.30.17:
-    resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
-
   magic-string@0.30.19:
     resolution: {integrity: sha512-2N21sPY9Ws53PZvsEpVtNuSW+ScYbQdp4b9qUaL+9QkHUrGFKo56Lg9Emg5s9V/qrtNBmiR01sYhUOwu3H+VOw==}
 
@@ -3932,10 +3926,6 @@ packages:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
 
-  sorcery@0.11.0:
-    resolution: {integrity: sha512-J69LQ22xrQB1cIFJhPfgtLuI6BpWRiWu1Y3vSsIwK/eAScqJxd/+CJlUuHQRdX2C9NGFamq+KqNywGgaThwfHw==}
-    hasBin: true
-
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
@@ -4038,27 +4028,29 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  svelte-check@3.7.1:
-    resolution: {integrity: sha512-U4uJoLCzmz2o2U33c7mPDJNhRYX/DNFV11XTUDlFxaKLsO7P+40gvJHMPpoRfa24jqZfST4/G9fGNcUGMO8NAQ==}
+  svelte-check@4.7.6:
+    resolution: {integrity: sha512-t2scM//ZuVbSY/T2w6FSBw1v9s2NEmh/g+sy1lqtosW5ylBV5AF4wFb1Ts9Kf3MbfPDUDJDZ9L436YT0SPTdvw==}
+    engines: {node: '>= 18.0.0'}
     hasBin: true
     peerDependencies:
-      svelte: ^3.55.0 || ^4.0.0-next.0 || ^4.0.0 || ^5.0.0-next.0
+      svelte: ^4.0.0 || ^5.0.0-next.0
+      typescript: ^5.0.0 || ^6.0.0
 
-  svelte-preprocess@5.1.4:
-    resolution: {integrity: sha512-IvnbQ6D6Ao3Gg6ftiM5tdbR6aAETwjhHV+UKGf5bHGYR69RQvF1ho0JKPcbUON4vy4R7zom13jPjgdOWCQ5hDA==}
-    engines: {node: '>= 16.0.0'}
+  svelte-preprocess@6.0.5:
+    resolution: {integrity: sha512-sgwew5yV/2eMeQobIWgAxCNarKwiTUDIc3siAUbq3sp0G6ONtzk0W+wJihMdqjbYb3iGU3ubpGv0usnnuXT3qg==}
+    engines: {node: '>= 18.0.0'}
     peerDependencies:
       '@babel/core': ^7.10.2
       coffeescript: ^2.5.1
       less: ^3.11.3 || ^4.0.0
       postcss: ^7 || ^8
-      postcss-load-config: ^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
+      postcss-load-config: '>=3'
       pug: ^3.0.0
       sass: ^1.26.8
-      stylus: ^0.55.0
+      stylus: '>=0.55'
       sugarss: ^2.0.0 || ^3.0.0 || ^4.0.0
-      svelte: ^3.23.0 || ^4.0.0-next.0 || ^4.0.0 || ^5.0.0-next.0
-      typescript: '>=3.9.5 || ^4.0.0 || ^5.0.0'
+      svelte: ^4.0.0 || ^5.0.0-next.100 || ^5.0.0
+      typescript: ^5.0.0 || ^6.0.0
     peerDependenciesMeta:
       '@babel/core':
         optional: true
@@ -4193,11 +4185,6 @@ packages:
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: '>=4.8.4 <6.1.0'
-
-  typescript@5.9.3:
-    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
-    engines: {node: '>=14.17'}
-    hasBin: true
 
   typescript@6.0.3:
     resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
@@ -5656,9 +5643,11 @@ snapshots:
       - supports-color
       - typescript
 
+  '@sveltejs/load-config@0.2.3': {}
+
   '@tsconfig/node24@24.0.5': {}
 
-  '@tsconfig/svelte@5.0.5': {}
+  '@tsconfig/svelte@5.0.8': {}
 
   '@types/babel__core@7.20.5':
     dependencies:
@@ -5742,8 +5731,6 @@ snapshots:
       undici-types: 7.16.0
 
   '@types/pretty-time@1.1.5': {}
-
-  '@types/pug@2.0.10': {}
 
   '@types/send@0.17.5':
     dependencies:
@@ -6182,18 +6169,6 @@ snapshots:
 
   check-error@2.1.1: {}
 
-  chokidar@3.6.0:
-    dependencies:
-      anymatch: 3.1.3
-      braces: 3.0.3
-      glob-parent: 5.1.2
-      is-binary-path: 2.1.0
-      is-glob: 4.0.3
-      normalize-path: 3.0.0
-      readdirp: 3.6.0
-    optionalDependencies:
-      fsevents: 2.3.3
-
   chokidar@4.0.3:
     dependencies:
       readdirp: 4.1.2
@@ -6499,7 +6474,7 @@ snapshots:
 
   es6-promise@3.3.1: {}
 
-  esbuild-svelte@0.9.3(esbuild@0.25.11)(svelte@3.59.2):
+  esbuild-svelte@0.9.5(esbuild@0.25.11)(svelte@3.59.2):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       esbuild: 0.25.11
@@ -7564,10 +7539,6 @@ snapshots:
 
   lunr@2.3.9: {}
 
-  magic-string@0.30.17:
-    dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.0
-
   magic-string@0.30.19:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
@@ -8355,13 +8326,6 @@ snapshots:
 
   slash@3.0.0: {}
 
-  sorcery@0.11.0:
-    dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.0
-      buffer-crc32: 0.2.13
-      minimist: 1.2.8
-      sander: 0.5.1
-
   source-map-js@1.2.1: {}
 
   source-map-support@0.5.13:
@@ -8467,49 +8431,21 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@3.7.1(@babel/core@7.28.4(supports-color@8.1.1))(postcss@8.5.6)(sass@1.93.2)(svelte@3.59.2):
+  svelte-check@4.7.6(picomatch@4.0.3)(svelte@3.59.2)(typescript@6.0.3):
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
-      chokidar: 3.6.0
-      fast-glob: 3.3.3
-      import-fresh: 3.3.1
+      '@jridgewell/trace-mapping': 0.3.31
+      '@sveltejs/load-config': 0.2.3
+      chokidar: 4.0.3
+      fdir: 6.5.0(picomatch@4.0.3)
       picocolors: 1.1.1
       sade: 1.8.1
       svelte: 3.59.2
-      svelte-preprocess: 5.1.4(@babel/core@7.28.4(supports-color@8.1.1))(postcss@8.5.6)(sass@1.93.2)(svelte@3.59.2)(typescript@5.9.3)
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
-      - '@babel/core'
-      - coffeescript
-      - less
-      - postcss
-      - postcss-load-config
-      - pug
-      - sass
-      - stylus
-      - sugarss
+      - picomatch
 
-  svelte-preprocess@5.1.4(@babel/core@7.28.4(supports-color@8.1.1))(postcss@8.5.6)(sass@1.93.2)(svelte@3.59.2)(typescript@5.9.3):
+  svelte-preprocess@6.0.5(@babel/core@7.28.4(supports-color@8.1.1))(postcss@8.5.6)(sass@1.93.2)(svelte@3.59.2)(typescript@6.0.3):
     dependencies:
-      '@types/pug': 2.0.10
-      detect-indent: 6.1.0
-      magic-string: 0.30.17
-      sorcery: 0.11.0
-      strip-indent: 3.0.0
-      svelte: 3.59.2
-    optionalDependencies:
-      '@babel/core': 7.28.4(supports-color@8.1.1)
-      postcss: 8.5.6
-      sass: 1.93.2
-      typescript: 5.9.3
-
-  svelte-preprocess@5.1.4(@babel/core@7.28.4(supports-color@8.1.1))(postcss@8.5.6)(sass@1.93.2)(svelte@3.59.2)(typescript@6.0.3):
-    dependencies:
-      '@types/pug': 2.0.10
-      detect-indent: 6.1.0
-      magic-string: 0.30.17
-      sorcery: 0.11.0
-      strip-indent: 3.0.0
       svelte: 3.59.2
     optionalDependencies:
       '@babel/core': 7.28.4(supports-color@8.1.1)
@@ -8631,8 +8567,6 @@ snapshots:
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
-
-  typescript@5.9.3: {}
 
   typescript@6.0.3: {}
 
