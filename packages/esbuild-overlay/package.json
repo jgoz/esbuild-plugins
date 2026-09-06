@@ -30,7 +30,7 @@
   "devDependencies": {
     "@awesome-code-style/eslint-config": "^6.2.1",
     "@tsconfig/svelte": "^5.0.8",
-    "esbuild": "^0.25.12",
+    "esbuild": "^0.28.2",
     "esbuild-svelte": "^0.9.5",
     "prettier": "^3.9.6",
     "svelte": "^3.58.0",
