@@ -5,6 +5,7 @@ import path from 'path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 async function* walk(dirPath: string): AsyncIterable<string> {
+  // eslint-disable-next-line @typescript-eslint/await-thenable
   for await (const d of await fs.promises.readdir(dirPath, { withFileTypes: true })) {
     const entry = path.join(dirPath, d.name);
     if (d.isDirectory()) yield* walk(entry);
@@ -291,7 +292,7 @@ describe('eslint-plugin-typecheck', () => {
           // keep the last one.
           let resultIndex = 0;
           for (let i = lines.length - 1; i >= 0; i--) {
-            if (lines[i].match(/Typecheck (passed|failed)/)) {
+            if (/Typecheck (passed|failed)/.exec(lines[i])) {
               resultIndex = i;
               break;
             }

@@ -41,7 +41,7 @@
     "@types/node": "^20.19.0",
     "esbuild": "^0.25.11",
     "execa": "^5.0.0",
-    "memfs": "^3.5.3",
+    "memfs": "^4.71.0",
     "picocolors": "^1.1.1",
     "prettier": "^3.6.2",
     "tslib": "^2.4.0",

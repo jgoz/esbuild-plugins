@@ -39,7 +39,7 @@
     "get-port": "^5.0.0",
     "io-spin": "^0.4.1",
     "js-beautify": "^1.15.4",
-    "memfs": "^3.5.3",
+    "memfs": "^4.71.0",
     "node-graceful": "^3.1.0",
     "parse5": "^7.2.1",
     "picocolors": "^1.1.1",

@@ -16,3 +16,6 @@ overrides:
 
 onlyBuiltDependencies:
   - 'svelte-preprocess'
+
+patchedDependencies:
+  unionfs: patches/unionfs.patch

@@ -1,0 +1,13 @@
+diff --git a/lib/union.js b/lib/union.js
+index c292e1a56b83a338b3baf8469287dae9815ee563..13865a54d924d835b35ce3006ed3e206e963872c 100644
+--- a/lib/union.js
++++ b/lib/union.js
+@@ -86,7 +86,7 @@ var SPECIAL_METHODS = new Set([
+     'watchFile',
+     'unwatchFile',
+ ]);
+-var ADDITIONAL_PROPERTIES = ['F_OK', 'R_OK', 'W_OK', 'X_OK', 'constants', 'Stats', 'Dirent'];
++var ADDITIONAL_PROPERTIES = ['constants', 'Stats', 'Dirent'];
+ var createFSProxy = function (watchers) {
+     return new Proxy({}, {
+         get: function (_obj, property) {

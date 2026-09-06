@@ -102,7 +102,7 @@ function createPartialMemoryBackedSystem(): ts.System {
       memfs.utimesSync(path, time, time);
     },
     writeFile(path, data, writeBOM) {
-      memfs.mkdirpSync(dirname(path));
+      memfs.mkdirSync(dirname(path), { recursive: true });
       memfs.writeFileSync(path, writeBOM ? '\ufeff' + data : data);
     },
   };
