@@ -1,5 +1,12 @@
 # esbd
 
+## 3.3.12
+
+### Patch Changes
+
+- Updated dependencies [7a94f69]
+  - @jgoz/esbuild-plugin-typecheck@4.0.5
+
 ## 3.3.11
 
 ### Patch Changes
