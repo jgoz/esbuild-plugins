@@ -27,7 +27,7 @@
     "esbuild": ">=0.25.0"
   },
   "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.1.1",
+    "@awesome-code-style/eslint-config": "^6.2.1",
     "@jgoz/esbuild-overlay": "workspace:*",
     "@playwright/test": "^1.56.1",
     "@types/node": "^20.19.0",
@@ -40,7 +40,7 @@
     "svelte-check": "^3.7.1",
     "svelte-preprocess": "^5.1.4",
     "tslib": "^2.4.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "scripts": {
     "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",

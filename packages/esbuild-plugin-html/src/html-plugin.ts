@@ -43,7 +43,7 @@ export type TagPlacement = `${EmitTarget}-${EmitPosition}`;
 export type MetafileOutput = Metafile['outputs'][string];
 
 const defaultDoctype: DocumentType = {
-  nodeName: '#documentType' as DocumentType['nodeName'],
+  nodeName: '#documentType',
   name: 'html',
   parentNode: null,
   publicId: '',

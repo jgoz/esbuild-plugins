@@ -4,7 +4,6 @@
     "composite": true,
     "outDir": "build",
     "declarationDir": "types",
-    "baseUrl": ".",
     "paths": {
       "pkg-one": ["../pkg-one/one.ts"],
       "pkg-two": ["../pkg-two/two.ts"]
