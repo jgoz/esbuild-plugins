@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-typecheck
 
+## 4.0.5
+
+### Patch Changes
+
+- 7a94f69: No implicit noEmit=true when emitDeclarationOnly is set
+
 ## 4.0.4
 
 ### Patch Changes
