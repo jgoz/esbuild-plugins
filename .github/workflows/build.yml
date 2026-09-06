@@ -85,7 +85,7 @@ jobs:
       - run: pnpm build
 
       - name: Update npm for OIDC publishing
-        run: npm install -g npm@latest
+        run: npm install -g npm@11
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
