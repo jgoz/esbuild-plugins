@@ -19,7 +19,7 @@ importers:
         version: 6.1.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
       '@awesome-code-style/prettier-config':
         specifier: ^5.0.1
-        version: 5.0.1(prettier@3.6.2)
+        version: 5.0.2(prettier@3.6.2)
       '@changesets/cli':
         specifier: ^2.29.7
         version: 2.29.7(@types/node@24.9.1)
@@ -409,8 +409,8 @@ packages:
       eslint-plugin-react-hooks:
         optional: true
 
-  '@awesome-code-style/prettier-config@5.0.1':
-    resolution: {integrity: sha512-sRgBmK9HsXsa5IO5cL3B/hSaWTSm7cjfxpExlDBCrzcbOkVU2/FGjIrDhw6ZpcgZhiGItkO8PzU9L5HqQUneJw==}
+  '@awesome-code-style/prettier-config@5.0.2':
+    resolution: {integrity: sha512-fTwdHBlNsyJ1HuOAk2HlD8hrZV+Myt/nF1w2f1o/FSH214FSheBjlvMpPGZjt7j8961kDlppZnCcfVls9pXe9w==}
     peerDependencies:
       prettier: '>= 3.0.0'
 
@@ -2309,6 +2309,7 @@ packages:
   eslint@9.38.0:
     resolution: {integrity: sha512-t5aPOpmtJcZcz5UJyY2GbvpDlsK5E8JqRqoKtfiKE3cNh437KIqfJr3A3AKf5k64NPx6d0G3dno6XDY05PqPtw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -2529,11 +2530,12 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
@@ -4237,7 +4239,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@awesome-code-style/prettier-config@5.0.1(prettier@3.6.2)':
+  '@awesome-code-style/prettier-config@5.0.2(prettier@3.6.2)':
     dependencies:
       prettier: 3.6.2
 
