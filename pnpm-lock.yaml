@@ -23,9 +23,9 @@ importers:
       '@changesets/cli':
         specifier: ^2.29.7
         version: 2.29.7(@types/node@24.9.1)
-      '@tsconfig/node16':
-        specifier: ^16.1.6
-        version: 16.1.6
+      '@tsconfig/node18':
+        specifier: ^18.2.0
+        version: 18.2.7
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.46.2
         version: 8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0)(typescript@5.9.3))(eslint@9.38.0)(typescript@5.9.3)
@@ -1510,8 +1510,8 @@ packages:
     peerDependencies:
       eslint: '>=9.0.0'
 
-  '@tsconfig/node16@16.1.6':
-    resolution: {integrity: sha512-QXflIthykZUjZMUWp3sKQP8Pikqtncs2KF0iulzsEHXeQI58FH7ypJYHvYEM1CP0RtkNAC70FQOXssQJB+ZZ0Q==}
+  '@tsconfig/node18@18.2.7':
+    resolution: {integrity: sha512-UyenTORreCUh8MKh2qbLGGHTRrxjBbSwvX0ZoWs6Jx1jrNS62PXEA3+VaLvmb0YDQrgGU3v3h7zB9Xs/BN1ozg==}
 
   '@tsconfig/svelte@5.0.5':
     resolution: {integrity: sha512-48fAnUjKye38FvMiNOj0J9I/4XlQQiZlpe9xaNPfe8vy2Y1hFBt8g1yqf2EGjVvHavo4jf2lC+TQyENCr4BJBQ==}
@@ -2309,6 +2309,7 @@ packages:
   eslint@9.38.0:
     resolution: {integrity: sha512-t5aPOpmtJcZcz5UJyY2GbvpDlsK5E8JqRqoKtfiKE3cNh437KIqfJr3A3AKf5k64NPx6d0G3dno6XDY05PqPtw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -2529,11 +2530,12 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
@@ -5444,7 +5446,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@tsconfig/node16@16.1.6': {}
+  '@tsconfig/node18@18.2.7': {}
 
   '@tsconfig/svelte@5.0.5': {}
 

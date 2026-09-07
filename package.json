@@ -30,7 +30,7 @@
     "@awesome-code-style/eslint-config": "^6.1.1",
     "@awesome-code-style/prettier-config": "^5.0.1",
     "@changesets/cli": "^2.29.7",
-    "@tsconfig/node16": "^16.1.6",
+    "@tsconfig/node18": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "esbuild": "^0.25.11",
