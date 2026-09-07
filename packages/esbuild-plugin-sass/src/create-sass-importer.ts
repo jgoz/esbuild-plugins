@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import { CachedInputFileSystem, ResolverFactory } from 'enhanced-resolve';
-import type sass from 'sass';
+import type * as sass from 'sass';
 
 const MODULE_REQUEST_REGEX = /^[^?]*~/; // Examples:
 // - ~package
