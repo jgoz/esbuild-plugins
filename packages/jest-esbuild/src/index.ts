@@ -34,7 +34,7 @@ export type EsbuildTransformOptions = TransformOptions<TransformerConfig>;
 
 const nodeMajorVersion = process.version.match(/^v(\d+)\./)?.[1];
 
-const BABEL_OPTIONS: babel.TransformOptions = {
+const BABEL_OPTIONS: babel.InputOptions = {
   plugins: ['jest-hoist'],
   sourceMaps: 'inline',
   configFile: false,
@@ -49,7 +49,7 @@ const LOADERS: Record<string, esbuild.Loader | undefined> = {
 
 const handleResult = (
   esbuildResult: esbuild.TransformResult,
-  babelResult: babel.BabelFileResult | null | undefined,
+  babelResult: babel.FileResult | null | undefined,
 ): TransformedSource => {
   let result: TransformedSource;
 
@@ -63,7 +63,7 @@ const handleResult = (
   } else {
     result = {
       code: babelResult.code,
-      map: babelResult.map,
+      map: babelResult.map as TransformedSource['map'],
     };
   }
 
@@ -94,7 +94,7 @@ const createTransformer: TransformerCreator<
         sourcefile: path,
       });
 
-      let babelResult: babel.BabelFileResult | null | undefined;
+      let babelResult: babel.FileResult | null | undefined;
 
       if (matcher(path, options)) {
         babelResult = babel.transformSync(esbuildResult.code, BABEL_OPTIONS);
@@ -116,7 +116,7 @@ const createTransformer: TransformerCreator<
         sourcefile: path,
       });
 
-      let babelResult: babel.BabelFileResult | null | undefined;
+      let babelResult: babel.FileResult | null | undefined;
 
       if (matcher(path, options)) {
         babelResult = await babel.transformAsync(esbuildResult.code, BABEL_OPTIONS);
