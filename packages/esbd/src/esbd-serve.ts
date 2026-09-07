@@ -12,6 +12,7 @@ import type {
   notify as notifyFn,
 } from '@jgoz/esbuild-plugin-livereload';
 import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
+import mime from 'mime-types';
 import Graceful from 'node-graceful';
 import pc from 'picocolors';
 import serveStatic from 'serve-static';
@@ -179,7 +180,7 @@ export default async function esbdServe(
   const setHeaders: serveStatic.ServeStaticOptions['setHeaders'] = (res, path) => {
     if (res.hasHeader('content-type')) return;
 
-    const contentType = serveStatic.mime.lookup(path);
+    const contentType = mime.lookup(path);
     if (contentType) res.setHeader('content-type', contentType);
 
     res.setHeader('access-control-allow-origin', '*');
