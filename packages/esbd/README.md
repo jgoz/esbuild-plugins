@@ -299,7 +299,12 @@ Entry name attributes can optionally reference values that appear in the `define
     <link rel="stylesheet" href="./styles/entry.css" data-entry-name="styles" />
 
     <!-- Will be written as "script-1.2.3.js" if {{version}} is defined as "1.2.3" -->
-    <script data-entry-name="script-{{version}}" defer type="module" src="./src/entry.tsx"></script>
+    <script
+      data-entry-name="script-{{version}}"
+      defer
+      type="module"
+      src="./src/entry.tsx"
+    ></script>
   </head>
   <body>
     <div id="root"></div>
@@ -328,7 +333,10 @@ configure({
   copy: [
     ['./assets/cat.png'], // -> ./build/cat.png
     ['./assets/dog.png', 'assets/horse.png'], // -> ./build/assets/horse.png
-    ['/Users/me/path/to/repo/src/assets/pig.png', '/Users/me/path/to/repo/build/assets/pig.png'], // -> ./build/assets/pig.png
+    [
+      '/Users/me/path/to/repo/src/assets/pig.png',
+      '/Users/me/path/to/repo/build/assets/pig.png',
+    ], // -> ./build/assets/pig.png
   ],
 });
 ```
@@ -364,7 +372,7 @@ Note that these esbuild options are ignored:
 | cleanOutdir | `boolean` | `false` | Keep the output directory clean.<br><br>On the initial build, the output directory will be cleaned before the build starts.<br><br>When in watch mode (either directly or via `node-dev`/`serve`), output files will be tracked across builds and any files that are no longer produced by esbuild will be removed from the output directory. This ensures that no stale files are left behind when content hash changes cause files to be renamed or removed. Note that this is usually only relevant when ESM/splitting is enabled. |
 | copy | `[from: string, to?: string][]` | - | Files to copy to the output directory during the build.<br><br>Each entry is a tuple representing the source file path to copy and, optionally, the destination file path.<br><br>Source paths may be absolute or relative to `absWorkingDir`. Destination paths may be absolute or relative to `outdir`. If no destination path is provided, the source file will be copied to `outdir` with the same name.<br><br>If `esbd` is started in a watch mode (serve, node-dev, or build --watch), source files will be watched and copied whenever they change.<br><br>Note that `copy` does not support glob patterns. |
 | cssChunkFilter | `(absFilePath: string) => boolean \| null \| undefined` | - | Predicate function that determines whether a CSS output file should be added to the written HTML entry point.<br><br>Esbd makes a best effort to determine which output files should be referenced as `<script>` and `<link rel="stylesheet">` tags in the HTML entry point. By default, CSS output files will be cross-referenced with CSS and JS entry points defined in HTML. Both CSS files that are referenced directly in HTML and those that are referenced indirectly from JS entry points will be included.<br><br>In some cases, more CSS files will need to be included than the default algorithm can detect, so this function can be used to be more specific since it will receive every CSS output file produced by esbuild.<br><br>This function receives an output file path and should return a value indicating whether that file should be referenced in the HTML output. If the function returns `null` or `undefined`, the default algorithm will be used. |
-| ignoreAssets | `boolean` | - | By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and `<script>` tags in the HTML template will be collected as esbuild assets if their `src` attributes are specified as relative paths. The asset paths will be resolved relative to the *template file* and will be copied to the output directory, taking `publicPath` into consideration if it has been set.<br><br>Absolute paths or URIs will be ignored.<br><br>To ignore all `src` attributes and avoid collecting discovered assets, set this option to `true`. |
+| ignoreAssets | `boolean` | - | By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and `<script>` tags in the HTML template will be collected as esbuild assets if their `src` attributes are specified as relative paths. The asset paths will be resolved relative to the _template file_ and will be copied to the output directory, taking `publicPath` into consideration if it has been set.<br><br>Absolute paths or URIs will be ignored.<br><br>To ignore all `src` attributes and avoid collecting discovered assets, set this option to `true`. |
 | [integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) | `"sha256" \| "sha384" \| "sha512"` | - | If specified, a cryptographic digest for each file referenced by a `<link>` or `<script>` tag will be calculated using the specified algorithm and added as an `integrity` attribute on the associated tag. |
 | name | `string` | - | Name of this configuration.<br><br>This is required for configurations that appear in an array. |
 <!-- end -->

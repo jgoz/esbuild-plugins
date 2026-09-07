@@ -20,7 +20,7 @@
   "main": "dist/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && oxfmt README.md",
     "prepack": "./bundle.js build",
     "test": "vitest run && playwright test",
     "watch": "./bundle.js build -w"

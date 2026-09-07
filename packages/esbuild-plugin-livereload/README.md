@@ -62,15 +62,14 @@ If you are implementing an esbuild plugin that can emit its own errors or warnin
 
 <!-- prettier-ignore-start -->
 <!-- markdown-interpolate: node ../../scripts/docs.mjs ./src/livereload-plugin.ts notify -->
-Notifies connected clients that errors or warnings occurred from
-a given source. If there are no errors and the notification originates
-from esbuild, the page will be sent a reload request.
+Notifies connected clients that errors or warnings occurred from a given source. If there are no
+errors and the notification originates from esbuild, the page will be sent a reload request.
 
 | Name | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| errorSource (*) | `string` | - | Key to use when identifying these errors and warnings.                      Previous results will be overwritten for the same `errorSource`. |
+| errorSource (*) | `string` | - | Key to use when identifying these errors and warnings. Previous results will   be overwritten for the same `errorSource`. |
 | msg (*) | `ClientMessage` | - | Object containing errors and warnings from the given source |
-| connectedClients | `Set<ServerResponse<IncomingMessage>>` | `clients` | Set of long-lived server responses representing                           clients currently connected to the livereload                           server. Only required if you are implementing your                           own livereload server. |
+| connectedClients | `Set<ServerResponse<IncomingMessage>>` | `clients` | Set of long-lived server responses representing clients currently   connected to the livereload server. Only required if you are implementing your own livereload   server. |
 <!-- end -->
 <!-- prettier-ignore-end -->
 

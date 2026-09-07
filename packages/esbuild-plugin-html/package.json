@@ -24,7 +24,7 @@
     "access": "public"
   },
   "scripts": {
-    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && oxfmt README.md",
     "prepack": "./bundle.js build",
     "test": "vitest --run",
     "watch": "./bundle.js build -w"

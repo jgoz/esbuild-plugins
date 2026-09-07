@@ -24,7 +24,7 @@
     "access": "public"
   },
   "scripts": {
-    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && oxfmt README.md",
     "prepack": "./bundle.js build",
     "test": "playwright test",
     "watch": "./bundle.js build -w"
@@ -37,7 +37,6 @@
     "esbuild-svelte": "^0.9.5",
     "get-port": "^7.2.0",
     "open-editor": "^6.0.0",
-    "prettier": "^3.9.6",
     "svelte": "^5.57.0",
     "svelte-check": "^4.7.6",
     "svelte-preprocess": "^6.0.5",

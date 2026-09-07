@@ -25,7 +25,7 @@
     "access": "public"
   },
   "scripts": {
-    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && oxfmt README.md",
     "prepublish": "pnpm check",
     "prepack": "./bundle.js build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
@@ -35,7 +35,6 @@
     "@tsconfig/svelte": "^5.0.8",
     "esbuild": "^0.28.2",
     "esbuild-svelte": "^0.9.5",
-    "prettier": "^3.9.6",
     "svelte": "^5.57.0",
     "svelte-check": "^4.7.6",
     "svelte-preprocess": "^6.0.5",

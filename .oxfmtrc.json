@@ -11,5 +11,6 @@
   "jsdoc": true,
   "sortPackageJson": true,
   "tabWidth": 2,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "overrides": [{ "files": ["*.md"], "options": { "printWidth": 80 } }]
 }
