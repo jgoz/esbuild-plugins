@@ -39,7 +39,7 @@
     "esbuild": "^0.28.2",
     "js-beautify": "^2.0.3",
     "postcss": "^8.5.28",
-    "postcss-preset-env": "^10.6.1",
+    "postcss-preset-env": "^11.5.1",
     "sass": "^1.104.0",
     "typescript": "^6.0.3",
     "vite": "^8.2.2",
