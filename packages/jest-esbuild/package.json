@@ -35,7 +35,7 @@
     "@jest/transform": "^30.5.1",
     "@types/babel__core": "^7.20.5",
     "@types/jest": "^30.0.0",
-    "@types/node": "^20.19.43",
+    "@types/node": "^24.13.3",
     "esbuild": "^0.28.2",
     "jest": "^30.5.1",
     "prettier": "^3.9.6",

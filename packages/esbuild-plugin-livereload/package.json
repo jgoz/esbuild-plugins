@@ -32,7 +32,7 @@
   "devDependencies": {
     "@jgoz/esbuild-overlay": "workspace:*",
     "@playwright/test": "^1.63.0",
-    "@types/node": "^20.19.43",
+    "@types/node": "^24.13.3",
     "esbuild": "^0.28.2",
     "esbuild-svelte": "^0.9.5",
     "get-port": "^5.0.0",
