@@ -3,6 +3,11 @@
 
   import HighlightedLine from './HighlightedLine.svelte';
 
+  interface Props {
+    error: Message;
+    openFileURL?: string;
+  }
+
   const NULL_LOCATION: Location = {
     length: 0,
     line: 1,
@@ -13,17 +18,21 @@
     suggestion: '',
   };
 
-  export let error: Message;
-  export let openFileURL: string | undefined;
+  let { error, openFileURL }: Props = $props();
 
-  const location = error.location ?? NULL_LOCATION;
-  const { text } = error;
-  const { column, line, length, lineText, file } = location;
+  const location = $derived(error.location ?? NULL_LOCATION);
+  const text = $derived(error.text);
+  const column = $derived(location.column);
+  const line = $derived(location.line);
+  const length = $derived(location.length);
+  const lineText = $derived(location.lineText);
+  const file = $derived(location.file);
 
-  const lineNumberWidth = String(line).length;
-  const lines = lineText.split(/\r?\n/g);
-  const linesWithNumbers =
-    lines.length > 1 ? lines.map(l => [0, l] as const) : [[line, lineText] as const];
+  const lineNumberWidth = $derived(String(line).length);
+  const lines = $derived(lineText.split(/\r?\n/g));
+  const linesWithNumbers = $derived(
+    lines.length > 1 ? lines.map(l => [0, l] as const) : [[line, lineText] as const],
+  );
 
   function onClick() {
     if (!openFileURL) return;
@@ -36,8 +45,8 @@
   }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="stack-entry" on:click={onClick} role="link" tabindex="0">
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<div class="stack-entry" onclick={onClick} role="link" tabindex="0">
   <div class="file">
     <strong>{file}</strong>
   </div>
@@ -74,9 +83,6 @@
   .line-number {
     padding-right: 1.5em;
     opacity: 0.5;
-  }
-  .stack-entry:first-child .line-hili strong {
-    text-decoration: underline wavy #ff0040;
   }
   .file {
     font-weight: bold;

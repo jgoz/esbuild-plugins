@@ -30,6 +30,7 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
         path.join(__dirname, 'fixture', 'index.html'),
         path.join(dir, 'index.html'),
       );
+      await fsp.copyFile(path.join(__dirname, 'fixture', 'entry.ts'), path.join(dir, 'entry.ts'));
       await use(dir);
     },
     { scope: 'worker' },
@@ -64,13 +65,13 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
 
       console.log(`Starting server (LR port: ${lrPort})...`);
 
-      await writeFile(['1-initial.svelte', 'entry.svelte']);
+      await writeFile(['1-initial.svelte', 'App.svelte']);
       await writeFile(['style-1.css', 'style.css']);
 
       const context = await createContext({
         absWorkingDir,
         bundle: true,
-        entryPoints: ['entry.svelte', 'style.css'],
+        entryPoints: ['entry.ts', 'style.css'],
         format: 'esm',
         metafile: true,
         outdir: 'js',

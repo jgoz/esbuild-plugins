@@ -1,4 +1,5 @@
 import type { Message } from 'esbuild';
+import { mount, unmount } from 'svelte';
 
 import Overlay from './Overlay.svelte';
 
@@ -25,11 +26,11 @@ export function overlay(props: OverlayProps): () => void {
   }
 
   const onClose = () => {
-    component.$destroy();
+    unmount(component);
     if (target) target.remove();
   };
 
-  const component = new Overlay({
+  const component = mount(Overlay, {
     target,
     props: {
       errors: props.errors,

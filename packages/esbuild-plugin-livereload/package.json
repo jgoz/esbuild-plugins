@@ -38,7 +38,7 @@
     "get-port": "^5.0.0",
     "open-editor": "^4.1.1",
     "prettier": "^3.9.6",
-    "svelte": "^3.58.0",
+    "svelte": "^5.57.0",
     "svelte-check": "^4.7.6",
     "svelte-preprocess": "^6.0.5",
     "tslib": "^2.4.0",

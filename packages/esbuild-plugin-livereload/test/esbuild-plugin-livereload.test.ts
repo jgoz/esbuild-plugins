@@ -5,7 +5,7 @@ test('page reloads as content changes', async ({ page, port, writeFile }) => {
 
   test.expect(await page.textContent('h1')).toContain('Page One');
 
-  await writeFile(['2-error.svelte', 'entry.svelte']); // error
+  await writeFile(['2-error.svelte', 'App.svelte']); // error
 
   await page.waitForSelector('text=Oops :(');
   test.expect(await page.screenshot()).toMatchSnapshot('oops.png');
@@ -14,7 +14,7 @@ test('page reloads as content changes', async ({ page, port, writeFile }) => {
 
   test.expect(await page.textContent('h1')).toContain('Page One');
 
-  await writeFile(['3-fixed.svelte', 'entry.svelte']); // fixed
+  await writeFile(['3-fixed.svelte', 'App.svelte']); // fixed
 
   const msg = await page.waitForEvent('console');
   test.expect(msg.text()).toBe('esbuild-plugin-livereload: reloading...');

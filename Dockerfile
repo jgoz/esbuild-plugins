@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/playwright:v1.56.1-noble
+FROM mcr.microsoft.com/playwright:v1.63.0-noble
 
 RUN apt-get update && \
-  # Install node18
+  # Install Node.js 24, matching the repository's declared runtime.
   apt-get install -y curl wget gpg && \
-  curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
+  curl -sL https://deb.nodesource.com/setup_24.x | bash - && \
   apt-get install -y nodejs && \
   # clean apt cache
   rm -rf /var/lib/apt/lists/*

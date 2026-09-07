@@ -78,6 +78,12 @@
       }
     },
     {
+      "files": ["packages/esbuild-overlay/**"],
+      "env": {
+        "svelte": true
+      }
+    },
+    {
       "files": ["packages/jest-esbuild/**"],
       "env": {
         "jest": true
