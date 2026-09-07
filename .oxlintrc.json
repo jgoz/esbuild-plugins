@@ -7,29 +7,17 @@
   },
   "ignorePatterns": ["**/fixture/**/*", "**/dist/**/*", "**/lib/**/*"],
   "rules": {
+    "eqeqeq": ["error", "smart"],
+    "max-classes-per-file": ["error", 1],
+    "no-array-constructor": "error",
+    "no-bitwise": "error",
     "no-case-declarations": "error",
+    "no-new-wrappers": "error",
     "no-prototype-builtins": "error",
     "no-redeclare": "error",
     "no-regex-spaces": "error",
-    "no-undef": "error",
-    "no-array-constructor": "error",
-    "eqeqeq": ["error", "smart"],
-    "max-classes-per-file": ["error", 1],
-    "no-bitwise": "error",
-    "no-new-wrappers": "error",
     "no-throw-literal": "error",
-    "one-var": ["error", "never"],
-    "prefer-object-spread": "warn",
-    "radix": "error",
-    "prefer-const": [
-      "error",
-      {
-        "destructuring": "all"
-      }
-    ],
-    "import/first": "error",
-    "import/newline-after-import": "error",
-    "import/no-duplicates": "error",
+    "no-undef": "error",
     "no-unused-vars": [
       "warn",
       {
@@ -44,33 +32,38 @@
         }
       }
     ],
-    "typescript/ban-ts-comment": "error",
-    "typescript/no-empty-object-type": [
+    "one-var": ["error", "never"],
+    "prefer-const": [
       "error",
       {
-        "allowInterfaces": "with-single-extends"
+        "destructuring": "all"
       }
     ],
-    "typescript/no-namespace": "error",
-    "typescript/no-require-imports": "error",
-    "typescript/no-unnecessary-type-constraint": "warn",
-    "typescript/no-unsafe-function-type": "error",
+    "prefer-object-spread": "warn",
+    "radix": "error",
+
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error",
+
     "typescript/adjacent-overload-signatures": "error",
     "typescript/array-type": "error",
+    "typescript/ban-ts-comment": "error",
     "typescript/ban-tslint-comment": "error",
     "typescript/class-literal-property-style": "error",
     "typescript/consistent-generic-constructors": "error",
     "typescript/consistent-type-assertions": "error",
+    "typescript/consistent-type-imports": ["warn", { "prefer": "type-imports" }],
     "typescript/no-confusing-non-null-assertion": "error",
+    "typescript/no-empty-object-type": ["error", { "allowInterfaces": "with-single-extends" }],
     "typescript/no-inferrable-types": "error",
+    "typescript/no-namespace": "error",
+    "typescript/no-require-imports": "error",
+    "typescript/no-unnecessary-type-constraint": "warn",
+    "typescript/no-unsafe-function-type": "error",
     "typescript/prefer-function-type": "error",
-    "typescript/consistent-type-imports": [
-      "warn",
-      {
-        "prefer": "type-imports"
-      }
-    ],
     "typescript/unified-signatures": "error",
+
     "unicorn/prefer-node-protocol": "warn"
   },
   "overrides": [
