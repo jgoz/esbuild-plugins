@@ -1,7 +1,6 @@
 import { promises as fsp } from 'node:fs';
 import path from 'node:path';
 
-/* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
 import type { ServeResult } from 'esbuild';
 import { context as createContext } from 'esbuild';
@@ -11,7 +10,6 @@ import sveltePreprocess from 'svelte-preprocess';
 
 import { livereloadPlugin } from '../';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ServerTestFixtures {}
 
 interface ServerWorkerFixtures {

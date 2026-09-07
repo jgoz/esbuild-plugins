@@ -3,7 +3,6 @@ import { promises as fsp } from 'node:fs';
 import path from 'node:path';
 import { setTimeout } from 'node:timers/promises';
 
-/* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
 import type { ResultPromise } from 'execa';
 import { execaNode } from 'execa';

@@ -1,4 +1,3 @@
-/* eslint-env browser */
 import('./deps/c')
   .then(({ C }) => {
     return C();

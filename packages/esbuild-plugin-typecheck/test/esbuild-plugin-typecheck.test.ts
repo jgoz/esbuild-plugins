@@ -6,7 +6,6 @@ import { execaNode } from 'execa';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 async function* walk(dirPath: string): AsyncIterable<string> {
-  // eslint-disable-next-line @typescript-eslint/await-thenable
   for await (const d of await fs.promises.readdir(dirPath, { withFileTypes: true })) {
     const entry = path.join(dirPath, d.name);
     if (d.isDirectory()) yield* walk(entry);
@@ -118,7 +117,7 @@ function setup(relFixtureDirSrc: string) {
   return { cleanup, init, run, findTSOutput };
 }
 
-describe('eslint-plugin-typecheck', () => {
+describe('esbuild-plugin-typecheck', () => {
   describe('compile, once', () => {
     const build = setup('fixture/compile');
 

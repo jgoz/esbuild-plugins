@@ -115,7 +115,7 @@ async function buildWithHTML(
   }
 }
 
-describe('eslint-plugin-html', () => {
+describe('esbuild-plugin-html', () => {
   beforeAll(async () => {
     await fs.promises.mkdir(TEST_ROOT, { recursive: true });
     return async () => {

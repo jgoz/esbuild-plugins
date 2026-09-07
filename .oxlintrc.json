@@ -95,6 +95,13 @@
         "typescript/no-var-requires": "off",
         "typescript/no-require-imports": "off"
       }
+    },
+    {
+      "files": ["packages/*/test/**"],
+      "rules": {
+        "no-empty-pattern": "off",
+        "@typescript-eslint/no-empty-object-type": "off"
+      }
     }
   ]
 }

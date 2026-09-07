@@ -2,7 +2,6 @@ import { EventEmitter } from 'node:events';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 
-/* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
 import type { ResultPromise } from 'execa';
 import { execaNode } from 'execa';

@@ -26,9 +26,7 @@ export default async function esbdBuildMulti(
   options: EsbdBuildOptions,
 ) {
   if (options.check) {
-    const TypecheckRunner: typeof TypecheckRunnerCls =
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      require('@jgoz/esbuild-plugin-typecheck').TypecheckRunner;
+    const { TypecheckRunner } = await import('@jgoz/esbuild-plugin-typecheck');
 
     const checks = new Map<string, TypecheckRunnerCls>();
     for (const config of configs) {
