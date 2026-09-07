@@ -5,6 +5,7 @@ allowBuilds:
   '@parcel/watcher': true
   esbuild: true
   svelte-preprocess: true
+  unrs-resolver: true
 
 preferWorkspacePackages: true
 
@@ -13,9 +14,6 @@ overrides:
   'tslib@2.x': '^2.4.0'
   'follow-redirects@<1.15.4': '>=1.15.4'
   'follow-redirects@<=1.15.5': '>=1.15.6'
-
-onlyBuiltDependencies:
-  - 'svelte-preprocess'
 
 patchedDependencies:
   unionfs: patches/unionfs.patch
