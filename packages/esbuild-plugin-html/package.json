@@ -33,7 +33,7 @@
     "@types/js-beautify": "^1.14.3",
     "@types/node": "^20.19.43",
     "esbuild": "^0.28.2",
-    "js-beautify": "^1.15.4",
+    "js-beautify": "^2.0.3",
     "parse5": "^8.0.1",
     "typescript": "^6.0.3",
     "vite": "^8.2.2",

@@ -37,7 +37,7 @@
     "autoprefixer": "^10.5.5",
     "enhanced-resolve": "^5.24.5",
     "esbuild": "^0.28.2",
-    "js-beautify": "^1.15.4",
+    "js-beautify": "^2.0.3",
     "postcss": "^8.5.28",
     "postcss-preset-env": "^10.6.1",
     "sass": "^1.104.0",

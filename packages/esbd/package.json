@@ -41,7 +41,7 @@
     "execa": "^5.0.0",
     "get-port": "^5.0.0",
     "io-spin": "^0.4.1",
-    "js-beautify": "^1.15.4",
+    "js-beautify": "^2.0.3",
     "memfs": "^4.71.0",
     "mime-types": "^3.0.2",
     "node-graceful": "^3.1.0",
