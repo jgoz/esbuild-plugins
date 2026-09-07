@@ -1,6 +1,6 @@
 {
   "name": "@jgoz/esbuild-plugin-html",
-  "version": "1.0.12",
+  "version": "2.0.0",
   "description": "HTML plugin for esbuild",
   "keywords": [
     "esbuild",

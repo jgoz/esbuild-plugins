@@ -1,6 +1,6 @@
 {
   "name": "@jgoz/jest-esbuild",
-  "version": "1.0.10",
+  "version": "2.0.0",
   "description": "Esbuild transformer for Jest",
   "keywords": [
     "esbuild",

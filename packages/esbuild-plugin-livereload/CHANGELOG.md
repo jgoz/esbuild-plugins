@@ -1,5 +1,11 @@
 # @jgoz/esbuild-plugin-livereload
 
+## 3.0.0
+
+### Major Changes
+
+- d1d9152: Require Node.js >= 22
+
 ## 2.1.4
 
 ### Patch Changes

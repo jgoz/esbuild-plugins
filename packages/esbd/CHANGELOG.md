@@ -1,5 +1,17 @@
 # esbd
 
+## 4.0.0
+
+### Major Changes
+
+- d1d9152: Require Node.js >= 22
+
+### Patch Changes
+
+- Updated dependencies [d1d9152]
+  - @jgoz/esbuild-plugin-livereload@3.0.0
+  - @jgoz/esbuild-plugin-typecheck@5.0.0
+
 ## 3.3.12
 
 ### Patch Changes
