@@ -1,43 +1,15 @@
 {
   "name": "@jgoz/esbuild-plugins",
   "private": true,
-  "author": "John Gozde <john@gozde.ca>",
-  "license": "MIT",
   "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jgoz/esbuild-plugins.git"
-  },
   "bugs": {
     "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
-  "devEngines": {
-    "runtime": [
-      {
-        "name": "node",
-        "version": "^24"
-      }
-    ],
-    "packageManager": [
-      {
-        "name": "pnpm",
-        "version": "^12"
-      }
-    ]
-  },
-  "packageManager": "pnpm@12.3.4",
-  "devDependencies": {
-    "@changesets/cli": "^3.0.2",
-    "@tsconfig/node24": "^24.0.5",
-    "@types/node": "^24.13.3",
-    "esbuild": "^0.28.2",
-    "execa": "^5.0.0",
-    "oxfmt": "^0.66.0",
-    "oxlint": "^1.81.0",
-    "playwright": "^1.63.0",
-    "tslib": "^2.4.0",
-    "typedoc": "^0.28.20",
-    "typescript": "^6.0.3"
+  "license": "MIT",
+  "author": "John Gozde <john@gozde.ca>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jgoz/esbuild-plugins.git"
   },
   "scripts": {
     "build": "tsc -b && pnpm run -r --if-present prepack",
@@ -55,5 +27,33 @@
     "release": "pnpm publish -r --filter=\"@jgoz/*\" --filter=\"esbd\" --filter=\"!@jgoz/esbuild-plugins\"",
     "test": "pnpm run -r --if-present test",
     "watch": "pnpm run -r --if-present --stream --parallel watch"
-  }
+  },
+  "devDependencies": {
+    "@changesets/cli": "^3.0.2",
+    "@tsconfig/node24": "^24.0.5",
+    "@types/node": "^24.13.3",
+    "esbuild": "^0.28.2",
+    "execa": "^5.0.0",
+    "oxfmt": "^0.66.0",
+    "oxlint": "^1.81.0",
+    "playwright": "^1.63.0",
+    "tslib": "^2.4.0",
+    "typedoc": "^0.28.20",
+    "typescript": "^6.0.3"
+  },
+  "devEngines": {
+    "packageManager": [
+      {
+        "name": "pnpm",
+        "version": "^12"
+      }
+    ],
+    "runtime": [
+      {
+        "name": "node",
+        "version": "^24"
+      }
+    ]
+  },
+  "packageManager": "pnpm@12.3.4"
 }

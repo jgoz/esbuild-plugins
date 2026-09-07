@@ -1,10 +1,10 @@
-import { node } from 'execa';
 import fs from 'fs';
 import path from 'path';
+
+import { node } from 'execa';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { EsbdConfig } from '../lib';
-
 import type { BuildWithHTMLOutput } from './config/serializer';
 
 interface BuildWithHTMLOptions {

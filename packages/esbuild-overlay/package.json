@@ -1,31 +1,35 @@
 {
   "name": "@jgoz/esbuild-overlay",
   "version": "1.0.10",
-  "author": "John Gozde <john@gozde.ca>",
   "description": "Browser overlay for esbuild errors and warnings",
-  "license": "MIT",
+  "keywords": [
+    "esbuild",
+    "esbuild-plugin",
+    "livereload"
+  ],
   "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
-  "publishConfig": {
-    "access": "public"
+  "bugs": {
+    "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
+  "license": "MIT",
+  "author": "John Gozde <john@gozde.ca>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jgoz/esbuild-plugins.git",
     "directory": "packages/esbuild-overlay"
   },
-  "bugs": {
-    "url": "https://github.com/jgoz/esbuild-plugins/issues"
-  },
-  "keywords": [
-    "esbuild-plugin",
-    "esbuild",
-    "livereload"
-  ],
   "main": "dist/overlay.js",
   "module": "dist/overlay.js",
   "types": "lib/overlay.d.ts",
-  "peerDependencies": {
-    "esbuild": ">=0.25.0"
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
+    "prepublish": "pnpm check",
+    "prepack": "./bundle.js build",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "watch": "./bundle.js build -w"
   },
   "devDependencies": {
     "@tsconfig/svelte": "^5.0.8",
@@ -38,11 +42,7 @@
     "tslib": "^2.4.0",
     "typescript": "^6.0.3"
   },
-  "scripts": {
-    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
-    "prepublish": "pnpm check",
-    "prepack": "./bundle.js build",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "watch": "./bundle.js build -w"
+  "peerDependencies": {
+    "esbuild": ">=0.25.0"
   }
 }

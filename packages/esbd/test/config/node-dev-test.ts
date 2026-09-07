@@ -1,11 +1,12 @@
+import { EventEmitter } from 'events';
+import fsp from 'fs/promises';
+import path from 'path';
+
 /* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
-import { EventEmitter } from 'events';
 import type { ExecaChildProcess } from 'execa';
 import { node } from 'execa';
-import fsp from 'fs/promises';
 import getPort from 'get-port';
-import path from 'path';
 import waitOn from 'wait-on';
 
 import type { EsbdConfig } from '../../lib';

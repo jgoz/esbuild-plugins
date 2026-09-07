@@ -3,9 +3,7 @@ import type { Message } from 'esbuild';
 import Overlay from './Overlay.svelte';
 
 export interface OverlayProps {
-  /**
-   * Error messages to display.
-   */
+  /** Error messages to display. */
   errors: Message[];
 
   /**

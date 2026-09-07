@@ -1,11 +1,12 @@
-import type { Message } from 'esbuild';
 import * as realFS from 'fs';
-import { fs as memfs } from 'memfs';
 import path, { dirname } from 'path';
-import ts from 'typescript';
-import { ufs } from 'unionfs';
 import type { MessagePort } from 'worker_threads';
 import { isMainThread, parentPort, workerData } from 'worker_threads';
+
+import type { Message } from 'esbuild';
+import { fs as memfs } from 'memfs';
+import ts from 'typescript';
+import { ufs } from 'unionfs';
 
 import { Reporter } from './reporter';
 
@@ -44,7 +45,10 @@ export interface WorkerDoneMessage {
 }
 
 export type WorkerMessage =
-  WorkerDiagnosticsMessage | WorkerBuildMessage | WorkerStartMessage | WorkerDoneMessage;
+  | WorkerDiagnosticsMessage
+  | WorkerBuildMessage
+  | WorkerStartMessage
+  | WorkerDoneMessage;
 
 export interface TypescriptWorkerOptions {
   basedir: string;
@@ -56,9 +60,8 @@ export interface TypescriptWorkerOptions {
 }
 
 /**
- * Creates a ts.System implementation that redirects all write
- * operations to an in-memory FS. Read operations first try the memory
- * FS and fall back to the real FS.
+ * Creates a ts.System implementation that redirects all write operations to an in-memory FS. Read
+ * operations first try the memory FS and fall back to the real FS.
  */
 function createPartialMemoryBackedSystem(): ts.System {
   // @ts-expect-error -- IFs and IFS are not compatible...

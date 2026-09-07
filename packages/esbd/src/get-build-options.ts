@@ -1,5 +1,6 @@
-import type { BuildOptions } from 'esbuild';
 import path from 'path';
+
+import type { BuildOptions } from 'esbuild';
 
 import type { BuildMode, ResolvedEsbdConfig } from './config';
 import type { EntryPoints, WriteTemplateOptions } from './html-entry-point';

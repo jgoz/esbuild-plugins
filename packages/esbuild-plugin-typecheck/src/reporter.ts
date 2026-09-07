@@ -1,5 +1,6 @@
-import type { Message } from 'esbuild';
 import path from 'path';
+
+import type { Message } from 'esbuild';
 import ts from 'typescript';
 
 import type {

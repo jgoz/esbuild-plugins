@@ -1,6 +1,7 @@
+import path from 'path';
+
 import { cli, command } from 'cleye';
 import type { LogLevel } from 'esbuild';
-import path from 'path';
 
 import type {
   BuildMode,

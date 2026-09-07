@@ -1,11 +1,12 @@
+import { promises as fsp } from 'fs';
+import path from 'path';
+
 /* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
 import type { ServeResult } from 'esbuild';
 import { context as createContext } from 'esbuild';
 import esbuildSvelte from 'esbuild-svelte';
-import { promises as fsp } from 'fs';
 import getPort from 'get-port';
-import path from 'path';
 import sveltePreprocess from 'svelte-preprocess';
 
 import { livereloadPlugin } from '../';

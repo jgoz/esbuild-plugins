@@ -1,7 +1,8 @@
-import { node } from 'execa';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+
+import { node } from 'execa';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 async function* walk(dirPath: string): AsyncIterable<string> {

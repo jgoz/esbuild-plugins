@@ -1,4 +1,5 @@
 import process from 'process';
+
 import type DartSass from 'sass';
 
 export function loadSass(basedir: string = process.cwd()): typeof DartSass {

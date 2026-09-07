@@ -1,37 +1,35 @@
 {
   "name": "@jgoz/esbuild-plugin-sass",
   "version": "2.0.10",
-  "author": "John Gozde <john@gozde.ca>",
   "description": "Sass plugin for esbuild",
-  "license": "MIT",
+  "keywords": [
+    "esbuild",
+    "esbuild-plugin",
+    "sass",
+    "sass-lang"
+  ],
   "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
-  "publishConfig": {
-    "access": "public"
+  "bugs": {
+    "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
+  "license": "MIT",
+  "author": "John Gozde <john@gozde.ca>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jgoz/esbuild-plugins.git",
     "directory": "packages/esbuild-plugin-sass"
   },
-  "bugs": {
-    "url": "https://github.com/jgoz/esbuild-plugins/issues"
-  },
-  "keywords": [
-    "esbuild-plugin",
-    "esbuild",
-    "sass",
-    "sass-lang"
-  ],
   "main": "dist/plugin-sass.js",
   "types": "lib/index.d.ts",
-  "peerDependencies": {
-    "esbuild": ">=0.25.0",
-    "sass": ">= 1.x"
+  "publishConfig": {
+    "access": "public"
   },
-  "peerDependenciesMeta": {
-    "sass": {
-      "optional": true
-    }
+  "scripts": {
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
+    "prepack": "./bundle.js build",
+    "prepare": "cd test/fixture && pnpm install",
+    "test": "vitest run",
+    "watch": "./bundle.js build -w"
   },
   "devDependencies": {
     "@types/js-beautify": "^1.14.3",
@@ -47,11 +45,13 @@
     "vite": "^8.2.2",
     "vitest": "^3.2.7"
   },
-  "scripts": {
-    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
-    "prepack": "./bundle.js build",
-    "prepare": "cd test/fixture && pnpm install",
-    "test": "vitest run",
-    "watch": "./bundle.js build -w"
+  "peerDependencies": {
+    "esbuild": ">=0.25.0",
+    "sass": ">= 1.x"
+  },
+  "peerDependenciesMeta": {
+    "sass": {
+      "optional": true
+    }
   }
 }

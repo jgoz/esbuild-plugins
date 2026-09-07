@@ -1,3 +1,5 @@
+import { extname } from 'node:path';
+
 import * as babel from '@babel/core';
 import type {
   AsyncTransformer,
@@ -9,7 +11,6 @@ import type {
 } from '@jest/transform';
 import * as esbuild from 'esbuild';
 import { globsToMatcher } from 'jest-util';
-import { extname } from 'node:path';
 
 export interface TransformerConfig {
   /**
@@ -20,9 +21,9 @@ export interface TransformerConfig {
   esbuild?: esbuild.TransformOptions;
 
   /**
-   * Alternate glob patterns for files that should be transformed with Babel for
-   * mock hoisting. If specified, only files matching this pattern will be transformed
-   * with Babel after being transformed with esbuild.
+   * Alternate glob patterns for files that should be transformed with Babel for mock hoisting. If
+   * specified, only files matching this pattern will be transformed with Babel after being
+   * transformed with esbuild.
    *
    * @default testMatch
    */

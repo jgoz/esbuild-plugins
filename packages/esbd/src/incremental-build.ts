@@ -1,9 +1,10 @@
-import type { BuildContext, BuildOptions, BuildResult, Plugin } from 'esbuild';
-import { context as createContext } from 'esbuild';
 import { EventEmitter } from 'events';
 import { watch as fsWatch } from 'fs';
 import { copyFile, mkdir, rm } from 'fs/promises';
 import path from 'path';
+
+import type { BuildContext, BuildOptions, BuildResult, Plugin } from 'esbuild';
+import { context as createContext } from 'esbuild';
 import pc from 'picocolors';
 
 import type { Logger } from './log';

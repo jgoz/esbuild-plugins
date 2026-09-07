@@ -1,39 +1,35 @@
 {
   "name": "@jgoz/esbuild-plugin-typecheck",
   "version": "4.0.5",
-  "author": "John Gozde <john@gozde.ca>",
   "description": "TypeScript type-checking plugin for esbuild",
-  "license": "MIT",
+  "keywords": [
+    "checking",
+    "diagnostics",
+    "esbuild",
+    "esbuild-plugin",
+    "typescript"
+  ],
   "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
-  "publishConfig": {
-    "access": "public"
+  "bugs": {
+    "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
+  "license": "MIT",
+  "author": "John Gozde <john@gozde.ca>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jgoz/esbuild-plugins.git",
     "directory": "packages/esbuild-plugin-typecheck"
   },
-  "bugs": {
-    "url": "https://github.com/jgoz/esbuild-plugins/issues"
-  },
-  "keywords": [
-    "esbuild-plugin",
-    "esbuild",
-    "typescript",
-    "checking",
-    "diagnostics"
-  ],
   "main": "dist/plugin-typecheck.js",
   "types": "lib/index.d.ts",
-  "peerDependencies": {
-    "@jgoz/esbuild-plugin-livereload": ">=2.1.4",
-    "esbuild": ">=0.25.0",
-    "typescript": ">= 3.5 <7"
+  "publishConfig": {
+    "access": "public"
   },
-  "peerDependenciesMeta": {
-    "@jgoz/esbuild-plugin-livereload": {
-      "optional": true
-    }
+  "scripts": {
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
+    "prepack": "./bundle.js build",
+    "test": "vitest run",
+    "watch": "./bundle.js build -w"
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
@@ -49,10 +45,14 @@
     "vite": "^8.2.2",
     "vitest": "^3.2.7"
   },
-  "scripts": {
-    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
-    "prepack": "./bundle.js build",
-    "test": "vitest run",
-    "watch": "./bundle.js build -w"
+  "peerDependencies": {
+    "@jgoz/esbuild-plugin-livereload": ">=2.1.4",
+    "esbuild": ">=0.25.0",
+    "typescript": ">= 3.5 <7"
+  },
+  "peerDependenciesMeta": {
+    "@jgoz/esbuild-plugin-livereload": {
+      "optional": true
+    }
   }
 }

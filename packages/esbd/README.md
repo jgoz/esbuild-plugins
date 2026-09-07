@@ -299,12 +299,7 @@ Entry name attributes can optionally reference values that appear in the `define
     <link rel="stylesheet" href="./styles/entry.css" data-entry-name="styles" />
 
     <!-- Will be written as "script-1.2.3.js" if {{version}} is defined as "1.2.3" -->
-    <script
-      data-entry-name="script-{{version}}"
-      defer
-      type="module"
-      src="./src/entry.tsx"
-    ></script>
+    <script data-entry-name="script-{{version}}" defer type="module" src="./src/entry.tsx"></script>
   </head>
   <body>
     <div id="root"></div>
@@ -333,10 +328,7 @@ configure({
   copy: [
     ['./assets/cat.png'], // -> ./build/cat.png
     ['./assets/dog.png', 'assets/horse.png'], // -> ./build/assets/horse.png
-    [
-      '/Users/me/path/to/repo/src/assets/pig.png',
-      '/Users/me/path/to/repo/build/assets/pig.png',
-    ], // -> ./build/assets/pig.png
+    ['/Users/me/path/to/repo/src/assets/pig.png', '/Users/me/path/to/repo/build/assets/pig.png'], // -> ./build/assets/pig.png
   ],
 });
 ```

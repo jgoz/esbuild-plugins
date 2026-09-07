@@ -1,8 +1,9 @@
+import fs from 'fs';
+import path from 'path';
+
 import type { BuildOptions } from 'esbuild';
 import { build } from 'esbuild';
-import fs from 'fs';
 import { html_beautify } from 'js-beautify';
-import path from 'path';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { HtmlPluginOptions } from '../lib';

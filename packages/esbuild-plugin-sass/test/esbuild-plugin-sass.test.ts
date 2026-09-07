@@ -1,8 +1,9 @@
+import fs from 'fs';
+import path from 'path';
+
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { build, context as createContext } from 'esbuild';
-import fs from 'fs';
 import { css_beautify } from 'js-beautify';
-import path from 'path';
 import { describe, expect, test } from 'vitest';
 
 import { sassPlugin } from '../lib';

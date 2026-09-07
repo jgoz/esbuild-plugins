@@ -1,6 +1,7 @@
-import type { OnLoadArgs, OnLoadResult, OnResolveArgs, Plugin } from 'esbuild';
 import { promises as fsp } from 'fs';
 import { dirname, resolve } from 'path';
+
+import type { OnLoadArgs, OnLoadResult, OnResolveArgs, Plugin } from 'esbuild';
 import type { LegacyException, LegacyFunction, LegacyImporter } from 'sass';
 
 import { createSassImporter } from './create-sass-importer';
@@ -22,29 +23,29 @@ export interface SassPluginOptions {
   basedir?: string;
 
   /**
-   * Resolves `@import` directives *between sass files*.
+   * Resolves `@import` directives _between sass files_.
    *
-   * This is not used when esbuild resolves imports from other module types, e.g.,
-   * when importing from JS/TS files or when defining a Sass file as an entry point.
+   * This is not used when esbuild resolves imports from other module types, e.g., when importing
+   * from JS/TS files or when defining a Sass file as an entry point.
    *
-   * If left undefined, a default importer will be used that closely mimics webpack's
-   * sass-loader resolution algorithm, which itself closely mimic's the default resolution
-   * algorithm of dart-sass.
+   * If left undefined, a default importer will be used that closely mimics webpack's sass-loader
+   * resolution algorithm, which itself closely mimic's the default resolution algorithm of
+   * dart-sass.
    *
-   * If you want to extend the import algorithm while keeping the default, you can import it
-   * like so:
+   * If you want to extend the import algorithm while keeping the default, you can import it like
+   * so:
    *
    * @example
-   * import { createSassImporter } from '@jgoz/esbuild-plugin-sass';
+   *   import { createSassImporter } from '@jgoz/esbuild-plugin-sass';
    *
-   * const defaultImporter = createSassImporter(
-   *   [], // includePaths
-   *   {}, // aliases
-   * );
+   *   const defaultImporter = createSassImporter(
+   *     [], // includePaths
+   *     {}, // aliases
+   *   );
    *
-   * sassPlugin({
-   *   importer: [myImporter, defaultImporter]
-   * })
+   *   sassPlugin({
+   *     importer: [myImporter, defaultImporter],
+   *   });
    *
    * @default undefined
    * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#importer}
@@ -53,90 +54,90 @@ export interface SassPluginOptions {
 
   /**
    * Holds a collection of custom functions that may be invoked by the sass files being compiled.
-   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#functions}
    *
    * @default undefined
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#functions}
    */
   functions?: Record<string, LegacyFunction<'sync'>>;
 
   /**
-   * An array of paths that should be looked in to attempt to resolve your \@import declarations.
+   * An array of paths that should be looked in to attempt to resolve your @import declarations.
    * When using `data`, it is recommended that you use this.
-   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#includePaths}
    *
-   * @default []
+   * @default [ ]
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#includePaths}
    */
   includePaths?: string[];
 
   /**
    * Enable Sass Indented Syntax for parsing the data string or file.
-   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyStringOptions#indentedSyntax}
    *
    * @default false
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyStringOptions#indentedSyntax}
    */
   indentedSyntax?: boolean;
 
   /**
    * Used to determine whether to use space or tab character for indentation.
-   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#indentType}
    *
    * @default 'space'
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#indentType}
    */
   indentType?: 'space' | 'tab';
 
   /**
    * Used to determine the number of spaces or tabs to be used for indentation.
-   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#indentWidth}
    *
    * @default 2
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#indentWidth}
    */
   indentWidth?: number;
 
   /**
    * Used to determine which sequence to use for line breaks.
-   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#linefeed}
    *
    * @default 'lf'
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#linefeed}
    */
   linefeed?: 'cr' | 'crlf' | 'lf' | 'lfcr';
 
   /**
    * Determines the output format of the final CSS style.
-   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#outputStyle}
    *
    * @default 'expanded'
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#outputStyle}
    */
   outputStyle?: 'compressed' | 'expanded';
 
   /**
    * Enables the outputting of a source map.
-   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#sourceMap}
    *
    * @default undefined
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#sourceMap}
    */
   sourceMap?: boolean | string;
 
   /**
    * Includes the contents in the source map information.
-   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#sourceMapContents}
    *
    * @default false
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#sourceMapContents}
    */
   sourceMapContents?: boolean;
 
   /**
    * Embeds the source map as a data URI.
-   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#sourceMapEmbed}
    *
    * @default false
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#sourceMapEmbed}
    */
   sourceMapEmbed?: boolean;
 
   /**
    * The value will be emitted as `sourceRoot` in the source map information.
-   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#sourceMapRoot}
    *
    * @default undefined
+   * @see {@link https://sass-lang.com/documentation/js-api/interfaces/LegacyFileOptions#sourceMapRoot}
    */
   sourceMapRoot?: string;
 
@@ -146,20 +147,17 @@ export interface SassPluginOptions {
    * This might be useful for, e.g., processing CSS output with PostCSS/autoprefixer.
    *
    * @example
-   * const postCSS = require("postcss")([
-   *  require("autoprefixer"),
-   *  require("postcss-preset-env")({ stage:0 })
-   * ]);
+   *   const postCSS = require('postcss')([
+   *     require('autoprefixer'),
+   *     require('postcss-preset-env')({ stage: 0 }),
+   *   ]);
    *
-   * sassPlugin({
-   *  async transform(source, resolveDir) {
-   *    const { css } = await postCSS.process(
-   *      source,
-   *      { from: resolveDir }
-   *    );
-   *    return css;
-   *  }
-   * })
+   *   sassPlugin({
+   *     async transform(source, resolveDir) {
+   *       const { css } = await postCSS.process(source, { from: resolveDir });
+   *       return css;
+   *     },
+   *   });
    *
    * @default undefined
    */

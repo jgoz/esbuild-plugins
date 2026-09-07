@@ -1,6 +1,7 @@
-import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
 import fs from 'fs';
 import { dirname, relative } from 'path';
+
+import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
 import pc from 'picocolors';
 import prettyBytes from 'pretty-bytes';
 

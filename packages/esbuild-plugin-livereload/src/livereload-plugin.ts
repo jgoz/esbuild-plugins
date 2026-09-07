@@ -1,40 +1,29 @@
 import { createHash } from 'crypto';
-import type { BuildOptions, BuildResult, Message, Plugin } from 'esbuild';
 import { createReadStream, promises as fsp } from 'fs';
 import type { ServerResponse } from 'http';
 import path from 'path';
 
+import type { BuildOptions, BuildResult, Message, Plugin } from 'esbuild';
+
 import { createLivereloadServer } from './server';
 
 export interface ClientMessage {
-  /**
-   * Output files that were added since the last build.
-   */
+  /** Output files that were added since the last build. */
   added: readonly string[];
 
-  /**
-   * Output files that were removed since the last build.
-   */
+  /** Output files that were removed since the last build. */
   removed: readonly string[];
 
-  /**
-   * Output files that were changed since the last build.
-   */
+  /** Output files that were changed since the last build. */
   updated: readonly string[];
 
-  /**
-   * Reload the page even if a hot update is possible.
-   */
+  /** Reload the page even if a hot update is possible. */
   forceReload?: boolean;
 
-  /**
-   * Error messages.
-   */
+  /** Error messages. */
   errors?: readonly Message[];
 
-  /**
-   * Warning messages.
-   */
+  /** Warning messages. */
   warnings?: readonly Message[];
 }
 
@@ -59,11 +48,10 @@ export interface LivereloadPluginOptions {
   /**
    * Host that the livereload server will run on.
    *
-   * Setting this value to '0.0.0.0' will allow external
-   * connections, e.g., when running the livereload server
-   * on a different system from the connecting web browser.
-   * This setup likely requires setting `urlHostname` to the
-   * either the IP address or local DNS name of the livereload system.
+   * Setting this value to '0.0.0.0' will allow external connections, e.g., when running the
+   * livereload server on a different system from the connecting web browser. This setup likely
+   * requires setting `urlHostname` to the either the IP address or local DNS name of the livereload
+   * system.
    *
    * @default 127.0.0.1
    */
@@ -72,8 +60,8 @@ export interface LivereloadPluginOptions {
   /**
    * Hostname to use when connecting to the livereload server.
    *
-   * This option might be useful when running the livereload
-   * server on a different system from the connecting web browser.
+   * This option might be useful when running the livereload server on a different system from the
+   * connecting web browser.
    *
    * Defaults to the value specified in `host`.
    */
@@ -81,8 +69,8 @@ export interface LivereloadPluginOptions {
 }
 
 /**
- * An esbuild plugin that sets up a livereload server and modifies the
- * build options to enable reload-on-change behavior and error reporting.
+ * An esbuild plugin that sets up a livereload server and modifies the build options to enable
+ * reload-on-change behavior and error reporting.
  *
  * @param options - Options for the livereload plugin.
  * @returns - An esbuild plugin that enables livereload.
@@ -141,10 +129,10 @@ export function livereloadPlugin(options: LivereloadPluginOptions = {}): Plugin 
 /**
  * Creates a stateful function that generates messages for connected clients.
  *
- * Build outputs are tracked between builds and differentials are calculated
- * with each subsequent build.
+ * Build outputs are tracked between builds and differentials are calculated with each subsequent
+ * build.
  *
- * @param options - esbuild build options
+ * @param options - Esbuild build options
  * @param fullReloadOnCssUpdates - If true, CSS updates will always trigger a full page reload
  * @returns - A function that generates messages for connected clients
  */
@@ -211,17 +199,15 @@ export function clientMessageBuilder(options: BuildOptions, fullReloadOnCssUpdat
 }
 
 /**
- * Notifies connected clients that errors or warnings occurred from
- * a given source. If there are no errors and the notification originates
- * from esbuild, the page will be sent a reload request.
+ * Notifies connected clients that errors or warnings occurred from a given source. If there are no
+ * errors and the notification originates from esbuild, the page will be sent a reload request.
  *
- * @param errorSource - Key to use when identifying these errors and warnings.
- *                      Previous results will be overwritten for the same `errorSource`.
+ * @param errorSource - Key to use when identifying these errors and warnings. Previous results will
+ *   be overwritten for the same `errorSource`.
  * @param msg - Object containing errors and warnings from the given source
- * @param connectedClients - Set of long-lived server responses representing
- *                           clients currently connected to the livereload
- *                           server. Only required if you are implementing your
- *                           own livereload server.
+ * @param connectedClients - Set of long-lived server responses representing clients currently
+ *   connected to the livereload server. Only required if you are implementing your own livereload
+ *   server.
  */
 export function notify(
   errorSource: string,
