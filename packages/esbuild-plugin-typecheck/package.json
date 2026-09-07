@@ -1,6 +1,6 @@
 {
   "name": "@jgoz/esbuild-plugin-typecheck",
-  "version": "4.0.5",
+  "version": "5.0.0",
   "description": "TypeScript type-checking plugin for esbuild",
   "keywords": [
     "checking",
@@ -45,7 +45,7 @@
     "vitest": "^5.0.0"
   },
   "peerDependencies": {
-    "@jgoz/esbuild-plugin-livereload": ">=2.1.4",
+    "@jgoz/esbuild-plugin-livereload": ">=3.0.0",
     "esbuild": ">=0.25.0",
     "typescript": ">= 3.5 <7"
   },

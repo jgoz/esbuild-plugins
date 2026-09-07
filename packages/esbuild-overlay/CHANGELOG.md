@@ -1,5 +1,11 @@
 # @jgoz/esbuild-overlay
 
+## 2.0.0
+
+### Major Changes
+
+- d1d9152: Require Node.js >= 22
+
 ## 1.0.10
 
 ### Patch Changes

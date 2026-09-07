@@ -1,6 +1,6 @@
 {
   "name": "esbd",
-  "version": "3.3.12",
+  "version": "4.0.0",
   "description": "CLI wrapper for esbuild in dev and prod",
   "keywords": [
     "esbuild",
