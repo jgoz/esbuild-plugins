@@ -1,6 +1,7 @@
-import { promises as fsp } from 'fs';
+import { promises as fsp } from 'node:fs';
+import path from 'node:path';
+
 import { parse } from 'parse5';
-import path from 'path';
 
 import {
   defaultDoctype,

@@ -1,6 +1,6 @@
-import type { BinaryLike } from 'crypto';
-import { createHash } from 'crypto';
-import { createReadStream, promises as fsp } from 'fs';
+import type { BinaryLike } from 'node:crypto';
+import { createHash } from 'node:crypto';
+import { createReadStream, promises as fsp } from 'node:fs';
 
 import type { HashAlgorithm } from './types';
 

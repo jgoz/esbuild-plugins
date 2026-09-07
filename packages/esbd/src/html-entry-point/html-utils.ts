@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 import type { Attribute, ChildNode, DocumentType, Element, ParentNode, TextNode } from './parse5';
 import type { Crossorigin, HashAlgorithm } from './types';

@@ -1,8 +1,8 @@
-import fs from 'fs';
-import type { IncomingMessage, Server, ServerResponse } from 'http';
-import { createServer } from 'http';
-import path from 'path';
-import { URL } from 'url';
+import fs from 'node:fs';
+import type { IncomingMessage, Server, ServerResponse } from 'node:http';
+import { createServer } from 'node:http';
+import path from 'node:path';
+import { URL } from 'node:url';
 
 const openEditor = import('open-editor');
 

@@ -1,59 +1,57 @@
 {
   "name": "@jgoz/esbuild-plugin-typecheck",
   "version": "4.0.5",
-  "author": "John Gozde <john@gozde.ca>",
   "description": "TypeScript type-checking plugin for esbuild",
-  "license": "MIT",
+  "keywords": [
+    "checking",
+    "diagnostics",
+    "esbuild",
+    "esbuild-plugin",
+    "typescript"
+  ],
   "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
-  "publishConfig": {
-    "access": "public"
+  "bugs": {
+    "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
+  "license": "MIT",
+  "author": "John Gozde <john@gozde.ca>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jgoz/esbuild-plugins.git",
     "directory": "packages/esbuild-plugin-typecheck"
   },
-  "bugs": {
-    "url": "https://github.com/jgoz/esbuild-plugins/issues"
-  },
-  "keywords": [
-    "esbuild-plugin",
-    "esbuild",
-    "typescript",
-    "checking",
-    "diagnostics"
-  ],
   "main": "dist/plugin-typecheck.js",
   "types": "lib/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && oxfmt README.md",
+    "prepack": "./bundle.js build",
+    "test": "vitest run",
+    "watch": "./bundle.js build -w"
+  },
+  "devDependencies": {
+    "@jgoz/esbuild-plugin-livereload": "workspace:*",
+    "@types/node": "^24.13.3",
+    "esbuild": "^0.28.2",
+    "execa": "^10.0.1",
+    "memfs": "^4.71.0",
+    "picocolors": "^1.1.1",
+    "tslib": "^2.4.0",
+    "typescript": "^6.0.3",
+    "unionfs": "^4.6.0",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
+  },
   "peerDependencies": {
     "@jgoz/esbuild-plugin-livereload": ">=2.1.4",
     "esbuild": ">=0.25.0",
-    "typescript": ">= 3.5"
+    "typescript": ">= 3.5 <7"
   },
   "peerDependenciesMeta": {
     "@jgoz/esbuild-plugin-livereload": {
       "optional": true
     }
-  },
-  "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.1.1",
-    "@jgoz/esbuild-plugin-livereload": "workspace:*",
-    "@types/node": "^20.19.0",
-    "esbuild": "^0.25.11",
-    "execa": "^5.0.0",
-    "memfs": "^3.5.3",
-    "picocolors": "^1.1.1",
-    "prettier": "^3.6.2",
-    "tslib": "^2.4.0",
-    "typescript": "^5.9.3",
-    "unionfs": "^4.6.0",
-    "vite": ">=6.4.1",
-    "vitest": "^3.2.4"
-  },
-  "scripts": {
-    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
-    "prepack": "./bundle.js build",
-    "test": "vitest run",
-    "watch": "./bundle.js build -w"
   }
 }

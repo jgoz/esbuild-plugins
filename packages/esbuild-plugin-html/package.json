@@ -1,46 +1,45 @@
 {
   "name": "@jgoz/esbuild-plugin-html",
   "version": "1.0.12",
-  "author": "John Gozde <john@gozde.ca>",
   "description": "HTML plugin for esbuild",
-  "license": "MIT",
+  "keywords": [
+    "esbuild",
+    "esbuild-plugin",
+    "html"
+  ],
   "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
-  "publishConfig": {
-    "access": "public"
+  "bugs": {
+    "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
+  "license": "MIT",
+  "author": "John Gozde <john@gozde.ca>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jgoz/esbuild-plugins.git",
     "directory": "packages/esbuild-plugin-html"
   },
-  "bugs": {
-    "url": "https://github.com/jgoz/esbuild-plugins/issues"
-  },
-  "keywords": [
-    "esbuild-plugin",
-    "esbuild",
-    "html"
-  ],
   "main": "dist/plugin-html.js",
   "types": "lib/index.d.ts",
-  "peerDependencies": {
-    "esbuild": ">=0.25.0"
-  },
-  "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.1.1",
-    "@types/js-beautify": "^1.14.3",
-    "@types/node": "^20.19.0",
-    "esbuild": "^0.25.11",
-    "js-beautify": "^1.15.4",
-    "parse5": "^7.2.1",
-    "typescript": "^5.9.3",
-    "vite": ">=6.4.1",
-    "vitest": "^3.2.4"
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
-    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && oxfmt README.md",
     "prepack": "./bundle.js build",
     "test": "vitest --run",
     "watch": "./bundle.js build -w"
+  },
+  "devDependencies": {
+    "@types/js-beautify": "^1.14.3",
+    "@types/node": "^24.13.3",
+    "esbuild": "^0.28.2",
+    "js-beautify": "^2.0.3",
+    "parse5": "^8.0.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
+  },
+  "peerDependencies": {
+    "esbuild": ">=0.25.0"
   }
 }

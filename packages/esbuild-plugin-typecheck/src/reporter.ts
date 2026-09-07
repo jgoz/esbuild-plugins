@@ -1,5 +1,6 @@
+import path from 'node:path';
+
 import type { Message } from 'esbuild';
-import path from 'path';
 import ts from 'typescript';
 
 import type {

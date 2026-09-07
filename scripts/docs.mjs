@@ -1,13 +1,6 @@
 import process from 'node:process';
-import {
-  Application,
-  Comment,
-  DeclarationReflection,
-  ReflectionKind,
-  Type,
-  SignatureReflection,
-  TSConfigReader,
-} from 'typedoc';
+
+import { Application, ReflectionKind, TSConfigReader } from 'typedoc';
 
 function escape(str) {
   return (
@@ -21,7 +14,7 @@ function escape(str) {
 
 /**
  * @param {string} str
- * @returns string
+ * @returns String
  */
 function unescapeTsCode(str) {
   return str.startsWith('```ts\n') ? str.replace(/^```ts\n/, '').replace(/\n```$/, '') : str;
@@ -35,16 +28,12 @@ function escapeCode(str) {
   return str?.trim().replace(/\|/g, '\\|').replace(/\n/g, '<br>') ?? '';
 }
 
-/**
- * @param {import('typedoc').CommentDisplayPart[] | undefined} display
- */
+/** @param {import('typedoc').CommentDisplayPart[] | undefined} display */
 function extractText(display) {
   return display?.map(part => part.text).join('') ?? '';
 }
 
-/**
- * @param {Type | undefined} type
- */
+/** @param {Type | undefined} type */
 function typeStr(type) {
   if (type?.type === 'reference' && type.reflection?.type) {
     return typeStr(type.reflection.type);
@@ -61,9 +50,7 @@ function typeStr(type) {
   return type?.toString() ?? 'any';
 }
 
-/**
- * @param {DeclarationReflection | SignatureReflection} decl
- */
+/** @param {DeclarationReflection | SignatureReflection} decl */
 function getType(decl) {
   if (decl.kind === ReflectionKind.CallSignature) {
     const params =
@@ -76,18 +63,14 @@ function getType(decl) {
   return typeStr(decl.type);
 }
 
-/**
- * @param {string} text
- */
+/** @param {string} text */
 function extractLink(text) {
   if (!text) return undefined;
   const match = /\{@link (.*)\}/.exec(text);
   return match?.at(1) ?? text;
 }
 
-/**
- * @param {string} text
- */
+/** @param {string} text */
 function extractDefault(text) {
   if (!text) return '';
   const trimmed = text.trim();
@@ -95,9 +78,7 @@ function extractDefault(text) {
   return trimmed;
 }
 
-/**
- * @param {Comment | undefined} comment
- */
+/** @param {Comment | undefined} comment */
 function formatComment(comment) {
   if (!comment) {
     return '-';
@@ -115,9 +96,7 @@ function formatComment(comment) {
   return text;
 }
 
-/**
- * @param {DeclarationReflection | SignatureReflection} decl
- */
+/** @param {DeclarationReflection | SignatureReflection} decl */
 function printDecl(decl, required) {
   const name = required ? `${decl.name} (*)` : decl.name;
   const nameLink = extractLink(extractText(decl.comment?.getTag('@see')?.content));

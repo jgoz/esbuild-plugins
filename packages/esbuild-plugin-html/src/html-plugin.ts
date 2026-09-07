@@ -1,9 +1,10 @@
-import { createHash } from 'crypto';
-import type { Metafile, Plugin } from 'esbuild';
-import { createReadStream, promises as fsp } from 'fs';
+import { createHash } from 'node:crypto';
+import { createReadStream, promises as fsp } from 'node:fs';
+import path from 'node:path';
+
+import type { ImportKind, Plugin } from 'esbuild';
 import type { DefaultTreeAdapterMap, Token } from 'parse5';
 import { parse, serialize } from 'parse5';
-import path from 'path';
 
 type DocumentType = DefaultTreeAdapterMap['documentType'];
 type Element = DefaultTreeAdapterMap['element'];
@@ -12,38 +13,41 @@ type ParentNode = DefaultTreeAdapterMap['parentNode'];
 type TextNode = DefaultTreeAdapterMap['textNode'];
 type Attribute = Token.Attribute;
 
-/**
- * Possible values for `crossorigin` attribute.
- */
+/** Possible values for `crossorigin` attribute. */
 export type Crossorigin = 'anonymous' | 'use-credentials';
 
-/**
- * Element into which entry point tags will be emitted.
- */
+/** Element into which entry point tags will be emitted. */
 export type EmitTarget = 'head' | 'body';
 
-/**
- * Positioning of emitted tags relative to existing tags.
- */
+/** Positioning of emitted tags relative to existing tags. */
 export type EmitPosition = 'above' | 'below';
 
-/**
- * Valid 'integrity' attribute hash algorithms.
- */
+/** Valid 'integrity' attribute hash algorithms. */
 export type HashAlgorithm = 'sha256' | 'sha384' | 'sha512';
 
-/**
- * Defines possible placement options for emitted tags.
- */
+/** Defines possible placement options for emitted tags. */
 export type TagPlacement = `${EmitTarget}-${EmitPosition}`;
 
-/**
- * Output file metadata from esbuiid.
- */
-export type MetafileOutput = Metafile['outputs'][string];
+/** Output file metadata from esbuiid. */
+export interface MetafileOutput {
+  bytes: number;
+  inputs: {
+    [path: string]: {
+      bytesInOutput: number;
+    };
+  };
+  imports: {
+    path: string;
+    kind: ImportKind | 'file-loader';
+    external?: boolean;
+  }[];
+  exports: string[];
+  entryPoint?: string;
+  cssBundle?: string;
+}
 
 const defaultDoctype: DocumentType = {
-  nodeName: '#documentType' as DocumentType['nodeName'],
+  nodeName: '#documentType',
   name: 'html',
   parentNode: null,
   publicId: '',
@@ -52,19 +56,16 @@ const defaultDoctype: DocumentType = {
 
 export interface HtmlPluginOptions {
   /**
-   * Filters chunks that should be included as `<link>` or `<script>` tags in the HTML
-   * output.
+   * Filters chunks that should be included as `<link>` or `<script>` tags in the HTML output.
    *
-   * If the string "entry" is given (default), all entry points defined in esbuild
-   * options will be included. Note that CSS entry points will only be included if they
-   * are specified explicitly in esbuild options; being dependencies of a JS entry point
-   * is not sufficient.
+   * If the string "entry" is given (default), all entry points defined in esbuild options will be
+   * included. Note that CSS entry points will only be included if they are specified explicitly in
+   * esbuild options; being dependencies of a JS entry point is not sufficient.
    *
-   * "chunks" may also be provided as a function that receives all outputs, not just
-   * entry points. Returning true will include a reference to the chunk in HTML, false
-   * will exclude it.
+   * "chunks" may also be provided as a function that receives all outputs, not just entry points.
+   * Returning true will include a reference to the chunk in HTML, false will exclude it.
    *
-   * @default "entry"
+   * @default 'entry'
    */
   chunks?: 'entry' | ((outputPath: string, output: MetafileOutput) => boolean);
 
@@ -73,23 +74,22 @@ export interface HtmlPluginOptions {
    *
    * If left undefined, no attribute will be emitted.
    *
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin}
    * @default undefined
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin}
    */
   crossorigin?: Crossorigin;
 
   /**
    * Sets the `defer` attribute on generated script tags.
    *
-   * If `scriptPlacement` is set to `head-*`, this will default to `true` but
-   * it can be set explicitly to `false` to override that behavior.
+   * If `scriptPlacement` is set to `head-*`, this will default to `true` but it can be set
+   * explicitly to `false` to override that behavior.
    *
-   * If esbuild is configured with `format: 'esm'`, `<script>` tags will be emitted
-   * as `type="module"` which implicitly sets `defer`. In that case, this setting
-   * will have no effect.
+   * If esbuild is configured with `format: 'esm'`, `<script>` tags will be emitted as
+   * `type="module"` which implicitly sets `defer`. In that case, this setting will have no effect.
    *
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer}
    * @default undefined
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer}
    */
   defer?: boolean;
 
@@ -98,24 +98,21 @@ export interface HtmlPluginOptions {
    *
    * Given the following value for `define`:
    *
-   * ```
-   * define: {
-   *  FOO: 'foo',
-   *  BAR: 'bar',
-   * }
-   * ```
+   *     define: {
+   *      FOO: 'foo',
+   *      BAR: 'bar',
+   *     }
    *
-   * The HTML template may use `{{FOO}}` and `{{BAR}}` wherever those
-   * values should be substituted.
+   * The HTML template may use `{{FOO}}` and `{{BAR}}` wherever those values should be substituted.
    *
-   * Note that unlike the `define` option in esbuild, strings should not be
-   * wrapped in `JSON.stringify`, since values will be substituted directly into
-   * the output. This means if any values are used in strings inside of inline `<script>`
-   * elements, they should be wrapped in quotes inside of the script. E.g.,
+   * Note that unlike the `define` option in esbuild, strings should not be wrapped in
+   * `JSON.stringify`, since values will be substituted directly into the output. This means if any
+   * values are used in strings inside of inline `<script>` elements, they should be wrapped in
+   * quotes inside of the script. E.g.,
    *
    * ```html
    * <script>
-   *   const foo = "{{FOO}}";
+   *   const foo = '{{FOO}}';
    * </script>
    * ```
    *
@@ -134,26 +131,27 @@ export interface HtmlPluginOptions {
 
   /**
    * By default, assets (images, manifests, scripts, etc.) referenced by `<link>`, `<style>` and
-   * `<script>` tags in the HTML template will be collected as esbuild assets if their `src` attributes
-   * are specified as relative paths. The asset paths will be resolved relative to the *template file*
-   * and will be copied to the output directory, taking `publicPath` into consideration if it has
-   * been set.
+   * `<script>` tags in the HTML template will be collected as esbuild assets if their `src`
+   * attributes are specified as relative paths. The asset paths will be resolved relative to the
+   * _template file_ and will be copied to the output directory, taking `publicPath` into
+   * consideration if it has been set.
    *
    * Absolute paths or URIs will be ignored.
    *
-   * To ignore all `src` attributes and avoid collecting discovered assets, set this option to `true`.
+   * To ignore all `src` attributes and avoid collecting discovered assets, set this option to
+   * `true`.
    *
    * @default undefined
    */
   ignoreAssets?: boolean;
 
   /**
-   * If specified, a cryptographic digest for each file referenced by a `<link>` or
-   * `<script>` tag will be calculated using the specified algorithm and added as an
-   * `integrity` attribute on the associated tag.
+   * If specified, a cryptographic digest for each file referenced by a `<link>` or `<script>` tag
+   * will be calculated using the specified algorithm and added as an `integrity` attribute on the
+   * associated tag.
    *
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity}
    * @default undefined
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity}
    */
   integrity?: HashAlgorithm;
 
@@ -161,12 +159,13 @@ export interface HtmlPluginOptions {
    * Where to emit `<link>` elements for CSS chunks.
    *
    * Possible values:
-   * - `"above"` &mdash; inside `<head>` element, above existing `<link>`s and `<style>`s
-   * - `"below"` &mdash; inside `<head>` element, below existing `<link>`s and `<style>`s
+   *
+   * - `"above"` — inside `<head>` element, above existing `<link>`s and `<style>`s
+   * - `"below"` — inside `<head>` element, below existing `<link>`s and `<style>`s
    *
    * `<link>` elements are always emitted to `<head>`.
    *
-   * @default "below"
+   * @default 'below'
    */
   linkPosition?: EmitPosition;
 
@@ -174,23 +173,24 @@ export interface HtmlPluginOptions {
    * Where to emit `<script>` elements for JS chunks.
    *
    * Possible values:
-   * - `"head-above"` &mdash; inside `<head>` element, above existing `<script>`s
-   * - `"head-below"` &mdash; inside `<head>` element, below existing `<script>`s
-   * - `"body-above"` &mdash; inside `<body>` element, above existing `<script>`s
-   * - `"body-below"` &mdash; inside `<body>` element, below existing `<script>`s
    *
-   * When emitted to `<head>`, the `defer` option will be implicitly set to `true`.
-   * If you wish to disable this behavior, set `defer: false`.
+   * - `"head-above"` — inside `<head>` element, above existing `<script>`s
+   * - `"head-below"` — inside `<head>` element, below existing `<script>`s
+   * - `"body-above"` — inside `<body>` element, above existing `<script>`s
+   * - `"body-below"` — inside `<body>` element, below existing `<script>`s
    *
-   * @default "head-below"
+   * When emitted to `<head>`, the `defer` option will be implicitly set to `true`. If you wish to
+   * disable this behavior, set `defer: false`.
+   *
+   * @default 'head-below'
    */
   scriptPlacement?: TagPlacement;
 
   /**
    * Path to the HTML template to use (required).
    *
-   * If a relative path is provided, it will be resolved relative
-   * to the `absWorkingDir` build option (falling back to `process.cwd()`).
+   * If a relative path is provided, it will be resolved relative to the `absWorkingDir` build
+   * option (falling back to `process.cwd()`).
    */
   template: string;
 }

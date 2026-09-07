@@ -1,7 +1,8 @@
-import { node } from 'execa';
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
+import { execaNode } from 'execa';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 async function* walk(dirPath: string): AsyncIterable<string> {
@@ -53,7 +54,7 @@ function setup(relFixtureDirSrc: string) {
     }
 
     const scriptPath = path.join(fixtureDirOut, script);
-    const proc = node(scriptPath, {
+    const proc = execaNode(scriptPath, {
       all: true,
       encoding: 'utf8',
       reject: false,
@@ -83,7 +84,7 @@ function setup(relFixtureDirSrc: string) {
             proc.stdout!.push(`[TEST] Writing ${files[0]} to ${files[1]}${os.EOL}`);
             setTimeout(() => copySrcFileSync(files[0], files[1]), 300);
           } else {
-            proc.cancel();
+            proc.kill();
           }
         }
       });
@@ -116,7 +117,7 @@ function setup(relFixtureDirSrc: string) {
   return { cleanup, init, run, findTSOutput };
 }
 
-describe('eslint-plugin-typecheck', () => {
+describe('esbuild-plugin-typecheck', () => {
   describe('compile, once', () => {
     const build = setup('fixture/compile');
 
@@ -291,7 +292,7 @@ describe('eslint-plugin-typecheck', () => {
           // keep the last one.
           let resultIndex = 0;
           for (let i = lines.length - 1; i >= 0; i--) {
-            if (lines[i].match(/Typecheck (passed|failed)/)) {
+            if (/Typecheck (passed|failed)/.exec(lines[i])) {
               resultIndex = i;
               break;
             }

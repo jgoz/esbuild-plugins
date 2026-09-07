@@ -1,29 +1,50 @@
 {
   "name": "@jgoz/esbuild-plugin-sass",
   "version": "2.0.10",
-  "author": "John Gozde <john@gozde.ca>",
   "description": "Sass plugin for esbuild",
-  "license": "MIT",
+  "keywords": [
+    "esbuild",
+    "esbuild-plugin",
+    "sass",
+    "sass-lang"
+  ],
   "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
-  "publishConfig": {
-    "access": "public"
+  "bugs": {
+    "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
+  "license": "MIT",
+  "author": "John Gozde <john@gozde.ca>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jgoz/esbuild-plugins.git",
     "directory": "packages/esbuild-plugin-sass"
   },
-  "bugs": {
-    "url": "https://github.com/jgoz/esbuild-plugins/issues"
-  },
-  "keywords": [
-    "esbuild-plugin",
-    "esbuild",
-    "sass",
-    "sass-lang"
-  ],
   "main": "dist/plugin-sass.js",
   "types": "lib/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && oxfmt README.md",
+    "prepack": "./bundle.js build",
+    "prepare": "cd test/fixture && pnpm install",
+    "test": "vitest run",
+    "watch": "./bundle.js build -w"
+  },
+  "devDependencies": {
+    "@types/js-beautify": "^1.14.3",
+    "@types/node-sass": "^4.11.8",
+    "autoprefixer": "^10.5.5",
+    "enhanced-resolve": "^5.24.5",
+    "esbuild": "^0.28.2",
+    "js-beautify": "^2.0.3",
+    "postcss": "^8.5.28",
+    "postcss-preset-env": "^11.5.1",
+    "sass": "^1.104.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
+  },
   "peerDependencies": {
     "esbuild": ">=0.25.0",
     "sass": ">= 1.x"
@@ -32,27 +53,5 @@
     "sass": {
       "optional": true
     }
-  },
-  "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.1.1",
-    "@types/js-beautify": "^1.14.3",
-    "@types/node-sass": "^4.11.8",
-    "autoprefixer": "^10.4.21",
-    "enhanced-resolve": "^5.18.3",
-    "esbuild": "^0.25.11",
-    "js-beautify": "^1.15.4",
-    "postcss": "^8.5.6",
-    "postcss-preset-env": "^10.4.0",
-    "sass": "^1.93.2",
-    "typescript": "^5.9.3",
-    "vite": ">=6.4.1",
-    "vitest": "^3.2.4"
-  },
-  "scripts": {
-    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
-    "prepack": "./bundle.js build",
-    "prepare": "cd test/fixture && pnpm install",
-    "test": "vitest run",
-    "watch": "./bundle.js build -w"
   }
 }

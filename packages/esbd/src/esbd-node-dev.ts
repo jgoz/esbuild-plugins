@@ -1,10 +1,9 @@
-import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
-import type { ChildProcess } from 'child_process';
-import type { ExecaChildPromise } from 'execa';
-import { node as execaNode } from 'execa';
-import fs from 'fs';
+import fs from 'node:fs';
+import path from 'node:path';
+
+import type { ResultPromise } from 'execa';
+import { execaNode } from 'execa';
 import Graceful from 'node-graceful';
-import path from 'path';
 import pc from 'picocolors';
 
 import type { BuildMode, ResolvedEsbdConfig, TsBuildMode } from './config';
@@ -30,7 +29,7 @@ export default async function esbdNodeDev(
   config: ResolvedEsbdConfig,
   { args, logger, mode, respawn, check, tsBuildMode }: EsbdNodeDevConfig,
 ) {
-  let child: (ChildProcess & ExecaChildPromise<string>) | undefined;
+  let child: ResultPromise | undefined;
   let keepAliveCount = 0;
   let keepAliveResetTimeout: NodeJS.Timeout;
   let running = false;
@@ -73,30 +72,29 @@ export default async function esbdNodeDev(
 
     child = execaNode(scriptPath, argv, {
       nodeOptions: ['--enable-source-maps', ...NODE_OPTIONS],
+      reject: false,
       stdio: 'inherit',
     });
 
-    child.once('exit', exitCode => {
-      child?.removeAllListeners();
+    child.nodeChildProcess.once('exit', exitCode => {
+      child?.nodeChildProcess.removeAllListeners();
       if (exitCode) logger.error(`Program exited with code ${exitCode}`);
       void handleExit(exitCode ?? 0);
     });
 
-    child.once('error', err => {
-      child?.removeAllListeners();
+    child.nodeChildProcess.once('error', err => {
+      child?.nodeChildProcess.removeAllListeners();
       logger.error('Uncaught program error', err.toString(), err.stack);
       void handleExit(1);
     });
 
-    child.once('spawn', () => {
+    child.nodeChildProcess.once('spawn', () => {
       running = true;
     });
   }
 
   if (check) {
-    const TypecheckRunner: typeof TypecheckRunnerCls =
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      require('@jgoz/esbuild-plugin-typecheck').TypecheckRunner;
+    const { TypecheckRunner } = await import('@jgoz/esbuild-plugin-typecheck');
 
     const runner = new TypecheckRunner({
       absWorkingDir: buildOptions.absWorkingDir,
@@ -125,16 +123,16 @@ export default async function esbdNodeDev(
       if (options.buildCount >= 1) {
         logger.info(pc.gray('Source files changed, rebuilding'));
       }
-      child?.removeAllListeners();
+      child?.nodeChildProcess.removeAllListeners();
       if (running) {
         await new Promise<void>((resolve, reject) => {
           if (!child) {
             resolve();
             return;
           }
-          child.on('exit', resolve);
-          child.on('error', reject);
-          child.cancel();
+          child.nodeChildProcess.on('exit', resolve);
+          child.nodeChildProcess.on('error', reject);
+          child.kill();
         });
         running = false;
       }
@@ -168,7 +166,7 @@ export default async function esbdNodeDev(
 
   async function shutdown(exitCode = 0) {
     logger.info('Shutting down…');
-    if (child) child.cancel();
+    if (child) child.kill();
     if (context) await context.dispose();
     process.exitCode = exitCode;
   }

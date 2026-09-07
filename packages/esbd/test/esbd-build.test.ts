@@ -1,10 +1,10 @@
-import { node } from 'execa';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
+
+import { execaNode } from 'execa';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { EsbdConfig } from '../lib';
-
 import type { BuildWithHTMLOutput } from './config/serializer';
 
 interface BuildWithHTMLOptions {
@@ -42,7 +42,7 @@ async function build(options: BuildWithHTMLOptions): Promise<BuildWithHTMLOutput
 
   await Promise.all([...writeFiles, writeBundle]);
 
-  const proc = node(bundleFile, ['build'], {
+  const proc = execaNode(bundleFile, ['build'], {
     encoding: 'utf8',
     reject: false,
     cwd: absWorkingDir,

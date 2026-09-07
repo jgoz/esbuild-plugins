@@ -1,10 +1,9 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json",
+  "extends": "@tsconfig/node24/tsconfig.json",
   "compilerOptions": {
     "composite": true,
     "outDir": "build",
     "declarationDir": "types",
-    "baseUrl": ".",
     "paths": {
       "pkg-one": ["../pkg-one/one.ts"],
       "pkg-two": ["../pkg-two/two.ts"]

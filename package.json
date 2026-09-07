@@ -1,62 +1,15 @@
 {
   "name": "@jgoz/esbuild-plugins",
   "private": true,
-  "author": "John Gozde <john@gozde.ca>",
-  "license": "MIT",
   "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jgoz/esbuild-plugins.git"
-  },
   "bugs": {
     "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
-  "devEngines": {
-    "runtime": [
-      {
-        "name": "node",
-        "version": "20.18.3"
-      }
-    ],
-    "packageManager": [
-      {
-        "name": "pnpm",
-        "version": "9.15.9"
-      }
-    ]
-  },
-  "packageManager": "pnpm@9.15.9",
-  "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.1.1",
-    "@awesome-code-style/prettier-config": "^5.0.1",
-    "@changesets/cli": "^2.29.7",
-    "@tsconfig/node16": "^16.1.6",
-    "@typescript-eslint/eslint-plugin": "^8.46.2",
-    "@typescript-eslint/parser": "^8.46.2",
-    "esbuild": "^0.25.11",
-    "eslint": "^9.38.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-unused-imports": "^4.3.0",
-    "execa": "^5.0.0",
-    "globals": "^16.4.0",
-    "playwright": "^1.56.1",
-    "prettier": "^3.6.2",
-    "tslib": "^2.4.0",
-    "typedoc": "^0.25.13",
-    "typescript": "^5.9.3"
-  },
-  "pnpm": {
-    "overrides": {
-      "tsconfig-paths@3.x": "^3.14.2",
-      "tslib@2.x": "^2.4.0",
-      "follow-redirects@<1.15.4": ">=1.15.4",
-      "follow-redirects@<=1.15.5": ">=1.15.6"
-    },
-    "onlyBuiltDependencies": [
-      "svelte-preprocess"
-    ]
+  "license": "MIT",
+  "author": "John Gozde <john@gozde.ca>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jgoz/esbuild-plugins.git"
   },
   "scripts": {
     "build": "tsc -b && pnpm run -r --if-present prepack",
@@ -65,11 +18,42 @@
     "docker:build": "docker build -t esbuild-plugins-tests .",
     "docker:run": "docker run -it --rm --ipc=host -v $(pwd)/packages/esbd/test:/app/packages/esbd/test -v $(pwd)/packages/esbuild-plugin-livereload/test:/app/packages/esbuild-plugin-livereload/test esbuild-plugins-tests",
     "docs": "pnpm run -r --if-present docs",
-    "lint": "eslint \"packages/**/*.ts\"",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
     "node-check": "node -v && arch",
     "prepare": "tsc -b",
     "release": "pnpm publish -r --filter=\"@jgoz/*\" --filter=\"esbd\" --filter=\"!@jgoz/esbuild-plugins\"",
     "test": "pnpm run -r --if-present test",
     "watch": "pnpm run -r --if-present --stream --parallel watch"
-  }
+  },
+  "devDependencies": {
+    "@changesets/cli": "^3.0.2",
+    "@tsconfig/node24": "^24.0.5",
+    "@types/node": "^24.13.3",
+    "esbuild": "^0.28.2",
+    "execa": "^10.0.1",
+    "oxfmt": "^0.66.0",
+    "oxlint": "^1.81.0",
+    "playwright": "^1.63.0",
+    "tslib": "^2.4.0",
+    "typedoc": "^0.28.20",
+    "typescript": "^6.0.3"
+  },
+  "devEngines": {
+    "packageManager": [
+      {
+        "name": "pnpm",
+        "version": "^12"
+      }
+    ],
+    "runtime": [
+      {
+        "name": "node",
+        "version": "^24"
+      }
+    ]
+  },
+  "packageManager": "pnpm@12.3.4"
 }

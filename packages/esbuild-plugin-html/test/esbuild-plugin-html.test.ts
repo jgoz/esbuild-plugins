@@ -1,8 +1,9 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 import type { BuildOptions } from 'esbuild';
 import { build } from 'esbuild';
-import fs from 'fs';
 import { html_beautify } from 'js-beautify';
-import path from 'path';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { HtmlPluginOptions } from '../lib';
@@ -114,7 +115,7 @@ async function buildWithHTML(
   }
 }
 
-describe('eslint-plugin-html', () => {
+describe('esbuild-plugin-html', () => {
   beforeAll(async () => {
     await fs.promises.mkdir(TEST_ROOT, { recursive: true });
     return async () => {

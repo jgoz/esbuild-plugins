@@ -1,4 +1,4 @@
 packages:
-  - './*'
+  - '*'
 
-prefer-workspace-packages: true
+preferWorkspacePackages: true

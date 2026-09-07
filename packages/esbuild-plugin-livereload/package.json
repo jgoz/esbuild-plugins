@@ -1,51 +1,49 @@
 {
   "name": "@jgoz/esbuild-plugin-livereload",
   "version": "2.1.4",
-  "author": "John Gozde <john@gozde.ca>",
   "description": "Livereload plugin for esbuild",
-  "license": "MIT",
+  "keywords": [
+    "esbuild",
+    "esbuild-plugin",
+    "livereload"
+  ],
   "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
-  "publishConfig": {
-    "access": "public"
+  "bugs": {
+    "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
+  "license": "MIT",
+  "author": "John Gozde <john@gozde.ca>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jgoz/esbuild-plugins.git",
     "directory": "packages/esbuild-plugin-livereload"
   },
-  "bugs": {
-    "url": "https://github.com/jgoz/esbuild-plugins/issues"
-  },
-  "keywords": [
-    "esbuild-plugin",
-    "esbuild",
-    "livereload"
-  ],
   "main": "dist/plugin-livereload.js",
   "types": "lib/index.d.ts",
-  "peerDependencies": {
-    "esbuild": ">=0.25.0"
-  },
-  "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.1.1",
-    "@jgoz/esbuild-overlay": "workspace:*",
-    "@playwright/test": "^1.56.1",
-    "@types/node": "^20.19.0",
-    "esbuild": "^0.25.11",
-    "esbuild-svelte": "^0.9.3",
-    "get-port": "^5.0.0",
-    "open-editor": "^4.1.1",
-    "prettier": "^3.6.2",
-    "svelte": "^3.58.0",
-    "svelte-check": "^3.7.1",
-    "svelte-preprocess": "^5.1.4",
-    "tslib": "^2.4.0",
-    "typescript": "^5.9.3"
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
-    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && oxfmt README.md",
     "prepack": "./bundle.js build",
     "test": "playwright test",
     "watch": "./bundle.js build -w"
+  },
+  "devDependencies": {
+    "@jgoz/esbuild-overlay": "workspace:*",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^24.13.3",
+    "esbuild": "^0.28.2",
+    "esbuild-svelte": "^0.9.5",
+    "get-port": "^7.2.0",
+    "open-editor": "^6.0.0",
+    "svelte": "^5.57.0",
+    "svelte-check": "^4.7.6",
+    "svelte-preprocess": "^6.0.5",
+    "tslib": "^2.4.0",
+    "typescript": "^6.0.3"
+  },
+  "peerDependencies": {
+    "esbuild": ">=0.25.0"
   }
 }

@@ -1,16 +1,15 @@
-/* eslint-disable no-empty-pattern */
+import { promises as fsp } from 'node:fs';
+import path from 'node:path';
+
 import { test as base } from '@playwright/test';
 import type { ServeResult } from 'esbuild';
 import { context as createContext } from 'esbuild';
 import esbuildSvelte from 'esbuild-svelte';
-import { promises as fsp } from 'fs';
 import getPort from 'get-port';
-import path from 'path';
 import sveltePreprocess from 'svelte-preprocess';
 
 import { livereloadPlugin } from '../';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ServerTestFixtures {}
 
 interface ServerWorkerFixtures {
@@ -29,6 +28,7 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
         path.join(__dirname, 'fixture', 'index.html'),
         path.join(dir, 'index.html'),
       );
+      await fsp.copyFile(path.join(__dirname, 'fixture', 'entry.ts'), path.join(dir, 'entry.ts'));
       await use(dir);
     },
     { scope: 'worker' },
@@ -63,13 +63,13 @@ const test = base.extend<ServerTestFixtures, ServerWorkerFixtures>({
 
       console.log(`Starting server (LR port: ${lrPort})...`);
 
-      await writeFile(['1-initial.svelte', 'entry.svelte']);
+      await writeFile(['1-initial.svelte', 'App.svelte']);
       await writeFile(['style-1.css', 'style.css']);
 
       const context = await createContext({
         absWorkingDir,
         bundle: true,
-        entryPoints: ['entry.svelte', 'style.css'],
+        entryPoints: ['entry.ts', 'style.css'],
         format: 'esm',
         metafile: true,
         outdir: 'js',

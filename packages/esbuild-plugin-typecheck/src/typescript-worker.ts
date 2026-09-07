@@ -1,11 +1,12 @@
+import * as realFS from 'node:fs';
+import path, { dirname } from 'node:path';
+import type { MessagePort } from 'node:worker_threads';
+import { isMainThread, parentPort, workerData } from 'node:worker_threads';
+
 import type { Message } from 'esbuild';
-import * as realFS from 'fs';
 import { fs as memfs } from 'memfs';
-import path, { dirname } from 'path';
 import ts from 'typescript';
 import { ufs } from 'unionfs';
-import type { MessagePort } from 'worker_threads';
-import { isMainThread, parentPort, workerData } from 'worker_threads';
 
 import { Reporter } from './reporter';
 
@@ -59,9 +60,8 @@ export interface TypescriptWorkerOptions {
 }
 
 /**
- * Creates a ts.System implementation that redirects all write
- * operations to an in-memory FS. Read operations first try the memory
- * FS and fall back to the real FS.
+ * Creates a ts.System implementation that redirects all write operations to an in-memory FS. Read
+ * operations first try the memory FS and fall back to the real FS.
  */
 function createPartialMemoryBackedSystem(): ts.System {
   // @ts-expect-error -- IFs and IFS are not compatible...
@@ -102,7 +102,7 @@ function createPartialMemoryBackedSystem(): ts.System {
       memfs.utimesSync(path, time, time);
     },
     writeFile(path, data, writeBOM) {
-      memfs.mkdirpSync(dirname(path));
+      memfs.mkdirSync(dirname(path), { recursive: true });
       memfs.writeFileSync(path, writeBOM ? '\ufeff' + data : data);
     },
   };

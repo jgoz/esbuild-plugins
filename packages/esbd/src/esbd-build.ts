@@ -1,6 +1,7 @@
+import fs from 'node:fs';
+import { dirname, relative } from 'node:path';
+
 import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
-import fs from 'fs';
-import { dirname, relative } from 'path';
 import pc from 'picocolors';
 import prettyBytes from 'pretty-bytes';
 
@@ -25,9 +26,7 @@ export default async function esbdBuildMulti(
   options: EsbdBuildOptions,
 ) {
   if (options.check) {
-    const TypecheckRunner: typeof TypecheckRunnerCls =
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      require('@jgoz/esbuild-plugin-typecheck').TypecheckRunner;
+    const { TypecheckRunner } = await import('@jgoz/esbuild-plugin-typecheck');
 
     const checks = new Map<string, TypecheckRunnerCls>();
     for (const config of configs) {

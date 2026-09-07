@@ -1,4 +1,3 @@
-/* eslint-env browser */
 import './deps/z.css';
 
 import('./deps/c')

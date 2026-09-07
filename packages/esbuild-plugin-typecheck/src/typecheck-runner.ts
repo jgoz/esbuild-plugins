@@ -1,8 +1,9 @@
+import path from 'node:path';
+import { Worker } from 'node:worker_threads';
+
 import type { notify as lrNotify } from '@jgoz/esbuild-plugin-livereload';
 import type { Message } from 'esbuild';
-import path from 'path';
 import pc from 'picocolors';
-import { Worker } from 'worker_threads';
 
 import type { Logger, TypecheckPluginOptions } from './types';
 import type { TypescriptWorkerOptions, WorkerMessage } from './typescript-worker';

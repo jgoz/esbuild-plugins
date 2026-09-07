@@ -18,24 +18,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20, 22]
+        node-version: [22, 24, 26]
     name: Build & Test (Node v${{ matrix.node-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
       - name: Cache browsers
         id: browser_cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: '~/.cache/ms-playwright'
           key: chromium-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -43,12 +41,13 @@ jobs:
       - run: pnpm playwright install --with-deps
         if: steps.browser_cache.outputs.cache-hit != 'true'
       - run: pnpm build
+      - run: pnpm fmt:check
       - run: pnpm lint
       - run: pnpm test
         env:
           CHOKIDAR_USEPOLLING: '1'
           TSC_WATCHFILE: 'DynamicPriorityPolling'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: test-output-${{ matrix.node-version }}
@@ -70,9 +69,7 @@ jobs:
         with:
           # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
           fetch-depth: 0
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
+      - uses: pnpm/action-setup@v6
       - name: Use Node.js
         uses: actions/setup-node@v7
         with:
@@ -86,10 +83,10 @@ jobs:
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
-          publish: pnpm release
-          createGithubReleases: true
+          publish-script: pnpm release
+          create-github-releases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

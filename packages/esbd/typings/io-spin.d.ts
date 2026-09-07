@@ -1,5 +1,5 @@
 declare module 'io-spin' {
-  declare type SpinnerType =
+  type SpinnerType =
     | 'Box1'
     | 'Box2'
     | 'Box3'

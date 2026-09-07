@@ -1,52 +1,50 @@
 {
   "name": "@jgoz/jest-esbuild",
   "version": "1.0.10",
-  "author": "John Gozde <john@gozde.ca>",
   "description": "Esbuild transformer for Jest",
-  "license": "MIT",
+  "keywords": [
+    "esbuild",
+    "jest"
+  ],
   "homepage": "https://github.com/jgoz/esbuild-plugins#readme",
-  "publishConfig": {
-    "access": "public"
+  "bugs": {
+    "url": "https://github.com/jgoz/esbuild-plugins/issues"
   },
+  "license": "MIT",
+  "author": "John Gozde <john@gozde.ca>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jgoz/esbuild-plugins.git",
     "directory": "packages/jest-esbuild"
   },
-  "bugs": {
-    "url": "https://github.com/jgoz/esbuild-plugins/issues"
-  },
-  "keywords": [
-    "esbuild",
-    "jest"
-  ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "docs": "../../scripts/markdown-interpolate.mjs README.md && oxfmt README.md",
+    "test": "jest"
+  },
   "dependencies": {
-    "babel-plugin-jest-hoist": "^29.6.3",
-    "jest-util": "^29.7.0"
+    "babel-plugin-jest-hoist": "^30.5.0",
+    "jest-util": "^30.5.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^8.0.1",
+    "@jest/transform": "^30.5.1",
+    "@types/babel__core": "^7.20.5",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.13.3",
+    "esbuild": "^0.28.2",
+    "jest": "^30.5.1",
+    "tslib": "^2.4.0",
+    "typescript": "^6.0.3"
   },
   "peerDependencies": {
     "@babel/core": ">= 7.0.0",
     "esbuild": ">=0.25.0",
     "jest": "28 || 29"
-  },
-  "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.1.1",
-    "@babel/core": "^7.28.4",
-    "@jest/transform": "^29.7.0",
-    "@types/babel__core": "^7.20.5",
-    "@types/jest": "^29.5.14",
-    "@types/node": "^20.19.0",
-    "esbuild": "^0.25.11",
-    "jest": "^29.7.0",
-    "prettier": "^3.6.2",
-    "tslib": "^2.4.0",
-    "typescript": "^5.9.3"
-  },
-  "scripts": {
-    "docs": "../../scripts/markdown-interpolate.mjs README.md && prettier --write README.md",
-    "test": "jest"
   },
   "jest": {
     "transform": {

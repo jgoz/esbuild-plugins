@@ -1,0 +1,107 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["node", "typescript", "unicorn", "import"],
+  "env": {
+    "builtin": true,
+    "node": true
+  },
+  "ignorePatterns": ["**/fixture/**/*", "**/dist/**/*", "**/lib/**/*"],
+  "rules": {
+    "eqeqeq": ["error", "smart"],
+    "max-classes-per-file": ["error", 1],
+    "no-array-constructor": "error",
+    "no-bitwise": "error",
+    "no-case-declarations": "error",
+    "no-new-wrappers": "error",
+    "no-prototype-builtins": "error",
+    "no-redeclare": "error",
+    "no-regex-spaces": "error",
+    "no-throw-literal": "error",
+    "no-undef": "error",
+    "no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "(^_)|(^e$)",
+        "fix": {
+          "imports": "safe-fix",
+          "variables": "suggestion"
+        }
+      }
+    ],
+    "one-var": ["error", "never"],
+    "prefer-const": [
+      "error",
+      {
+        "destructuring": "all"
+      }
+    ],
+    "prefer-object-spread": "warn",
+    "radix": "error",
+
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error",
+
+    "typescript/adjacent-overload-signatures": "error",
+    "typescript/array-type": "error",
+    "typescript/ban-ts-comment": "error",
+    "typescript/ban-tslint-comment": "error",
+    "typescript/class-literal-property-style": "error",
+    "typescript/consistent-generic-constructors": "error",
+    "typescript/consistent-type-assertions": "error",
+    "typescript/consistent-type-imports": ["warn", { "prefer": "type-imports" }],
+    "typescript/no-confusing-non-null-assertion": "error",
+    "typescript/no-empty-object-type": ["error", { "allowInterfaces": "with-single-extends" }],
+    "typescript/no-inferrable-types": "error",
+    "typescript/no-namespace": "error",
+    "typescript/no-require-imports": "error",
+    "typescript/no-unnecessary-type-constraint": "warn",
+    "typescript/no-unsafe-function-type": "error",
+    "typescript/prefer-function-type": "error",
+    "typescript/unified-signatures": "error",
+
+    "unicorn/prefer-node-protocol": "warn"
+  },
+  "overrides": [
+    {
+      "files": [
+        "packages/esbuild-overlay/**",
+        "packages/esbuild-plugin-livereload/**",
+        "**/*.e2e.ts"
+      ],
+      "env": {
+        "browser": true
+      }
+    },
+    {
+      "files": ["packages/esbuild-overlay/**"],
+      "env": {
+        "svelte": true
+      }
+    },
+    {
+      "files": ["packages/jest-esbuild/**"],
+      "env": {
+        "jest": true
+      }
+    },
+    {
+      "files": ["**/bundle.js"],
+      "rules": {
+        "typescript/no-var-requires": "off",
+        "typescript/no-require-imports": "off"
+      }
+    },
+    {
+      "files": ["packages/*/test/**"],
+      "rules": {
+        "no-empty-pattern": "off",
+        "@typescript-eslint/no-empty-object-type": "off"
+      }
+    }
+  ]
+}

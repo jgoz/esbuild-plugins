@@ -1,7 +1,8 @@
+import { promises as fsp } from 'node:fs';
+import path from 'node:path';
+
 import type { BuildOptions, BuildResult } from 'esbuild';
-import { promises as fsp } from 'fs';
 import { serialize } from 'parse5';
-import path from 'path';
 
 import {
   createLinkElement,

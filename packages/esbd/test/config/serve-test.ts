@@ -1,12 +1,12 @@
-/* eslint-disable no-empty-pattern */
+import { EventEmitter } from 'node:events';
+import { promises as fsp } from 'node:fs';
+import path from 'node:path';
+import { setTimeout } from 'node:timers/promises';
+
 import { test as base } from '@playwright/test';
-import { EventEmitter } from 'events';
-import type { ExecaChildProcess } from 'execa';
-import { node } from 'execa';
-import { promises as fsp } from 'fs';
+import type { ResultPromise } from 'execa';
+import { execaNode } from 'execa';
 import getPort from 'get-port';
-import path from 'path';
-import { setTimeout } from 'timers/promises';
 import waitOn from 'wait-on';
 
 import type { EsbdConfig } from '../../lib';
@@ -54,7 +54,7 @@ const test = base.extend<ServerTestFixtures>({
   },
 
   startServer: async ({ port, absWorkingDir, writeFiles }, use) => {
-    let proc: ExecaChildProcess | undefined;
+    let proc: ResultPromise | undefined;
 
     const startServer = async (serverConfig: ServerConfig) => {
       const { livereload, config, disableRewrite, files, serveDir } = serverConfig;
@@ -89,7 +89,7 @@ const test = base.extend<ServerTestFixtures>({
 
       await Promise.all([writeBundle, writeFiles(initialFiles)]);
 
-      proc = node(
+      proc = execaNode(
         bundleFile,
         [
           'serve',
@@ -134,7 +134,7 @@ const test = base.extend<ServerTestFixtures>({
     // Tests execute here
     await use(startServer);
 
-    proc!.cancel();
+    proc!.kill();
     try {
       const { stderr } = await proc!;
       if (stderr) {

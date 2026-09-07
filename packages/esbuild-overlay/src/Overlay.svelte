@@ -3,16 +3,20 @@
 
   import StackEntry from './StackEntry.svelte';
 
-  export let errors: Message[];
-  export let openFileURL: string | undefined;
-  export let onClose: () => void;
+  interface Props {
+    errors: Message[];
+    openFileURL?: string;
+    onClose: () => void;
+  }
 
-  const type = (errors.length > 0 && errors[0].detail?.type) || 'Error';
+  let { errors, openFileURL, onClose }: Props = $props();
+
+  const type = $derived(errors[0]?.detail?.type || 'Error');
 </script>
 
 <div class="modal">
   <h1>
-    Oops :( <button class="close" on:click={onClose}>×</button>
+    Oops :( <button class="close" onclick={onClose}>×</button>
   </h1>
   <div class="errors">
     <div class="error">
