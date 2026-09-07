@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { dirname, relative } from 'path';
+import fs from 'node:fs';
+import { dirname, relative } from 'node:path';
 
 import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
 import pc from 'picocolors';

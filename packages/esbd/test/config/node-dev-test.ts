@@ -1,6 +1,6 @@
-import { EventEmitter } from 'events';
-import fsp from 'fs/promises';
-import path from 'path';
+import { EventEmitter } from 'node:events';
+import fsp from 'node:fs/promises';
+import path from 'node:path';
 
 /* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';

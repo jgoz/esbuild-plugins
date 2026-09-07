@@ -1,5 +1,5 @@
-import { promises as fsp } from 'fs';
-import path from 'path';
+import { promises as fsp } from 'node:fs';
+import path from 'node:path';
 
 import type { BuildOptions, BuildResult } from 'esbuild';
 import { serialize } from 'parse5';

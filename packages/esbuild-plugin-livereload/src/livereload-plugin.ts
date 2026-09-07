@@ -1,7 +1,7 @@
-import { createHash } from 'crypto';
-import { createReadStream, promises as fsp } from 'fs';
-import type { ServerResponse } from 'http';
-import path from 'path';
+import { createHash } from 'node:crypto';
+import { createReadStream, promises as fsp } from 'node:fs';
+import type { ServerResponse } from 'node:http';
+import path from 'node:path';
 
 import type { BuildOptions, BuildResult, Message, Plugin } from 'esbuild';
 

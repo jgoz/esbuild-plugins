@@ -1,5 +1,5 @@
-import { promises as fsp } from 'fs';
-import path from 'path';
+import { promises as fsp } from 'node:fs';
+import path from 'node:path';
 
 /* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';

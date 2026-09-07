@@ -1,5 +1,5 @@
-import path from 'path';
-import { Worker } from 'worker_threads';
+import path from 'node:path';
+import { Worker } from 'node:worker_threads';
 
 import type { notify as lrNotify } from '@jgoz/esbuild-plugin-livereload';
 import type { Message } from 'esbuild';

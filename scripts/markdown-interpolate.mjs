@@ -21,7 +21,7 @@
  */
 
 import fs from 'node:fs';
-import { dirname } from 'path';
+import { dirname } from 'node:path';
 
 import execa from 'execa';
 

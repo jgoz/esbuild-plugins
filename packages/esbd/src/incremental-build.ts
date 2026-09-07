@@ -1,7 +1,7 @@
-import { EventEmitter } from 'events';
-import { watch as fsWatch } from 'fs';
-import { copyFile, mkdir, rm } from 'fs/promises';
-import path from 'path';
+import { EventEmitter } from 'node:events';
+import { watch as fsWatch } from 'node:fs';
+import { copyFile, mkdir, rm } from 'node:fs/promises';
+import path from 'node:path';
 
 import type { BuildContext, BuildOptions, BuildResult, Plugin } from 'esbuild';
 import { context as createContext } from 'esbuild';

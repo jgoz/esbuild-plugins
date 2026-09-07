@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 import { cli, command } from 'cleye';
 import type { LogLevel } from 'esbuild';

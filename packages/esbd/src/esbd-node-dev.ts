@@ -1,6 +1,6 @@
-import type { ChildProcess } from 'child_process';
-import fs from 'fs';
-import path from 'path';
+import type { ChildProcess } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
 
 import type { TypecheckRunner as TypecheckRunnerCls } from '@jgoz/esbuild-plugin-typecheck';
 import type { ExecaChildPromise } from 'execa';

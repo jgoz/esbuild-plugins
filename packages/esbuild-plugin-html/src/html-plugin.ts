@@ -1,6 +1,6 @@
-import { createHash } from 'crypto';
-import { createReadStream, promises as fsp } from 'fs';
-import path from 'path';
+import { createHash } from 'node:crypto';
+import { createReadStream, promises as fsp } from 'node:fs';
+import path from 'node:path';
 
 import type { ImportKind, Plugin } from 'esbuild';
 import type { DefaultTreeAdapterMap, Token } from 'parse5';

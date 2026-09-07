@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { build, context as createContext } from 'esbuild';

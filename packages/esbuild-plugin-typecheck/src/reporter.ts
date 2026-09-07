@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 import type { Message } from 'esbuild';
 import ts from 'typescript';

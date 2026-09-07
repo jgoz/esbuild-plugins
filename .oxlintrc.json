@@ -132,7 +132,8 @@
         "prefer": "type-imports"
       }
     ],
-    "typescript/unified-signatures": "error"
+    "typescript/unified-signatures": "error",
+    "unicorn/prefer-node-protocol": "warn"
   },
   "overrides": [
     {

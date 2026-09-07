@@ -1,7 +1,7 @@
-import * as realFS from 'fs';
-import path, { dirname } from 'path';
-import type { MessagePort } from 'worker_threads';
-import { isMainThread, parentPort, workerData } from 'worker_threads';
+import * as realFS from 'node:fs';
+import path, { dirname } from 'node:path';
+import type { MessagePort } from 'node:worker_threads';
+import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
 import type { Message } from 'esbuild';
 import { fs as memfs } from 'memfs';

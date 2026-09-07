@@ -1,5 +1,5 @@
-import { promises as fsp } from 'fs';
-import { dirname, resolve } from 'path';
+import { promises as fsp } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 
 import type { OnLoadArgs, OnLoadResult, OnResolveArgs, Plugin } from 'esbuild';
 import type { LegacyException, LegacyFunction, LegacyImporter } from 'sass';
