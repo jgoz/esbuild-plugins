@@ -27,7 +27,6 @@
     "esbuild": ">=0.25.0"
   },
   "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.2.1",
     "@playwright/test": "^1.63.0",
     "@types/js-beautify": "^1.14.3",
     "@types/pretty-time": "^1.1.5",

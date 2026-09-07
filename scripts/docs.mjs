@@ -1,11 +1,7 @@
 import process from 'node:process';
 import {
   Application,
-  Comment,
-  DeclarationReflection,
   ReflectionKind,
-  Type,
-  SignatureReflection,
   TSConfigReader,
 } from 'typedoc';
 

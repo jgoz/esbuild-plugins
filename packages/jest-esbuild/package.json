@@ -32,7 +32,6 @@
     "jest": "28 || 29"
   },
   "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.2.1",
     "@babel/core": "^7.29.7",
     "@jest/transform": "^29.7.0",
     "@types/babel__core": "^7.20.5",

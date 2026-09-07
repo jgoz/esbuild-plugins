@@ -27,7 +27,6 @@
     "esbuild": ">=0.25.0"
   },
   "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.2.1",
     "@jgoz/esbuild-overlay": "workspace:*",
     "@playwright/test": "^1.63.0",
     "@types/node": "^20.19.43",

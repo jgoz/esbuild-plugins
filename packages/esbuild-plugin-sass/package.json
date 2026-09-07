@@ -34,7 +34,6 @@
     }
   },
   "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.2.1",
     "@types/js-beautify": "^1.14.3",
     "@types/node-sass": "^4.11.8",
     "autoprefixer": "^10.5.5",

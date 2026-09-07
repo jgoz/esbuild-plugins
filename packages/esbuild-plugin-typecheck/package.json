@@ -36,7 +36,6 @@
     }
   },
   "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.2.1",
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
     "@types/node": "^20.19.43",
     "esbuild": "^0.28.2",

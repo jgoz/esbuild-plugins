@@ -28,7 +28,6 @@
     "esbuild": ">=0.25.0"
   },
   "devDependencies": {
-    "@awesome-code-style/eslint-config": "^6.2.1",
     "@tsconfig/svelte": "^5.0.8",
     "esbuild": "^0.28.2",
     "esbuild-svelte": "^0.9.5",

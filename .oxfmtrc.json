@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": ["**/fixture/**/*", "**/dist/**/*", "**/lib/**/*"],
+  "arrowParens": "avoid",
+  "endOfLine": "lf",
+  "jsxSingleQuote": false,
+  "quoteProps": "consistent",
+  "semi": true,
+  "singleQuote": true,
+  "sortImports": true,
+  "jsdoc": true,
+  "sortPackageJson": true,
+  "tabWidth": 2,
+  "trailingComma": "all"
+}
