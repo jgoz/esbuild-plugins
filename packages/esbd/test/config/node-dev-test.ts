@@ -4,8 +4,8 @@ import path from 'node:path';
 
 /* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
-import type { ExecaChildProcess } from 'execa';
-import { node } from 'execa';
+import type { ResultPromise } from 'execa';
+import { execaNode } from 'execa';
 import getPort from 'get-port';
 import waitOn from 'wait-on';
 
@@ -56,7 +56,7 @@ const test = base.extend<ServerTestFixtures>({
   },
 
   startServer: async ({ port, absWorkingDir, writeFiles }, use) => {
-    let proc: ExecaChildProcess | undefined;
+    let proc: ResultPromise | undefined;
 
     const startServer = async (serverConfig: ServerConfig) => {
       const { args = [], config, files, respawn, onStderr, onStdout } = serverConfig;
@@ -89,16 +89,14 @@ const test = base.extend<ServerTestFixtures>({
 
       await Promise.all([writeBundle, writeFiles(initialFiles)]);
 
-      proc = node(bundleFile, ['node-dev', '-l', 'verbose', respawn ? '-r' : '', ...args], {
+      proc = execaNode(bundleFile, ['node-dev', '-l', 'verbose', respawn ? '-r' : '', ...args], {
         encoding: 'utf8',
         reject: false,
         cwd: absWorkingDir,
         env: { ...process.env, FORCE_COLOR: undefined, NO_COLOR: '1' },
       });
 
-      await waitOn({ resources: [`http-get://127.0.0.1:${port}`], timeout: 10000 });
-
-      proc.stdout!.on('data', (chunk: Buffer) => {
+      proc.nodeChildProcess.stdout!.on('data', (chunk: Buffer) => {
         const str = chunk.toString();
         // console.log('[stdout] ' + str);
         if (/rebuilding/.exec(str)) {
@@ -110,7 +108,7 @@ const test = base.extend<ServerTestFixtures>({
         onStdout?.(str);
       });
 
-      proc.stderr!.on('data', (chunk: Buffer) => {
+      proc.nodeChildProcess.stderr!.on('data', (chunk: Buffer) => {
         const str = chunk.toString();
         // console.log('[stderr] ' + str);
         if (/\[watch\] build finished/.exec(str)) {
@@ -122,20 +120,23 @@ const test = base.extend<ServerTestFixtures>({
         onStderr?.(str);
       });
 
-      await waitForWatcher();
+      const initialWatcherReady = waitForWatcher();
+      await waitOn({ resources: [`http-get://127.0.0.1:${port}`], timeout: 10000 });
+      await initialWatcherReady;
 
       return {
         stop: () => {
-          proc?.cancel();
+          proc?.kill();
         },
         write: async (fileIndex: number) => {
+          const watcherReady = waitForWatcher();
           await writeFiles(files[fileIndex]);
           try {
             await new Promise((resolve, reject) => {
               evt.once('done', resolve);
               evt.once('err', reject);
             });
-            await waitForWatcher();
+            await watcherReady;
             await waitOn({ resources: [`http-get://127.0.0.1:${port}`], timeout: 500 });
           } catch {}
         },
@@ -145,7 +146,7 @@ const test = base.extend<ServerTestFixtures>({
     // Tests execute here
     await use(startServer);
 
-    proc!.cancel();
+    proc!.kill();
 
     await fsp.rm(absWorkingDir, { recursive: true, force: true });
   },

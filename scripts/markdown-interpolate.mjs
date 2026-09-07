@@ -23,7 +23,7 @@
 import fs from 'node:fs';
 import { dirname } from 'node:path';
 
-import execa from 'execa';
+import { execa } from 'execa';
 
 const interpolateRegex =
   /(<!-- ?(?:([^\n]*?) )?markdown-interpolate: ?([^\n]*?) ?-->\n)[\S\s]*?(<!-- ?(?:([^\n]*?) )?end ?-->)/g;

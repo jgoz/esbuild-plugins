@@ -35,7 +35,7 @@
     "@jgoz/esbuild-plugin-livereload": "workspace:*",
     "@types/node": "^24.13.3",
     "esbuild": "^0.28.2",
-    "execa": "^5.0.0",
+    "execa": "^10.0.1",
     "memfs": "^4.71.0",
     "picocolors": "^1.1.1",
     "prettier": "^3.9.6",

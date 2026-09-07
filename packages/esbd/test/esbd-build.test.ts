@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { node } from 'execa';
+import { execaNode } from 'execa';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { EsbdConfig } from '../lib';
@@ -42,7 +42,7 @@ async function build(options: BuildWithHTMLOptions): Promise<BuildWithHTMLOutput
 
   await Promise.all([...writeFiles, writeBundle]);
 
-  const proc = node(bundleFile, ['build'], {
+  const proc = execaNode(bundleFile, ['build'], {
     encoding: 'utf8',
     reject: false,
     cwd: absWorkingDir,
