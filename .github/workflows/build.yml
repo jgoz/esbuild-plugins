@@ -43,6 +43,7 @@ jobs:
       - run: pnpm playwright install --with-deps
         if: steps.browser_cache.outputs.cache-hit != 'true'
       - run: pnpm build
+      - run: pnpm fmt:check
       - run: pnpm lint
       - run: pnpm test
         env:
