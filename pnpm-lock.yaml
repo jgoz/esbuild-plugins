@@ -259,7 +259,7 @@ importers:
         version: 5.57.0
       svelte-check:
         specifier: ^4.7.6
-        version: 4.7.6(picomatch@4.0.3)(svelte@5.57.0)(typescript@6.0.3)
+        version: 4.7.6(picomatch@4.0.7)(svelte@5.57.0)(typescript@6.0.3)
       svelte-preprocess:
         specifier: ^6.0.5
         version: 6.0.5(@babel/core@7.29.7(supports-color@8.1.1))(postcss@8.5.28)(sass@1.104.0)(svelte@5.57.0)(typescript@6.0.3)
@@ -325,7 +325,7 @@ importers:
         version: 5.57.0
       svelte-check:
         specifier: ^4.7.6
-        version: 4.7.6(picomatch@4.0.3)(svelte@5.57.0)(typescript@6.0.3)
+        version: 4.7.6(picomatch@4.0.7)(svelte@5.57.0)(typescript@6.0.3)
       svelte-preprocess:
         specifier: ^6.0.5
         version: 6.0.5(@babel/core@7.29.7(supports-color@8.1.1))(postcss@8.5.28)(sass@1.104.0)(svelte@5.57.0)(typescript@6.0.3)
@@ -346,7 +346,7 @@ importers:
         version: 4.11.8
       autoprefixer:
         specifier: ^10.5.5
-        version: 10.5.5(postcss@8.5.28)
+        version: 10.6.1(postcss@8.5.28)
       enhanced-resolve:
         specifier: ^5.24.5
         version: 5.24.5
@@ -2287,8 +2287,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  autoprefixer@10.5.5:
-    resolution: {integrity: sha512-uiRYvQYe/nNSzBJ7OUnd2/TZVsAdob3blml44teEpee9Cc1f4rGZFewO+JT3Wo8mgFOSzNqes4FHZn/Qz8WOuw==}
+  autoprefixer@10.6.1:
+    resolution: {integrity: sha512-cL1Qz6ADZhcEbny/8HPfe99J6HhNoYtpX2LFLIbhgGE7Q1hlQVkYFdetDN7Id3KiQxhDrHwzlHr/YQCnZ8+xSA==}
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
@@ -3437,10 +3437,6 @@ packages:
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
-
-  picomatch@4.0.3:
-    resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
-    engines: {node: '>=12'}
 
   picomatch@4.0.7:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
@@ -5866,7 +5862,7 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  autoprefixer@10.5.5(postcss@8.5.28):
+  autoprefixer@10.6.1(postcss@8.5.28):
     dependencies:
       browserslist: 4.28.9
       caniuse-lite: 1.0.30001810
@@ -6282,10 +6278,6 @@ snapshots:
   fb-watchman@2.0.2:
     dependencies:
       bser: 2.1.1
-
-  fdir@6.5.0(picomatch@4.0.3):
-    optionalDependencies:
-      picomatch: 4.0.3
 
   fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
@@ -7172,9 +7164,6 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  picomatch@4.0.3:
-    optional: true
-
   picomatch@4.0.7: {}
 
   pirates@4.0.7: {}
@@ -7368,7 +7357,7 @@ snapshots:
       '@csstools/postcss-text-decoration-shorthand': 5.0.5(postcss@8.5.28)
       '@csstools/postcss-trigonometric-functions': 5.0.5(postcss@8.5.28)
       '@csstools/postcss-unset-value': 5.0.0(postcss@8.5.28)
-      autoprefixer: 10.5.5(postcss@8.5.28)
+      autoprefixer: 10.6.1(postcss@8.5.28)
       browserslist: 4.28.9
       css-blank-pseudo: 8.0.2(postcss@8.5.28)
       css-has-pseudo: 8.0.1(postcss@8.5.28)
@@ -7625,12 +7614,12 @@ snapshots:
     dependencies:
       has-flag: 4.0.0
 
-  svelte-check@4.7.6(picomatch@4.0.3)(svelte@5.57.0)(typescript@6.0.3):
+  svelte-check@4.7.6(picomatch@4.0.7)(svelte@5.57.0)(typescript@6.0.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@sveltejs/load-config': 0.2.3
       chokidar: 4.0.3
-      fdir: 6.5.0(picomatch@4.0.3)
+      fdir: 6.5.0(picomatch@4.0.7)
       picocolors: 1.1.1
       sade: 1.8.1
       svelte: 5.57.0
